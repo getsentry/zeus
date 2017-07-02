@@ -1,0 +1,24 @@
+from setuptools import setup, find_packages
+
+install_requires = [
+    'autopep8==1.3.2',
+    'flake8==1.5.0',
+    'flask==0.12.2',
+    'flask-alembic==2.0.1',
+    'flask-sqlalchemy==2.2',
+    'honcho==1.0.1',
+    'marshmallow==2.13.5',
+    'oauth2client==4.1.2',
+]
+
+setup(
+    name='zeus',
+    version='0.1.0',
+    packages=find_packages(),
+    license='Apache 2.0',
+    entry_points={
+        'console_scripts': ['zeus=zeus.cli:main'],
+    },
+    long_description=open('README.md').read(),
+    install_requires=install_requires,
+)

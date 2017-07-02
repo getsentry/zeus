@@ -1,0 +1,41 @@
+{
+    "files.exclude": {
+        "**/*.pyc": true,
+        "**/*.min.js": true,
+        "**/*.js.map": true,
+        "node_modules": true,
+        "htmlcov": true,
+        "build": true,
+        "static": true,
+        "*.log": true,
+        "*.egg-info": true,
+        ".vscode/tags": true
+    },
+    "files.trimTrailingWhitespace": true,
+
+    "prettier.bracketSpacing": false,
+    "prettier.singleQuote": true,
+    "prettier.printWidth": 90,
+    "prettier.jsxBracketSameLine": true,
+
+    "eslint.options": {
+        "configFile": ".eslintrc"
+    },
+
+    "[javascript]": {
+        "editor.formatOnSave": true
+    },
+
+    "[python]": {
+        "editor.formatOnSave": true
+    },
+
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+
+    "python.formatting.provider": "autopep8",
+    "python.pythonPath": "${env.WORKON_HOME}/zeus/bin/python",
+    "python.unitTest.pyTestEnabled": true,
+    "python.unitTest.unittestEnabled": false,
+    "python.unitTest.nosetestsEnabled": false
+}
