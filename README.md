@@ -16,9 +16,12 @@ The initial version aims to support Travis CI via GitHub, including:
 mkvirtualenv zeus --python `which python3`
 make
 createdb -E utf-8 zeus
+zeus init
 zeus db upgrade
 zeus devserver
 ```
+
+Now configure credentials by creating a GitHub account, and then add them to ``~/.zeus/zeus.conf.py``.
 
 ## Layout
 
