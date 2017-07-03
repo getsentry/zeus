@@ -13,6 +13,7 @@ install_requires = [
     'psycopg2==2.7.1',
     'pytest==3.1.2',
     'pytest-xdist==1.18.0',
+    'raven==6.1.0',
 ]
 
 setup(
