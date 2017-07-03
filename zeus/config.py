@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask
 from flask_alembic import Alembic
 from flask_sqlalchemy import SQLAlchemy
