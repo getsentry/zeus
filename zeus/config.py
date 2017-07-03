@@ -32,6 +32,9 @@ def create_app(_read_config=True, **config):
         'changes',
     ]
 
+    app.config['GITHUB_CLIENT_ID'] = None
+    app.config['GITHUB_CLIENT_SECRET'] = None
+
     # app.config['DEFAULT_FILE_STORAGE'] = ''
 
     if _read_config:
@@ -41,7 +44,7 @@ def create_app(_read_config=True, **config):
         else:
             # Look for ~/.zeus/zeus.conf.py
             path = os.path.normpath(
-                os.path.expanduser('~/.zeus/zeus.conf.py'))
+                os.path.expanduser('~/.zeus/zeus.config.py'))
             app.config.from_pyfile(path, silent=True)
 
     app.config.update(config)

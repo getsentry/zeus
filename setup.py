@@ -15,6 +15,7 @@ install_requires = [
     'pytest==3.1.2',
     'pytest-xdist==1.18.0',
     'raven==6.1.0',
+    'requests==2.18.1',
 ]
 
 setup(

@@ -1,4 +1,4 @@
-/* global _ */
+/* global process */
 /* eslint no-console: 0 */
 // In production, we register a service worker to serve assets from local cache.
 

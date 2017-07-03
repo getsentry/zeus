@@ -13,7 +13,7 @@ export default function(ComposedComponent) {
     };
     componentWillMount() {
       if (!this.props.isAuthenticated) {
-        this.context.router.push('/auth/github/login');
+        this.context.router.push('/login');
       }
     }
 

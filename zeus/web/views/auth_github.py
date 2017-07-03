@@ -1,4 +1,5 @@
 import zeus
+import requests
 import sys
 
 from flask import current_app, redirect, request, session, url_for
@@ -6,11 +7,10 @@ from flask.views import MethodView
 from oauth2client.client import OAuth2WebServerFlow
 
 from zeus.db.utils import get_or_create
-from zeus.models import User
+from zeus.models import Identity, User
 
-GITHUB_AUTH_URI = 'https://accounts.google.com/o/oauth2/auth'
-GITHUB_REVOKE_URI = 'https://accounts.google.com/o/oauth2/revoke'
-GITHUB_TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'
+GITHUB_AUTH_URI = 'https://github.com/login/oauth/authorize'
+GITHUB_TOKEN_URI = 'https://github.com/login/oauth/access_token'
 
 
 def get_auth_flow(redirect_uri=None, scopes=()):
@@ -20,15 +20,13 @@ def get_auth_flow(redirect_uri=None, scopes=()):
     return OAuth2WebServerFlow(
         client_id=current_app.config['GITHUB_CLIENT_ID'],
         client_secret=current_app.config['GITHUB_CLIENT_SECRET'],
-        scope=' '.join(scopes),
+        scope='user:email',
         redirect_uri=redirect_uri,
-        user_agent='zeus/{0} (python {1})'.format(
+        user_agent='zeus/{0}'.format(
             zeus.VERSION,
-            sys.version,
         ),
         auth_uri=GITHUB_AUTH_URI,
         token_uri=GITHUB_TOKEN_URI,
-        revoke_uri=GITHUB_REVOKE_URI,
     )
 
 
@@ -45,24 +43,30 @@ class GitHubLoginView(MethodView):
 
 
 class GitHubCompleteView(MethodView):
-    def __init__(self, complete_url, authorized_url):
+    def __init__(self, complete_url):
         self.complete_url = complete_url
-        self.authorized_url = authorized_url
         super(GitHubCompleteView, self).__init__()
 
     def get(self):
-        redirect_uri = url_for(self.authorized_url, _external=True)
+        redirect_uri = request.url
         flow = get_auth_flow(redirect_uri=redirect_uri)
         resp = flow.step2_exchange(request.args['code'])
 
+        # fetch
+        response = requests.get(
+            'https://api.github.com/user', params={'access_token': resp.access_token})
+        response.raise_for_status()
+        user_data = response.json()
+
         user, _ = get_or_create(User, where={
-            'email': resp.id_token['email'],
+            'email': user_data['email'],
         })
 
         identity, _ = get_or_create(Identity, where={
             'user_id': user.id,
             'provider': 'github',
-            'defaults': {
+        }, defaults={
+            'config': {
                 'access_token': resp.access_token,
             }
         })
