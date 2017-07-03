@@ -26,6 +26,6 @@ class AuthIndexResource(Resource):
         else:
             context = {
                 'authenticated': True,
-                'user': UserSchema.dump(user),
+                'user': UserSchema(strict=True).dump(user).data,
             }
         return context
