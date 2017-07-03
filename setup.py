@@ -4,7 +4,7 @@ install_requires = [
     'autopep8==1.3.2',
     'blinker==1.4',
     'exam==0.10.6',
-    'flake8==1.5.0',
+    'flake8==3.3.0',
     'flask==0.12.2',
     'flask-alembic==2.0.1',
     'flask-sqlalchemy==2.2',
