@@ -10,16 +10,13 @@ export class Request {
   constructor(params, resolve, reject) {
     let contentType = params.contentType || 'application/json';
 
-    this.readyState = Request.UNSET;
-    this.responseText = null;
-    this.responseJSON = null;
-    this.responseType = null;
-    this.status = null;
-
     this.alive = true;
 
     let xhr = new XMLHttpRequest();
+
+    // bind xhr so we can abort later
     this.xhr = xhr;
+
     xhr.open(params.method || 'GET', params.url);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Accept', 'application/json; charset=utf-8');
@@ -30,9 +27,7 @@ export class Request {
     xhr.send(params.data ? JSON.stringify(params.data) : null);
 
     xhr.onreadystatechange = () => {
-      this.readyState = this.xhr.readyState;
-      this.status = this.xhr.status;
-      if (this.readyState === Request.DONE) {
+      if (xhr.readyState === Request.DONE) {
         let responseData = this.processResponseText(xhr);
         if (xhr.status === Request.OK) {
           resolve(responseData, xhr);
