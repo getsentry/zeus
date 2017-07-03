@@ -12,7 +12,7 @@ export function logout() {
   return dispatch => {
     api.delete('/auth').then(() => {
       localStorage.removeItem('auth');
-      dispatch(setAuth({}));
+      dispatch(setAuth({isAuthenticated: false, user: null}));
     });
   };
 }
@@ -29,6 +29,7 @@ export function authSession() {
         dispatch(setAuth(data));
       },
       error => {
+        localStorage.removeItem('auth');
         dispatch(setAuth({isAuthenticated: false, user: null}));
       }
     );
