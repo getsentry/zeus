@@ -20,3 +20,6 @@ install-python-requirements:
 
 install-js-requirements:
 	yarn install
+
+test:
+	py.test tests --tb=short
