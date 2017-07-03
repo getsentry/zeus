@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {authSession} from '../actions/auth';
+import {authSession, logout} from '../actions/auth';
 
 class App extends Component {
   static propTypes = {
     isAuthenticated: PropTypes.bool,
     user: PropTypes.object,
-    authSession: PropTypes.func.isRequired
+    authSession: PropTypes.func.isRequired,
+    logout: PropTypes.func.isRequired
   };
 
   componentWillMount() {
@@ -19,7 +20,11 @@ class App extends Component {
       <div className="App">
         <p>
           You are logged in as{' '}
-          {this.props.user ? this.props.user.email : <em>anonymous</em>}
+          {this.props.user
+            ? <span>
+                <strong>{this.props.user.email}</strong> (<a onClick={this.props.logout}>Logout</a>)
+              </span>
+            : <em>anonymous</em>}
         </p>
         {this.props.isAuthenticated === null ? <div>Loading!</div> : this.props.children}
       </div>
@@ -34,4 +39,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {authSession})(App);
+export default connect(mapStateToProps, {authSession, logout})(App);

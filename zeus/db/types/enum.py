@@ -1,3 +1,5 @@
+__all__ = ['Enum']
+
 from sqlalchemy.types import TypeDecorator, INT
 
 

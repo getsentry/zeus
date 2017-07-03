@@ -1,3 +1,5 @@
+__all__ = ['GUID']
+
 from sqlalchemy.types import TypeDecorator, CHAR
 from sqlalchemy.dialects.postgresql import UUID
 import uuid

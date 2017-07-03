@@ -19,7 +19,8 @@ class Identity(db.Model):
     id = Column(GUID, primary_key=True, default=GUID.default_value)
     user_id = Column(GUID, ForeignKey(
         'user.id', ondelete="CASCADE"), nullable=False)
-    provider = Column(String(32), unique=True, nullable=False)
+    external_id = Column(String(64), unique=True, nullable=False)
+    provider = Column(String(32), nullable=False)
     date_created = Column(DateTime, default=datetime.utcnow)
     config = Column(JSONEncodedDict)
 

@@ -6,6 +6,7 @@ from flask import current_app, redirect, request, session, url_for
 from flask.views import MethodView
 from oauth2client.client import OAuth2WebServerFlow
 
+from zeus.config import db
 from zeus.db.utils import get_or_create
 from zeus.models import Identity, User
 
@@ -50,26 +51,45 @@ class GitHubCompleteView(MethodView):
     def get(self):
         redirect_uri = request.url
         flow = get_auth_flow(redirect_uri=redirect_uri)
-        resp = flow.step2_exchange(request.args['code'])
+        response = flow.step2_exchange(request.args['code'])
 
-        # fetch
+        identity_config = {
+            'access_token': response.access_token,
+            'refresh_token': response.refresh_token,
+        }
+
+        # fetch user details
         response = requests.get(
-            'https://api.github.com/user', params={'access_token': resp.access_token})
+            'https://api.github.com/user', params={
+                'access_token': identity_config['access_token']
+            })
         response.raise_for_status()
         user_data = response.json()
 
-        user, _ = get_or_create(User, where={
-            'email': user_data['email'],
-        })
-
-        identity, _ = get_or_create(Identity, where={
-            'user_id': user.id,
-            'provider': 'github',
-        }, defaults={
-            'config': {
-                'access_token': resp.access_token,
-            }
-        })
+        with db.session.begin_nested():
+            existing_identity = Identity.query.filter(
+                Identity.external_id == str(user_data['id']),
+                Identity.provider == 'github',
+            ).first()
+            if not existing_identity:
+                user = User(
+                    email=user_data['email'],
+                )
+                db.session.add(user)
+                identity = Identity(
+                    user=user,
+                    external_id=user_data['id'],
+                    provider='github',
+                    config=identity_config,
+                )
+                db.session.add(identity)
+            else:
+                Identity.query.filter(
+                    Identity.external_id == str(user_data['id']),
+                    Identity.provider == 'github',
+                ).update({
+                    'config': identity_config,
+                })
 
         session['uid'] = user.id.hex
 
