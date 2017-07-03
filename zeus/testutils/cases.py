@@ -24,7 +24,6 @@ class AuthMixin(object):
     def login(self, user):
         with self.client.session_transaction() as session:
             session['uid'] = user.id.hex
-            session['email'] = user.email
 
     def login_default(self):
         return self.login(self.default_user)
@@ -37,6 +36,12 @@ class TestCase(Exam, unittest.TestCase, Fixtures, AuthMixin):
     def setUp(self):
         super(TestCase, self).setUp()
         self.client = app.test_client()
+        # initiate a session
+        self.client.__enter__()
+
+    def tearDown(self):
+        self.client.__exit__(None, None, None)
+        super(TestCase, self).tearDown()
 
     def from_json(self, response):
         assert response.headers['Content-Type'] == 'application/json'
