@@ -21,11 +21,12 @@ class AuthIndexResource(Resource):
 
         if user is None:
             context = {
-                'authenticated': False,
+                'isAuthenticated': False,
+                'user': None,
             }
         else:
             context = {
-                'authenticated': True,
+                'isAuthenticated': True,
                 'user': UserSchema(strict=True).dump(user).data,
             }
         return context

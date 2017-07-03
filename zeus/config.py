@@ -63,7 +63,7 @@ def create_app(_read_config=True, **config):
 def configure_api(app):
     from zeus import api
 
-    app.register_blueprint(api.app, url_prefix='/api/0')
+    app.register_blueprint(api.app, url_prefix='/api')
 
 
 def configure_web(app):
