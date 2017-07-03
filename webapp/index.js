@@ -5,20 +5,25 @@ import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 import {createStore, applyMiddleware, compose} from 'redux';
 
-import rootReducer from './rootReducer';
-
-import './index.css';
 import registerServiceWorker from './registerServiceWorker';
+import reducers from './reducers';
+import {setAuth} from './actions/auth';
 
 import routes from './routes';
 
 const store = createStore(
-  rootReducer,
+  reducers,
   compose(
     applyMiddleware(thunk),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 );
+
+// we cache the user details in localStorage, but its still fetched on
+// the initial load to update/validate
+if (localStorage.auth) {
+  store.dispatch(setAuth(localStorage.auth));
+}
 
 render(
   <Provider store={store}>

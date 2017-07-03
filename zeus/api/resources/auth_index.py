@@ -30,3 +30,17 @@ class AuthIndexResource(Resource):
                 'user': UserSchema(strict=True).dump(user).data,
             }
         return context
+
+    def delete(self):
+        """
+        Logout.
+        """
+        if not session.get('uid'):
+            return
+
+        del session['uid']
+
+        return {
+            'isAuthenticated': False,
+            'user': None,
+        }

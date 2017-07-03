@@ -5,12 +5,13 @@ import {connect} from 'react-redux';
 export default function(ComposedComponent) {
   class Authenticate extends React.Component {
     static propTypes = {
-      isAuthenticated: PropTypes.bool.isRequired
+      isAuthenticated: PropTypes.bool
     };
 
     static contextTypes = {
       router: PropTypes.object.isRequired
     };
+
     componentWillMount() {
       if (!this.props.isAuthenticated) {
         this.context.router.push('/login');
@@ -24,6 +25,8 @@ export default function(ComposedComponent) {
     }
 
     render() {
+      // loading
+      console.log(this.props);
       return <ComposedComponent {...this.props} />;
     }
   }

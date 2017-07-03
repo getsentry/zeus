@@ -1,30 +1,36 @@
-// import axios from 'axios';
-// import setAuthorizationToken from '../utils/setAuthorizationToken';
-// import jwtDecode from 'jwt-decode';
-import {SET_CURRENT_USER} from './types';
+import api from '../api';
+import {SET_CURRENT_AUTH} from './types';
 
-export function setCurrentUser(user) {
+export function setAuth(data) {
   return {
-    type: SET_CURRENT_USER,
-    user
+    type: SET_CURRENT_AUTH,
+    data
   };
 }
 
 export function logout() {
   return dispatch => {
-    api.logout();
-    // localStorage.removeItem('jwtToken');
-    // setAuthorizationToken(false);
-    dispatch(setCurrentUser({}));
+    api.delete('/auth').then(() => {
+      localStorage.removeItem('auth');
+      dispatch(setAuth({}));
+    });
   };
 }
 
-export function login(data) {
+export function authSession() {
   return dispatch => {
-    return api.post('/api/auth', data).then(res => {
-      //   localStorage.setItem('jwtToken', token);
-      //   setAuthorizationToken(token);
-      dispatch(setCurrentUser(res.data));
-    });
+    return api.get('/auth').then(
+      data => {
+        if (data.isAuthenticated) {
+          localStorage.setItem('auth', data);
+        } else {
+          localStorage.removeItem('auth');
+        }
+        dispatch(setAuth(data));
+      },
+      error => {
+        dispatch(setAuth({isAuthenticated: false, user: null}));
+      }
+    );
   };
 }
