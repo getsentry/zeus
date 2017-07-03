@@ -24,7 +24,7 @@ def app(request, session_config):
         _read_config=False,
         SQLALCHEMY_DATABASE_URI='postgresql:///' + session_config['db_name'],
         DEFAULT_FILE_STORAGE='zeus.storage.mock.FileStorageCache',
-        SECRET_KEY='foo'
+        SECRET_KEY=os.urandom(24),
     )
     yield app
 
