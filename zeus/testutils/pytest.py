@@ -7,6 +7,7 @@ from sqlalchemy import event
 from sqlalchemy.orm import Session
 
 from zeus import config
+from zeus.models import User
 from zeus.storage.mock import FileStorageCache
 
 
@@ -68,3 +69,28 @@ def db_session(request, db):
 
 def pytest_runtest_setup(item):
     FileStorageCache.clear()
+
+
+@pytest.fixture(scope='function')
+def client(app):
+    with app.test_client() as client:
+        yield client
+
+
+@pytest.fixture(scope='function')
+def default_user(db_session):
+    user = User(
+        email='foo@example.com',
+    )
+    db_session.add(user)
+    db_session.commit()
+
+    return user
+
+
+@pytest.fixture(scope='function')
+def default_login(client, default_user):
+    with client.session_transaction() as session:
+        session['uid'] = user.id.hex
+
+        yield deafult_user
