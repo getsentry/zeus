@@ -1,8 +1,10 @@
 from __future__ import absolute_import
 
 import enum
+import os.path
 
 from datetime import datetime
+from flask import current_app
 from sqlalchemy import Column, DateTime, String
 
 from zeus.config import db
@@ -17,7 +19,6 @@ class RepositoryBackend(enum.Enum):
     _labels = {
         unknown: 'Unknown',
         git: 'git',
-        hg: 'hg',
     }
 
     def __str__(self):
@@ -54,3 +55,29 @@ class Repository(db.Model):
     data = Column(JSONEncodedDict)
 
     __tablename__ = 'repository'
+
+    def get_vcs(self):
+        from zeus.models import ItemOption
+        from zeus.vcs.git import GitVcs
+
+        options = dict(
+            db.session.query(
+                ItemOption.name, ItemOption.value
+            ).filter(
+                ItemOption.item_id == self.id,
+                ItemOption.name.in_([
+                    'auth.username',
+                ])
+            )
+        )
+
+        kwargs = {
+            'path': os.path.join(current_app.config['REPO_ROOT'], self.id.hex),
+            'url': self.url,
+            'username': options.get('auth.username'),
+        }
+
+        if self.backend == RepositoryBackend.git:
+            return GitVcs(**kwargs)
+        else:
+            return None
