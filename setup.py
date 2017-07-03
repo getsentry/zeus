@@ -2,6 +2,7 @@ from setuptools import setup, find_packages
 
 install_requires = [
     'autopep8==1.3.2',
+    'blinker==1.4',
     'exam==0.10.6',
     'flake8==1.5.0',
     'flask==0.12.2',
