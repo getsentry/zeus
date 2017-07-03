@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 install_requires = [
     'autopep8==1.3.2',
     'blinker==1.4',
+    'celery==4.0.2',
     'exam==0.10.6',
     'flake8==3.3.0',
     'flask==0.12.2',
@@ -15,6 +16,7 @@ install_requires = [
     'pytest==3.1.2',
     'pytest-xdist==1.18.0',
     'raven==6.1.0',
+    'redis==2.10.5',
     'requests==2.18.1',
 ]
 

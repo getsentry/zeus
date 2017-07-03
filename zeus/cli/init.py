@@ -1,7 +1,6 @@
 import binascii
 import click
 import os
-import sys
 
 from .base import cli
 

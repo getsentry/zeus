@@ -10,7 +10,8 @@ from .base import cli
 
 @cli.command()
 @click.option('--environment', default='development', help='The environment name.')
-def devserver(environment):
+@click.option('--workers/--no-workers', default=False)
+def devserver(environment, workers):
     os.environ.setdefault('FLASK_DEBUG', '1')
     os.environ['NODE_ENV'] = environment
 
@@ -21,6 +22,10 @@ def devserver(environment):
         ('webpack', ['node_modules/.bin/webpack', '--watch',
                      '--config=config/webpack.config.dev.js']),
     ]
+    if workers:
+        daemons.append(
+            ('worker', ['zeus', 'worker', '--cron', '--log-level=INFO'])
+        )
 
     cwd = os.path.realpath(os.path.join(
         os.path.dirname(__file__), os.pardir, os.pardir))
