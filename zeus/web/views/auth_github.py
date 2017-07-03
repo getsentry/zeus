@@ -78,12 +78,17 @@ class GitHubCompleteView(MethodView):
                 db.session.add(user)
                 identity = Identity(
                     user=user,
-                    external_id=user_data['id'],
+                    external_id=str(user_data['id']),
                     provider='github',
                     config=identity_config,
                 )
                 db.session.add(identity)
             else:
+                user = User.query.filter(
+                    Identity.external_id == str(user_data['id']),
+                    Identity.provider == 'github',
+                    Identity.user_id == User.id,
+                ).first()
                 Identity.query.filter(
                     Identity.external_id == str(user_data['id']),
                     Identity.provider == 'github',
