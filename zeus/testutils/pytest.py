@@ -24,7 +24,6 @@ def app(request, session_config):
         SQLALCHEMY_DATABASE_URI='postgresql:///' + session_config['db_name'],
         DEFAULT_FILE_STORAGE='zeus.storage.mock.FileStorageCache',
     )
-    print('here')
 
     app_context = app.test_request_context()
     context = app_context.push()
