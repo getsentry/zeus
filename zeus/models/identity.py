@@ -11,11 +11,6 @@ class Identity(db.Model):
     """
     Identities associated with a user. Primarily used for Single Sign-On.
     """
-    __tablename__ = 'identity'
-    __table_args__ = (
-        UniqueConstraint('user_id', 'provider', name='unq_identity_user'),
-    )
-
     id = Column(GUID, primary_key=True, default=GUID.default_value)
     user_id = Column(GUID, ForeignKey(
         'user.id', ondelete="CASCADE"), nullable=False)
@@ -25,3 +20,8 @@ class Identity(db.Model):
     config = Column(JSONEncodedDict)
 
     user = relationship('User')
+
+    __tablename__ = 'identity'
+    __table_args__ = (
+        UniqueConstraint('user_id', 'provider', name='unq_identity_user'),
+    )

@@ -1,13 +1,11 @@
 import zeus
 import requests
-import sys
 
 from flask import current_app, redirect, request, session, url_for
 from flask.views import MethodView
 from oauth2client.client import OAuth2WebServerFlow
 
 from zeus.config import db
-from zeus.db.utils import get_or_create
 from zeus.models import Identity, User
 
 GITHUB_AUTH_URI = 'https://github.com/login/oauth/authorize'

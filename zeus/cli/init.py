@@ -3,9 +3,6 @@ import click
 import os
 import sys
 
-from subprocess import list2cmdline
-from honcho.manager import Manager
-
 from .base import cli
 
 

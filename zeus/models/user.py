@@ -9,8 +9,8 @@ class User(db.Model):
     """
     Actors within Zeus.
     """
-    __tablename__ = 'user'
-
     id = Column(GUID, primary_key=True, default=GUID.default_value)
     email = Column(String(128), unique=True, nullable=False)
     date_created = Column(DateTime, default=datetime.utcnow)
+
+    __tablename__ = 'user'

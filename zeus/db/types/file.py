@@ -81,7 +81,7 @@ class File(TypeDecorator):
                     'filename': value.filename,
                     'storage': value.storage,
                 }
-            return unicode(json.dumps(value))
+            return str(json.dumps(value))
 
         return u'{}'
 

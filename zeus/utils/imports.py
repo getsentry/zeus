@@ -7,18 +7,16 @@ def import_string(path):
 
     >>> cls = import_string('sentry.models.Group')
     """
-    if '.' not in key:
-        return __import__(key)
+    if '.' not in path:
+        return __import__(path)
 
-    module_name, class_name = key.rsplit('.', 1)
+    module_name, class_name = path.rsplit('.', 1)
 
     module = __import__(module_name, {}, {}, [class_name], -1)
     try:
-        handler = getattr(module, class_name)
+        return getattr(module, class_name)
     except AttributeError as exc:
         raise ImportError from exc
-
-    return handle
 
 
 def import_submodules(context, root_module, path):
