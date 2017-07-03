@@ -15,6 +15,7 @@ The initial version aims to support Travis CI via GitHub, including:
 ```shell
 mkvirtualenv zeus --python `which python3`
 make
+createdb -E utf-8 zeus
 zeus db upgrade
 zeus devserver
 ```

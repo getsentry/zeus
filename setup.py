@@ -2,6 +2,7 @@ from setuptools import setup, find_packages
 
 install_requires = [
     'autopep8==1.3.2',
+    'exam==0.10.6',
     'flake8==1.5.0',
     'flask==0.12.2',
     'flask-alembic==2.0.1',
@@ -9,6 +10,9 @@ install_requires = [
     'honcho==1.0.1',
     'marshmallow==2.13.5',
     'oauth2client==4.1.2',
+    'psycopg2==2.7.1',
+    'pytest==3.1.2',
+    'pytest-xdist==1.18.0',
 ]
 
 setup(

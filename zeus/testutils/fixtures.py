@@ -1,0 +1,4 @@
+
+
+class Fixtures(object):
+    pass

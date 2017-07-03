@@ -1,0 +1,3 @@
+{
+  "tests/zeus/api/resources/test_auth_index.py::AuthIndexResourceTest::test_anonymous": true
+}

@@ -17,7 +17,10 @@ def create_app(_read_config=True, **config):
         template_folder=os.path.join(ROOT, 'templates'),
     )
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/zeus.db'
+    app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///zeus'
+    app.config['SQLALCHEMY_POOL_SIZE'] = 60
+    app.config['SQLALCHEMY_MAX_OVERFLOW'] = 20
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     if _read_config:
@@ -29,6 +32,8 @@ def create_app(_read_config=True, **config):
             path = os.path.normpath(
                 os.path.expanduser('~/.zeus/zeus.conf.py'))
             app.config.from_pyfile(path, silent=True)
+
+    app.config.update(config)
 
     alembic.init_app(app)
     db.init_app(app)
