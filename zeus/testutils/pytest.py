@@ -24,40 +24,41 @@ def app(request, session_config):
         _read_config=False,
         SQLALCHEMY_DATABASE_URI='postgresql:///' + session_config['db_name'],
         DEFAULT_FILE_STORAGE='zeus.storage.mock.FileStorageCache',
+        SECRET_KEY='foo'
     )
-
-    app_context = app.test_request_context()
-    context = app_context.push()
-
     yield app
-
-    app_context.pop()
 
 
 @pytest.fixture(scope='session', autouse=True)
 def db(request, app, session_config):
     db_name = session_config['db_name']
+    with app.app_context():
+        # Postgres 9.1 does not support --if-exists
+        if os.system("psql -l | grep '%s'" % db_name) == 0:
+            assert not os.system('dropdb %s' % db_name)
+        assert not os.system('createdb -E utf-8 %s' % db_name)
 
-    # Postgres 9.1 does not support --if-exists
-    if os.system("psql -l | grep '%s'" % db_name) == 0:
-        assert not os.system('dropdb %s' % db_name)
-    assert not os.system('createdb -E utf-8 %s' % db_name)
+        config.alembic.upgrade()
 
-    config.alembic.upgrade()
+        @event.listens_for(Session, "after_transaction_end")
+        def restart_savepoint(session, transaction):
+            if transaction.nested and not transaction._parent.nested:
+                session.begin_nested()
 
-    @event.listens_for(Session, "after_transaction_end")
-    def restart_savepoint(session, transaction):
-        if transaction.nested and not transaction._parent.nested:
-            session.begin_nested()
+        # TODO: need to kill db connections in order to drop database
+        #     config.db.drop_all()
+        #     os.system('dropdb %s' % db_name)
+        return config.db
 
-    # TODO: need to kill db connections in order to drop database
-    #     config.db.drop_all()
-    #     os.system('dropdb %s' % db_name)
-    return config.db
+
+@pytest.fixture(scope='function')
+def req_ctx(request, app):
+    with app.test_request_context() as req_ctx:
+        yield req_ctx
 
 
 @pytest.fixture(scope='function', autouse=True)
-def db_session(request, db):
+def db_session(request, req_ctx, db):
     db.session.begin_nested()
 
     yield db.session
@@ -91,6 +92,6 @@ def default_user(db_session):
 @pytest.fixture(scope='function')
 def default_login(client, default_user):
     with client.session_transaction() as session:
-        session['uid'] = user.id.hex
+        session['uid'] = default_user.id.hex
 
-        yield deafult_user
+    yield default_user
