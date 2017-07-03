@@ -31,3 +31,16 @@ zeus
 ├── package.json  // web client dependencies
 └── webapp // web client
 ```
+
+## Data Model
+
+zeus
+├── Repository
+|   └── Build
+|       └── Job
+|           ├── Artifact
+|           ├── FileCoverage
+|           └── TestCase
+└── User
+    └── Identity
+```
