@@ -3,6 +3,7 @@ import {Link} from 'react-router';
 import styled from 'styled-components';
 
 import BuildListItem from './BuildListItem';
+import TabbedNavItem from './TabbedNavItem';
 
 export default class BuildList extends Component {
   render() {
@@ -59,21 +60,6 @@ const TabbedNav = styled.div`
   overflow: hidden;
 `;
 
-const TabbedNavItem = styled(Link)`
-  cursor: pointer;
-  float: left;
-  font-size: 15px;
-  color: #AAA7BB;
-  margin-right: 20px;
-  padding: 15px 0;
-  border-bottom: 3px solid transparent;
-
-  &.${(props) => props.activeClassName} {
-    color: #39364E;
-    border-bottom: 3px solid #7B6BE6;
-  }
-`;
-
 const ScrollView = styled.div`
   position: absolute;
   top: 93px; /* TODO(ckj): calculate this dynamically */
@@ -82,10 +68,6 @@ const ScrollView = styled.div`
   bottom: 0;
   overflow: auto;
 `;
-
-TabbedNavItem.defaultProps = {
-  activeClassName: 'active',
-};
 
 const BUILDS = [
   {

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import styled from 'styled-components'
 
 import Logo from '../assets/Logo';
-import NavHeader from './NavHeader';
+import NavHeading from './NavHeading';
 import SidebarRepoItem from './SidebarRepoItem';
 
 const REPOSITORIES = [
@@ -43,8 +43,7 @@ export default class Sidebar extends Component {
     return (
       <SidebarWrapper>
         <Logo size="30"/>
-        <Hr />
-        <SidebarNavHeader label="Repositories" />
+        <SidebarNavHeading label="Repositories" />
         {REPOSITORIES.map((repo) =>
           <SidebarRepoItem key={repo.id}
             name={repo.name}
@@ -66,17 +65,13 @@ const SidebarWrapper = styled.div`
   left: 0;
   bottom: 0;
   width: 220px;
+  background-image: linear-gradient(rgba(123,107,230,0.10) 25%, rgba(118,211,146,0.10) 100%);
+  box-shadow: inset -5px 0 10px rgba(0,0,0, .1);
 `;
 
-const Hr = styled.hr`
-  background: none;
-  border: 0;
-  border-top: 1px solid #58617B;
-  width: 30px;
-  margin: 16px 0;
-`;
-
-const SidebarNavHeader = styled(NavHeader)`
+const SidebarNavHeading = styled(NavHeading)`
   color: #8783A3;
+  margin-top: 20px;
   margin-bottom: 10px;
+  font-weight: 400;
 `;

@@ -1,16 +1,16 @@
 import React, {PropTypes} from 'react';
 import styled from 'styled-components';
 
-const NavHeader = styled(({label, ...props}) => <div {...props} children={label} />)`
+const NavHeading = styled(({label, ...props}) => <div {...props} children={label} />)`
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 500;
   text-transform: uppercase;
-  margin: 20px 0;
+  margin: 0 0 30px;
   color: #767488;
 `;
 
-NavHeader.propTypes = {
+NavHeading.propTypes = {
   label: PropTypes.string
 };
 
-export default NavHeader;
+export default NavHeading;

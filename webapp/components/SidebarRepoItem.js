@@ -21,6 +21,10 @@ const SidebarRepoItemLink = styled(Link)`
   color: #B9B6CE;
   position: relative;
 
+  &:hover {
+    color: #fff;
+  }
+
   &.${(props) => props.activeClassName} {
     color: #fff;
 

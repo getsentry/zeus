@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {authSession, logout} from '../actions/auth';
+import styled from 'styled-components';
 
 import './App.css';
 
@@ -20,15 +21,14 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <p>
-          You are logged in as{' '}
+        {this.props.isAuthenticated === null ? <div>Loading!</div> : this.props.children}
+        <Auth>
           {this.props.user
             ? <span>
-                <strong>{this.props.user.email}</strong> (<a onClick={this.props.logout}>Logout</a>)
+                <strong>{this.props.user.email}</strong> <br/><a onClick={this.props.logout}>Sign out</a>
               </span>
             : <em>anonymous</em>}
-        </p>
-        {this.props.isAuthenticated === null ? <div>Loading!</div> : this.props.children}
+        </Auth>
       </div>
     );
   }
@@ -40,5 +40,15 @@ function mapStateToProps(state) {
     isAuthenticated: state.auth.isAuthenticated
   };
 }
+
+const Auth = styled.div`
+  position: fixed;
+  color: #fff;
+  font-size: 11px;
+  left: 20px;
+  bottom: 15px;
+  width: 220px;
+  line-height: 1.5;
+`;
 
 export default connect(mapStateToProps, {authSession, logout})(App);
