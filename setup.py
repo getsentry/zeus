@@ -5,6 +5,7 @@ install_requires = [
     'blinker==1.4',
     'celery==4.0.2',
     'exam==0.10.6',
+    'factory_boy==2.8.1',
     'flake8==3.3.0',
     'flask==0.12.2',
     'flask-alembic==2.0.1',

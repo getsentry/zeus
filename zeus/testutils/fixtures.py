@@ -3,8 +3,9 @@ import pytest
 
 from datetime import datetime, timedelta
 
-from zeus import models
+from zeus import factories, models
 from zeus.constants import Result, Status
+
 
 DATA_FIXTURES = os.path.join(os.path.dirname(
     __file__), os.pardir, os.pardir, 'tests', 'fixtures')
@@ -12,13 +13,12 @@ DATA_FIXTURES = os.path.join(os.path.dirname(
 
 @pytest.fixture(scope='function')
 def default_user(db_session):
-    user = models.User(
+    r = factories.UserFactory(
         email='foo@example.com',
     )
-    db_session.add(user)
+    db_session.add(r)
     db_session.commit()
-
-    return user
+    return r
 
 
 @pytest.fixture(scope='function')
@@ -31,15 +31,14 @@ def default_login(client, default_user):
 
 @pytest.fixture(scope='function')
 def default_repo(db_session):
-    repo = models.Repository(
+    r = factories.RepositoryFactory(
         url='https://github.com/getsentry/zeus.git',
         backend=models.RepositoryBackend.git,
         status=models.RepositoryStatus.active,
     )
-    db_session.add(repo)
+    db_session.add(r)
     db_session.commit()
-
-    return repo
+    return r
 
 
 @pytest.fixture(scope='function')
@@ -56,58 +55,54 @@ def default_repo_access(db_session, default_repo, default_user):
 
 @pytest.fixture(scope='function')
 def default_revision(db_session, default_repo):
-    revision = models.Revision(
-        repository_id=default_repo.id,
+    r = factories.RevisionFactory(
+        repository=default_repo,
         sha='884ea9e17b53933febafd7e02d8bd28f3c9d479d',
     )
-    db_session.add(revision)
+    db_session.add(r)
     db_session.commit()
-
-    return revision
+    return r
 
 
 @pytest.fixture(scope='function')
 def default_source(db_session, default_revision):
-    source = models.Source(
-        repository_id=default_revision.repository_id,
+    r = factories.SourceFactory(
+        repository=default_revision.repository,
         revision_sha=default_revision.sha,
     )
-    db_session.add(source)
+    db_session.add(r)
     db_session.commit()
-
-    return source
+    return r
 
 
 @pytest.fixture(scope='function')
 def default_build(db_session, default_repo, default_source):
-    build = models.Build(
-        repository_id=default_repo.id,
-        source_id=default_source.id,
+    r = factories.BuildFactory(
+        repository=default_repo,
+        source=default_source,
         date_started=datetime.utcnow() - timedelta(minutes=6),
         date_finished=datetime.utcnow(),
         result=Result.passed,
         status=Status.finished,
     )
-    db_session.add(build)
+    db_session.add(r)
     db_session.commit()
-
-    return build
+    return r
 
 
 @pytest.fixture(scope='function')
 def default_job(db_session, default_build):
-    job = models.Job(
-        repository_id=default_build.repository_id,
-        build_id=default_build.id,
+    r = factories.JobFactory(
+        repository=default_build.repository,
+        build=default_build,
         date_started=datetime.utcnow() - timedelta(minutes=6),
         date_finished=datetime.utcnow(),
         result=Result.passed,
         status=Status.finished,
     )
-    db_session.add(job)
+    db_session.add(r)
     db_session.commit()
-
-    return job
+    return r
 
 
 @pytest.fixture(scope='session')

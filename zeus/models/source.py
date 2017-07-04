@@ -18,8 +18,8 @@ class Source(RepositoryBoundMixin, db.Model):
     data = db.Column(JSONEncodedDict)
 
     patch = db.relationship('Patch')
-    # revision = db.relationship('Revision',
-    #                            foreign_keys='[repository_id, revision_sha]', viewonly=True)
+    revision = db.relationship('Revision',
+                               foreign_keys='[Source.repository_id, Source.revision_sha]', viewonly=True)
 
     __tablename__ = 'source'
     __table_args__ = (
