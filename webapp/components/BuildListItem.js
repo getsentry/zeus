@@ -105,11 +105,29 @@ const Meta = styled.div`
 `;
 
 const Duration = styled.div`
-  color: ${(props) => (props.status == "fail") ? '#F06E5B' : 'inherit'};
-
-  svg {
-    color: ${(props) => (props.status == "fail") ? '#F06E5B' : '#BFBFCB'};
-  }
+  ${(props) => {
+    switch (props.status) {
+      case 'pass':
+        return css`
+          svg {
+            color: #76D392;
+          }
+        `;
+      case 'fail':
+        return css`
+          color: #F06E5B;
+          svg {
+            color: #F06E5B;
+          }
+        `;
+      default:
+        return css`
+          svg {
+            color: #BFBFCB;
+          }
+        `;
+    }
+  }}
 `;
 
 const Time = styled.div`
