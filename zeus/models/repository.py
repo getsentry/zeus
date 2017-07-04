@@ -2,11 +2,13 @@ from __future__ import absolute_import
 
 import enum
 import os.path
+import sqlalchemy
 
 from datetime import datetime
 from flask import current_app
 from sqlalchemy import Column, DateTime, String
 
+from zeus.auth import get_current_tenant
 from zeus.config import db
 from zeus.db.types import Enum, GUID, JSONEncodedDict
 
@@ -40,6 +42,45 @@ class RepositoryStatus(enum.Enum):
         return self._labels[self]
 
 
+class RepositoryAccessBoundQuery(db.Query):
+    current_constrained = True
+
+    def get(self, ident):
+        # override get() so that the flag is always checked in the
+        # DB as opposed to pulling from the identity map. - this is optional.
+        return db.Query.get(self.populate_existing(), ident)
+
+    def __iter__(self):
+        return db.Query.__iter__(self.constrained())
+
+    def from_self(self, *ent):
+        # override from_self() to automatically apply
+        # the criterion too.   this works with count() and
+        # others.
+        return db.Query.from_self(self.constrained(), *ent)
+
+    def constrained(self):
+        if not self.current_constrained:
+            return self
+
+        mzero = self._mapper_zero()
+        if mzero is not None:
+            tenant = get_current_tenant()
+            if tenant.repository_ids:
+                return self.enable_assertions(False).filter(
+                    mzero.class_.id.in_(
+                        tenant.repository_ids)
+                )
+            else:
+                return self.enable_assertions(False).filter(sqlalchemy.sql.false())
+        return self
+
+    def unconstrained_unsafe(self):
+        rv = self._clone()
+        rv.current_constrained = False
+        return rv
+
+
 class Repository(db.Model):
     """
     Represents a single repository.
@@ -55,6 +96,8 @@ class Repository(db.Model):
     date_created = Column(DateTime, default=datetime.utcnow, nullable=False)
     last_update = Column(DateTime)
     last_update_attempt = Column(DateTime)
+
+    query_class = RepositoryAccessBoundQuery
 
     __tablename__ = 'repository'
 

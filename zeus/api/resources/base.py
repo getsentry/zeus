@@ -1,16 +1,25 @@
-from flask import jsonify, request
+from flask import jsonify, request, Response
 from flask.views import View
 
 
 class Resource(View):
     methods = ['GET', 'POST', 'PUT', 'DELETE']
 
-    def dispatch_request(self, *args, **kwargs):
+    def dispatch_request(self, *args, **kwargs) -> Response:
         try:
             method = getattr(self, request.method.lower())
         except AttributeError:
-            resp = jsonify({'message': 'resource not found'})
-            resp.status_code == 405
-            return resp
+            return self.respond({'message': 'resource not found'}, 405)
+
         resp = method(*args, **kwargs)
-        return jsonify(resp)
+        if isinstance(resp, Response):
+            return resp
+        return self.respond(resp)
+
+    def not_found(self, message: str = 'resource not found') -> Response:
+        return self.respond({'message': message}, 404)
+
+    def respond(self, context={}, status: int = 200) -> Response:
+        resp = jsonify(context)
+        resp.status_code = status
+        return resp

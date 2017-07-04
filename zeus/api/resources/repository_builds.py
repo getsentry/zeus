@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, unicode_literals
 
-from zeus.models import Build
+from zeus.models import Build, Repository
 
 from .base import Resource
 from ..schemas import BuildSchema
@@ -13,7 +13,11 @@ class RepositoryBuildsResource(Resource):
         """
         Return a list of builds for the given repository.
         """
-        query = Build.query.all(
+        repo = Repository.query.get(repository_id)
+        if not repo:
+            return self.respond(status=404)
+
+        query = Build.query.filter(
             Build.repository_id == repository_id,
         )
         return builds_schema.dump(query).data
