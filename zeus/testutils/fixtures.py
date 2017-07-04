@@ -76,3 +76,15 @@ def default_build(db_session, default_repo, default_source):
     db_session.commit()
 
     return build
+
+
+@pytest.fixture(scope='function')
+def default_repo_access(db_session, default_repo, default_user):
+    access = models.RepositoryAccess(
+        user_id=default_user.id,
+        repository_id=default_repo.id,
+    )
+    db_session.add(access)
+    db_session.commit()
+
+    return access

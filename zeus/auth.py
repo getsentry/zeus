@@ -11,7 +11,7 @@ class Tenant(object):
 
     @classmethod
     def from_user(cls, user):
-        from zeus.models import Repository
+        from zeus.models import RepositoryAccess
 
         if not user:
             return cls()
@@ -20,7 +20,9 @@ class Tenant(object):
         return cls(
             user_id=user.id,
             repository_ids=[r[0] for r in db.session.query(
-                Repository.id
+                RepositoryAccess.repository_id
+            ).filter(
+                RepositoryAccess.user_id == user.id,
             )]
         )
 
