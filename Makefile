@@ -8,6 +8,7 @@ upgrade: install-requirements
 
 setup-git:
 	git config branch.autosetuprebase always
+	git config --bool flake8.strict true
 	cd .git/hooks && ln -sf ../../hooks/* ./
 
 install-requirements: install-python-requirements install-js-requirements
@@ -17,6 +18,8 @@ install-python-requirements:
 	pip install "pip>=9.0.0,<10.0.0"
 	pip install -e .
 	pip install "file://`pwd`#egg=zeus[tests]"
+	# TODO(dcramer): we want to replace this with our own custom hook
+	flake8 --install-hook git || true
 
 install-js-requirements:
 	yarn install
