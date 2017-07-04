@@ -47,10 +47,14 @@ zeus
 zeus
 ├── Repository
 |   └── Build
-|       └── Job
-|           ├── Artifact
-|           ├── FileCoverage
-|           └── TestCase
+|   ├   ├── Source
+|   ├   └── Job
+|   |       ├── Artifact
+|   |       ├── FileCoverage
+|   |       └── TestCase
+|   └── Revision
+|       ├── Author
+|       └── Source
 └── User
     └── Identity
 ```
