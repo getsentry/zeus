@@ -49,6 +49,10 @@ zeus
 ├── public                  // general static assets
 ├── package.json            // web client dependencies
 └── webapp                  // web client
+    ├── actions             // redux actions
+    ├── components          // react components
+    ├── reducers            // redux reducers
+    └── routes.js           // routes (react-router)
 ```
 
 ## Data Model
