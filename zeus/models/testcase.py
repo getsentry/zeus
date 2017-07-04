@@ -28,9 +28,9 @@ class TestCase(RepositoryBoundMixin, db.Model):
 
     job = db.relationship('Job')
 
-    __tablename__ = 'test'
+    __tablename__ = 'testcase'
     __table_args__ = (
-        db.UniqueConstraint('job_id', 'hash', name='unq_test_hash'),
+        db.UniqueConstraint('job_id', 'hash', name='unq_testcase_hash'),
     )
 
     @classmethod
