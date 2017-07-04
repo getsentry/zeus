@@ -76,22 +76,3 @@ def pytest_runtest_setup(item):
 def client(app):
     with app.test_client() as client:
         yield client
-
-
-@pytest.fixture(scope='function')
-def default_user(db_session):
-    user = User(
-        email='foo@example.com',
-    )
-    db_session.add(user)
-    db_session.commit()
-
-    return user
-
-
-@pytest.fixture(scope='function')
-def default_login(client, default_user):
-    with client.session_transaction() as session:
-        session['uid'] = default_user.id.hex
-
-    yield default_user

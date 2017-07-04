@@ -1,1 +1,4 @@
-pytest_plugins = ['zeus.testutils.pytest']
+pytest_plugins = [
+    'zeus.testutils.pytest',
+    'zeus.testutils.fixtures',
+]

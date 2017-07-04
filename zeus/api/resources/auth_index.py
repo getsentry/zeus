@@ -6,6 +6,8 @@ from zeus.models import User
 from .base import Resource
 from ..schemas import UserSchema
 
+user_schema = UserSchema(strict=True)
+
 
 class AuthIndexResource(Resource):
     def get(self):
@@ -27,7 +29,7 @@ class AuthIndexResource(Resource):
         else:
             context = {
                 'isAuthenticated': True,
-                'user': UserSchema(strict=True).dump(user).data,
+                'user': user_schema.dump(user).data,
             }
         return context
 
