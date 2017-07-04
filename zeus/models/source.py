@@ -35,3 +35,16 @@ class Source(RepositoryBoundMixin, db.Model):
 
     def is_commit(self):
         return self.patch_id is None and self.revision_sha
+
+    def generate_diff(self):
+        if self.patch:
+            return self.patch.diff
+
+        vcs = self.repository.get_vcs()
+        if vcs:
+            try:
+                return vcs.export(self.revision_sha)
+            except Exception:
+                pass
+
+        return None

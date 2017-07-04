@@ -15,6 +15,7 @@ install_requires = [
     'oauth2client==4.1.2',
     'psycopg2==2.7.1',
     'pytest==3.1.2',
+    'pytest-mock==1.6.0',
     'pytest-xdist==1.18.0',
     'raven==6.1.0',
     'redis==2.10.5',

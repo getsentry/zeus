@@ -43,6 +43,18 @@ def default_repo(db_session):
 
 
 @pytest.fixture(scope='function')
+def default_repo_access(db_session, default_repo, default_user):
+    access = models.RepositoryAccess(
+        user_id=default_user.id,
+        repository_id=default_repo.id,
+    )
+    db_session.add(access)
+    db_session.commit()
+
+    return access
+
+
+@pytest.fixture(scope='function')
 def default_revision(db_session, default_repo):
     revision = models.Revision(
         repository_id=default_repo.id,
@@ -83,18 +95,40 @@ def default_build(db_session, default_repo, default_source):
 
 
 @pytest.fixture(scope='function')
-def default_repo_access(db_session, default_repo, default_user):
-    access = models.RepositoryAccess(
-        user_id=default_user.id,
-        repository_id=default_repo.id,
+def default_job(db_session, default_build):
+    job = models.Job(
+        repository_id=default_build.repository_id,
+        build_id=default_build.id,
+        date_started=datetime.utcnow() - timedelta(minutes=6),
+        date_finished=datetime.utcnow(),
+        result=Result.passed,
+        status=Status.finished,
     )
-    db_session.add(access)
+    db_session.add(job)
     db_session.commit()
 
-    return access
+    return job
 
 
 @pytest.fixture(scope='session')
 def sample_xunit():
     with open(os.path.join(DATA_FIXTURES, 'sample-xunit.xml')) as fp:
+        return fp.read()
+
+
+@pytest.fixture(scope='session')
+def sample_xunit_with_artifacts():
+    with open(os.path.join(DATA_FIXTURES, 'sample-xunit-with-artifacts.xml')) as fp:
+        return fp.read()
+
+
+@pytest.fixture(scope='session')
+def sample_cobertura():
+    with open(os.path.join(DATA_FIXTURES, 'sample-cobertura.xml')) as fp:
+        return fp.read()
+
+
+@pytest.fixture(scope='session')
+def sample_jacoco():
+    with open(os.path.join(DATA_FIXTURES, 'sample-jacoco.xml')) as fp:
         return fp.read()

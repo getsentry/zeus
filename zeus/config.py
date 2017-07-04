@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 
 from zeus.utils.celery import Celery
+from zeus.utils.redis import Redis
 
 import os
 
@@ -14,6 +15,7 @@ ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
 alembic = Alembic()
 celery = Celery()
 db = SQLAlchemy()
+redis = Redis()
 sentry = Sentry(logging=True, level=logging.WARN)
 
 
@@ -30,6 +32,8 @@ def create_app(_read_config=True, **config):
     app.config['SQLALCHEMY_MAX_OVERFLOW'] = 20
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    app.config['REDIS_URL'] = 'redis://localhost/0'
+
     app.config['SENTRY_DSN'] = None
     app.config['SENTRY_INCLUDE_PATHS'] = [
         'changes',
@@ -40,7 +44,7 @@ def create_app(_read_config=True, **config):
 
     app.config['CELERY_ACCEPT_CONTENT'] = ['zeus_json']
     app.config['CELERY_ACKS_LATE'] = True
-    app.config['CELERY_BROKER_URL'] = 'redis://localhost/0'
+    app.config['CELERY_BROKER_URL'] = app.config['REDIS_URL']
     app.config['CELERY_DEFAULT_QUEUE'] = 'default'
     app.config['CELERY_DEFAULT_EXCHANGE'] = 'default'
     app.config['CELERY_DEFAULT_EXCHANGE_TYPE'] = 'direct'
@@ -75,6 +79,8 @@ def create_app(_read_config=True, **config):
     sentry.init_app(app)
 
     configure_db(app)
+
+    redis.init_app(app)
 
     celery.init_app(app)
 

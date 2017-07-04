@@ -36,7 +36,7 @@ class TestCase(RepositoryBoundMixin, db.Model):
     @classmethod
     def calculate_sha(self, name):
         assert name
-        return sha1(name).hexdigest()
+        return sha1(name.encode('utf-8')).hexdigest()
 
     @property
     def sep(self):

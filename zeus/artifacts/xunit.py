@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division
-
 import logging
 
 from lxml import etree
@@ -126,6 +124,7 @@ class XunitHandler(ArtifactHandler):
         if test_artifacts_node is None:
             return None
 
+        results = []
         for artifact_node in node.iter('artifact'):
             attrs = dict(artifact_node.items())
             results.append(attrs)
