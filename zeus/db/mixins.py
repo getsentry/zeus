@@ -7,6 +7,7 @@ from zeus.db.types import GUID
 from zeus.config import db
 
 
+# https://bitbucket.org/zzzeek/sqlalchemy/wiki/UsageRecipes/PreFilteredQuery
 class RepositoryBoundQuery(db.Query):
     current_constrained = True
 
