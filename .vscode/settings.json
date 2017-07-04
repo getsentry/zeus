@@ -9,7 +9,8 @@
         "static": true,
         "*.log": true,
         "*.egg-info": true,
-        ".vscode/tags": true
+        ".vscode/tags": true,
+        ".mypy_cache": true
     },
     "files.trimTrailingWhitespace": true,
     "files.ensureSingleFinalNewline": true,
