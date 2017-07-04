@@ -23,7 +23,7 @@ class Source(db.Model):
     repository = relationship('Repository', innerjoin=False)
     patch = relationship('Patch')
     revision = relationship('Revision',
-                            foreign_keys=[repository_id, revision_sha])
+                            foreign_keys=[repository_id, revision_sha], viewonly=True)
 
     __tablename__ = 'source'
     __table_args__ = (

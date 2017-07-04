@@ -4,7 +4,6 @@ import re
 
 from subprocess import Popen, PIPE
 
-from zeus.constants import PROJECT_ROOT
 from zeus.db.utils import create_or_update, get_or_create, try_create
 from zeus.models import Author, Revision, Source
 
@@ -38,7 +37,7 @@ class BufferParser(object):
 
                 chunk_buffer.append(chunk[:d_pos])
 
-                yield b''.join(chunk_buffer)
+                yield ''.join(chunk_buffer)
                 chunk_buffer = []
 
                 chunk = chunk[d_pos + 1:]
@@ -47,11 +46,12 @@ class BufferParser(object):
                 chunk_buffer.append(chunk)
 
         if chunk_buffer:
-            yield b''.join(chunk_buffer)
+            yield ''.join(chunk_buffer)
 
 
 class Vcs(object):
-    ssh_connect_path = 'zeus ssh-connect'
+    ssh_connect_path = os.path.realpath(os.path.join(
+        os.path.dirname(__file__), os.pardir, os.pardir, 'bin', 'ssh-connect'))
 
     def __init__(self, path, url, username=None):
         self.path = path
@@ -69,7 +69,7 @@ class Vcs(object):
 
         env = os.environ.copy()
 
-        for key, value in self.get_default_env().iteritems():
+        for key, value in self.get_default_env().items():
             env.setdefault(key, value)
 
         env.setdefault('ZEUS_SSH_REPO', self.url)
@@ -85,7 +85,7 @@ class Vcs(object):
         (stdout, stderr) = proc.communicate()
         if proc.returncode != 0:
             raise CommandError(args[0], proc.returncode, stdout, stderr)
-        return stdout
+        return stdout.decode('utf-8')
 
     def exists(self):
         return os.path.exists(self.path)

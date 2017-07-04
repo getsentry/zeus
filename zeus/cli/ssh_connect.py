@@ -13,8 +13,9 @@ from .base import cli
 
 @cli.command('ssh-connect')
 @click.argument('repository-url', envvar='SSH_REPO', required=True)
-def ssh_connect(repository_url):
-    repo = Repository.query.filter_by(url=repo_url).first()
+@click.argument('args', nargs=-1, type=click.UNPROCESSED)
+def ssh_connect(repository_url, args):
+    repo = Repository.query.filter_by(url=repository_url).first()
     if not repo:
         click.echo('Unable to find repository', err=True)
         sys.exit(1)
@@ -49,7 +50,7 @@ def ssh_connect(repository_url):
 
     command.append('--')
 
-    command.extend(sys.argv[1:])
+    command.extend(args)
 
     sys.exit(subprocess.call(
         command,

@@ -51,8 +51,10 @@ class Repository(db.Model):
                      default=RepositoryBackend.unknown, nullable=False)
     status = Column(Enum(RepositoryStatus),
                     default=RepositoryStatus.inactive, nullable=False)
-    date_created = Column(DateTime, default=datetime.utcnow, nullable=False)
     data = Column(JSONEncodedDict)
+    date_created = Column(DateTime, default=datetime.utcnow, nullable=False)
+    last_update = Column(DateTime)
+    last_update_attempt = Column(DateTime)
 
     __tablename__ = 'repository'
 

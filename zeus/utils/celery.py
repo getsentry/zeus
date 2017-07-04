@@ -43,7 +43,3 @@ class Celery(object):
         register('zeus_json', dumps, _loads,
                  content_type='application/json',
                  content_encoding='utf-8')
-
-    @property
-    def task(self, *args, **kwargs):
-        return self.celery.task(*args, **kwargs)

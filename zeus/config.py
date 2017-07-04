@@ -55,6 +55,8 @@ def create_app(_read_config=True, **config):
     app.config['CELERYD_PREFETCH_MULTIPLIER'] = 1
     app.config['CELERYD_MAX_TASKS_PER_CHILD'] = 10000
 
+    app.config['REPO_ROOT'] = '/usr/local/cache/zeus-repos'
+
     # app.config['DEFAULT_FILE_STORAGE'] = ''
 
     if _read_config:
@@ -72,11 +74,8 @@ def create_app(_read_config=True, **config):
     # init sentry first
     sentry.init_app(app)
 
-    # database
-    alembic.init_app(app)
-    db.init_app(app)
+    configure_db(app)
 
-    # async workers
     celery.init_app(app)
 
     configure_api(app)
@@ -85,6 +84,26 @@ def create_app(_read_config=True, **config):
     from . import models  # NOQA
 
     return app
+
+
+def configure_db(app):
+    from sqlalchemy import event
+    from sqlalchemy.orm import mapper
+    from sqlalchemy.inspection import inspect
+
+    alembic.init_app(app)
+    db.init_app(app)
+
+    @event.listens_for(mapper, "init")
+    def instant_defaults_listener(target, args, kwargs):
+        for key, column in inspect(type(target)).columns.items():
+            if column.default is not None:
+                if callable(column.default.arg):
+                    setattr(target, key, column.default.arg(target))
+                else:
+                    setattr(target, key, column.default.arg)
+
+    event.listen(mapper, 'init', instant_defaults_listener)
 
 
 def configure_api(app):

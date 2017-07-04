@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from zeus.utils.imports import import_submodules
 
 

@@ -1,7 +1,7 @@
 from datetime import datetime
-from urlparse import urlparse
+from urllib.parse import urlparse
 
-from zeus.utils.cache import memoize
+from zeus.utils.functional import memoize
 
 from .base import Vcs, RevisionResult, BufferParser, CommandError, UnknownRevision
 
@@ -82,7 +82,7 @@ class GitVcs(Vcs):
         try:
             return super(GitVcs, self).run(cmd, **kwargs)
         except CommandError as e:
-            if 'unknown revision or path' in e.stderr:
+            if 'unknown revision or path' in e.stderr.decode('utf-8'):
                 raise UnknownRevision(
                     cmd=e.cmd,
                     retcode=e.retcode,

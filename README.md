@@ -23,6 +23,12 @@ zeus devserver
 
 Now configure credentials by creating a GitHub account, and then add them to ``~/.zeus/zeus.conf.py``.
 
+## Getting some data
+
+```shell
+$ zeus repos add https://github.com/getsentry/zeus.git
+```
+
 ## Layout
 
 ```
