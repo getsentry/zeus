@@ -15,7 +15,7 @@ export default class BuildDetails extends Component {
         <BuildSummary>
           <Header>
             <Message>various improvements</Message>
-            <Branch>master</Branch>
+            <Branch>ui/fix-that-thing</Branch>
           </Header>
           <Meta>
             <Duration status="pass">
@@ -38,7 +38,7 @@ export default class BuildDetails extends Component {
           <NavHeading label="Build Jobs" />
           <List>
             <ListItem>just</ListItem>
-            <ListItem>finna</ListItem>
+            <ListItem>gonna</ListItem>
             <ListItem>make</ListItem>
             <ListItem>these</ListItem>
             <ListItem>a</ListItem>
