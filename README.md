@@ -33,22 +33,22 @@ $ zeus repos add https://github.com/getsentry/zeus.git
 
 ```
 zeus
-├── setup.py  // server dependencies
-├── zeus  // server code
-|   ├── artifacts // artifact handlers
+├── setup.py                // server dependencies
+├── zeus                    // server code
+|   ├── artifacts           // artifact handlers
 |   ├── api
-|   |   ├── resources // api endpoints/resources
-|   |   └── schemas // api serializer/schemas
-|   ├── cli // command line utilities
-|   ├── models // database schema
-|   ├── storage // file storage implementations
-|   ├── tasks // async task definitions
-|   ├── vcs // version control system implementations
-|   └── web // server-rendered web views
-├── templates  // server-rendered templates
-├── public  // general static assets
-├── package.json  // web client dependencies
-└── webapp // web client
+|   |   ├── resources       // api endpoints/resources
+|   |   └── schemas         // api serializer/schemas
+|   ├── cli                 // command line utilities
+|   ├── models              // database schema
+|   ├── storage             // file storage implementations
+|   ├── tasks               // async task definitions
+|   ├── vcs                 // version control system implementations
+|   └── web                 // server-rendered web views
+├── templates               // server-rendered templates
+├── public                  // general static assets
+├── package.json            // web client dependencies
+└── webapp                  // web client
 ```
 
 ## Data Model
