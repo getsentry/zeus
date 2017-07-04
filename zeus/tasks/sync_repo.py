@@ -63,4 +63,4 @@ def sync_repo(repo_id):
     db.session.commit()
 
     # is there more data to sync?
-    return True
+    return might_have_more
