@@ -1,5 +1,4 @@
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime
 
 from zeus.config import db
 from zeus.db.types import GUID
@@ -11,9 +10,10 @@ class Author(db.Model):
 
     This is different than User, which indicates a known authenticatable user.
     """
-    id = Column(GUID, primary_key=True, default=GUID.default_value)
-    name = Column(String(128), nullable=False)
-    email = Column(String(128), nullable=True, unique=True)
-    date_created = Column(DateTime, nullable=False, default=datetime.utcnow)
+    id = db.Column(GUID, primary_key=True, default=GUID.default_value)
+    name = db.Column(db.String(128), nullable=False)
+    email = db.Column(db.String(128), nullable=True, unique=True)
+    date_created = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow)
 
     __tablename__ = 'author'

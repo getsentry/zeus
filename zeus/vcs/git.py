@@ -23,18 +23,18 @@ class LazyGitRevisionResult(RevisionResult):
 class GitVcs(Vcs):
     binary_path = 'git'
 
-    def get_default_env(self):
+    def get_default_env(self) -> dict:
         return {
             'GIT_SSH': self.ssh_connect_path,
         }
 
     # This is static so that the repository serializer can easily use it
     @staticmethod
-    def get_default_revision():
+    def get_default_revision() -> str:
         return 'master'
 
     @property
-    def remote_url(self):
+    def remote_url(self) -> str:
         if self.url.startswith(('ssh:', 'http:', 'https:')):
             parsed = urlparse(self.url)
             url = '%s://%s@%s/%s' % (
@@ -48,10 +48,10 @@ class GitVcs(Vcs):
             url = self.url
         return url
 
-    def branches_for_commit(self, _id):
+    def branches_for_commit(self, _id) -> list:
         return self.get_known_branches(commit_id=_id)
 
-    def get_known_branches(self, commit_id=None):
+    def get_known_branches(self, commit_id=None) -> list:
         """ List all branches or those related to the commit for this repo.
 
         Either gets all the branches (if the commit_id is not specified) or then
@@ -77,7 +77,7 @@ class GitVcs(Vcs):
             results.append(result)
         return list(set(results))
 
-    def run(self, cmd, **kwargs):
+    def run(self, cmd, **kwargs) -> str:
         cmd = [self.binary_path] + cmd
         try:
             return super(GitVcs, self).run(cmd, **kwargs)
@@ -163,12 +163,12 @@ class GitVcs(Vcs):
                 message=message,
             )
 
-    def export(self, id):
+    def export(self, id) -> str:
         cmd = ['diff', '%s^..%s' % (id, id)]
         result = self.run(cmd)
         return result
 
-    def is_child_parent(self, child_in_question, parent_in_question):
+    def is_child_parent(self, child_in_question, parent_in_question) -> bool:
         cmd = ['merge-base', '--is-ancestor',
                parent_in_question, child_in_question]
         try:

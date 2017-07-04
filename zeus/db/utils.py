@@ -33,13 +33,13 @@ def get_or_create(model, where, defaults=None):
 
     created = False
 
-    instance = model.query.filter_by(**where).limit(1).first()
+    instance = model.query.filter_by(**where).first()
     if instance is not None:
         return instance, created
 
     instance = try_create(model, where, defaults)
     if instance is None:
-        instance = model.query.filter_by(**where).limit(1).first()
+        instance = model.query.filter_by(**where).first()
     else:
         created = True
 
@@ -56,11 +56,11 @@ def create_or_update(model, where, values=None):
 
     created = False
 
-    instance = model.query.filter_by(**where).limit(1).first()
+    instance = model.query.filter_by(**where).first()
     if instance is None:
         instance = try_create(model, where, values)
         if instance is None:
-            instance = model.query.filter_by(**where).limit(1).first()
+            instance = model.query.filter_by(**where).first()
             if instance is None:
                 raise Exception('Unable to create or update instance')
             update(instance, values)
@@ -78,11 +78,11 @@ def create_or_get(model, where, values=None):
 
     created = False
 
-    instance = model.query.filter_by(**where).limit(1).first()
+    instance = model.query.filter_by(**where).first()
     if instance is None:
         instance = try_create(model, where, values)
         if instance is None:
-            instance = model.query.filter_by(**where).limit(1).first()
+            instance = model.query.filter_by(**where).first()
         else:
             created = True
 
