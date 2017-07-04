@@ -1,9 +1,13 @@
+import os
 import pytest
 
 from datetime import datetime, timedelta
 
 from zeus import models
 from zeus.constants import Result, Status
+
+DATA_FIXTURES = os.path.join(os.path.dirname(
+    __file__), os.pardir, os.pardir, 'tests', 'fixtures')
 
 
 @pytest.fixture(scope='function')
@@ -88,3 +92,9 @@ def default_repo_access(db_session, default_repo, default_user):
     db_session.commit()
 
     return access
+
+
+@pytest.fixture(scope='session')
+def sample_xunit():
+    with open(os.path.join(DATA_FIXTURES, 'sample-xunit.xml')) as fp:
+        return fp.read()

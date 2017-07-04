@@ -10,6 +10,7 @@ install_requires = [
     'flask-alembic==2.0.1',
     'flask-sqlalchemy==2.2',
     'honcho==1.0.1',
+    'lxml==3.8.0',
     'marshmallow==2.13.5',
     'oauth2client==4.1.2',
     'psycopg2==2.7.1',

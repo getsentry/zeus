@@ -1,4 +1,4 @@
-__all__ = ['File']
+__all__ = ['File', 'FileData']
 
 import json
 
