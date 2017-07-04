@@ -1,24 +1,22 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css?family=Rubik:400,500');
+
+body {
+  font-size: 16px;
+  font-family: 'Rubik', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding: 0 30px 0 630px;
+  margin: 0;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+a {
+  text-decoration: none;
+  transition: .1s linear color;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+* {
+  box-sizing: border-box;
 }
 
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+strong, h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
 }

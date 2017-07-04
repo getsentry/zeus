@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {authSession, logout} from '../actions/auth';
 
+import './App.css';
+
 class App extends Component {
   static propTypes = {
     isAuthenticated: PropTypes.bool,
