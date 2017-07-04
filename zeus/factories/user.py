@@ -1,11 +1,12 @@
 import factory
 
 from zeus import models
-from zeus.db.types import GUID
+
+from .types import GUIDFactory
 
 
 class UserFactory(factory.Factory):
-    id = factory.LazyFunction(GUID.default_value)
+    id = GUIDFactory()
     email = factory.Faker('email')
 
     class Meta:

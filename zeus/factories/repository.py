@@ -1,11 +1,12 @@
 import factory
 
 from zeus import models
-from zeus.db.types import GUID
+
+from .types import GUIDFactory
 
 
 class RepositoryFactory(factory.Factory):
-    id = factory.LazyFunction(GUID.default_value)
+    id = GUIDFactory()
     url = 'https://github.com/getsentry/zeus.git'
     backend = models.RepositoryBackend.git
     status = models.RepositoryStatus.active

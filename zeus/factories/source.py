@@ -1,11 +1,12 @@
 import factory
 
 from zeus import models
-from zeus.db.types import GUID
+
+from .types import GUIDFactory
 
 
 class SourceFactory(factory.Factory):
-    id = factory.LazyFunction(GUID.default_value)
+    id = GUIDFactory()
     repository = factory.SubFactory('zeus.factories.RepositoryFactory')
     revision = factory.SubFactory(
         'zeus.factories.RevisionFactory', repository=factory.SelfAttribute('..repository'))

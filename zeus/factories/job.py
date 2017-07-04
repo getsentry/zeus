@@ -2,11 +2,12 @@ import factory
 
 from zeus import models
 from zeus.constants import Result, Status
-from zeus.db.types import GUID
+
+from .types import GUIDFactory
 
 
 class JobFactory(factory.Factory):
-    id = factory.LazyFunction(GUID.default_value)
+    id = GUIDFactory()
     repository = factory.SubFactory('zeus.factories.RepositoryFactory')
     build = factory.SubFactory('zeus.factories.BuildFactory')
     date_started = factory.Faker('past_date', start_date='-5m')
