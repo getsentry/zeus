@@ -46,32 +46,6 @@ class RepositoryBoundQuery(db.Query):
         rv.current_constrained = False
         return rv
 
-# class RepositoryQuery(db.Query):
-#     current_tenant_constrained = True
-
-#     def tenant_unconstrained_unsafe(self):
-#         rv = self._clone()
-#         rv.current_tenant_constrained = False
-#         return rv
-
-
-# @db.event.listens_for(RepositoryQuery, 'before_compile', retval=True)
-# def ensure_tenant_constrainted(query: db.Query) -> db.Query:
-#     if not query.current_tenant_constrained:
-#         return query
-#     for desc in query.column_descriptions:
-#         # should we just hard error if we dont find the column?
-#         if hasattr(desc['type'], 'repository_id'):
-#             tenant = get_current_tenant()
-#             if tenant.repository_ids:
-#                 query = query.filter(
-#                     query._mapper_zero().class_.repository_id.in_(
-#                         tenant.repository_ids)
-#                 )
-#             else:
-#                 query = query.filter(sqlalchemy.sql.false())
-#     return query
-
 
 class RepositoryBoundMixin(object):
     query_class = RepositoryBoundQuery
