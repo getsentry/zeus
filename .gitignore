@@ -13,6 +13,7 @@
 /static
 
 # misc
+.coverage*
 .cache/
 .mypy_cache/
 .DS_Store
