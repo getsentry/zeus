@@ -10,6 +10,7 @@ class RepositoryFactory(factory.Factory):
     url = 'https://github.com/getsentry/zeus.git'
     backend = models.RepositoryBackend.git
     status = models.RepositoryStatus.active
+    date_created = factory.Faker('date_time')
 
     class Meta:
         model = models.Repository

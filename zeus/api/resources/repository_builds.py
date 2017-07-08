@@ -15,7 +15,7 @@ class RepositoryBuildsResource(Resource):
         """
         repo = Repository.query.get(repository_id)
         if not repo:
-            return self.respond(status=404)
+            return self.not_found()
 
         query = Build.query.filter(
             Build.repository_id == repository_id,

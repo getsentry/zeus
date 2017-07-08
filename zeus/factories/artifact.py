@@ -5,12 +5,12 @@ from zeus import models
 from .types import GUIDFactory
 
 
-class SourceFactory(factory.Factory):
+class ArtifactFactory(factory.Factory):
     id = GUIDFactory()
     repository = factory.SubFactory('zeus.factories.RepositoryFactory')
-    revision = factory.SubFactory(
-        'zeus.factories.RevisionFactory', repository=factory.SelfAttribute('..repository'))
+    job = factory.SubFactory('zeus.factories.JobFactory')
+    name = factory.Faker('file_name')
     date_created = factory.Faker('date_time')
 
     class Meta:
-        model = models.Source
+        model = models.Artifact

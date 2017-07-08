@@ -48,7 +48,7 @@ class Artifact(RepositoryBoundMixin, db.Model):
     date_created = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
 
-    job = db.relationship('TestCase', innerjoin=True, uselist=False)
+    job = db.relationship('Job', innerjoin=True, uselist=False)
     testcase = db.relationship('TestCase', uselist=False)
 
     __tablename__ = 'artifact'
