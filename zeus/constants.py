@@ -40,3 +40,6 @@ RESULT_LABELS = {
 }
 
 RESULT_PRIORITY = (Result.aborted, Result.failed, Result.unknown, Result.passed, Result.skipped, )
+
+GITHUB_AUTH_URI = 'https://github.com/login/oauth/authorize'
+GITHUB_TOKEN_URI = 'https://github.com/login/oauth/access_token'

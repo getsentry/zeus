@@ -6,10 +6,8 @@ from flask.views import MethodView
 from oauth2client.client import OAuth2WebServerFlow
 
 from zeus.config import db
+from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI
 from zeus.models import Identity, User
-
-GITHUB_AUTH_URI = 'https://github.com/login/oauth/authorize'
-GITHUB_TOKEN_URI = 'https://github.com/login/oauth/access_token'
 
 
 def get_auth_flow(redirect_uri=None, scopes=()):

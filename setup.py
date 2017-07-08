@@ -13,11 +13,12 @@ install_requires = [
     'honcho==1.0.1',
     'lxml==3.8.0',
     'marshmallow==2.13.5',
-    'oauth2client==4.1.2',
+    'oauth2cli\t==4.1.2',
     'psycopg2==2.7.1',
     'pytest==3.1.2',
     'pytest-cov==2.5.1',
     'pytest-mock==1.6.0',
+    'pytest-responses==0.1.0',
     'pytest-xdist==1.18.0',
     'raven==6.1.0',
     'redis==2.10.5',
@@ -34,4 +35,5 @@ setup(
         'console_scripts': ['zeus=zeus.cli:main'],
     },
     long_description=open('README.md').read(),
-    install_requires=install_requires, )
+    install_requires=install_requires,
+)
