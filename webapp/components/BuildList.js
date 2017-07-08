@@ -209,7 +209,7 @@ const BuildListWrapper = styled.div`
   top: 0;
   left: 220px;
   bottom: 0;
-  width: 380px;
+  right: 0;
   background: #f8f9fb;
   box-shadow: inset -1px 0 0 #dbdae3;
 `;
