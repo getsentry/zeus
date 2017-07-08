@@ -20,8 +20,6 @@ install-python-requirements:
 	pip install "pip>=9.0.0,<10.0.0"
 	pip install -e .
 	pip install "file://`pwd`#egg=zeus[tests]"
-	# TODO(dcramer): we want to replace this with our own custom hook
-	flake8 --install-hook git || true
 
 install-js-requirements:
 	yarn install
