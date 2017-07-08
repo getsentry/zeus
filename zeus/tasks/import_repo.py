@@ -1,4 +1,4 @@
-from celery import shared_task
+from celery import task
 from datetime import datetime
 from flask import current_app
 
@@ -7,7 +7,7 @@ from zeus.config import db
 from zeus.models import Repository, RepositoryStatus
 
 
-@shared_task(max_retries=None)
+@task(max_retries=None)
 def import_repo(repo_id, parent=None):
     auth.set_current_tenant(auth.Tenant(repository_ids=[repo_id]))
 

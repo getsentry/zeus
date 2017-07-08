@@ -42,7 +42,7 @@ def create_app(_read_config=True, **config):
     app.config['GITHUB_CLIENT_ID'] = None
     app.config['GITHUB_CLIENT_SECRET'] = None
 
-    app.config['CELERY_ACCEPT_CONTENT'] = ['zeus_json']
+    app.config['CELERY_ACCEPT_CONTENT'] = ['zeus_json', 'json']
     app.config['CELERY_ACKS_LATE'] = True
     app.config['CELERY_BROKER_URL'] = app.config['REDIS_URL']
     app.config['CELERY_DEFAULT_QUEUE'] = 'default'
@@ -50,6 +50,7 @@ def create_app(_read_config=True, **config):
     app.config['CELERY_DEFAULT_EXCHANGE_TYPE'] = 'direct'
     app.config['CELERY_DEFAULT_ROUTING_KEY'] = 'default'
     app.config['CELERY_DISABLE_RATE_LIMITS'] = True
+    app.config['CELERY_EVENT_SERIALIZER'] = 'zeus_json'
     app.config['CELERY_IGNORE_RESULT'] = True
     app.config['CELERY_IMPORTS'] = ('zeus.tasks', )
     app.config['CELERY_RESULT_BACKEND'] = None
@@ -85,7 +86,7 @@ def create_app(_read_config=True, **config):
 
     redis.init_app(app)
 
-    celery.init_app(app)
+    celery.init_app(app, sentry)
 
     configure_api(app)
     configure_web(app)

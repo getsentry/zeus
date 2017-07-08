@@ -1,4 +1,4 @@
-from celery import shared_task
+from celery.task import task
 from flask import current_app
 
 from zeus import auth
@@ -7,7 +7,7 @@ from zeus.constants import Result
 from zeus.models import Artifact
 
 
-@shared_task
+@task
 def process_artifact(artifact_id, manager=None, **kwargs):
     artifact = Artifact.query.unrestricted_unsafe().get(artifact_id)
     if artifact is None:
