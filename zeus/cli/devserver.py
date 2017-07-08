@@ -19,23 +19,21 @@ def devserver(environment, workers):
     # of relying on FLASK_DEBUG
     daemons = [
         ('web', ['zeus', 'run']),
-        ('webpack', ['node_modules/.bin/webpack', '--watch',
-                     '--config=config/webpack.config.dev.js']),
+        ('webpack',
+         ['node_modules/.bin/webpack', '--watch', '--config=config/webpack.config.dev.js']),
     ]
     if workers:
-        daemons.append(
-            ('worker', ['zeus', 'worker', '--cron', '--log-level=INFO'])
-        )
+        daemons.append(('worker', ['zeus', 'worker', '--cron', '--log-level=INFO']))
 
-    cwd = os.path.realpath(os.path.join(
-        os.path.dirname(__file__), os.pardir, os.pardir))
+    cwd = os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
 
     manager = Manager()
     for name, cmd in daemons:
         manager.add_process(
-            name, list2cmdline(cmd),
-            quiet=False, cwd=cwd,
-        )
+            name,
+            list2cmdline(cmd),
+            quiet=False,
+            cwd=cwd, )
 
     manager.loop()
     sys.exit(manager.returncode)

@@ -37,13 +37,10 @@ class GitVcs(Vcs):
     def remote_url(self) -> str:
         if self.url.startswith(('ssh:', 'http:', 'https:')):
             parsed = urlparse(self.url)
-            url = '%s://%s@%s/%s' % (
-                parsed.scheme,
-                parsed.username or self.username or 'git',
-                parsed.hostname + (':%s' % (parsed.port,)
-                                   if parsed.port else ''),
-                parsed.path.lstrip('/'),
-            )
+            url = '%s://%s@%s/%s' % (parsed.scheme, parsed.username or self.username or 'git',
+                                     parsed.hostname + (':%s' % (parsed.port, )
+                                                        if parsed.port else ''),
+                                     parsed.path.lstrip('/'), )
         else:
             url = self.url
         return url
@@ -87,8 +84,7 @@ class GitVcs(Vcs):
                     cmd=e.cmd,
                     retcode=e.retcode,
                     stdout=e.stdout,
-                    stderr=e.stderr,
-                )
+                    stderr=e.stderr, )
             raise
 
     def clone(self):
@@ -106,14 +102,14 @@ class GitVcs(Vcs):
         See documentation for the base for general information on this function.
         """
         # TODO(dcramer): we should make this streaming
-        cmd = ['log', '--date-order', '--pretty=format:%s' % (LOG_FORMAT,)]
+        cmd = ['log', '--date-order', '--pretty=format:%s' % (LOG_FORMAT, )]
 
         if author:
-            cmd.append('--author=%s' % (author,))
+            cmd.append('--author=%s' % (author, ))
         if offset:
-            cmd.append('--skip=%d' % (offset,))
+            cmd.append('--skip=%d' % (offset, ))
         if limit:
-            cmd.append('--max-count=%d' % (limit,))
+            cmd.append('--max-count=%d' % (limit, ))
 
         if parent and branch:
             raise ValueError('Both parent and branch cannot be set')
@@ -136,13 +132,12 @@ class GitVcs(Vcs):
                 import logging
                 msg = traceback.format_exception(CommandError, cmd_error, None)
                 logging.warning(msg)
-                raise ValueError('Unable to fetch commit log for branch "{0}".'
-                                 .format(branch))
+                raise ValueError('Unable to fetch commit log for branch "{0}".'.format(branch))
             raise
 
         for chunk in BufferParser(result, '\x02'):
-            (sha, author, author_date, committer, committer_date,
-             parents, message) = chunk.split('\x01')
+            (sha, author, author_date, committer, committer_date, parents,
+             message) = chunk.split('\x01')
 
             # sha may have a trailing newline due to git log adding it
             sha = sha.lstrip('\n')
@@ -160,8 +155,7 @@ class GitVcs(Vcs):
                 author_date=author_date,
                 committer_date=committer_date,
                 parents=parents,
-                message=message,
-            )
+                message=message, )
 
     def export(self, id) -> str:
         cmd = ['diff', '%s^..%s' % (id, id)]
@@ -169,8 +163,7 @@ class GitVcs(Vcs):
         return result
 
     def is_child_parent(self, child_in_question, parent_in_question) -> bool:
-        cmd = ['merge-base', '--is-ancestor',
-               parent_in_question, child_in_question]
+        cmd = ['merge-base', '--is-ancestor', parent_in_question, child_in_question]
         try:
             self.run(cmd)
             return True

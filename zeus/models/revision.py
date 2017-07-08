@@ -17,11 +17,10 @@ class Revision(RepositoryBoundMixin, db.Model):
     date_committed = db.Column(db.DateTime, default=datetime.utcnow)
 
     __tablename__ = 'revision'
-    __table_args__ = (
-        db.UniqueConstraint(
-            'repository_id', 'sha', name='unq_revision',
-        ),
-    )
+    __table_args__ = (db.UniqueConstraint(
+        'repository_id',
+        'sha',
+        name='unq_revision', ), )
 
     @property
     def subject(self):

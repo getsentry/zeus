@@ -21,9 +21,7 @@ class CoverageHandler(ArtifactHandler):
             except IntegrityError:
                 lock_key = 'coverage:{job_id}:{file_hash}'.format(
                     job_id=result.job_id.hex,
-                    file_hash=sha1(result.filename.encode(
-                        'utf-8')).hexdigest(),
-                )
+                    file_hash=sha1(result.filename.encode('utf-8')).hexdigest(), )
                 with redis.lock(lock_key):
                     result = self.merge_coverage(result)
                     db.session.add(result)
@@ -34,8 +32,7 @@ class CoverageHandler(ArtifactHandler):
     def merge_coverage(self, new):
         existing = FileCoverage.query.unconstrained_unsafe().filter(
             FileCoverage.job_id == new.job_id,
-            FileCoverage.filename == new.filename,
-        ).first()
+            FileCoverage.filename == new.filename, ).first()
         assert existing
 
         cov_data = []
@@ -84,8 +81,7 @@ class CoverageHandler(ArtifactHandler):
                     continue
 
                 lines_by_file[file_diff['new_filename'][2:]].update(
-                    d['new_lineno'] for d in diff_chunk if d['action'] in ('add', 'del')
-                )
+                    d['new_lineno'] for d in diff_chunk if d['action'] in ('add', 'del'))
         return lines_by_file
 
     def get_processed_diff(self):
@@ -147,16 +143,14 @@ class CoverageHandler(ArtifactHandler):
         for node in root.iter('class'):
             filename = node.get('filename')
             if not filename:
-                self.logger.warn(
-                    'Unable to determine filename for node: %s', node)
+                self.logger.warn('Unable to determine filename for node: %s', node)
                 continue
 
             file_coverage = []
             for lineset in node.iterchildren('lines'):
                 lineno = 0
                 for line in lineset.iterchildren('line'):
-                    number, hits = int(line.get('number')), int(
-                        line.get('hits'))
+                    number, hits = int(line.get('number')), int(line.get('hits'))
                     if lineno < number - 1:
                         for lineno in range(lineno, number - 1):
                             file_coverage.append('N')
@@ -170,8 +164,7 @@ class CoverageHandler(ArtifactHandler):
                 job_id=job.id,
                 repository_id=job.repository_id,
                 filename=filename,
-                data=''.join(file_coverage),
-            )
+                data=''.join(file_coverage), )
             self.add_file_stats(result)
 
             results.append(result)
@@ -188,8 +181,7 @@ class CoverageHandler(ArtifactHandler):
                 # node name resembles 'com/example/foo/bar/Resource'
                 filename = '{filepath}/{filename}'.format(
                     filepath=package_path,
-                    filename=sourcefile.get('name'),
-                )
+                    filename=sourcefile.get('name'), )
 
                 file_coverage = []
                 lineno = 0
@@ -208,8 +200,7 @@ class CoverageHandler(ArtifactHandler):
                     job_id=job.id,
                     repository_id=job.repository_id,
                     filename=filename,
-                    data=''.join(file_coverage),
-                )
+                    data=''.join(file_coverage), )
                 self.add_file_stats(result)
 
                 results.append(result)

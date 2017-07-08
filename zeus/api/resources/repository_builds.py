@@ -18,6 +18,5 @@ class RepositoryBuildsResource(Resource):
             return self.not_found()
 
         query = Build.query.filter(
-            Build.repository_id == repository_id,
-        )
+            Build.repository_id == repository_id, )
         return builds_schema.dump(query).data

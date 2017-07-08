@@ -68,9 +68,7 @@ class RepositoryAccessBoundQuery(db.Query):
             tenant = get_current_tenant()
             if tenant.repository_ids:
                 return self.enable_assertions(False).filter(
-                    mzero.class_.id.in_(
-                        tenant.repository_ids)
-                )
+                    mzero.class_.id.in_(tenant.repository_ids))
             else:
                 return self.enable_assertions(False).filter(sqlalchemy.sql.false())
         return self
@@ -88,10 +86,8 @@ class Repository(db.Model):
     id = Column(GUID, primary_key=True, default=GUID.default_value)
 
     url = Column(String(200), nullable=False, unique=True)
-    backend = Column(Enum(RepositoryBackend),
-                     default=RepositoryBackend.unknown, nullable=False)
-    status = Column(Enum(RepositoryStatus),
-                    default=RepositoryStatus.inactive, nullable=False)
+    backend = Column(Enum(RepositoryBackend), default=RepositoryBackend.unknown, nullable=False)
+    status = Column(Enum(RepositoryStatus), default=RepositoryStatus.inactive, nullable=False)
     data = Column(JSONEncodedDict)
     date_created = Column(DateTime, default=datetime.utcnow, nullable=False)
     last_update = Column(DateTime)
@@ -106,15 +102,10 @@ class Repository(db.Model):
         from zeus.vcs.git import GitVcs
 
         options = dict(
-            db.session.query(
-                ItemOption.name, ItemOption.value
-            ).filter(
-                ItemOption.item_id == self.id,
-                ItemOption.name.in_([
+            db.session.query(ItemOption.name, ItemOption.value).filter(
+                ItemOption.item_id == self.id, ItemOption.name.in_([
                     'auth.username',
-                ])
-            )
-        )
+                ])))
 
         kwargs = {
             'path': os.path.join(current_app.config['REPO_ROOT'], self.id.hex),

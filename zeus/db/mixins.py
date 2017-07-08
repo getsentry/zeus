@@ -34,9 +34,7 @@ class RepositoryBoundQuery(db.Query):
             tenant = get_current_tenant()
             if tenant.repository_ids:
                 return self.enable_assertions(False).filter(
-                    mzero.class_.repository_id.in_(
-                        tenant.repository_ids)
-                )
+                    mzero.class_.repository_id.in_(tenant.repository_ids))
             else:
                 return self.enable_assertions(False).filter(sqlalchemy.sql.false())
         return self
@@ -52,8 +50,8 @@ class RepositoryBoundMixin(object):
 
     @declared_attr
     def repository_id(cls):
-        return db.Column(GUID, db.ForeignKey(
-            'repository.id', ondelete='CASCADE'), nullable=False, index=True)
+        return db.Column(
+            GUID, db.ForeignKey('repository.id', ondelete='CASCADE'), nullable=False, index=True)
 
     @declared_attr
     def repository(cls):

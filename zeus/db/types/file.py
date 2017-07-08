@@ -17,8 +17,7 @@ class FileData(Mutable):
             storage_options = {}
 
         self.filename = data.get('filename')
-        self.storage = data.get(
-            'storage', storage_options.pop('storage', None))
+        self.storage = data.get('storage', storage_options.pop('storage', None))
         self.storage_options = storage_options
 
         # XXX(dcramer): this is a fairly hacky way to specify the file storage
@@ -64,8 +63,7 @@ class File(TypeDecorator):
 
     python_type = FileData
 
-    def __init__(self, storage=None, path='',
-                 *args, **kwargs):
+    def __init__(self, storage=None, path='', *args, **kwargs):
 
         super(File, self).__init__(*args, **kwargs)
 

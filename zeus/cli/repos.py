@@ -20,8 +20,7 @@ def add(repository_url, backend, active):
     repo = Repository(
         url=repository_url,
         backend=getattr(RepositoryBackend, backend),
-        status=RepositoryStatus.active if active else RepositoryStatus.inactive,
-    )
+        status=RepositoryStatus.active if active else RepositoryStatus.inactive, )
     db.session.add(repo)
 
     if active:
@@ -33,6 +32,5 @@ def add(repository_url, backend, active):
 @click.argument('repository_url', required=True)
 def sync(repository_url):
     repo = Repository.query.filter(
-        Repository.url == repository_url,
-    ).first()
+        Repository.url == repository_url, ).first()
     sync_repo(repo_id=repo.id)

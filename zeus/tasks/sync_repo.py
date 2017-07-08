@@ -29,10 +29,10 @@ def sync_repo(repo_id):
         return
 
     Repository.query.filter(
-        Repository.id == repo.id,
-    ).update({
-        'last_update_attempt': datetime.utcnow(),
-    }, synchronize_session=False)
+        Repository.id == repo.id, ).update(
+            {
+                'last_update_attempt': datetime.utcnow(),
+            }, synchronize_session=False)
     db.session.commit()
 
     if vcs.exists():
@@ -56,10 +56,10 @@ def sync_repo(repo_id):
             parent = commit.id
 
     Repository.query.filter(
-        Repository.id == repo.id,
-    ).update({
-        'last_update': datetime.utcnow(),
-    }, synchronize_session=False)
+        Repository.id == repo.id, ).update(
+            {
+                'last_update': datetime.utcnow(),
+            }, synchronize_session=False)
     db.session.commit()
 
     # is there more data to sync?

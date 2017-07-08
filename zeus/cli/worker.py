@@ -10,15 +10,14 @@ from .base import cli
 @click.option('--log-level', '-l', default='INFO')
 @click.option('--cron/--no-cron', default=True)
 def worker(cron, log_level):
-    command = ['celery', '--app=zeus.app:celery',
-               'worker', '--loglevel={}'.format(log_level)]
+    command = ['celery', '--app=zeus.app:celery', 'worker', '--loglevel={}'.format(log_level)]
     if cron:
         command.append('--beat')
 
-    sys.exit(subprocess.call(
-        command,
-        cwd=os.getcwd(),
-        env=os.environ,
-        stdout=sys.stdout,
-        stderr=sys.stderr,
-    ))
+    sys.exit(
+        subprocess.call(
+            command,
+            cwd=os.getcwd(),
+            env=os.environ,
+            stdout=sys.stdout,
+            stderr=sys.stderr, ))

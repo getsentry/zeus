@@ -59,14 +59,14 @@ class XunitHandler(ArtifactHandler):
             if result is None:
                 result = Result.passed
 
-            results.append(TestResult(
-                job=job,
-                name=attrs['name'],
-                package=attrs.get('fixture') or None,
-                duration=float(attrs['duration']) * 1000,
-                result=result,
-                message=message,
-            ))
+            results.append(
+                TestResult(
+                    job=job,
+                    name=attrs['name'],
+                    package=attrs.get('fixture') or None,
+                    duration=float(attrs['duration']) * 1000,
+                    result=result,
+                    message=message, ))
 
         return results
 
@@ -106,16 +106,16 @@ class XunitHandler(ArtifactHandler):
             else:
                 duration = None
 
-            results.append(TestResult(
-                job=job,
-                name=attrs['name'],
-                package=attrs.get('classname') or None,
-                duration=duration,
-                result=result,
-                message=message,
-                reruns=int(attrs.get('rerun')) if attrs.get('rerun') else None,
-                artifacts=self._get_testartifacts(node)
-            ))
+            results.append(
+                TestResult(
+                    job=job,
+                    name=attrs['name'],
+                    package=attrs.get('classname') or None,
+                    duration=duration,
+                    result=result,
+                    message=message,
+                    reruns=int(attrs.get('rerun')) if attrs.get('rerun') else None,
+                    artifacts=self._get_testartifacts(node)))
 
         return results
 

@@ -5,7 +5,7 @@ from typing import List, Optional
 
 
 class Tenant(object):
-    def __init__(self, user_id: Optional[str] = None, repository_ids: Optional[List[str]] = None):
+    def __init__(self, user_id: Optional[str]=None, repository_ids: Optional[List[str]]=None):
         self.user = user_id
         self.repository_ids = repository_ids
 
@@ -17,14 +17,12 @@ class Tenant(object):
             return cls()
 
         # TODO(dcramer); we currently grant access to all repos
-        return cls(
-            user_id=user.id,
-            repository_ids=[r[0] for r in db.session.query(
-                RepositoryAccess.repository_id
-            ).filter(
-                RepositoryAccess.user_id == user.id,
-            )]
-        )
+        return cls(user_id=user.id,
+                   repository_ids=[
+                       r[0]
+                       for r in db.session.query(RepositoryAccess.repository_id).filter(
+                           RepositoryAccess.user_id == user.id, )
+                   ])
 
 
 def get_user_from_request():

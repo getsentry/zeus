@@ -13,7 +13,6 @@ class Author(db.Model):
     id = db.Column(GUID, primary_key=True, default=GUID.default_value)
     name = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), nullable=True, unique=True)
-    date_created = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     __tablename__ = 'author'

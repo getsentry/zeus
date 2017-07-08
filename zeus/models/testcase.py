@@ -14,24 +14,19 @@ class TestCase(RepositoryBoundMixin, db.Model):
     """
     A single run of a single test.
     """
-    id = db.Column(GUID, nullable=False, primary_key=True,
-                   default=GUID.default_value)
-    job_id = db.Column(GUID, db.ForeignKey(
-        'job.id', ondelete="CASCADE"), nullable=False)
+    id = db.Column(GUID, nullable=False, primary_key=True, default=GUID.default_value)
+    job_id = db.Column(GUID, db.ForeignKey('job.id', ondelete="CASCADE"), nullable=False)
     hash = db.Column(db.String(40), nullable=False)
     name = db.Column(db.Text, nullable=False)
     result = db.Column(Enum(Result), default=Result.unknown, nullable=False)
     duration = db.Column(db.Integer, default=0)
     message = db.deferred(db.Column(db.Text))
-    date_created = db.Column(
-        db.DateTime, default=datetime.utcnow, nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     job = db.relationship('Job')
 
     __tablename__ = 'testcase'
-    __table_args__ = (
-        db.UniqueConstraint('job_id', 'hash', name='unq_testcase_hash'),
-    )
+    __table_args__ = (db.UniqueConstraint('job_id', 'hash', name='unq_testcase_hash'), )
 
     @classmethod
     def calculate_sha(self, name):

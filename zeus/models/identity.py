@@ -9,8 +9,8 @@ class Identity(db.Model):
     Identities associated with a user. Primarily used for Single Sign-On.
     """
     id = db.Column(GUID, primary_key=True, default=GUID.default_value)
-    user_id = db.Column(GUID, db.ForeignKey(
-        'user.id', ondelete="CASCADE"), nullable=False, index=True)
+    user_id = db.Column(
+        GUID, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False, index=True)
     external_id = db.Column(db.String(64), unique=True, nullable=False)
     provider = db.Column(db.String(32), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
@@ -19,6 +19,4 @@ class Identity(db.Model):
     user = db.relationship('User')
 
     __tablename__ = 'identity'
-    __table_args__ = (
-        db.UniqueConstraint('user_id', 'provider', name='unq_identity_user'),
-    )
+    __table_args__ = (db.UniqueConstraint('user_id', 'provider', name='unq_identity_user'), )

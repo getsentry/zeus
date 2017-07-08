@@ -23,8 +23,7 @@ def create_app(_read_config=True, **config):
     app = Flask(
         __name__,
         static_folder=os.path.join(ROOT, 'static'),
-        template_folder=os.path.join(ROOT, 'templates'),
-    )
+        template_folder=os.path.join(ROOT, 'templates'), )
 
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///zeus'
@@ -69,8 +68,7 @@ def create_app(_read_config=True, **config):
             app.config.from_envvar('ZEUS_CONF')
         else:
             # Look for ~/.zeus/zeus.conf.py
-            path = os.path.normpath(
-                os.path.expanduser('~/.zeus/zeus.config.py'))
+            path = os.path.normpath(os.path.expanduser('~/.zeus/zeus.config.py'))
             app.config.from_pyfile(path, silent=True)
 
     app.config.update(config)

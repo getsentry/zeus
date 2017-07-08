@@ -23,8 +23,7 @@ class JobArtifactsResource(Resource):
             return self.not_found()
 
         query = Artifact.query.filter(
-            Artifact.job_id == job.id,
-        )
+            Artifact.job_id == job.id, )
 
         return artifacts_schema.dump(query).data
 
@@ -44,8 +43,7 @@ class JobArtifactsResource(Resource):
 
         artifact = Artifact(
             name=data['name'],
-            job_id=job.id,
-        )
+            job_id=job.id, )
         try:
             db.session.add(artifact)
             db.session.flush()

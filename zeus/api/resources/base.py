@@ -16,13 +16,13 @@ class Resource(View):
             return resp
         return self.respond(resp)
 
-    def not_found(self, message: str = 'resource not found') -> Response:
+    def not_found(self, message: str='resource not found') -> Response:
         return self.error(message, 404)
 
-    def error(self, message: str = 'resource not found', status: int = 403) -> Response:
+    def error(self, message: str='resource not found', status: int=403) -> Response:
         return self.respond({'message': message}, status)
 
-    def respond(self, context={}, status: int = 200) -> Response:
+    def respond(self, context={}, status: int=200) -> Response:
         resp = jsonify(context)
         resp.status_code = status
         return resp

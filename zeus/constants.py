@@ -29,11 +29,7 @@ STATUS_LABELS = {
     Status.finished: 'Finished',
 }
 
-STATUS_PRIORITY = (
-    Status.in_progress,
-    Status.queued,
-    Status.finished,
-)
+STATUS_PRIORITY = (Status.in_progress, Status.queued, Status.finished, )
 
 RESULT_LABELS = {
     Result.unknown: 'Unknown',
@@ -43,10 +39,4 @@ RESULT_LABELS = {
     Result.aborted: 'Aborted',
 }
 
-RESULT_PRIORITY = (
-    Result.aborted,
-    Result.failed,
-    Result.unknown,
-    Result.passed,
-    Result.skipped,
-)
+RESULT_PRIORITY = (Result.aborted, Result.failed, Result.unknown, Result.passed, Result.skipped, )

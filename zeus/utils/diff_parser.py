@@ -43,6 +43,7 @@ class DiffParser(object):
         def _extract(line):
             parts = line.split(None, 1)
             return parts[0], (len(parts) == 2 and parts[1] or None)
+
         try:
             if line1.startswith('--- ') and line2.startswith('+++ '):
                 return _extract(line1[4:]), _extract(line2[4:])
@@ -91,9 +92,7 @@ class DiffParser(object):
                     lines = []
                     chunks.append(lines)
 
-                    old_line, old_end, new_line, new_end = [
-                        int(x or 1) for x in match.groups()
-                    ]
+                    old_line, old_end, new_line, new_end = [int(x or 1) for x in match.groups()]
                     old_line -= 1
                     new_line -= 1
                     old_end += old_line

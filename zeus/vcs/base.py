@@ -50,8 +50,8 @@ class BufferParser(object):
 
 
 class Vcs(object):
-    ssh_connect_path = os.path.realpath(os.path.join(
-        os.path.dirname(__file__), os.pardir, os.pardir, 'bin', 'ssh-connect'))
+    ssh_connect_path = os.path.realpath(
+        os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 'bin', 'ssh-connect'))
 
     def __init__(self, path, url, username=None):
         self.path = path
@@ -138,8 +138,15 @@ class RevisionResult(object):
     parents = None
     branches = None
 
-    def __init__(self, id, message, author, author_date, committer=None,
-                 committer_date=None, parents=None, branches=None):
+    def __init__(self,
+                 id,
+                 message,
+                 author,
+                 author_date,
+                 committer=None,
+                 committer_date=None,
+                 parents=None,
+                 branches=None):
         self.id = id
         self.message = message
         self.author = author
@@ -152,8 +159,8 @@ class RevisionResult(object):
             self.branches = branches
 
     def __repr__(self):
-        return '<%s: id=%r author=%r subject=%r>' % (
-            type(self).__name__, self.id, self.author, self.subject)
+        return '<%s: id=%r author=%r subject=%r>' % (type(self).__name__, self.id, self.author,
+                                                     self.subject)
 
     def _get_author(self, value):
         match = re.match(r'^(.+) <([^>]+)>$', value)
@@ -165,11 +172,12 @@ class RevisionResult(object):
         else:
             name, email = match.group(1), match.group(2)
 
-        author, _ = get_or_create(Author, where={
-            'email': email,
-        }, defaults={
-            'name': name,
-        })
+        author, _ = get_or_create(
+            Author, where={
+                'email': email,
+            }, defaults={
+                'name': name,
+            })
 
         return author
 
@@ -184,18 +192,21 @@ class RevisionResult(object):
         else:
             committer = self._get_author(self.committer)
 
-        revision, created = create_or_update(Revision, where={
-            'repository': repository,
-            'sha': self.id,
-        }, values={
-            'author': author,
-            'committer': committer,
-            'message': self.message,
-            'parents': self.parents,
-            'branches': self.branches,
-            'date_created': self.author_date,
-            'date_committed': self.committer_date,
-        })
+        revision, created = create_or_update(
+            Revision,
+            where={
+                'repository': repository,
+                'sha': self.id,
+            },
+            values={
+                'author': author,
+                'committer': committer,
+                'message': self.message,
+                'parents': self.parents,
+                'branches': self.branches,
+                'date_created': self.author_date,
+                'date_committed': self.committer_date,
+            })
 
         # we also want to create a source for this item as it's the canonical
         # representation in the UI

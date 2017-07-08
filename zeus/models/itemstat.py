@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from zeus.config import db
 from zeus.db.types import GUID
 
@@ -11,6 +9,4 @@ class ItemStat(db.Model):
     value = db.Column(db.Integer, nullable=False)
 
     __tablename__ = 'itemstat'
-    __table_args__ = (
-        db.UniqueConstraint('item_id', 'name', name='unq_itemstat_name'),
-    )
+    __table_args__ = (db.UniqueConstraint('item_id', 'name', name='unq_itemstat_name'), )

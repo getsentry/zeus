@@ -11,8 +11,7 @@ class Celery(object):
         self.celery = celery.Celery(
             app.import_name,
             backend=app.config['CELERY_RESULT_BACKEND'],
-            broker=app.config['CELERY_BROKER_URL']
-        )
+            broker=app.config['CELERY_BROKER_URL'])
         self.celery.conf.update(app.config)
 
         class ContextTask(self.celery.Task):
@@ -21,6 +20,7 @@ class Celery(object):
             def __call__(self, *args, **kwargs):
                 with app.app_context():
                     return super(ContextTask, self).__call__(*args, **kwargs)
+
         self.celery.Task = ContextTask
         self.register_json_serializer()
 
@@ -40,6 +40,5 @@ class Celery(object):
                 obj = obj.decode()
             return loads(obj)
 
-        register('zeus_json', dumps, _loads,
-                 content_type='application/json',
-                 content_encoding='utf-8')
+        register(
+            'zeus_json', dumps, _loads, content_type='application/json', content_encoding='utf-8')

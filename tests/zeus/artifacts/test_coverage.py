@@ -1,5 +1,4 @@
 from io import BytesIO
-from unittest.mock import patch
 
 from zeus.artifacts.coverage import CoverageHandler
 from zeus.models import FileCoverage
@@ -53,12 +52,13 @@ def test_process(mocker, default_job):
     }
 
     # now try with some duplicate coverage
-    get_coverage.return_value = [FileCoverage(
-        job_id=default_job.id,
-        repository_id=default_job.repository_id,
-        filename='setup.py',
-        data='CUNNNNCCNNNUNNNUUUUUU'
-    )]
+    get_coverage.return_value = [
+        FileCoverage(
+            job_id=default_job.id,
+            repository_id=default_job.repository_id,
+            filename='setup.py',
+            data='CUNNNNCCNNNUNNNUUUUUU')
+    ]
 
     fp = BytesIO()
     handler.process(fp)
@@ -66,20 +66,20 @@ def test_process(mocker, default_job):
 
     get_coverage.reset_mock()
 
-    get_coverage.return_value = [FileCoverage(
-        job_id=default_job.id,
-        repository_id=default_job.repository_id,
-        filename='setup.py',
-        data='NUUNNNNNNNNUCCNU'
-    )]
+    get_coverage.return_value = [
+        FileCoverage(
+            job_id=default_job.id,
+            repository_id=default_job.repository_id,
+            filename='setup.py',
+            data='NUUNNNNNNNNUCCNU')
+    ]
 
     fp = BytesIO()
     handler.process(fp)
     get_coverage.assert_called_once_with(fp)
 
     file_cov = list(FileCoverage.query.unconstrained_unsafe().filter(
-        FileCoverage.job_id == default_job.id,
-    ))
+        FileCoverage.job_id == default_job.id, ))
     assert len(file_cov) == 1
     assert file_cov[0].filename == 'setup.py'
     assert file_cov[0].data == 'CUUNNNCCNNNUCCNUUUUUU'

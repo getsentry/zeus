@@ -21,16 +21,11 @@ def ssh_connect(repository_url, args):
         sys.exit(1)
 
     options = dict(
-        db.session.query(
-            ItemOption.name, ItemOption.value
-        ).filter(
-            ItemOption.item_id == repo.id,
-            ItemOption.name.in_([
-                'auth.private-key',
-                'auth.private-key-file',
-            ])
-        )
-    )
+        db.session.query(ItemOption.name, ItemOption.value).filter(ItemOption.item_id == repo.id,
+                                                                   ItemOption.name.in_([
+                                                                       'auth.private-key',
+                                                                       'auth.private-key-file',
+                                                                   ])))
 
     command = [
         'ssh',
@@ -52,10 +47,10 @@ def ssh_connect(repository_url, args):
 
     command.extend(args)
 
-    sys.exit(subprocess.call(
-        command,
-        cwd=os.getcwd(),
-        env=os.environ,
-        stdout=sys.stdout,
-        stderr=sys.stderr,
-    ))
+    sys.exit(
+        subprocess.call(
+            command,
+            cwd=os.getcwd(),
+            env=os.environ,
+            stdout=sys.stdout,
+            stderr=sys.stderr, ))

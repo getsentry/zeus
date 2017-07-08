@@ -1,5 +1,4 @@
-def assert_revision(revision, author=None, message=None, subject=None,
-                    branches=None):
+def assert_revision(revision, author=None, message=None, subject=None, branches=None):
     """Asserts values of the given fields in the provided revision.
 
     :param revision: The revision to validate
