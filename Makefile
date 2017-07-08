@@ -7,6 +7,8 @@ upgrade: install-requirements
 	bin/upgrade
 
 setup-git:
+	pip install pre-commit==0.15.0
+	pre-commit
 	git config branch.autosetuprebase always
 	git config --bool flake8.strict true
 	cd .git/hooks && ln -sf ../../hooks/* ./

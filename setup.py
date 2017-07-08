@@ -1,7 +1,6 @@
 from setuptools import setup, find_packages
 
 install_requires = [
-    'autopep8==1.3.2',
     'blinker==1.4',
     'celery==4.0.2',
     'exam==0.10.6',
@@ -21,6 +20,7 @@ install_requires = [
     'raven==6.1.0',
     'redis==2.10.5',
     'requests==2.18.1',
+    'yapf==0.16.2',
 ]
 
 setup(
@@ -32,5 +32,4 @@ setup(
         'console_scripts': ['zeus=zeus.cli:main'],
     },
     long_description=open('README.md').read(),
-    install_requires=install_requires,
-)
+    install_requires=install_requires, )

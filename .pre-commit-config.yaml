@@ -1,0 +1,11 @@
+-   repo: git://github.com/pre-commit/pre-commit-hooks
+    sha: v0.9.1
+    hooks:
+    -   id: debug-statements
+    -   id: flake8
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+-   repo: git://github.com/pre-commit/mirrors-yapf
+    sha: v0.16.0
+    hooks:
+    -   id: yapf

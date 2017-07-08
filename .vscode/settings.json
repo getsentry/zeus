@@ -35,7 +35,7 @@
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
 
-    "python.formatting.provider": "autopep8",
+    "python.formatting.provider": "yapf",
     "python.pythonPath": "${env.WORKON_HOME}/zeus/bin/python",
     "python.unitTest.pyTestEnabled": false,
     "python.unitTest.unittestEnabled": false,
