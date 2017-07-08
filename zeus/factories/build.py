@@ -8,8 +8,8 @@ from .types import GUIDFactory
 
 class BuildFactory(factory.Factory):
     id = GUIDFactory()
-    repository = factory.SubFactory('zeus.factories.RepositoryFactory')
     source = factory.SubFactory('zeus.factories.SourceFactory')
+    repository = factory.SelfAttribute('source.repository')
     result = Result.passed
     status = Status.finished
     date_created = factory.Faker('date_time')

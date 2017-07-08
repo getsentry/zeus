@@ -8,8 +8,9 @@ from .types import GUIDFactory
 
 class JobFactory(factory.Factory):
     id = GUIDFactory()
-    repository = factory.SubFactory('zeus.factories.RepositoryFactory')
     build = factory.SubFactory('zeus.factories.BuildFactory')
+    repository = factory.SelfAttribute('build.repository')
+
     result = Result.passed
     status = Status.finished
     date_created = factory.Faker('date_time')
