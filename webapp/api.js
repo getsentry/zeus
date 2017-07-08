@@ -39,7 +39,8 @@ export class Request {
   }
 
   processResponseText(xhr) {
-    if (xhr.getResponseHeader('content-type').split(';')[0].split('/')[1] === 'json') {
+    let contentType = xhr.getResponseHeader('content-type');
+    if (contentType && contentType.split(';')[0].split('/')[1] === 'json') {
       try {
         return JSON.parse(xhr.responseText);
       } catch (ex) {

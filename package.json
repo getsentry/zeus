@@ -39,6 +39,7 @@
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dev-utils": "^3.0.2",
+    "react-document-title": "^2.0.3",
     "react-dom": "^15.6.1",
     "react-error-overlay": "^1.0.9",
     "react-icon-base": "^2.0.8",
