@@ -114,6 +114,17 @@ def default_artifact(db_session, default_job):
     return r
 
 
+@pytest.fixture(scope='function')
+def default_testcase(db_session, default_job):
+    r = factories.TestCaseFactory(
+        repository=default_job.repository,
+        job=default_job,
+    )
+    db_session.add(r)
+    db_session.commit()
+    return r
+
+
 @pytest.fixture(scope='session')
 def sample_xunit():
     with open(os.path.join(DATA_FIXTURES, 'sample-xunit.xml')) as fp:
