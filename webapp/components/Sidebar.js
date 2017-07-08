@@ -1,43 +1,11 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router';
 import styled from 'styled-components';
 
 import AsyncComponent from './AsyncComponent';
 import Logo from '../assets/Logo';
 import NavHeading from './NavHeading';
 import SidebarRepoItem from './SidebarRepoItem';
-
-// const REPOSITORIES = [
-//   {
-//     id: 1,
-//     name: 'getsentry/sentry',
-//     status: 'pass',
-//     slug: '/'
-//   },
-//   {
-//     id: 2,
-//     name: 'getsentry/getsentry',
-//     status: 'fail',
-//     slug: '/something-else/'
-//   },
-//   {
-//     id: 3,
-//     name: 'getsentry/freight',
-//     status: 'pass',
-//     slug: '/something-else/'
-//   },
-//   {
-//     id: 4,
-//     name: 'getsentry/sentry.io',
-//     status: 'pass',
-//     slug: '/something-else/'
-//   },
-//   {
-//     id: 5,
-//     name: 'getsentry/blog',
-//     status: 'fail',
-//     slug: '/something-else/'
-//   }
-// ];
 
 class RepositoryList extends AsyncComponent {
   getEndpoints() {
@@ -48,14 +16,7 @@ class RepositoryList extends AsyncComponent {
     return (
       <div>
         {this.state.repoList.map(repo => {
-          return (
-            <SidebarRepoItem
-              key={repo.id}
-              name={repo.name}
-              status={repo.status}
-              slug={repo.slug}
-            />
-          );
+          return <SidebarRepoItem key={repo.id} repo={repo} />;
         })}
       </div>
     );
@@ -66,7 +27,9 @@ export default class Sidebar extends Component {
   render() {
     return (
       <SidebarWrapper>
-        <Logo size="30" />
+        <Link to="/">
+          <Logo size="30" />
+        </Link>
         <SidebarNavHeading label="Repositories" />
         <RepositoryList />
       </SidebarWrapper>

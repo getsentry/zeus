@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 
 import Sidebar from './Sidebar';
+import BuildList from './BuildList';
 
-export default class Dashboard extends Component {
+export default class RepositoryBuildList extends Component {
   render() {
     return (
       <div>
         <Sidebar />
-        {this.props.children}
+        <BuildList />
       </div>
     );
   }

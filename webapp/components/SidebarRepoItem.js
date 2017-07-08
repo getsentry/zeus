@@ -1,13 +1,20 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import styled, {css} from 'styled-components';
 
 export default class SidebarRepoItem extends Component {
+  static propTypes = {
+    repo: PropTypes.object.isRequired
+  };
+
   render() {
-    const {name, status, slug} = {...this.props};
+    const {name, status, id} = {...this.props.repo};
     return (
-      <SidebarRepoItemLink to={slug}>
-        <SidebarRepoItemName>{name}</SidebarRepoItemName>
+      <SidebarRepoItemLink to={`/repos/${id}`}>
+        <SidebarRepoItemName>
+          {name}
+        </SidebarRepoItemName>
         <SidebarRepoItemStatus status={status} />
       </SidebarRepoItemLink>
     );
@@ -25,7 +32,7 @@ const SidebarRepoItemLink = styled(Link)`
     color: #fff;
   }
 
-  &.${(props) => props.activeClassName} {
+  &.${props => props.activeClassName} {
     color: #fff;
 
     &:before {
@@ -43,7 +50,7 @@ const SidebarRepoItemLink = styled(Link)`
 `;
 
 SidebarRepoItemLink.defaultProps = {
-  activeClassName: 'active',
+  activeClassName: 'active'
 };
 
 const SidebarRepoItemName = styled.div`
@@ -60,7 +67,7 @@ const SidebarRepoItemStatus = styled.div`
   height: 10px;
   border-radius: 10px;
 
-  ${(props) => {
+  ${props => {
     switch (props.status) {
       case 'pass':
         return css`
@@ -70,6 +77,8 @@ const SidebarRepoItemStatus = styled.div`
         return css`
           background-color: #F06E5B;
         `;
+      default:
+        return css``;
     }
-  }}
+  }};
 `;
