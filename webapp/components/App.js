@@ -4,7 +4,27 @@ import {connect} from 'react-redux';
 import {authSession, logout} from '../actions/auth';
 import styled from 'styled-components';
 
+import AsyncComponent from './AsyncComponent';
+
 import './App.css';
+
+class AuthedContext extends AsyncComponent {
+  static childContextTypes = {
+    repoList: PropTypes.arrayOf(PropTypes.object).isRequired
+  };
+
+  getChildContext() {
+    return {repoList: this.state.repoList};
+  }
+
+  getEndpoints() {
+    return [['repoList', '/repos']];
+  }
+
+  renderBody() {
+    return this.props.children;
+  }
+}
 
 class App extends Component {
   static propTypes = {
@@ -21,11 +41,18 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.props.isAuthenticated === null ? <div>Loading!</div> : this.props.children}
+        {this.props.isAuthenticated === null
+          ? <div>Loading!</div>
+          : <AuthedContext>
+              {this.props.children}
+            </AuthedContext>}
         <Auth>
           {this.props.user
             ? <span>
-                <strong>{this.props.user.email}</strong> <br/><a onClick={this.props.logout}>Sign out</a>
+                <strong>{this.props.user.email}</strong> <br />
+                <a onClick={this.props.logout} style={{cursor: 'pointer'}}>
+                  Sign out
+                </a>
               </span>
             : <em>anonymous</em>}
         </Auth>

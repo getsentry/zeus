@@ -5,6 +5,7 @@ import App from './components/App';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import NotFound from './components/NotFound';
+import RepositoryDetails from './components/RepositoryDetails';
 import RepositoryBuildList from './components/RepositoryBuildList';
 
 import requireAuth from './utils/requireAuth';
@@ -14,7 +15,9 @@ import requireAuth from './utils/requireAuth';
 export default (
   <Route path="/" component={App}>
     <IndexRoute component={requireAuth(Dashboard)} />
-    <Route path="/repos/:repoID" component={requireAuth(RepositoryBuildList)} />
+    <Route path="/repos/:repoID" component={requireAuth(RepositoryDetails)}>
+      <IndexRoute component={RepositoryBuildList} />
+    </Route>
     <Route path="/login" component={Login} />
     <Route path="*" component={NotFound} />
   </Route>

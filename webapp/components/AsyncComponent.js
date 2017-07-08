@@ -19,9 +19,9 @@ export default class AsyncComponent extends Component {
         setTimeout(() => {
           throw err;
         });
-        component.setState({
-          error: err
-        });
+        // component.setState({
+        //   error: err
+        // });
         return null;
       }
     };
@@ -33,7 +33,7 @@ export default class AsyncComponent extends Component {
     this.fetchData = AsyncComponent.errorHandler(this, this.fetchData.bind(this));
     this.render = AsyncComponent.errorHandler(this, this.render.bind(this));
 
-    this.state = this.getDefaultState();
+    this.state = this.getDefaultState(props, context);
   }
 
   componentWillMount() {
@@ -123,9 +123,7 @@ export default class AsyncComponent extends Component {
    * ]
    */
   getEndpoints() {
-    let endpoint = this.getEndpoint();
-    if (!endpoint) return [];
-    return [['data', endpoint, this.getEndpointParams()]];
+    return [];
   }
 
   getTitle() {

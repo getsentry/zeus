@@ -1,21 +1,21 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import styled from 'styled-components';
 
-import AsyncComponent from './AsyncComponent';
 import Logo from '../assets/Logo';
 import NavHeading from './NavHeading';
 import SidebarRepoItem from './SidebarRepoItem';
 
-class RepositoryList extends AsyncComponent {
-  getEndpoints() {
-    return [['repoList', '/repos']];
-  }
+class RepositoryList extends Component {
+  static contextTypes = {
+    repoList: PropTypes.arrayOf(PropTypes.object).isRequired
+  };
 
-  renderBody() {
+  render() {
     return (
       <div>
-        {this.state.repoList.map(repo => {
+        {this.context.repoList.map(repo => {
           return <SidebarRepoItem key={repo.id} repo={repo} />;
         })}
       </div>
