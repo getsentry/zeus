@@ -15,7 +15,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else/'
+    slug: '/somewhere-else/',
+    testCount: 47,
+    lineCoverageDiff: 1
   },
   {
     id: 2,
@@ -26,7 +28,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'ui/fix-that-thing',
     commit: '11d655b',
-    slug: '/'
+    slug: '/',
+    testCount: 47,
+    lineCoverageDiff: 1
   },
   {
     id: 3,
@@ -37,7 +41,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'bug/wtf-did-we-do',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 0.9
   },
   {
     id: 4,
@@ -48,7 +54,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 0.95
   },
   {
     id: 5,
@@ -59,7 +67,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 1
   },
   {
     id: 6,
@@ -70,7 +80,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 1
   },
   {
     id: 7,
@@ -81,7 +93,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 0.96
   },
   {
     id: 8,
@@ -92,7 +106,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 0.96
   },
   {
     id: 9,
@@ -103,7 +119,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 0.94
   },
   {
     id: 10,
@@ -114,7 +132,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 0.94
   },
   {
     id: 11,
@@ -125,7 +145,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 0.94
   },
   {
     id: 12,
@@ -136,7 +158,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 0.94
   },
   {
     id: 13,
@@ -147,7 +171,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 0.95
   },
   {
     id: 14,
@@ -158,7 +184,9 @@ const BUILDS = [
     author: 'dcramer',
     branch: 'master',
     commit: '11d655b',
-    slug: '/somewhere-else'
+    slug: '/somewhere-else',
+    testCount: 47,
+    lineCoverageDiff: 0.95
   }
 ];
 
@@ -184,19 +212,7 @@ export default class BuildList extends Component {
         </BuildListHeader>
         <ScrollView>
           {BUILDS.map(build => {
-            return (
-              <BuildListItem
-                key={build.id}
-                message={build.message}
-                status={build.status}
-                duration={build.duration}
-                timestamp={build.timestamp}
-                author={build.author}
-                branch={build.branch}
-                commit={build.commit}
-                slug={build.slug}
-              />
-            );
+            return <BuildListItem key={build.id} build={build} />;
           })}
         </ScrollView>
       </BuildListWrapper>

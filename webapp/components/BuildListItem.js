@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import styled, {css} from 'styled-components';
 
@@ -7,28 +8,52 @@ import IconCircleCross from '../assets/IconCircleCross';
 import IconClock from '../assets/IconClock';
 
 export default class BuildListItem extends Component {
+  static propTypes = {
+    build: PropTypes.object.isRequired
+  };
+
   render() {
-    const {message, status, duration, timestamp, author, branch, commit, slug} = {...this.props};
+    const {
+      message,
+      status,
+      duration,
+      timestamp,
+      author,
+      branch,
+      commit,
+      slug,
+      testCount,
+      lineCoverageDiff
+    } = {...this.props.build};
     return (
       <BuildListItemLink to={slug}>
         <Header>
-          <Message>{message}</Message>
-          <Branch>{branch}</Branch>
+          <Message>
+            {message}
+          </Message>
+          <TestCount>
+            {testCount}
+          </TestCount>
+          <TestCount>
+            {parseInt(lineCoverageDiff * 100, 10)}%
+          </TestCount>
+          <Branch>
+            {branch}
+          </Branch>
         </Header>
         <Meta>
           <Duration status={status}>
-            {status == "pass" &&
-              <IconCircleCheck size="15" />
-            }
-            {status == "fail" &&
-              <IconCircleCross size="15" />
-            }
+            {status == 'pass' && <IconCircleCheck size="15" />}
+            {status == 'fail' && <IconCircleCross size="15" />}
             {duration}
           </Duration>
           <Time>
-            <IconClock size="15" />{author} {timestamp}
+            <IconClock size="15" />
+            {author} {timestamp}
           </Time>
-          <Commit>{commit}</Commit>
+          <Commit>
+            {commit}
+          </Commit>
         </Meta>
       </BuildListItemLink>
     );
@@ -45,7 +70,7 @@ const BuildListItemLink = styled(Link)`
     background-color: #F0EFF5;
   }
 
-  &.${(props) => props.activeClassName} {
+  &.${props => props.activeClassName} {
     color: #fff;
     background: #7B6BE6;
 
@@ -61,7 +86,7 @@ const BuildListItemLink = styled(Link)`
 `;
 
 BuildListItemLink.defaultProps = {
-  activeClassName: 'active',
+  activeClassName: 'active'
 };
 
 const Header = styled.div`
@@ -78,6 +103,11 @@ const Message = styled.div`
   overflow: hidden;
 `;
 
+const TestCount = styled.div`
+  font-family: "Monaco", monospace;
+  font-size: 12px;
+`;
+
 const Branch = styled.div`
   font-family: "Monaco", monospace;
   font-size: 12px;
@@ -87,7 +117,7 @@ const Meta = styled.div`
   display: flex;
   font-size: 12px;
   margin-top: 5px;
-  color: #7F7D8F;
+  color: #7f7d8f;
 
   > div {
     margin-right: 12px;
@@ -100,12 +130,12 @@ const Meta = styled.div`
   svg {
     vertical-align: bottom !important;
     margin-right: 5px;
-    color: #BFBFCB;
+    color: #bfbfcb;
   }
 `;
 
 const Duration = styled.div`
-  ${(props) => {
+  ${props => {
     switch (props.status) {
       case 'pass':
         return css`
@@ -127,12 +157,10 @@ const Duration = styled.div`
           }
         `;
     }
-  }}
+  }};
 `;
 
-const Time = styled.div`
-
-`;
+const Time = styled.div``;
 
 const Commit = styled(Branch)`
   flex: 1;
