@@ -7,7 +7,6 @@ from sqlalchemy import event
 from sqlalchemy.orm import Session
 
 from zeus import config
-from zeus.models import User
 from zeus.storage.mock import FileStorageCache
 
 
@@ -65,7 +64,7 @@ def db_session(request, req_ctx, db):
 
     # transaction.rollback()
     # connection.close()
-    # db.session.remove()
+    db.session.remove()
 
 
 def pytest_runtest_setup(item):
