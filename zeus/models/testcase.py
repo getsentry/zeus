@@ -19,6 +19,7 @@ class TestCase(RepositoryBoundMixin, db.Model):
     hash = db.Column(db.String(40), nullable=False)
     name = db.Column(db.Text, nullable=False)
     result = db.Column(Enum(Result), default=Result.unknown, nullable=False)
+    # duration, in milliseconds
     duration = db.Column(db.Integer, default=0)
     message = db.deferred(db.Column(db.Text))
     date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
@@ -50,6 +51,6 @@ def set_name_sha(target, value, oldvalue, initiator):
         return value
 
     new_sha = TestCase.calculate_sha(value)
-    if new_sha != target.sha:
-        target.sha = new_sha
+    if new_sha != target.hash:
+        target.hash = new_sha
     return value
