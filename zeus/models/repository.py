@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import enum
 import os.path
 import sqlalchemy
@@ -8,7 +6,6 @@ from datetime import datetime
 from flask import current_app
 from sqlalchemy import Column, DateTime, String
 
-from zeus.auth import get_current_tenant
 from zeus.config import db
 from zeus.db.types import Enum, GUID, JSONEncodedDict
 
@@ -59,6 +56,8 @@ class RepositoryAccessBoundQuery(db.Query):
         return db.Query.from_self(self.constrained(), *ent)
 
     def constrained(self):
+        from zeus.auth import get_current_tenant
+
         if not self.current_constrained:
             return self
 

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, unicode_literals
-
 from zeus.models import Build, Job
 
 from .base import Resource
@@ -18,4 +16,4 @@ class BuildJobsResource(Resource):
             return self.not_found()
 
         query = Job.query.filter(Job.build_id == build.id)
-        return jobs_schema.dump(query).data
+        return self.respond_with_schema(jobs_schema, query)

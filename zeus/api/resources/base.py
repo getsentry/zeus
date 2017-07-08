@@ -1,3 +1,4 @@
+from marshmallow import Schema
 from flask import jsonify, request, Response
 from flask.views import View
 
@@ -22,7 +23,16 @@ class Resource(View):
     def error(self, message: str='resource not found', status: int=403) -> Response:
         return self.respond({'message': message}, status)
 
-    def respond(self, context={}, status: int=200) -> Response:
+    def respond(self, context: dict={}, status: int=200) -> Response:
         resp = jsonify(context)
         resp.status_code = status
         return resp
+
+    def schema_from_request(self, schema: Schema):
+        return schema.load(request.get_json() or {})
+
+    def respond_with_schema(self, schema: Schema, value, status: int=200) -> Response:
+        result = schema.dump(value)
+        if result.errors:
+            return self.error('invalid schema supplied')
+        return self.respond(result.data, status)

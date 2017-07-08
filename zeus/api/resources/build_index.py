@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, unicode_literals
-
 from zeus.models import Build
 
 from .base import Resource
@@ -14,4 +12,4 @@ class BuildIndexResource(Resource):
         Return a list of builds.
         """
         query = Build.query.all()
-        return builds_schema.dump(query).data
+        return self.respond_with_schema(builds_schema, query)

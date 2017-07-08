@@ -73,6 +73,9 @@ def create_app(_read_config=True, **config):
 
     app.config.update(config)
 
+    from zeus.testutils.client import ZeusTestClient
+    app.test_client_class = ZeusTestClient
+
     # init sentry first
     sentry.init_app(app)
 

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, unicode_literals
-
 from zeus.models import Build, Repository
 
 from .base import Resource
@@ -19,4 +17,4 @@ class RepositoryBuildsResource(Resource):
 
         query = Build.query.filter(
             Build.repository_id == repository_id, )
-        return builds_schema.dump(query).data
+        return self.respond_with_schema(builds_schema, query)

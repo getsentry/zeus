@@ -2,7 +2,6 @@ import sqlalchemy
 
 from sqlalchemy.ext.declarative import declared_attr
 
-from zeus.auth import get_current_tenant
 from zeus.db.types import GUID
 from zeus.config import db
 
@@ -26,6 +25,8 @@ class RepositoryBoundQuery(db.Query):
         return db.Query.from_self(self.constrained(), *ent)
 
     def constrained(self):
+        from zeus.auth import get_current_tenant
+
         if not self.current_constrained:
             return self
 

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, unicode_literals
-
 from zeus.models import Repository
 
 from .base import Resource
@@ -14,4 +12,4 @@ class RepositoryIndexResource(Resource):
         Return a list of repositories.
         """
         query = Repository.query.all()
-        return repos_schema.dump(query).data
+        return self.respond_with_schema(repos_schema, query)

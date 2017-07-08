@@ -14,20 +14,18 @@ ARTIFACT_STORAGE_OPTIONS = {
 
 
 class ArtifactType(enum.Enum):
-    unknown = 0
-    text = 1
-    image = 2
-    html = 3
-
-    _labels = {
-        unknown: 'Unknown',
-        text: 'Text',
-        image: 'Image',
-        html: 'Html',
-    }
+    UNKNOWN = 0
+    TEXT = 1
+    IMAGE = 2
+    HTML = 3
 
     def __str__(self):
-        return self._labels[self]
+        return {
+            ArtifactType.UNKNOWN: 'Unknown',
+            ArtifactType.TEXT: 'Text',
+            ArtifactType.IMAGE: 'Image',
+            ArtifactType.HTML: 'Html',
+        }[self]
 
 
 class Artifact(RepositoryBoundMixin, db.Model):
@@ -36,7 +34,7 @@ class Artifact(RepositoryBoundMixin, db.Model):
     testcase_id = db.Column(GUID, db.ForeignKey('testcase.id', ondelete='CASCADE'), nullable=True)
     name = db.Column(db.String(length=256), nullable=False)
     type = db.Column(
-        Enum(ArtifactType), default=ArtifactType.unknown, nullable=False, server_default='0')
+        Enum(ArtifactType), default=ArtifactType.UNKNOWN, nullable=False, server_default='0')
     file = db.Column(
         File(**ARTIFACT_STORAGE_OPTIONS),
         nullable=False,

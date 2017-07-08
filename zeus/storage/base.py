@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-
-
 class FileStorage(object):
     def __init__(self, path=''):
         self.path = path

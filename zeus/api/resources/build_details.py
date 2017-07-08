@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, unicode_literals
-
 from zeus.models import Build
 
 from .base import Resource
@@ -16,4 +14,4 @@ class BuildDetailsResource(Resource):
         build = Build.query.get(build_id)
         if not build:
             return self.not_found()
-        return build_schema.dump(build).data
+        return self.respond_with_schema(build_schema, build)

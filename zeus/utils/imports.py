@@ -12,7 +12,7 @@ def import_string(path):
 
     module_name, class_name = path.rsplit('.', 1)
 
-    module = __import__(module_name, {}, {}, [class_name], -1)
+    module = __import__(module_name, {}, {}, [class_name])
     try:
         return getattr(module, class_name)
     except AttributeError as exc:

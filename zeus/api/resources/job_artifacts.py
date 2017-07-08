@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, unicode_literals
-
 from flask import request
 from sqlalchemy.exc import IntegrityError
 
@@ -10,11 +8,12 @@ from zeus.models import Job, Artifact
 from .base import Resource
 from ..schemas import ArtifactSchema
 
-artifacts_schema = ArtifactSchema(strict=True)
+artifact_schema = ArtifactSchema(strict=True)
+artifacts_schema = ArtifactSchema(strict=True, many=True)
 
 
 class JobArtifactsResource(Resource):
-    def get(self, job_id):
+    def get(self, job_id: str):
         """
         Return a list of artifacts for a given job.
         """
@@ -25,9 +24,9 @@ class JobArtifactsResource(Resource):
         query = Artifact.query.filter(
             Artifact.job_id == job.id, )
 
-        return artifacts_schema.dump(query).data
+        return self.respond_with_schema(artifacts_schema, query)
 
-    def post(self, job_id):
+    def post(self, job_id: str):
         """
         Create a new artifact for the given job.
         """
@@ -39,11 +38,22 @@ class JobArtifactsResource(Resource):
         if job.result == Result.aborted:
             return self.error('job was aborted', status=410)
 
-        data = artifacts_schema.load(request.get_json())
+        try:
+            file = request.files['file']
+        except KeyError:
+            return self.respond({'file': 'Missing data for required field.'}, status=403)
 
-        artifact = Artifact(
-            name=data['name'],
-            job_id=job.id, )
+        result = self.schema_from_request(artifact_schema)
+        artifact = result.data
+        artifact.job_id = job.id
+        artifact.repository_id = job.repository_id
+
+        if not artifact.name:
+            artifact.name = file.filename
+
+        if not artifact.name:
+            return self.respond({'name': 'Missing data for required field.'}, status=403)
+
         try:
             db.session.add(artifact)
             db.session.flush()
@@ -58,15 +68,12 @@ class JobArtifactsResource(Resource):
             # that this happens because it was already sent
             return self.error('An artifact with this name already exists', 204)
 
-        # TODO(dcramer): save file and then send to queue for processing
-        # artifact.file.save(
-        #     args.artifact_file,
-        #     '{0}/{1}/{2}_{3}'.format(
-        #         step_id[:4], step_id[4:],
-        #         artifact.id.hex, artifact.name
-        #     ),
-        # )
-        # db.session.add(artifact)
-        # db.session.commit()
+        # TODO(dcramer): send to queue for processing
+        artifact.file.save(
+            request.files['file'],
+            '{0}/{1}/{2}_{3}'.format(job.id.hex[:4], job.id.hex[4:], artifact.id.hex,
+                                     artifact.name), )
+        db.session.add(artifact)
+        db.session.commit()
 
-        return self.respond(artifacts_schema.dump(artifact).data, 201)
+        return self.respond_with_schema(artifact_schema, artifact, 201)
