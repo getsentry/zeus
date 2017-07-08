@@ -63,7 +63,9 @@ class XunitHandler(ArtifactHandler):
                     package=attrs.get('fixture') or None,
                     duration=float(attrs['duration']) * 1000,
                     result=result,
-                    message=message, ))
+                    message=message,
+                )
+            )
 
         return results
 
@@ -112,7 +114,9 @@ class XunitHandler(ArtifactHandler):
                     result=result,
                     message=message,
                     reruns=int(attrs.get('rerun')) if attrs.get('rerun') else None,
-                    artifacts=self._get_testartifacts(node)))
+                    artifacts=self._get_testartifacts(node)
+                )
+            )
 
         return results
 

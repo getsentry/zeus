@@ -22,7 +22,8 @@ def try_create(model, where, defaults=None):
 
 def try_update(model, where, values):
     result = db.session.query(type(model)).filter_by(**where).update(
-        values, synchronize_session=False)
+        values, synchronize_session=False
+    )
     return result.rowcount > 0
 
 

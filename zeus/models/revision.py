@@ -20,7 +20,8 @@ class Revision(RepositoryBoundMixin, db.Model):
     __table_args__ = (db.UniqueConstraint(
         'repository_id',
         'sha',
-        name='unq_revision', ), )
+        name='unq_revision',
+    ), )
 
     @property
     def subject(self):

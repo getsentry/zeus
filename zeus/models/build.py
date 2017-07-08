@@ -14,7 +14,8 @@ class Build(RepositoryBoundMixin, db.Model):
     """
     id = db.Column(GUID, primary_key=True, default=GUID.default_value)
     source_id = db.Column(
-        GUID, db.ForeignKey('source.id', ondelete='CASCADE'), nullable=False, index=True)
+        GUID, db.ForeignKey('source.id', ondelete='CASCADE'), nullable=False, index=True
+    )
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
     result = db.Column(Enum(Result), nullable=False, default=Result.unknown)
     date_started = db.Column(db.DateTime, nullable=True)

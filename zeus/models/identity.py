@@ -10,7 +10,8 @@ class Identity(db.Model):
     """
     id = db.Column(GUID, primary_key=True, default=GUID.default_value)
     user_id = db.Column(
-        GUID, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False, index=True)
+        GUID, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False, index=True
+    )
     external_id = db.Column(db.String(64), unique=True, nullable=False)
     provider = db.Column(db.String(32), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)

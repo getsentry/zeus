@@ -16,5 +16,6 @@ class RepositoryBuildsResource(Resource):
             return self.not_found()
 
         query = Build.query.filter(
-            Build.repository_id == repository_id, )
+            Build.repository_id == repository_id,
+        )
         return self.respond_with_schema(builds_schema, query)

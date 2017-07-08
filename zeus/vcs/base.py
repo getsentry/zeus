@@ -17,7 +17,8 @@ class CommandError(Exception):
 
     def __str__(self):
         return '%s returned %d:\nSTDOUT: %r\nSTDERR: %r' % (
-            self.cmd, self.retcode, self.stdout.decode('utf-8'), self.stderr.decode('utf-8'))
+            self.cmd, self.retcode, self.stdout.decode('utf-8'), self.stderr.decode('utf-8')
+        )
 
 
 class UnknownRevision(CommandError):
@@ -51,7 +52,8 @@ class BufferParser(object):
 
 class Vcs(object):
     ssh_connect_path = os.path.realpath(
-        os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 'bin', 'ssh-connect'))
+        os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 'bin', 'ssh-connect')
+    )
 
     def __init__(self, path, url, username=None):
         self.path = path
@@ -138,15 +140,17 @@ class RevisionResult(object):
     parents = None
     branches = None
 
-    def __init__(self,
-                 id,
-                 message,
-                 author,
-                 author_date,
-                 committer=None,
-                 committer_date=None,
-                 parents=None,
-                 branches=None):
+    def __init__(
+        self,
+        id,
+        message,
+        author,
+        author_date,
+        committer=None,
+        committer_date=None,
+        parents=None,
+        branches=None
+    ):
         self.id = id
         self.message = message
         self.author = author
@@ -159,8 +163,9 @@ class RevisionResult(object):
             self.branches = branches
 
     def __repr__(self):
-        return '<%s: id=%r author=%r subject=%r>' % (type(self).__name__, self.id, self.author,
-                                                     self.subject)
+        return '<%s: id=%r author=%r subject=%r>' % (
+            type(self).__name__, self.id, self.author, self.subject
+        )
 
     def _get_author(self, value):
         match = re.match(r'^(.+) <([^>]+)>$', value)
@@ -177,7 +182,8 @@ class RevisionResult(object):
                 'email': email,
             }, defaults={
                 'name': name,
-            })
+            }
+        )
 
         return author
 
@@ -206,7 +212,8 @@ class RevisionResult(object):
                 'branches': self.branches,
                 'date_created': self.author_date,
                 'date_committed': self.committer_date,
-            })
+            }
+        )
 
         # we also want to create a source for this item as it's the canonical
         # representation in the UI

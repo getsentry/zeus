@@ -12,7 +12,8 @@ def test_revision_result(default_repo: Repository):
         author_date=datetime(2013, 9, 19, 22, 15, 22),
         committer_date=datetime(2013, 9, 19, 22, 15, 23),
         message='Hello world!',
-        parents=['a' * 40, 'b' * 40], )
+        parents=['a' * 40, 'b' * 40],
+    )
     revision, created = result.save(default_repo)
 
     assert created

@@ -23,7 +23,8 @@ def create_app(_read_config=True, **config):
     app = Flask(
         __name__,
         static_folder=os.path.join(ROOT, 'static'),
-        template_folder=os.path.join(ROOT, 'templates'), )
+        template_folder=os.path.join(ROOT, 'templates'),
+    )
 
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///zeus'

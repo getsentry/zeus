@@ -57,7 +57,8 @@ def test_process(mocker, default_job):
             job_id=default_job.id,
             repository_id=default_job.repository_id,
             filename='setup.py',
-            data='CUNNNNCCNNNUNNNUUUUUU')
+            data='CUNNNNCCNNNUNNNUUUUUU'
+        )
     ]
 
     fp = BytesIO()
@@ -71,15 +72,19 @@ def test_process(mocker, default_job):
             job_id=default_job.id,
             repository_id=default_job.repository_id,
             filename='setup.py',
-            data='NUUNNNNNNNNUCCNU')
+            data='NUUNNNNNNNNUCCNU'
+        )
     ]
 
     fp = BytesIO()
     handler.process(fp)
     get_coverage.assert_called_once_with(fp)
 
-    file_cov = list(FileCoverage.query.unrestricted_unsafe().filter(
-        FileCoverage.job_id == default_job.id, ))
+    file_cov = list(
+        FileCoverage.query.unrestricted_unsafe().filter(
+            FileCoverage.job_id == default_job.id,
+        )
+    )
     assert len(file_cov) == 1
     assert file_cov[0].filename == 'setup.py'
     assert file_cov[0].data == 'CUUNNNCCNNNUCCNUUUUUU'

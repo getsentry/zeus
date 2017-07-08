@@ -34,13 +34,15 @@ class Artifact(RepositoryBoundMixin, db.Model):
     testcase_id = db.Column(GUID, db.ForeignKey('testcase.id', ondelete='CASCADE'), nullable=True)
     name = db.Column(db.String(length=256), nullable=False)
     type = db.Column(
-        Enum(ArtifactType), default=ArtifactType.UNKNOWN, nullable=False, server_default='0')
+        Enum(ArtifactType), default=ArtifactType.UNKNOWN, nullable=False, server_default='0'
+    )
     file = db.Column(
         File(**ARTIFACT_STORAGE_OPTIONS),
         nullable=False,
         # TODO(dcramer): this is super hacky but not sure a better way to
         # do it with SQLAlchemy
-        default=lambda: FileData({}, ARTIFACT_STORAGE_OPTIONS))
+        default=lambda: FileData({}, ARTIFACT_STORAGE_OPTIONS)
+    )
     date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     job = db.relationship('Job', innerjoin=True, uselist=False)
@@ -51,4 +53,5 @@ class Artifact(RepositoryBoundMixin, db.Model):
     def save_base64_content(self, base64):
         content = b64decode(base64)
         self.file.save(
-            BytesIO(content), '{0}/{1}_{2}'.format(self.job_id.hex, self.id.hex, self.name))
+            BytesIO(content), '{0}/{1}_{2}'.format(self.job_id.hex, self.id.hex, self.name)
+        )

@@ -17,7 +17,8 @@ def test_sync_repo(mocker, db_session, default_repo):
                 id='a' * 40,
                 message='hello world!',
                 author='Example <foo@example.com>',
-                author_date=datetime(2013, 9, 19, 22, 15, 22), )
+                author_date=datetime(2013, 9, 19, 22, 15, 22),
+            )
 
     mock_vcs_backend.log.side_effect = log
 

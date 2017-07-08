@@ -32,7 +32,8 @@ class ZeusTestClient(FlaskClient):
         This ensures the response_wrapper is JSONResponseWrapper.
         """
         super(ZeusTestClient, self).__init__(
-            args[0], response_wrapper=JSONResponseWrapper, **kwargs)
+            args[0], response_wrapper=JSONResponseWrapper, **kwargs
+        )
 
     def open(self, *args, **kwargs):
         json_data = kwargs.pop('json', None)

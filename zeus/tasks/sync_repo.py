@@ -27,9 +27,10 @@ def sync_repo(repo_id, max_log_passes=10):
         return
 
     Repository.query.filter(
-        Repository.id == repo.id, ).update({
-            'last_update_attempt': datetime.utcnow(),
-        })
+        Repository.id == repo.id,
+    ).update({
+        'last_update_attempt': datetime.utcnow(),
+    })
     db.session.commit()
 
     if vcs.exists():
@@ -54,9 +55,10 @@ def sync_repo(repo_id, max_log_passes=10):
         max_log_passes -= 1
 
     Repository.query.filter(
-        Repository.id == repo.id, ).update({
-            'last_update': datetime.utcnow(),
-        })
+        Repository.id == repo.id,
+    ).update({
+        'last_update': datetime.utcnow(),
+    })
     db.session.commit()
 
     # is there more data to sync?

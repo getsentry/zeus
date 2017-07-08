@@ -37,10 +37,11 @@ class GitVcs(Vcs):
     def remote_url(self) -> str:
         if self.url.startswith(('ssh:', 'http:', 'https:')):
             parsed = urlparse(self.url)
-            url = '%s://%s@%s/%s' % (parsed.scheme, parsed.username or self.username or 'git',
-                                     parsed.hostname + (':%s' % (parsed.port, )
-                                                        if parsed.port else ''),
-                                     parsed.path.lstrip('/'), )
+            url = '%s://%s@%s/%s' % (
+                parsed.scheme, parsed.username or self.username or 'git',
+                parsed.hostname + (':%s' % (parsed.port, )
+                                   if parsed.port else ''), parsed.path.lstrip('/'),
+            )
         else:
             url = self.url
         return url
@@ -84,7 +85,8 @@ class GitVcs(Vcs):
                     cmd=e.cmd,
                     retcode=e.retcode,
                     stdout=e.stdout,
-                    stderr=e.stderr, )
+                    stderr=e.stderr,
+                )
             raise
 
     def clone(self):
@@ -155,7 +157,8 @@ class GitVcs(Vcs):
                 author_date=author_date,
                 committer_date=committer_date,
                 parents=parents,
-                message=message, )
+                message=message,
+            )
 
     def export(self, id) -> str:
         cmd = ['diff', '%s^..%s' % (id, id)]

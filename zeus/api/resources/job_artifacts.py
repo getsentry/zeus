@@ -22,7 +22,8 @@ class JobArtifactsResource(Resource):
             return self.not_found()
 
         query = Artifact.query.filter(
-            Artifact.job_id == job.id, )
+            Artifact.job_id == job.id,
+        )
 
         return self.respond_with_schema(artifacts_schema, query)
 
@@ -71,8 +72,10 @@ class JobArtifactsResource(Resource):
         # TODO(dcramer): send to queue for processing
         artifact.file.save(
             request.files['file'],
-            '{0}/{1}/{2}_{3}'.format(job.id.hex[:4], job.id.hex[4:], artifact.id.hex,
-                                     artifact.name), )
+            '{0}/{1}/{2}_{3}'.format(
+                job.id.hex[:4], job.id.hex[4:], artifact.id.hex, artifact.name
+            ),
+        )
         db.session.add(artifact)
         db.session.commit()
 

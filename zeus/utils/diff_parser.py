@@ -73,14 +73,16 @@ class DiffParser(object):
                 in_header = False
                 chunks = []
                 old, new = self._extract_rev(line, next(lineiter))
-                files.append({
-                    'is_header': False,
-                    'old_filename': old[0],
-                    'old_revision': old[1],
-                    'new_filename': new[0],
-                    'new_revision': new[1],
-                    'chunks': chunks,
-                })
+                files.append(
+                    {
+                        'is_header': False,
+                        'old_filename': old[0],
+                        'old_revision': old[1],
+                        'new_filename': new[0],
+                        'new_revision': new[1],
+                        'chunks': chunks,
+                    }
+                )
 
                 line = next(lineiter)
                 while line:
@@ -118,12 +120,14 @@ class DiffParser(object):
 
                         old_line += affects_old
                         new_line += affects_new
-                        lines.append({
-                            'old_lineno': affects_old and old_line or u'',
-                            'new_lineno': affects_new and new_line or u'',
-                            'action': action,
-                            'line': line,
-                        })
+                        lines.append(
+                            {
+                                'old_lineno': affects_old and old_line or u'',
+                                'new_lineno': affects_new and new_line or u'',
+                                'action': action,
+                                'line': line,
+                            }
+                        )
                         line = next(lineiter)
 
         except StopIteration:

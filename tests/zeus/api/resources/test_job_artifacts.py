@@ -3,8 +3,9 @@ from io import BytesIO
 from zeus.models import Artifact
 
 
-def test_job_artifacts_list(client, default_login, default_job, default_artifact,
-                            default_repo_access):
+def test_job_artifacts_list(
+    client, default_login, default_job, default_artifact, default_repo_access
+):
     resp = client.get('/api/jobs/{}/artifacts'.format(default_job.id))
     assert resp.status_code == 200
     data = resp.json()
@@ -25,7 +26,8 @@ def test_create_job_artifact(client, default_login, default_job, default_repo_ac
         data={
             'name': 'junit.xml',
             'file': (BytesIO(sample_xunit.encode('utf-8')), 'junit.xml'),
-        }, )
+        },
+    )
     assert resp.status_code == 201
     data = resp.json()
     artifact = Artifact.query.get(data['id'])

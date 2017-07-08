@@ -37,7 +37,8 @@ class UserTenant(Tenant):
         return [
             r[0]
             for r in db.session.query(RepositoryAccess.repository_id).filter(
-                RepositoryAccess.user_id == self.user_id, )
+                RepositoryAccess.user_id == self.user_id,
+            )
         ]
 
     @classmethod

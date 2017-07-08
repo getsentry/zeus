@@ -26,9 +26,10 @@ def import_repo(repo_id, parent=None):
         return
 
     Repository.query.filter(
-        Repository.id == repo.id, ).update({
-            'last_update_attempt': datetime.utcnow(),
-        })
+        Repository.id == repo.id,
+    ).update({
+        'last_update_attempt': datetime.utcnow(),
+    })
     db.session.commit()
 
     if vcs.exists():
@@ -42,12 +43,14 @@ def import_repo(repo_id, parent=None):
         parent = commit.id
 
     Repository.query.filter(
-        Repository.id == repo.id, ).update({
-            'last_update': datetime.utcnow(),
-        })
+        Repository.id == repo.id,
+    ).update({
+        'last_update': datetime.utcnow(),
+    })
     db.session.commit()
 
     if parent:
         import_repo.delay(
             repo_id=repo.id,
-            parent=parent, )
+            parent=parent,
+        )

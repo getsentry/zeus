@@ -22,9 +22,11 @@ def get_auth_flow(redirect_uri=None, scopes=()):
         scope='user:email',
         redirect_uri=redirect_uri,
         user_agent='zeus/{0}'.format(
-            zeus.VERSION, ),
+            zeus.VERSION,
+        ),
         auth_uri=GITHUB_AUTH_URI,
-        token_uri=GITHUB_TOKEN_URI, )
+        token_uri=GITHUB_TOKEN_URI,
+    )
 
 
 class GitHubLoginView(MethodView):
@@ -56,34 +58,40 @@ class GitHubCompleteView(MethodView):
 
         # fetch user details
         response = requests.get(
-            'https://api.github.com/user', params={'access_token': identity_config['access_token']})
+            'https://api.github.com/user', params={'access_token': identity_config['access_token']}
+        )
         response.raise_for_status()
         user_data = response.json()
 
         with db.session.begin_nested():
             existing_identity = Identity.query.filter(
                 Identity.external_id == str(user_data['id']),
-                Identity.provider == 'github', ).first()
+                Identity.provider == 'github',
+            ).first()
             if not existing_identity:
                 user = User(
-                    email=user_data['email'], )
+                    email=user_data['email'],
+                )
                 db.session.add(user)
                 identity = Identity(
                     user=user,
                     external_id=str(user_data['id']),
                     provider='github',
-                    config=identity_config, )
+                    config=identity_config,
+                )
                 db.session.add(identity)
             else:
                 user = User.query.filter(
                     Identity.external_id == str(user_data['id']),
                     Identity.provider == 'github',
-                    Identity.user_id == User.id, ).first()
+                    Identity.user_id == User.id,
+                ).first()
                 Identity.query.filter(
                     Identity.external_id == str(user_data['id']),
-                    Identity.provider == 'github', ).update({
-                        'config': identity_config,
-                    })
+                    Identity.provider == 'github',
+                ).update({
+                    'config': identity_config,
+                })
 
         session['uid'] = user.id.hex
 

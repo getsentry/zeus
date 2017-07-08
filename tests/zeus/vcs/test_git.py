@@ -21,10 +21,12 @@ def _get_last_two_revisions(marker, revisions):
 def _set_author(name, email):
     check_call(
         'cd {0} && git config --replace-all "user.name" "{1}"'.format(remote_path, name),
-        shell=True)
+        shell=True
+    )
     check_call(
         'cd {0} && git config --replace-all "user.email" "{1}"'.format(remote_path, email),
-        shell=True)
+        shell=True
+    )
 
 
 @pytest.fixture(scope='function', autouse=True)
@@ -35,10 +37,12 @@ def repo_config():
     _set_author('Foo Bar', 'foo@example.com')
     check_call(
         'cd %s && touch FOO && git add FOO && git commit -m "test\nlol\n"' % (remote_path, ),
-        shell=True)
+        shell=True
+    )
     check_call(
         'cd %s && touch BAR && git add BAR && git commit -m "biz\nbaz\n"' % (remote_path, ),
-        shell=True)
+        shell=True
+    )
 
     yield (url, path)
 
@@ -59,7 +63,8 @@ def test_log_with_authors(vcs):
     # Create a commit with a new author
     _set_author('Another Committer', 'ac@d.not.zm.exist')
     check_call(
-        'cd %s && touch BAZ && git add BAZ && git commit -m "bazzy"' % remote_path, shell=True)
+        'cd %s && touch BAZ && git add BAZ && git commit -m "bazzy"' % remote_path, shell=True
+    )
     vcs.clone()
     vcs.update()
     revisions = list(vcs.log())
@@ -91,14 +96,16 @@ def test_log_with_branches(vcs):
     check_call(
         'cd %s && touch BAZ && git add BAZ && git commit -m "second branch commit"' %
         (remote_path, ),
-        shell=True)
+        shell=True
+    )
 
     # Create a third branch off master with a commit not in B2
     check_call('cd %s && git checkout %s' % (remote_path, vcs.get_default_revision(), ), shell=True)
     check_call('cd %s && git checkout -b B3' % remote_path, shell=True)
     check_call(
         'cd %s && touch IPSUM && git add IPSUM && git commit -m "3rd branch"' % (remote_path, ),
-        shell=True)
+        shell=True
+    )
     vcs.clone()
     vcs.update()
 
@@ -137,7 +144,8 @@ def test_simple(vcs):
     revision = next(vcs.log(parent='HEAD', limit=1))
     assert len(revision.id) == 40
     assert_revision(
-        revision, author='Foo Bar <foo@example.com>', message='biz\nbaz\n', subject='biz')
+        revision, author='Foo Bar <foo@example.com>', message='biz\nbaz\n', subject='biz'
+    )
     revisions = list(vcs.log())
     assert len(revisions) == 2
     assert revisions[0].subject == 'biz'
@@ -173,9 +181,11 @@ def test_is_child_parent(vcs):
     vcs.update()
     revisions = list(vcs.log())
     assert vcs.is_child_parent(
-        child_in_question=revisions[0].id, parent_in_question=revisions[1].id)
+        child_in_question=revisions[0].id, parent_in_question=revisions[1].id
+    )
     assert vcs.is_child_parent(
-        child_in_question=revisions[1].id, parent_in_question=revisions[0].id) is False
+        child_in_question=revisions[1].id, parent_in_question=revisions[0].id
+    ) is False
 
 
 def test_get_known_branches(vcs):

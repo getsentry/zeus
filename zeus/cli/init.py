@@ -27,7 +27,8 @@ def init(path, no_input, github_client_id, github_client_secret):
     if os.path.exists(config_path):
         click.confirm(
             'Configuration file already present at [{}]. Overwrite it?'.format(config_path),
-            abort=True)
+            abort=True
+        )
 
     repo_path = os.path.join(path, 'repo-cache')
     os.makedirs(repo_path)
@@ -38,5 +39,7 @@ def init(path, no_input, github_client_id, github_client_secret):
                 secret_key=repr(binascii.hexlify(os.urandom(24))),
                 github_client_id=repr(github_client_id),
                 github_client_secret=repr(github_client_secret),
-                repo_root=repo_path, ).encode('utf-8'))
+                repo_root=repo_path,
+            ).encode('utf-8')
+        )
     click.echo('Configuration written at {}'.format(config_path))

@@ -20,4 +20,6 @@ def worker(cron, log_level):
             cwd=os.getcwd(),
             env=os.environ,
             stdout=sys.stdout,
-            stderr=sys.stderr, ))
+            stderr=sys.stderr,
+        )
+    )

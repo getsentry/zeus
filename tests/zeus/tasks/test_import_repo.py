@@ -18,7 +18,8 @@ def test_import_repo(mocker, db_session, default_repo):
                 id='a' * 40,
                 message='hello world!',
                 author='Example <foo@example.com>',
-                author_date=datetime(2013, 9, 19, 22, 15, 22), )
+                author_date=datetime(2013, 9, 19, 22, 15, 22),
+            )
 
     mock_vcs_backend.log.side_effect = log
 
@@ -37,4 +38,5 @@ def test_import_repo(mocker, db_session, default_repo):
     # ensure signal is fired
     mock_delay.assert_called_once_with(
         repo_id=default_repo.id,
-        parent='a' * 40, )
+        parent='a' * 40,
+    )
