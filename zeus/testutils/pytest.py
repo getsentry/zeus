@@ -63,7 +63,7 @@ def db_session(request, req_ctx, db):
 
     # transaction.rollback()
     # connection.close()
-    db.session.remove()
+    # db.session.remove()
 
 
 def pytest_runtest_setup(item):

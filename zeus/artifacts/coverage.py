@@ -30,7 +30,7 @@ class CoverageHandler(ArtifactHandler):
         return results
 
     def merge_coverage(self, new):
-        existing = FileCoverage.query.unconstrained_unsafe().filter(
+        existing = FileCoverage.query.unrestricted_unsafe().filter(
             FileCoverage.job_id == new.job_id,
             FileCoverage.filename == new.filename, ).first()
         assert existing

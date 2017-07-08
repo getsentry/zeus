@@ -16,7 +16,6 @@ from zeus.db.types import Enum, GUID, JSONEncodedDict
 class RepositoryBackend(enum.Enum):
     unknown = 0
     git = 1
-    hg = 2
 
     _labels = {
         unknown: 'Unknown',
@@ -73,7 +72,7 @@ class RepositoryAccessBoundQuery(db.Query):
                 return self.enable_assertions(False).filter(sqlalchemy.sql.false())
         return self
 
-    def unconstrained_unsafe(self):
+    def unrestricted_unsafe(self):
         rv = self._clone()
         rv.current_constrained = False
         return rv
@@ -116,4 +115,4 @@ class Repository(db.Model):
         if self.backend == RepositoryBackend.git:
             return GitVcs(**kwargs)
         else:
-            return None
+            raise NotImplementedError('Invalid backend: {}'.format(self.backend))

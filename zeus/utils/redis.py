@@ -1,4 +1,3 @@
-import logging
 import redis
 
 from contextlib import contextmanager
@@ -20,7 +19,7 @@ class Redis(object):
 
     def init_app(self, app):
         self.redis = redis.from_url(app.config['REDIS_URL'])
-        self.logger = logging.getLogger(app.import_name + '.redis')
+        self.logger = app.logger
 
     def __getattr__(self, name):
         return getattr(self.redis, name)

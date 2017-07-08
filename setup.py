@@ -2,6 +2,7 @@ from setuptools import setup, find_packages
 
 install_requires = [
     'blinker==1.4',
+    'cached-property==1.3.0',
     'celery==4.0.2',
     'exam==0.10.6',
     'factory_boy==2.8.1',

@@ -1,5 +1,4 @@
-import logging
-
+from flask import current_app
 from lxml import etree
 
 from zeus.constants import Result
@@ -9,8 +8,6 @@ from .base import ArtifactHandler
 
 
 class XunitHandler(ArtifactHandler):
-    logger = logging.getLogger('zeus.artifacts.xunit')
-
     def process(self, fp):
         test_list = self.get_tests(fp)
 
@@ -23,7 +20,7 @@ class XunitHandler(ArtifactHandler):
         try:
             root = etree.fromstring(fp.read())
         except Exception:
-            self.logger.exception('Failed to parse XML')
+            current_app.logger.exception('Failed to parse XML')
             return []
 
         if root.tag == 'unittest-results':

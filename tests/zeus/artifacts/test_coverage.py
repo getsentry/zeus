@@ -78,7 +78,7 @@ def test_process(mocker, default_job):
     handler.process(fp)
     get_coverage.assert_called_once_with(fp)
 
-    file_cov = list(FileCoverage.query.unconstrained_unsafe().filter(
+    file_cov = list(FileCoverage.query.unrestricted_unsafe().filter(
         FileCoverage.job_id == default_job.id, ))
     assert len(file_cov) == 1
     assert file_cov[0].filename == 'setup.py'

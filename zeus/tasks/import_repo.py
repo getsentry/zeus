@@ -1,30 +1,28 @@
-from __future__ import absolute_import, print_function
-
-import logging
-
 from celery import shared_task
 from datetime import datetime
+from flask import current_app
 
+from zeus import auth
 from zeus.config import db
 from zeus.models import Repository, RepositoryStatus
-
-logger = logging.getLogger('repo.sync')
 
 
 @shared_task(max_retries=None)
 def import_repo(repo_id, parent=None):
+    auth.set_current_tenant(auth.Tenant(repository_ids=[repo_id]))
+
     repo = Repository.query.get(repo_id)
     if not repo:
-        logger.error('Repository %s not found', repo_id)
+        current_app.logger.error('Repository %s not found', repo_id)
         return
 
     vcs = repo.get_vcs()
     if vcs is None:
-        logger.warning('Repository %s has no VCS backend set', repo.id)
+        current_app.logger.warning('Repository %s has no VCS backend set', repo.id)
         return
 
     if repo.status == RepositoryStatus.inactive:
-        logger.info('Repository %s is inactive', repo.id)
+        current_app.logger.info('Repository %s is inactive', repo.id)
         return
 
     Repository.query.filter(
@@ -51,5 +49,5 @@ def import_repo(repo_id, parent=None):
 
     if parent:
         import_repo.delay(
-            repo_id=repo.id.hex,
+            repo_id=repo.id,
             parent=parent, )

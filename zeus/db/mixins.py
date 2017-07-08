@@ -39,7 +39,7 @@ class RepositoryBoundQuery(db.Query):
                 return self.enable_assertions(False).filter(sqlalchemy.sql.false())
         return self
 
-    def unconstrained_unsafe(self):
+    def unrestricted_unsafe(self):
         rv = self._clone()
         rv.current_constrained = False
         return rv

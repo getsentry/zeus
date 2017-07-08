@@ -1,17 +1,15 @@
 from __future__ import absolute_import, division
 
-import logging
 import re
 
 from datetime import datetime
+from flask import current_app
 from sqlalchemy.sql import func
 
 from zeus.config import db
 from zeus.constants import Result
 from zeus.db.utils import create_or_update
 from zeus.models import Artifact, ItemStat, TestCase
-
-logger = logging.getLogger('zeus.utils.testresult')
 
 
 class TestResult(object):
@@ -113,7 +111,7 @@ class TestResultManager(object):
             self._record_test_duration(test_list)
             self._record_test_rerun_counts(test_list)
         except Exception:
-            logger.exception('Failed to record aggregate test statistics')
+            current_app.logger.exception('Failed to record aggregate test statistics')
 
     def _record_test_counts(self, test_list):
         create_or_update(
