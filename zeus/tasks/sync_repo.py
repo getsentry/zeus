@@ -9,7 +9,7 @@ from zeus.models import Repository, RepositoryStatus
 
 # TODO(dcramer): a lot of this code is shared with import_repo
 @shared_task(max_retries=None)
-def sync_repo(repo_id):
+def sync_repo(repo_id, max_log_passes=10):
     auth.set_current_tenant(auth.Tenant(repository_ids=[repo_id]))
 
     repo = Repository.query.get(repo_id)
@@ -40,7 +40,7 @@ def sync_repo(repo_id):
     # TODO(dcramer): this doesn't collect commits in non-default branches
     might_have_more = True
     parent = None
-    while might_have_more:
+    while might_have_more and max_log_passes:
         might_have_more = False
         for commit in vcs.log(parent=parent):
             revision, created = commit.save(repo)
@@ -51,12 +51,12 @@ def sync_repo(repo_id):
             current_app.logger.info('Created revision {}'.format(repo.id))
             might_have_more = True
             parent = commit.id
+        max_log_passes -= 1
 
     Repository.query.filter(
-        Repository.id == repo.id, ).update(
-            {
-                'last_update': datetime.utcnow(),
-            }, synchronize_session=False)
+        Repository.id == repo.id, ).update({
+            'last_update': datetime.utcnow(),
+        })
     db.session.commit()
 
     # is there more data to sync?

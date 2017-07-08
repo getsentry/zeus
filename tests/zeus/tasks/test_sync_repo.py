@@ -2,15 +2,14 @@ from mock import MagicMock
 
 from datetime import datetime
 
-from zeus.tasks.import_repo import import_repo
+from zeus.tasks.sync_repo import sync_repo
 from zeus.models import Repository, RepositoryStatus
 from zeus.vcs.base import Vcs, RevisionResult
 
 
-def test_import_repo(mocker, db_session, default_repo):
+def test_sync_repo(mocker, db_session, default_repo):
     mock_vcs_backend = MagicMock(spec=Vcs)
     mock_get_vcs = mocker.patch.object(Repository, 'get_vcs', return_value=mock_vcs_backend)
-    mock_delay = mocker.patch.object(import_repo, 'delay')
 
     def log(parent):
         if parent is None:
@@ -22,10 +21,11 @@ def test_import_repo(mocker, db_session, default_repo):
 
     mock_vcs_backend.log.side_effect = log
 
-    import_repo(repo_id=default_repo.id)
+    sync_repo(repo_id=default_repo.id)
 
     mock_get_vcs.assert_called_once_with()
-    mock_vcs_backend.log.assert_called_once_with(parent=None)
+    mock_vcs_backend.log.assert_any_call(parent=None)
+    mock_vcs_backend.log.assert_any_call(parent='a' * 40)
 
     assert default_repo.last_update_attempt is not None
     assert default_repo.last_update is not None
@@ -33,8 +33,3 @@ def test_import_repo(mocker, db_session, default_repo):
 
     # build sync is abstracted via sync_with_builder
     mock_vcs_backend.update.assert_called_once_with()
-
-    # ensure signal is fired
-    mock_delay.assert_called_once_with(
-        repo_id=default_repo.id,
-        parent='a' * 40, )
