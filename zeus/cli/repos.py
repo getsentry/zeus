@@ -15,13 +15,16 @@ def repos():
 @repos.command()
 @click.argument('repository_url', required=True)
 @click.option('--backend', default='git', type=click.Choice(['git']))
+@click.option('--name')
 @click.option('--active/--inactive', default=True)
-def add(repository_url, backend, active):
+def add(repository_url, name, backend, active):
     repo = Repository(
         url=repository_url,
         backend=getattr(RepositoryBackend, backend),
         status=RepositoryStatus.active if active else RepositoryStatus.inactive,
     )
+    if name:
+        repo.name = name
     db.session.add(repo)
     db.session.commit()
 

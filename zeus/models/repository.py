@@ -4,7 +4,8 @@ import sqlalchemy
 
 from datetime import datetime
 from flask import current_app
-from sqlalchemy import Column, DateTime, String
+from sqlalchemy import event, Column, DateTime, String
+from urllib.parse import urlparse
 
 from zeus.config import db
 from zeus.db.types import Enum, GUID, JSONEncodedDict
@@ -83,6 +84,7 @@ class Repository(db.Model):
     """
     id = Column(GUID, primary_key=True, default=GUID.default_value)
 
+    name = Column(String(200), nullable=False, unique=True)
     url = Column(String(200), nullable=False, unique=True)
     backend = Column(Enum(RepositoryBackend), default=RepositoryBackend.unknown, nullable=False)
     status = Column(Enum(RepositoryStatus), default=RepositoryStatus.inactive, nullable=False)
@@ -116,3 +118,11 @@ class Repository(db.Model):
             return GitVcs(**kwargs)
         else:
             raise NotImplementedError('Invalid backend: {}'.format(self.backend))
+
+
+@event.listens_for(Repository.url, 'set', retval=False)
+def set_name(target, value, oldvalue, initiator):
+    if value and not target.name:
+        parts = urlparse(value)
+        target.name = parts.path.split('.git', 1)[0][1:]
+    return value
