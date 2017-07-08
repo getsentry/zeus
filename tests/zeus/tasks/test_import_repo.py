@@ -1,5 +1,3 @@
-from mock import MagicMock
-
 from datetime import datetime
 
 from zeus.tasks.import_repo import import_repo
@@ -8,7 +6,7 @@ from zeus.vcs.base import Vcs, RevisionResult
 
 
 def test_import_repo(mocker, db_session, default_repo):
-    mock_vcs_backend = MagicMock(spec=Vcs)
+    mock_vcs_backend = mocker.MagicMock(spec=Vcs)
     mock_get_vcs = mocker.patch.object(Repository, 'get_vcs', return_value=mock_vcs_backend)
     mock_delay = mocker.patch.object(import_repo, 'delay')
 

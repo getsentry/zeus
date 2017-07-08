@@ -51,6 +51,7 @@ def create_app(_read_config=True, **config):
     app.config['CELERY_DEFAULT_ROUTING_KEY'] = 'default'
     app.config['CELERY_DISABLE_RATE_LIMITS'] = True
     app.config['CELERY_IGNORE_RESULT'] = True
+    app.config['CELERY_IMPORTS'] = ('zeus.tasks', )
     app.config['CELERY_RESULT_BACKEND'] = None
     app.config['CELERY_RESULT_SERIALIZER'] = 'zeus_json'
     app.config['CELERY_SEND_EVENTS'] = False

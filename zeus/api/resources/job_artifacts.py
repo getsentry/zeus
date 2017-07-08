@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from zeus.config import db
 from zeus.constants import Result
 from zeus.models import Job, Artifact
+from zeus.tasks import process_artifact
 
 from .base import Resource
 from ..schemas import ArtifactSchema
@@ -65,11 +66,10 @@ class JobArtifactsResource(Resource):
             exists = False
 
         if exists:
-            # XXX(dcramer); this is more of an error but we make an assumption
+            # XXX(dcramer): this is more of an error but we make an assumption
             # that this happens because it was already sent
             return self.error('An artifact with this name already exists', 204)
 
-        # TODO(dcramer): send to queue for processing
         artifact.file.save(
             request.files['file'],
             '{0}/{1}/{2}_{3}'.format(
@@ -78,5 +78,7 @@ class JobArtifactsResource(Resource):
         )
         db.session.add(artifact)
         db.session.commit()
+
+        process_artifact.delay(artifact_id=artifact.id)
 
         return self.respond_with_schema(artifact_schema, artifact, 201)
