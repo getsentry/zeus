@@ -1,7 +1,7 @@
 import click
 
 from zeus.config import db
-from zeus.models import Repository, RepositoryBackend, RepositoryStatus
+from zeus.models import Repository, RepositoryAccess, RepositoryBackend, RepositoryStatus, User
 from zeus.tasks import import_repo, sync_repo
 
 from .base import cli
@@ -23,6 +23,7 @@ def add(repository_url, backend, active):
         status=RepositoryStatus.active if active else RepositoryStatus.inactive,
     )
     db.session.add(repo)
+    db.session.commit()
 
     if active:
         # do initial import in process
@@ -32,7 +33,27 @@ def add(repository_url, backend, active):
 @repos.command()
 @click.argument('repository_url', required=True)
 def sync(repository_url):
-    repo = Repository.query.filter(
+    repo = Repository.query.unrestricted_unsafe().filter(
         Repository.url == repository_url,
     ).first()
     sync_repo(repo_id=repo.id)
+
+
+@repos.group('access')
+def access():
+    pass
+
+
+@access.command('add')
+@click.argument('repository_url', required=True)
+@click.argument('email', required=True)
+def access_add(repository_url, email):
+    repo = Repository.query.unrestricted_unsafe().filter(
+        Repository.url == repository_url,
+    ).first()
+    user = User.query.filter(User.email == email).first()
+    assert repo
+    assert email
+    access = RepositoryAccess(user=user, repository=repo)
+    db.session.add(access)
+    db.session.commit()

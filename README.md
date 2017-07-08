@@ -29,6 +29,12 @@ Now configure credentials by creating a GitHub account, and then add them to ``~
 $ zeus repos add https://github.com/getsentry/zeus.git
 ```
 
+Once you've authenticated, give yourself access to the repository:
+
+```shell
+$ zeus repos access add https://github.com/getsentry/zeus.git [you@example.com]
+```
+
 ## Layout
 
 ```
