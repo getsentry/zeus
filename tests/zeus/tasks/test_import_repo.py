@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from zeus.tasks.import_repo import import_repo
+from zeus.tasks import import_repo
 from zeus.models import Repository, RepositoryStatus
 from zeus.vcs.base import Vcs, RevisionResult
 

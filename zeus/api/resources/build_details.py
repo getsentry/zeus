@@ -1,20 +1,14 @@
-from zeus.models import Build, Repository
+from zeus.models import Build
 
-from .base import Resource
+from .base_build import BaseBuildResource
 from ..schemas import BuildSchema
 
 build_schema = BuildSchema(strict=True)
 
 
-class BuildDetailsResource(Resource):
-    def get(self, repository_name: str, build_number: int):
+class BuildDetailsResource(BaseBuildResource):
+    def get(self, build: Build):
         """
         Return a build.
         """
-        build = Build.query.join(Repository, Repository.id == Build.repository_id).filter(
-            Repository.name == repository_name,
-            Build.number == build_number,
-        ).first()
-        if not build:
-            return self.not_found()
         return self.respond_with_schema(build_schema, build)

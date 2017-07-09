@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields
 
+from .fields import ResultField, StatusField
 from .source import SourceSchema
 
 
@@ -9,6 +10,6 @@ class BuildSchema(Schema):
     created_at = fields.DateTime(attribute="date_created", dump_only=True)
     started_at = fields.DateTime(attribute="date_started")
     finished_at = fields.DateTime(attribute="date_finished")
-    status = fields.Str()
-    result = fields.Str()
+    status = StatusField()
+    result = ResultField()
     source = fields.Nested(SourceSchema(), dump_only=True)

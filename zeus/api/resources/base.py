@@ -28,8 +28,8 @@ class Resource(View):
         resp.status_code = status
         return resp
 
-    def schema_from_request(self, schema: Schema):
-        return schema.load(request.get_json() or {})
+    def schema_from_request(self, schema: Schema, partial=False):
+        return schema.load(request.get_json() or {}, partial=partial)
 
     def respond_with_schema(self, schema: Schema, value, status: int=200) -> Response:
         result = schema.dump(value)

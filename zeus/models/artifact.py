@@ -20,12 +20,7 @@ class ArtifactType(enum.Enum):
     HTML = 3
 
     def __str__(self):
-        return {
-            ArtifactType.UNKNOWN: 'Unknown',
-            ArtifactType.TEXT: 'Text',
-            ArtifactType.IMAGE: 'Image',
-            ArtifactType.HTML: 'Html',
-        }[self]
+        return self.name
 
 
 class Artifact(RepositoryBoundMixin, db.Model):

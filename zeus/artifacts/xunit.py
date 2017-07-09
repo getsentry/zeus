@@ -113,7 +113,6 @@ class XunitHandler(ArtifactHandler):
                     duration=duration,
                     result=result,
                     message=message,
-                    reruns=int(attrs.get('rerun')) if attrs.get('rerun') else None,
                     artifacts=self._get_testartifacts(node)
                 )
             )
