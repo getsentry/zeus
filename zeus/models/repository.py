@@ -16,13 +16,8 @@ class RepositoryBackend(enum.Enum):
     unknown = 0
     git = 1
 
-    _labels = {
-        unknown: 'Unknown',
-        git: 'git',
-    }
-
     def __str__(self):
-        return self._labels[self]
+        return self.name
 
 
 class RepositoryStatus(enum.Enum):
@@ -30,14 +25,8 @@ class RepositoryStatus(enum.Enum):
     active = 1
     importing = 2
 
-    _labels = {
-        inactive: 'Inactive',
-        active: 'Active',
-        importing: 'importing',
-    }
-
     def __str__(self):
-        return self._labels[self]
+        return self.name
 
 
 class RepositoryAccessBoundQuery(db.Query):

@@ -51,7 +51,13 @@ export default class BuildDetails extends AsyncComponent {
               </DurationWrapper>}
             <Time>
               <IconClock size="18" />
-              started {moment(build.started_at).fromNow()}
+              {build.status === 'queued'
+                ? <span>
+                    created {moment(build.created_at).fromNow()}
+                  </span>
+                : <span>
+                    started {moment(build.started_at).fromNow()}
+                  </span>}
             </Time>
             <Commit>
               {build.source.revision.sha.substr(0, 7)}

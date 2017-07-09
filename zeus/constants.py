@@ -8,7 +8,7 @@ class Status(Enum):
     finished = 3
 
     def __str__(self):
-        return STATUS_LABELS[self]
+        return self.name
 
 
 class Result(Enum):
@@ -19,25 +19,10 @@ class Result(Enum):
     failed = 2
 
     def __str__(self):
-        return RESULT_LABELS[self]
+        return self.name
 
-
-STATUS_LABELS = {
-    Status.unknown: 'Unknown',
-    Status.queued: 'Queued',
-    Status.in_progress: 'In progress',
-    Status.finished: 'Finished',
-}
 
 STATUS_PRIORITY = (Status.in_progress, Status.queued, Status.finished, )
-
-RESULT_LABELS = {
-    Result.unknown: 'Unknown',
-    Result.passed: 'Passed',
-    Result.failed: 'Failed',
-    Result.skipped: 'Skipped',
-    Result.aborted: 'Aborted',
-}
 
 RESULT_PRIORITY = (Result.aborted, Result.failed, Result.unknown, Result.passed, Result.skipped, )
 
