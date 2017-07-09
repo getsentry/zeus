@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {Link} from 'react-router';
 import moment from 'moment';
 import styled, {css} from 'styled-components';
 
 import AsyncComponent from './AsyncComponent';
 import Duration from './Duration';
-import HorizontalHeader from './HorizontalHeader';
+import {HeaderLink, HorizontalHeader} from './HorizontalHeader';
 import TabbedNavItem from './TabbedNavItem';
 
 import IconCircleCheck from '../assets/IconCircleCheck';
@@ -15,7 +16,7 @@ import IconClock from '../assets/IconClock';
 export default class BuildDetails extends AsyncComponent {
   static contextTypes = {
     ...AsyncComponent.contextTypes,
-    repoList: PropTypes.arrayOf(PropTypes.object).isRequired
+    repo: PropTypes.object.isRequired
   };
 
   getEndpoints() {
@@ -32,11 +33,16 @@ export default class BuildDetails extends AsyncComponent {
   }
 
   renderBody() {
+    let {repo} = this.context;
     let {build} = this.state;
     let {buildID, repoID} = this.props.params;
     return (
       <div>
-        <HorizontalHeader />
+        <HorizontalHeader>
+          <HeaderLink to={`/repos/${repo.id}`}>
+            {repo.name}
+          </HeaderLink>
+        </HorizontalHeader>
         <BuildSummary>
           <Header>
             <Message>
