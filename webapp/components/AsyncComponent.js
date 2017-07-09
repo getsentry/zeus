@@ -43,7 +43,7 @@ export default class AsyncComponent extends Component {
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (!isEqual(this.props.params, nextProps.params)) {
-      this.remountComponent();
+      this.remountComponent(nextProps, nextContext);
     }
   }
 
@@ -52,7 +52,7 @@ export default class AsyncComponent extends Component {
   }
 
   // XXX: cant call this getInitialState as React whines
-  getDefaultState() {
+  getDefaultState(props, context) {
     let endpoints = this.getEndpoints();
     let state = {
       // has all data finished requesting?
@@ -67,8 +67,8 @@ export default class AsyncComponent extends Component {
     return state;
   }
 
-  remountComponent() {
-    this.setState(this.getDefaultState(), this.fetchData);
+  remountComponent(props, context) {
+    this.setState(this.getDefaultState(props, context), this.fetchData);
   }
 
   fetchData() {
