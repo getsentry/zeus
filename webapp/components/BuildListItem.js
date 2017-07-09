@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router';
+import moment from 'moment';
 import styled, {css} from 'styled-components';
 
 import IconCircleCheck from '../assets/IconCircleCheck';
@@ -8,51 +9,45 @@ import IconCircleCross from '../assets/IconCircleCross';
 import IconClock from '../assets/IconClock';
 
 export default class BuildListItem extends Component {
+  static contextTypes = {
+    repo: PropTypes.object.isRequired
+  };
+
   static propTypes = {
     build: PropTypes.object.isRequired
   };
 
   render() {
-    const {
-      message,
-      status,
-      duration,
-      timestamp,
-      author,
-      branch,
-      commit,
-      slug,
-      testCount,
-      lineCoverageDiff
-    } = {...this.props.build};
+    let {repo} = this.context;
+    let {build} = this.props;
     return (
-      <BuildListItemLink to={slug}>
+      <BuildListItemLink to={`/repos/${repo.id}/builds/${build.id}`}>
         <Header>
           <Message>
-            {message}
+            {build.source.revision.message}
           </Message>
           <TestCount>
-            {testCount}
+            {build.testCount || ''}
           </TestCount>
           <Coverage>
-            {parseInt(lineCoverageDiff * 100, 10)}%
+            {build.lineCoverageDiff >= 0
+              ? `${parseInt(build.lineCoverageDiff * 100, 10)}%`
+              : ''}
           </Coverage>
-          <Branch>
-            {branch}
-          </Branch>
+          <Branch>branch-name</Branch>
         </Header>
         <Meta>
-          <Duration status={status}>
-            {status == 'pass' && <IconCircleCheck size="15" />}
-            {status == 'fail' && <IconCircleCross size="15" />}
-            {duration}
+          <Duration status={build.status}>
+            {build.status == 'pass' && <IconCircleCheck size="15" />}
+            {build.status == 'fail' && <IconCircleCross size="15" />}
+            duration
           </Duration>
           <Time>
             <IconClock size="15" />
-            {author} {timestamp}
+            author {moment(build.created_at).format('ll')}
           </Time>
           <Commit>
-            {commit}
+            {build.source.revision.sha.substr(0, 7)}
           </Commit>
         </Meta>
       </BuildListItemLink>
