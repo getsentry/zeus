@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 from zeus.config import db
 from zeus.db.types import Enum, GUID, JSONEncodedDict
 from zeus.db.utils import model_repr
+from zeus.utils.text import slugify
 
 
 class RepositoryBackend(enum.Enum):
@@ -115,5 +116,5 @@ class Repository(db.Model):
 def set_name(target, value, oldvalue, initiator):
     if value and not target.name:
         parts = urlparse(value)
-        target.name = parts.path.split('.git', 1)[0][1:]
+        target.name = slugify(parts.path.split('.git', 1)[0][1:])
     return value

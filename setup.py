@@ -15,6 +15,7 @@ install_requires = [
     'raven==6.1.0',
     'redis==2.10.5',
     'requests==2.18.1',
+    'unidecode==0.04.21',
 ]
 
 dev_requires = [

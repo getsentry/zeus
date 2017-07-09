@@ -3,6 +3,7 @@ import click
 from zeus.config import db
 from zeus.models import Repository, RepositoryAccess, RepositoryBackend, RepositoryStatus, User
 from zeus.tasks import import_repo, sync_repo
+from zeus.utils.text import slugify
 
 from .base import cli
 
@@ -24,7 +25,7 @@ def add(repository_url, name, backend, active):
         status=RepositoryStatus.active if active else RepositoryStatus.inactive,
     )
     if name:
-        repo.name = name
+        repo.name = slugify(name)
     db.session.add(repo)
     db.session.commit()
 
