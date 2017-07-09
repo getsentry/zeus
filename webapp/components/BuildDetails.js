@@ -5,6 +5,7 @@ import styled, {css} from 'styled-components';
 
 import AsyncComponent from './AsyncComponent';
 import Duration from './Duration';
+import HorizontalHeader from './HorizontalHeader';
 import TabbedNavItem from './TabbedNavItem';
 
 import IconCircleCheck from '../assets/IconCircleCheck';
@@ -35,6 +36,7 @@ export default class BuildDetails extends AsyncComponent {
     let {buildID, repoID} = this.props.params;
     return (
       <div>
+        <HorizontalHeader />
         <BuildSummary>
           <Header>
             <Message>
