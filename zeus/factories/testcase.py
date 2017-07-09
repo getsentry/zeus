@@ -1,6 +1,9 @@
 import factory
 import factory.fuzzy
 
+from faker import Factory
+faker = Factory.create()
+
 from zeus import models
 from zeus.constants import Result
 
@@ -9,7 +12,9 @@ from .types import GUIDFactory
 
 class TestCaseFactory(factory.Factory):
     id = GUIDFactory()
-    name = factory.fuzzy.FuzzyText(prefix='tests.foo.bar')
+    name = factory.LazyAttribute(
+        lambda o: 'tests.%s.%s.%s' % (faker.word(), faker.word(), faker.word())
+    )
     job = factory.SubFactory('zeus.factories.JobFactory')
     job_id = factory.SelfAttribute('job.id')
     repository = factory.SelfAttribute('job.repository')

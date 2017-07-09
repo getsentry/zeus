@@ -2,7 +2,7 @@ import factory
 import factory.fuzzy
 
 from faker import Factory
-fake = Factory.create()
+faker = Factory.create()
 
 from zeus import models
 
@@ -14,7 +14,7 @@ class RepositoryFactory(factory.Factory):
     url = factory.LazyAttribute(
         lambda o: 'https://github.com/getsentry/%s.git' % (o.name.lower(), )
     )
-    name = factory.LazyAttribute(lambda o: '%s/%s' % (fake.word(), fake.word()))
+    name = factory.LazyAttribute(lambda o: '%s/%s' % (faker.word(), faker.word()))
     backend = models.RepositoryBackend.git
     status = models.RepositoryStatus.active
     date_created = factory.Faker('date_time')

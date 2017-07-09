@@ -4,6 +4,7 @@ import moment from 'moment';
 import styled, {css} from 'styled-components';
 
 import AsyncComponent from './AsyncComponent';
+import Duration from './Duration';
 import TabbedNavItem from './TabbedNavItem';
 
 import IconCircleCheck from '../assets/IconCircleCheck';
@@ -25,6 +26,10 @@ export default class BuildDetails extends AsyncComponent {
     return 'Build Details';
   }
 
+  getDuration(build) {
+    return new Date(build.finished_at).getTime() - new Date(build.started_at).getTime();
+  }
+
   renderBody() {
     let {build} = this.state;
     let {buildID, repoID} = this.props.params;
@@ -38,11 +43,12 @@ export default class BuildDetails extends AsyncComponent {
             <Branch>branch-name</Branch>
           </Header>
           <Meta>
-            <Duration status={build.status}>
-              {build.status == 'pass' && <IconCircleCheck size="18" />}
-              {build.status == 'fail' && <IconCircleCross size="18" />}
-              passed in duration
-            </Duration>
+            {build.status === 'finished' &&
+              <DurationWrapper result={build.result}>
+                {build.result == 'passed' && <IconCircleCheck size="15" />}
+                {build.result == 'failed' && <IconCircleCross size="15" />}
+                {build.status} in <Duration ms={this.getDurationbuild()} short={true} />
+              </DurationWrapper>}
             <Time>
               <IconClock size="18" />
               started {moment(build.started_at).fromNow()}
@@ -52,11 +58,17 @@ export default class BuildDetails extends AsyncComponent {
             </Commit>
           </Meta>
           <Tabs>
-            <TabbedNavItem to={`/repos/${repoID}/builds/${buildID}/jobs`}>
+            <TabbedNavItem
+              to={`/repos/${repoID}/builds/${buildID}`}
+              onlyActiveOnIndex={true}>
               Jobs
             </TabbedNavItem>
-            <TabbedNavItem to="/tests">Tests</TabbedNavItem>
-            <TabbedNavItem to="/tests">Coverage</TabbedNavItem>
+            <TabbedNavItem to={`/repos/${repoID}/builds/${buildID}/tests`}>
+              Tests
+            </TabbedNavItem>
+            <TabbedNavItem to={`/repos/${repoID}/builds/${buildID}/coverage`}>
+              Code Coverage
+            </TabbedNavItem>
           </Tabs>
         </BuildSummary>
         {this.props.children}
@@ -119,9 +131,9 @@ const Meta = styled.div`
   }
 `;
 
-const Duration = styled.div`
+export const DurationWrapper = styled.div`
   ${props => {
-    switch (props.status) {
+    switch (props.result) {
       case 'pass':
         return css`
           svg {

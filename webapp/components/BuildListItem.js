@@ -4,6 +4,7 @@ import {Link} from 'react-router';
 import moment from 'moment';
 import styled, {css} from 'styled-components';
 
+import Duration from './Duration';
 import IconCircleCheck from '../assets/IconCircleCheck';
 import IconCircleCross from '../assets/IconCircleCross';
 import IconClock from '../assets/IconClock';
@@ -16,6 +17,10 @@ export default class BuildListItem extends Component {
   static propTypes = {
     build: PropTypes.object.isRequired
   };
+
+  getDuration(build) {
+    return new Date(build.finished_at).getTime() - new Date(build.started_at).getTime();
+  }
 
   render() {
     let {repo} = this.context;
@@ -37,11 +42,12 @@ export default class BuildListItem extends Component {
           <Branch>branch-name</Branch>
         </Header>
         <Meta>
-          <Duration status={build.status}>
-            {build.status == 'pass' && <IconCircleCheck size="15" />}
-            {build.status == 'fail' && <IconCircleCross size="15" />}
-            duration
-          </Duration>
+          <DurationWrapper result={build.result}>
+            {build.result == 'passed' && <IconCircleCheck size="15" />}
+            {build.result == 'failed' && <IconCircleCross size="15" />}
+            {build.status == 'finished' &&
+              <Duration ms={this.getDurationbuild()} short={true} />}
+          </DurationWrapper>
           <Time>
             <IconClock size="15" />
             author {moment(build.created_at).fromNow()}
@@ -136,9 +142,9 @@ const Meta = styled.div`
   }
 `;
 
-const Duration = styled.div`
+export const DurationWrapper = styled.div`
   ${props => {
-    switch (props.status) {
+    switch (props.result) {
       case 'pass':
         return css`
           svg {

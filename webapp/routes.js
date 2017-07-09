@@ -4,6 +4,7 @@ import {IndexRoute, Route} from 'react-router';
 import App from './components/App';
 import BuildDetails from './components/BuildDetails';
 import BuildJobList from './components/BuildJobList';
+import BuildTestList from './components/BuildTestList';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import NotFound from './components/NotFound';
@@ -12,15 +13,14 @@ import RepositoryBuildList from './components/RepositoryBuildList';
 
 import requireAuth from './utils/requireAuth';
 
-// <Route path="/" component={requireAuth(App)} />;
-
 export default (
   <Route path="/" component={App}>
     <IndexRoute component={requireAuth(Dashboard)} />
     <Route path="/repos/:repoID" component={requireAuth(RepositoryDetails)}>
       <IndexRoute component={RepositoryBuildList} />
-      <Route path="builds/:buildID" component={requireAuth(BuildDetails)}>
-        <IndexRoute path="jobs" component={BuildJobList} />
+      <Route path="builds/:buildID" component={BuildDetails}>
+        <IndexRoute component={BuildJobList} />
+        <Route path="tests" component={BuildTestList} />
       </Route>
     </Route>
     <Route path="/login" component={Login} />

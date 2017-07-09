@@ -2,21 +2,22 @@ import React from 'react';
 import styled from 'styled-components';
 
 import AsyncComponent from './AsyncComponent';
+import Duration from './Duration';
 
-export default class BuildJobList extends AsyncComponent {
+export default class BuildTestList extends AsyncComponent {
   getEndpoints() {
     let {buildID} = this.props.params;
-    return [['jobList', `/builds/${buildID}/jobs`]];
+    return [['testList', `/builds/${buildID}/tests`]];
   }
 
   renderBody() {
     return (
       <Section>
         <List>
-          {this.state.jobList.map(job => {
+          {this.state.testList.map(test => {
             return (
-              <ListItem key={job.id}>
-                {job.id}
+              <ListItem key={test.id}>
+                {test.name} &mdash; <Duration ms={test.duration} short={true} />
               </ListItem>
             );
           })}
