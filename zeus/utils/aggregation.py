@@ -19,7 +19,7 @@ def safe_agg(func, sequence, default=None):
 
 def _aggregate_constant(item_list, priority_list, default):
     value = default
-    priority = sys.maxint
+    priority = sys.maxsize
     for item_value in item_list:
         if item_value == default:
             continue
@@ -34,7 +34,7 @@ def _aggregate_constant(item_list, priority_list, default):
 
 def _aggregate_constant_result(item_list, priority_list, default):
     value = default
-    priority = sys.maxint
+    priority = sys.maxsize
     for item_value in item_list:
         idx = priority_list.index(item_value)
         if idx < priority:
@@ -49,4 +49,5 @@ def aggregate_status(status_list):
 
 
 def aggregate_result(result_list):
-    return _aggregate_constant_result(result_list, RESULT_PRIORITY, Result.unknown)
+    return _aggregate_constant_result(result_list, RESULT_PRIORITY,
+                                      Result.unknown)
