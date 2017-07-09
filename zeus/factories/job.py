@@ -32,6 +32,8 @@ class JobFactory(factory.Factory):
         model = models.Job
 
     class Params:
+        queued = factory.Trait(result=Result.unknown, status=Status.queued)
+        in_progress = factory.Trait(result=Result.unknown, status=Status.in_progress)
         failed = factory.Trait(result=Result.failed, status=Status.finished)
         passed = factory.Trait(result=Result.passed, status=Status.finished)
         aborted = factory.Trait(result=Result.aborted, status=Status.finished)
