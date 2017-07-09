@@ -30,7 +30,7 @@ export default class Sidebar extends Component {
         <Link to="/">
           <Logo size="30" />
         </Link>
-        <SidebarNavHeading label="Repositories" />
+        <SidebarNavHeading>Repositories</SidebarNavHeading>
         <RepositoryList />
       </SidebarWrapper>
     );

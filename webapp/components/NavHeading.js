@@ -1,11 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-const NavHeading = styled(({label, ...props}) => {
+export default styled(({label, ...props}) => {
   return (
     <div {...props}>
-      {label}
+      {props.children}
     </div>
   );
 })`
@@ -15,9 +14,3 @@ const NavHeading = styled(({label, ...props}) => {
   margin: 0 0 30px;
   color: #767488;
 `;
-
-NavHeading.propTypes = {
-  label: PropTypes.string
-};
-
-export default NavHeading;
