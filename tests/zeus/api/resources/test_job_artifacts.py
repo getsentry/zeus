@@ -4,25 +4,39 @@ from zeus.models import Artifact
 
 
 def test_job_artifacts_list(
-    client, default_login, default_job, default_artifact, default_repo_access
+    client, default_login, default_repo, default_build, default_job, default_artifact,
+    default_repo_access
 ):
-    resp = client.get('/api/jobs/{}/artifacts'.format(default_job.id))
+    resp = client.get(
+        '/api/repos/{}/builds/{}/jobs/{}/artifacts'.
+        format(default_repo.name, default_build.number, default_job.number)
+    )
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 1
     assert data[0]['id'] == str(default_artifact.id)
 
 
-def test_job_artifacts_list_empty(client, default_login, default_job, default_repo_access):
-    resp = client.get('/api/jobs/{}/artifacts'.format(default_job.id))
+def test_job_artifacts_list_empty(
+    client, default_login, default_repo, default_build, default_job, default_repo_access
+):
+    resp = client.get(
+        '/api/repos/{}/builds/{}/jobs/{}/artifacts'.
+        format(default_repo.name, default_build.number, default_job.number)
+    )
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 0
 
 
-def test_create_job_artifact(client, default_login, default_job, default_repo_access, sample_xunit):
+def test_create_job_artifact(
+    client, default_login, default_repo, default_build, default_job, default_repo_access,
+    sample_xunit
+):
     resp = client.post(
-        '/api/jobs/{}/artifacts'.format(default_job.id),
+        '/api/repos/{}/builds/{}/jobs/{}/artifacts'.format(
+            default_repo.name, default_build.number, default_job.number
+        ),
         data={
             'name': 'junit.xml',
             'file': (BytesIO(sample_xunit.encode('utf-8')), 'junit.xml'),

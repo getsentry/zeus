@@ -9,17 +9,17 @@ builds_schema = BuildSchema(many=True, strict=True)
 
 
 class RepositoryBuildsResource(Resource):
-    def get(self, repository_id):
+    def get(self, repository_name: str):
         """
         Return a list of builds for the given repository.
         """
-        repo = Repository.query.get(repository_id)
+        repo = Repository.query.filter(Repository.name == repository_name).first()
         if not repo:
             return self.not_found()
 
         query = Build.query.options(
             joinedload('source').joinedload('revision'),
         ).filter(
-            Build.repository_id == repository_id,
-        )
+            Build.repository_id == repo.id,
+        ).order_by(Build.number.desc()).limit(100)
         return self.respond_with_schema(builds_schema, query)

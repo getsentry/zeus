@@ -21,8 +21,11 @@ export default class BuildListItem extends Component {
     let {repo} = this.context;
     let {build} = this.props;
     return (
-      <BuildListItemLink to={`/repos/${repo.id}/builds/${build.id}`}>
+      <BuildListItemLink to={`/repos/${repo.name}/builds/${build.number}`}>
         <Header>
+          <span style={{marginRight: 10}}>
+            #{build.number}
+          </span>
           <Message>
             {build.source.revision.message}
           </Message>

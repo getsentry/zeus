@@ -16,9 +16,9 @@ import requireAuth from './utils/requireAuth';
 export default (
   <Route path="/" component={App}>
     <IndexRoute component={requireAuth(Dashboard)} />
-    <Route path="/repos/:repoID" component={requireAuth(RepositoryDetails)}>
+    <Route path="/repos/:repoName" component={requireAuth(RepositoryDetails)}>
       <IndexRoute component={RepositoryBuildList} />
-      <Route path="builds/:buildID" component={BuildDetails}>
+      <Route path="builds/:buildNumber" component={BuildDetails}>
         <IndexRoute component={BuildJobList} />
         <Route path="tests" component={BuildTestList} />
       </Route>

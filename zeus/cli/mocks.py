@@ -21,8 +21,14 @@ def mock_single_repository(builds=10, user_ids=()):
         repo = models.Repository.query.unrestricted_unsafe().filter(
             models.Repository.name == repo.name
         ).first()
+        if not repo:
+            repo = models.Repository.query.unrestricted_unsafe().filter(
+                models.Repository.url == repo.url
+            ).first()
     else:
         click.echo('Created {!r}'.format(repo))
+
+    db.session.flush()
 
     for user_id in user_ids:
         try_create(models.RepositoryAccess, {

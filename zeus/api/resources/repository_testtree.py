@@ -9,11 +9,11 @@ from .base import Resource
 
 
 class RepositoryTestTreeResource(Resource):
-    def get(self, repository_id):
+    def get(self, repository_name: str):
         """
         Return a tree of testcases for the given repository.
         """
-        repo = Repository.query.get(repository_id)
+        repo = Repository.query.filter(Repository.name == repository_name).first()
         if not repo:
             return self.not_found()
 

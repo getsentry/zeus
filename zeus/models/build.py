@@ -1,3 +1,6 @@
+from sqlalchemy import event
+from sqlalchemy.sql import func, select
+
 from datetime import datetime
 
 from zeus.config import db
@@ -17,6 +20,7 @@ class Build(RepositoryBoundMixin, db.Model):
     source_id = db.Column(
         GUID, db.ForeignKey('source.id', ondelete='CASCADE'), nullable=False, index=True
     )
+    number = db.Column(db.Integer, nullable=False)
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
     result = db.Column(Enum(Result), nullable=False, default=Result.unknown)
     date_started = db.Column(db.DateTime, nullable=True)
@@ -27,4 +31,12 @@ class Build(RepositoryBoundMixin, db.Model):
     source = db.relationship('Source', innerjoin=True)
 
     __tablename__ = 'build'
+    __table_args__ = (db.UniqueConstraint('repository_id', 'number', name='unq_build_number'), )
     __repr__ = model_repr('repository_id', 'source_id', 'status', 'result')
+
+
+@event.listens_for(Build.repository_id, 'set', retval=False)
+def set_number(target, value, oldvalue, initiator):
+    if value is not None and target.number is None:
+        target.number = select([func.next_item_value(value)])
+    return value

@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 
 from zeus.config import db
 from zeus.constants import Result
-from zeus.models import Job, Artifact
+from zeus.models import Artifact, Build, Job, Repository
 from zeus.tasks import process_artifact
 
 from .base import Resource
@@ -14,25 +14,37 @@ artifacts_schema = ArtifactSchema(strict=True, many=True)
 
 
 class JobArtifactsResource(Resource):
-    def get(self, job_id: str):
+    def get(self, repository_name: str, build_number: int, job_number: int):
         """
         Return a list of artifacts for a given job.
         """
-        job = Job.query.get(job_id)
+        job = Job.query.join(Build, Build.id == Job.build_id).join(
+            Repository, Repository.id == Build.repository_id
+        ).filter(
+            Repository.name == repository_name,
+            Build.number == build_number,
+            Job.number == job_number,
+        ).first()
         if not job:
             return self.not_found()
 
         query = Artifact.query.filter(
             Artifact.job_id == job.id,
-        )
+        ).order_by(Artifact.name.asc())
 
         return self.respond_with_schema(artifacts_schema, query)
 
-    def post(self, job_id: str):
+    def post(self, repository_name: str, build_number: int, job_number: int):
         """
         Create a new artifact for the given job.
         """
-        job = Job.query.get(job_id)
+        job = Job.query.join(Build, Build.id == Job.build_id).join(
+            Repository, Repository.id == Build.repository_id
+        ).filter(
+            Repository.name == repository_name,
+            Build.number == build_number,
+            Job.number == job_number,
+        ).first()
         if not job:
             return self.not_found()
 

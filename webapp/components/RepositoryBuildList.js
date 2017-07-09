@@ -7,8 +7,8 @@ export default class RepositoryBuildList extends Component {
   render() {
     return (
       <div>
-        <Sidebar />
-        <BuildList />
+        <Sidebar params={this.props.params} />
+        <BuildList params={this.props.params} />
       </div>
     );
   }

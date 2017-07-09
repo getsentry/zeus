@@ -1,6 +1,6 @@
 from sqlalchemy.orm import contains_eager
 
-from zeus.models import Job, Build, TestCase
+from zeus.models import Job, Build, Repository, TestCase
 
 from .base import Resource
 from ..schemas import TestCaseSchema
@@ -9,11 +9,14 @@ testcases_schema = TestCaseSchema(many=True, strict=True)
 
 
 class BuildTestsResource(Resource):
-    def get(self, build_id):
+    def get(self, repository_name: str, build_number: int):
         """
         Return a list of test cases for a given build.
         """
-        build = Build.query.get(build_id)
+        build = Build.query.join(Repository, Repository.id == Build.repository_id).filter(
+            Repository.name == repository_name,
+            Build.number == build_number,
+        ).first()
         if not build:
             return self.not_found()
 

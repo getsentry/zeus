@@ -6,8 +6,8 @@ import Duration from './Duration';
 
 export default class BuildTestList extends AsyncComponent {
   getEndpoints() {
-    let {buildID} = this.props.params;
-    return [['testList', `/builds/${buildID}/tests`]];
+    let {buildNumber, repoName} = this.props.params;
+    return [['testList', `/repos/${repoName}/builds/${buildNumber}/tests`]];
   }
 
   renderBody() {

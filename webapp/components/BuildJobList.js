@@ -1,22 +1,29 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import AsyncComponent from './AsyncComponent';
 
 export default class BuildJobList extends AsyncComponent {
+  static contextTypes = {
+    ...AsyncComponent.contextTypes,
+    build: PropTypes.object.isRequired
+  };
+
   getEndpoints() {
-    let {buildID} = this.props.params;
-    return [['jobList', `/builds/${buildID}/jobs`]];
+    let {buildNumber, repoName} = this.props.params;
+    return [['jobList', `/repos/${repoName}/builds/${buildNumber}/jobs`]];
   }
 
   renderBody() {
+    let {build} = this.context;
     return (
       <Section>
         <List>
           {this.state.jobList.map(job => {
             return (
               <ListItem key={job.id}>
-                {job.id}
+                #{build.number}.{job.number} &mdash; {job.id}
               </ListItem>
             );
           })}

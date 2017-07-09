@@ -11,19 +11,23 @@ export default class RepositoryDetails extends AsyncComponent {
 
   static childContextTypes = {
     ...AsyncComponent.childContextTypes,
+    ...RepositoryDetails.contextTypes,
     repo: PropTypes.object.isRequired
   };
 
-  getDefaultState(props, context) {
-    let {repoID} = props.params;
-    let {repoList} = context;
-    let state = super.getDefaultState(props, context);
-    state.repo = repoList.find(r => r.id === repoID);
-    return state;
+  getChildContext() {
+    return {
+      ...this.context,
+      repo: this.state.repo
+    };
   }
 
-  getChildContext() {
-    return {repo: this.state.repo};
+  getDefaultState(props, context) {
+    let {repoName} = props.params;
+    let {repoList} = context;
+    let state = super.getDefaultState(props, context);
+    state.repo = repoList.find(r => r.name === repoName);
+    return state;
   }
 
   getTitle() {

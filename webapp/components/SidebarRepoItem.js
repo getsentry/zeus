@@ -9,9 +9,9 @@ export default class SidebarRepoItem extends Component {
   };
 
   render() {
-    const {name, status, id} = {...this.props.repo};
+    const {name, status} = {...this.props.repo};
     return (
-      <SidebarRepoItemLink to={`/repos/${id}`}>
+      <SidebarRepoItemLink to={`/repos/${name}`}>
         <SidebarRepoItemName>
           {name}
         </SidebarRepoItemName>

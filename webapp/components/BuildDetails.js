@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router';
 import moment from 'moment';
 import styled, {css} from 'styled-components';
 
@@ -19,9 +18,22 @@ export default class BuildDetails extends AsyncComponent {
     repo: PropTypes.object.isRequired
   };
 
+  static childContextTypes = {
+    ...AsyncComponent.childContextTypes,
+    ...BuildDetails.contextTypes,
+    build: PropTypes.object.isRequired
+  };
+
+  getChildContext() {
+    return {
+      ...this.context,
+      build: this.state.build
+    };
+  }
+
   getEndpoints() {
-    let {buildID} = this.props.params;
-    return [['build', `/builds/${buildID}`]];
+    let {buildNumber, repoName} = this.props.params;
+    return [['build', `/repos/${repoName}/builds/${buildNumber}`]];
   }
 
   getTitle() {
@@ -35,11 +47,11 @@ export default class BuildDetails extends AsyncComponent {
   renderBody() {
     let {repo} = this.context;
     let {build} = this.state;
-    let {buildID, repoID} = this.props.params;
+    let {buildNumber, repoName} = this.props.params;
     return (
       <div>
         <HorizontalHeader>
-          <HeaderLink to={`/repos/${repo.id}`}>
+          <HeaderLink to={`/repos/${repo.name}`}>
             {repo.name}
           </HeaderLink>
         </HorizontalHeader>
@@ -74,14 +86,14 @@ export default class BuildDetails extends AsyncComponent {
           </Meta>
           <Tabs>
             <TabbedNavItem
-              to={`/repos/${repoID}/builds/${buildID}`}
+              to={`/repos/${repoName}/builds/${buildNumber}`}
               onlyActiveOnIndex={true}>
               Jobs
             </TabbedNavItem>
-            <TabbedNavItem to={`/repos/${repoID}/builds/${buildID}/tests`}>
+            <TabbedNavItem to={`/repos/${repoName}/builds/${buildNumber}/tests`}>
               Tests
             </TabbedNavItem>
-            <TabbedNavItem to={`/repos/${repoID}/builds/${buildID}/coverage`}>
+            <TabbedNavItem to={`/repos/${repoName}/builds/${buildNumber}/coverage`}>
               Code Coverage
             </TabbedNavItem>
           </Tabs>
