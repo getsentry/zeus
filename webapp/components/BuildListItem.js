@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import moment from 'moment';
 import styled, {css} from 'styled-components';
+import { Flex, Box } from 'grid-styled';
 
 import IconCircleCheck from '../assets/IconCircleCheck';
 import IconCircleCross from '../assets/IconCircleCross';
@@ -22,37 +23,40 @@ export default class BuildListItem extends Component {
     let {build} = this.props;
     return (
       <BuildListItemLink to={`/repos/${repo.name}/builds/${build.number}`}>
-        <Header>
-          <span style={{marginRight: 10}}>
-            #{build.number}
-          </span>
-          <Message>
-            {build.source.revision.message}
-          </Message>
-          <TestCount>
-            {build.testCount || ''}
-          </TestCount>
-          <Coverage>
+        <Flex align="center">
+          <Box flex='1' width={6/12} pr={15}>
+            <Flex>
+              <Box width={15} mr={8}>
+                <StatusIcon status={build.result}>
+                  {build.result == 'passed' && <IconCircleCheck size="15" />}
+                  {build.result == 'failed' && <IconCircleCross size="15" />}
+                </StatusIcon>
+              </Box>
+              <Box flex='1' style={{minWidth: 0}}>
+                <Message>
+                  #{build.number} {' '} {build.source.revision.message}
+                </Message>
+                <Meta>
+                  <Branch>branch-name</Branch>
+                  <Commit>
+                    {build.source.revision.sha.substr(0, 7)}
+                  </Commit>
+                </Meta>
+              </Box>
+            </Flex>
+          </Box>
+          <Box width={2/12}>
+            Duration
+          </Box>
+          <Box width={2/12}>
             {build.lineCoverageDiff >= 0
               ? `${parseInt(build.lineCoverageDiff * 100, 10)}%`
               : ''}
-          </Coverage>
-          <Branch>branch-name</Branch>
-        </Header>
-        <Meta>
-          <DurationWrapper result={build.result}>
-            {build.result == 'passed' && <IconCircleCheck size="15" />}
-            {build.result == 'failed' && <IconCircleCross size="15" />}
-            {build.status == 'finished' && moment(build.created_at).fromNow()}
-          </DurationWrapper>
-          <Time>
-            <IconClock size="15" />
+          </Box>
+          <Box width={2/12}>
             author {moment(build.created_at).fromNow()}
-          </Time>
-          <Commit>
-            {build.source.revision.sha.substr(0, 7)}
-          </Commit>
-        </Meta>
+          </Box>
+        </Flex>
       </BuildListItemLink>
     );
   }
@@ -60,9 +64,10 @@ export default class BuildListItem extends Component {
 
 const BuildListItemLink = styled(Link)`
   display: block;
-  padding: 15px 20px;
+  padding: 10px 15px;
   color: #39364E;
   border-bottom: 1px solid #DBDAE3;
+  font-size: 14px;
 
   &:hover {
     background-color: #F0EFF5;
@@ -87,15 +92,10 @@ BuildListItemLink.defaultProps = {
   activeClassName: 'active'
 };
 
-const Header = styled.div`
-  display: flex;
-  font-size: 14px;
-`;
-
 const Message = styled.div`
+  font-size: 15px;
+  line-height: 1.2;
   font-weight: 500;
-  flex: 1;
-  padding-right: 5px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -116,12 +116,16 @@ const Coverage = styled.div`
 const Branch = styled.div`
   font-family: "Monaco", monospace;
   font-size: 12px;
+  font-weight: 600;
+`;
+
+const Commit = styled(Branch)`
+  font-weight: 400;
 `;
 
 const Meta = styled.div`
   display: flex;
   font-size: 12px;
-  margin-top: 5px;
   color: #7f7d8f;
 
   > div {
@@ -139,16 +143,16 @@ const Meta = styled.div`
   }
 `;
 
-export const DurationWrapper = styled.div`
+export const StatusIcon = styled.div`
   ${props => {
-    switch (props.result) {
-      case 'pass':
+    switch (props.status) {
+      case 'passed':
         return css`
           svg {
             color: #76D392;
           }
         `;
-      case 'fail':
+      case 'failed':
         return css`
           color: #F06E5B;
           svg {
@@ -163,11 +167,4 @@ export const DurationWrapper = styled.div`
         `;
     }
   }};
-`;
-
-const Time = styled.div``;
-
-const Commit = styled(Branch)`
-  flex: 1;
-  text-align: right;
 `;
