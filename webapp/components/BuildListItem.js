@@ -44,7 +44,7 @@ export default class BuildListItem extends Component {
           </Duration>
           <Time>
             <IconClock size="15" />
-            author {moment(build.created_at).format('ll')}
+            author {moment(build.created_at).fromNow()}
           </Time>
           <Commit>
             {build.source.revision.sha.substr(0, 7)}

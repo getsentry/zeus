@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import AsyncComponent from './AsyncComponent';
-import Sidebar from './Sidebar';
 
 export default class RepositoryDetails extends AsyncComponent {
   static contextTypes = {
@@ -34,7 +33,6 @@ export default class RepositoryDetails extends AsyncComponent {
   renderBody() {
     return (
       <div>
-        <Sidebar />
         {this.props.children}
       </div>
     );

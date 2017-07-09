@@ -1,60 +1,71 @@
-import React, {Component} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import moment from 'moment';
 import styled, {css} from 'styled-components';
 
-import NavHeading from './NavHeading';
+import AsyncComponent from './AsyncComponent';
 import TabbedNavItem from './TabbedNavItem';
 
 import IconCircleCheck from '../assets/IconCircleCheck';
 import IconCircleCross from '../assets/IconCircleCross';
 import IconClock from '../assets/IconClock';
 
-export default class BuildDetails extends Component {
-  render() {
+export default class BuildDetails extends AsyncComponent {
+  static contextTypes = {
+    ...AsyncComponent.contextTypes,
+    repoList: PropTypes.arrayOf(PropTypes.object).isRequired
+  };
+
+  getEndpoints() {
+    let {buildID} = this.props.params;
+    return [['build', `/builds/${buildID}`]];
+  }
+
+  getTitle() {
+    return 'Build Details';
+  }
+
+  renderBody() {
+    let {build} = this.state;
+    let {buildID, repoID} = this.props.params;
     return (
       <div>
         <BuildSummary>
           <Header>
-            <Message>various improvements</Message>
-            <Branch>ui/fix-that-thing</Branch>
+            <Message>
+              {build.source.revision.message}
+            </Message>
+            <Branch>branch-name</Branch>
           </Header>
           <Meta>
-            <Duration status="pass">
-              <IconCircleCheck size="18" />
-              passed in 12 mins
+            <Duration status={build.status}>
+              {build.status == 'pass' && <IconCircleCheck size="18" />}
+              {build.status == 'fail' && <IconCircleCross size="18" />}
+              passed in duration
             </Duration>
             <Time>
               <IconClock size="18" />
-              started 2 hours ago
+              started {moment(build.started_at).fromNow()}
             </Time>
-            <Commit>111asd9</Commit>
+            <Commit>
+              {build.source.revision.sha.substr(0, 7)}
+            </Commit>
           </Meta>
           <Tabs>
-            <TabbedNavItem to="/">Jobs</TabbedNavItem>
+            <TabbedNavItem to={`/repos/${repoID}/builds/${buildID}/jobs`}>
+              Jobs
+            </TabbedNavItem>
             <TabbedNavItem to="/tests">Tests</TabbedNavItem>
             <TabbedNavItem to="/tests">Coverage</TabbedNavItem>
           </Tabs>
         </BuildSummary>
-        <Section>
-          <NavHeading label="Build Jobs" />
-          <List>
-            <ListItem>just</ListItem>
-            <ListItem>gonna</ListItem>
-            <ListItem>make</ListItem>
-            <ListItem>these</ListItem>
-            <ListItem>a</ListItem>
-            <ListItem>list</ListItem>
-            <ListItem>for</ListItem>
-            <ListItem>now</ListItem>
-          </List>
-        </Section>
+        {this.props.children}
       </div>
     );
   }
 }
 
-const Section = styled.div`
-  padding: 30px;
-`;
+const Section = styled.div`padding: 30px;`;
 
 const BuildSummary = styled(Section)`
   padding-top: 15px;
@@ -83,15 +94,13 @@ const Message = styled.div`
   overflow: hidden;
 `;
 
-const Branch = styled.div`
-  font-family: "Monaco", monospace;
-`;
+const Branch = styled.div`font-family: "Monaco", monospace;`;
 
 const Meta = styled.div`
   display: flex;
   align-items: center;
   margin-top: 5px;
-  color: #7F7D8F;
+  color: #7f7d8f;
   font-size: 14px;
 
   > div {
@@ -104,14 +113,14 @@ const Meta = styled.div`
 
   svg {
     margin-right: 6px;
-    color: #BFBFCB;
+    color: #bfbfcb;
     position: relative;
     top: -1px;
   }
 `;
 
 const Duration = styled.div`
-  ${(props) => {
+  ${props => {
     switch (props.status) {
       case 'pass':
         return css`
@@ -133,31 +142,12 @@ const Duration = styled.div`
           }
         `;
     }
-  }}
+  }};
 `;
 
-const Time = styled.div`
-
-`;
+const Time = styled.div``;
 
 const Commit = styled(Branch)`
   flex: 1;
   text-align: right;
-`;
-
-const List = styled.div`
-  border: 1px solid #D8D7E0;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0,0,0, .06);
-`;
-
-const ListItem = styled.div`
-  border-top: 1px solid #E0E4E8;
-  display: flex;
-  align-items: center;
-  padding: 10px 15px;
-
-  &:first-child {
-    border: 0;
-  }
 `;

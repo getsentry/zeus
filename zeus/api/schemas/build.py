@@ -10,4 +10,4 @@ class BuildSchema(Schema):
     finished_at = fields.DateTime(attribute="date_finished")
     status = fields.Str()
     result = fields.Str()
-    source = fields.Nested(SourceSchema())
+    source = fields.Nested(SourceSchema(), dump_only=True)
