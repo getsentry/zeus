@@ -35,6 +35,12 @@ Once you've authenticated, give yourself access to the repository:
 $ zeus repos access add https://github.com/getsentry/zeus.git [you@example.com]
 ```
 
+Additionally, you can generate some mock data:
+
+```shell
+$ zeus mocks load-all
+```
+
 ## Layout
 
 ```
