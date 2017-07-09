@@ -26,3 +26,14 @@ install-js-requirements:
 
 test:
 	py.test tests --tb=short
+
+reset-db:
+	$(MAKE) drop-db
+	$(MAKE) create-db
+	zeus db upgrade
+
+drop-db:
+	dropdb --if-exists zeus
+
+create-db:
+	createdb -E utf-8 zeus
