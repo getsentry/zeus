@@ -9,10 +9,9 @@ from zeus.db.utils import create_or_update
 from zeus.models import Build, FileCoverage, ItemStat, Job
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 
-STATS = (
-    'tests.count', 'tests.duration', 'tests.failures', 'coverage.lines_covered',
-    'coverage.lines_uncovered', 'coverage.diff_lines_covered', 'coverage.diff_lines_uncovered',
-)
+STATS = ('tests.count', 'tests.duration', 'tests.failures',
+         'coverage.lines_covered', 'coverage.lines_uncovered',
+         'coverage.diff_lines_covered', 'coverage.diff_lines_uncovered', )
 
 
 @shared_task
@@ -24,8 +23,7 @@ def aggregate_build_stats_for_job(job_id: UUID):
     alternatively it can be used to repair aggregate data.
     """
     job = Job.query.unrestricted_unsafe().filter(
-        Job.id == job_id,
-    ).first()
+        Job.id == job_id, ).first()
     if not job:
         raise ValueError
 
@@ -38,8 +36,7 @@ def aggregate_build_stats_for_job(job_id: UUID):
 
     # this point
     lock_key = 'aggstatsbuild:{build_id}'.format(
-        build_id=job.build_id.hex,
-    )
+        build_id=job.build_id.hex, )
     with redis.lock(lock_key):
         aggregate_build_stats(job.build_id)
 
@@ -49,13 +46,11 @@ def aggregate_stat_for_build(build: Build, name: str, func_=func.sum):
     Aggregates a single stat for all jobs the given build.
     """
     value = db.session.query(
-        func.coalesce(func_(ItemStat.value), 0),
-    ).filter(
-        ItemStat.item_id.in_(db.session.query(Job.id).filter(
-            Job.build_id == build.id,
-        )),
-        ItemStat.name == name,
-    ).as_scalar()
+        func.coalesce(func_(ItemStat.value), 0), ).filter(
+            ItemStat.item_id.in_(
+                db.session.query(Job.id).filter(
+                    Job.build_id == build.id, )),
+            ItemStat.name == name, ).as_scalar()
 
     create_or_update(
         model=ItemStat,
@@ -63,8 +58,7 @@ def aggregate_stat_for_build(build: Build, name: str, func_=func.sum):
             'item_id': build.id,
             'name': name,
         },
-        values={'value': value},
-    )
+        values={'value': value}, )
 
 
 def record_coverage_stats(job: Job):
@@ -73,20 +67,19 @@ def record_coverage_stats(job: Job):
     """
     coverage_stats = db.session.query(
         func.sum(FileCoverage.lines_covered).label('coverage.lines_covered'),
-        func.sum(FileCoverage.lines_uncovered).label('coverage.lines_uncovered'),
-        func.sum(FileCoverage.diff_lines_covered).label('coverage.diff_lines_covered'),
-        func.sum(FileCoverage.diff_lines_uncovered).label('coverage.diff_lines_uncovered'),
-    ).filter(
-        FileCoverage.job_id == job.id,
-    ).group_by(
-        FileCoverage.step_id,
-    ).first()
+        func.sum(
+            FileCoverage.lines_uncovered).label('coverage.lines_uncovered'),
+        func.sum(FileCoverage.diff_lines_covered).label(
+            'coverage.diff_lines_covered'),
+        func.sum(FileCoverage.diff_lines_uncovered).label(
+            'coverage.diff_lines_uncovered'), ).filter(
+                FileCoverage.job_id == job.id, ).group_by(
+                    FileCoverage.job_id, ).first()
 
     # TODO(dcramer): it'd be safer if we did this query within SQL
-    stat_list = (
-        'coverage.lines_covered', 'coverage.lines_uncovered', 'coverage.diff_lines_covered',
-        'coverage.diff_lines_uncovered',
-    )
+    stat_list = ('coverage.lines_covered', 'coverage.lines_uncovered',
+                 'coverage.diff_lines_covered',
+                 'coverage.diff_lines_uncovered', )
     for name in stat_list:
         create_or_update(
             model=ItemStat,
@@ -94,8 +87,7 @@ def record_coverage_stats(job: Job):
                 'item_id': job.id,
                 'name': name,
             },
-            values={'value': getattr(coverage_stats, name, 0) or 0},
-        )
+            values={'value': getattr(coverage_stats, name, 0) or 0}, )
 
 
 def aggregate_build_stats(build_id: UUID):
@@ -114,10 +106,12 @@ def aggregate_build_stats(build_id: UUID):
     is_finished = any(p.status == Status.finished for p in job_list)
 
     # ensure build's dates are reflective of jobs
-    build.date_started = safe_agg(min, (j.date_started for j in job_list if j.date_started))
+    build.date_started = safe_agg(min, (j.date_started for j in job_list
+                                        if j.date_started))
 
     if is_finished:
-        build.date_finished = safe_agg(max, (j.date_finished for j in job_list if j.date_finished))
+        build.date_finished = safe_agg(max, (j.date_finished for j in job_list
+                                             if j.date_finished))
     else:
         build.date_finished = None
 
