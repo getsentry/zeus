@@ -4,6 +4,7 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from zeus.config import db
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import GUID
+from zeus.db.utils import model_repr
 
 
 class Revision(RepositoryBoundMixin, db.Model):
@@ -22,6 +23,7 @@ class Revision(RepositoryBoundMixin, db.Model):
         'sha',
         name='unq_revision',
     ), )
+    __repr__ = model_repr('repository_id', 'sha', 'subject')
 
     @property
     def subject(self):

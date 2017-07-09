@@ -3,6 +3,7 @@ from datetime import datetime
 from zeus.config import db
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import GUID, JSONEncodedDict
+from zeus.db.utils import model_repr
 
 
 class Source(RepositoryBoundMixin, db.Model):
@@ -31,6 +32,7 @@ class Source(RepositoryBoundMixin, db.Model):
             name='unq_source_revision',
         ),
     )
+    __repr__ = model_repr('repository_id', 'revision_sha', 'patch_id')
 
     def is_commit(self):
         return self.patch_id is None and self.revision_sha

@@ -4,6 +4,7 @@ from zeus.config import db
 from zeus.constants import Status, Result
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import Enum, GUID, JSONEncodedDict
+from zeus.db.utils import model_repr
 
 
 class Job(RepositoryBoundMixin, db.Model):
@@ -26,3 +27,4 @@ class Job(RepositoryBoundMixin, db.Model):
     )
 
     __tablename__ = 'job'
+    __repr__ = model_repr('repository_id', 'build_id', 'status', 'result')

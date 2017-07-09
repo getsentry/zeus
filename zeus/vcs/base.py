@@ -167,7 +167,7 @@ class RevisionResult(object):
             type(self).__name__, self.id, self.author, self.subject
         )
 
-    def _get_author(self, value):
+    def _get_author(self, repository, value):
         match = re.match(r'^(.+) <([^>]+)>$', value)
         if not match:
             if '@' in value:
@@ -178,9 +178,12 @@ class RevisionResult(object):
             name, email = match.group(1), match.group(2)
 
         author, _ = get_or_create(
-            Author, where={
+            Author,
+            where={
                 'email': email,
-            }, defaults={
+                'repository_id': repository.id,
+            },
+            defaults={
                 'name': name,
             }
         )
@@ -192,11 +195,11 @@ class RevisionResult(object):
         return self.message.splitlines()[0]
 
     def save(self, repository):
-        author = self._get_author(self.author)
+        author = self._get_author(repository, self.author)
         if self.author == self.committer:
             committer = author
         else:
-            committer = self._get_author(self.committer)
+            committer = self._get_author(repository, self.committer)
 
         revision, created = create_or_update(
             Revision,

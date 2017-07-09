@@ -1,5 +1,6 @@
 from zeus.config import db
 from zeus.db.types import GUID
+from zeus.db.utils import model_repr
 
 
 class ItemStat(db.Model):
@@ -10,3 +11,4 @@ class ItemStat(db.Model):
 
     __tablename__ = 'itemstat'
     __table_args__ = (db.UniqueConstraint('item_id', 'name', name='unq_itemstat_name'), )
+    __repr__ = model_repr('item_id', 'name')

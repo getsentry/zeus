@@ -1,5 +1,6 @@
 from zeus.config import db
 from zeus.db.types import GUID
+from zeus.db.utils import model_repr
 
 
 class RepositoryAccess(db.Model):
@@ -10,3 +11,4 @@ class RepositoryAccess(db.Model):
     user = db.relationship('User', innerjoin=True, uselist=False)
 
     __tablename__ = 'repository_access'
+    __repr__ = model_repr('repository_id', 'user_id')

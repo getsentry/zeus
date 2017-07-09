@@ -100,7 +100,7 @@ def update(instance, values):
 
 
 def model_repr(*attrs):
-    if 'id' not in attrs and 'pk' not in attrs:
+    if 'id' not in attrs:
         attrs = ('id', ) + attrs
 
     def _repr(self):

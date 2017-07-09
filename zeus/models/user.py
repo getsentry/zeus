@@ -2,6 +2,7 @@ from datetime import datetime
 
 from zeus.config import db
 from zeus.db.types.guid import GUID
+from zeus.db.utils import model_repr
 
 
 class User(db.Model):
@@ -13,3 +14,4 @@ class User(db.Model):
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
     __tablename__ = 'user'
+    __repr__ = model_repr('email')

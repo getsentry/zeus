@@ -2,6 +2,7 @@ from datetime import datetime
 
 from zeus.config import db
 from zeus.db.types import GUID, JSONEncodedDict
+from zeus.db.utils import model_repr
 
 
 class Identity(db.Model):
@@ -21,3 +22,4 @@ class Identity(db.Model):
 
     __tablename__ = 'identity'
     __table_args__ = (db.UniqueConstraint('user_id', 'provider', name='unq_identity_user'), )
+    __repr__ = model_repr('user_id', 'provider', 'external_id')

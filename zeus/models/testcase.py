@@ -8,6 +8,7 @@ from zeus.config import db
 from zeus.constants import Result
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import Enum, GUID
+from zeus.db.utils import model_repr
 
 
 class TestCase(RepositoryBoundMixin, db.Model):
@@ -28,6 +29,7 @@ class TestCase(RepositoryBoundMixin, db.Model):
 
     __tablename__ = 'testcase'
     __table_args__ = (db.UniqueConstraint('job_id', 'hash', name='unq_testcase_hash'), )
+    __repr__ = model_repr('repository_id', 'job_id', 'name', 'result')
 
     @classmethod
     def calculate_sha(self, name):

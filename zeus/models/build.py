@@ -4,6 +4,7 @@ from zeus.config import db
 from zeus.constants import Status, Result
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import Enum, GUID, JSONEncodedDict
+from zeus.db.utils import model_repr
 
 
 class Build(RepositoryBoundMixin, db.Model):
@@ -26,3 +27,4 @@ class Build(RepositoryBoundMixin, db.Model):
     source = db.relationship('Source', innerjoin=True)
 
     __tablename__ = 'build'
+    __repr__ = model_repr('repository_id', 'source_id', 'status', 'result')

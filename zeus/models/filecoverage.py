@@ -3,6 +3,7 @@ from datetime import datetime
 from zeus.config import db
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import GUID
+from zeus.db.utils import model_repr
 
 
 class FileCoverage(RepositoryBoundMixin, db.Model):
@@ -21,3 +22,4 @@ class FileCoverage(RepositoryBoundMixin, db.Model):
 
     __tablename__ = 'filecoverage'
     __table_args__ = (db.UniqueConstraint('job_id', 'filename', name='unq_job_filname'), )
+    __repr__ = model_repr('repository_id', 'job_id', 'filename')

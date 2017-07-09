@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 
 from zeus.config import db
 from zeus.db.types import Enum, GUID, JSONEncodedDict
+from zeus.db.utils import model_repr
 
 
 class RepositoryBackend(enum.Enum):
@@ -96,6 +97,7 @@ class Repository(db.Model):
     query_class = RepositoryAccessBoundQuery
 
     __tablename__ = 'repository'
+    __repr__ = model_repr('name', 'url')
 
     def get_vcs(self):
         from zeus.models import ItemOption

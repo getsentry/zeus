@@ -2,6 +2,7 @@ from datetime import datetime
 
 from zeus.config import db
 from zeus.db.types import GUID
+from zeus.db.utils import model_repr
 
 
 class ItemOption(db.Model):
@@ -13,3 +14,4 @@ class ItemOption(db.Model):
 
     __tablename__ = 'itemoption'
     __table_args__ = (db.UniqueConstraint('item_id', 'name', name='unq_itemoption_name'), )
+    __repr__ = model_repr('item_id', 'name')
