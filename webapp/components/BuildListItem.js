@@ -4,7 +4,6 @@ import {Link} from 'react-router';
 import moment from 'moment';
 import styled, {css} from 'styled-components';
 
-import Duration from './Duration';
 import IconCircleCheck from '../assets/IconCircleCheck';
 import IconCircleCross from '../assets/IconCircleCross';
 import IconClock from '../assets/IconClock';
@@ -17,10 +16,6 @@ export default class BuildListItem extends Component {
   static propTypes = {
     build: PropTypes.object.isRequired
   };
-
-  getDuration(build) {
-    return new Date(build.finished_at).getTime() - new Date(build.started_at).getTime();
-  }
 
   render() {
     let {repo} = this.context;
@@ -45,8 +40,7 @@ export default class BuildListItem extends Component {
           <DurationWrapper result={build.result}>
             {build.result == 'passed' && <IconCircleCheck size="15" />}
             {build.result == 'failed' && <IconCircleCross size="15" />}
-            {build.status == 'finished' &&
-              <Duration ms={this.getDuration(build)} short={true} />}
+            {build.status == 'finished' && moment(build.created_at).fromNow()}
           </DurationWrapper>
           <Time>
             <IconClock size="15" />

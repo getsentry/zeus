@@ -55,10 +55,11 @@ export default class BuildDetails extends AsyncComponent {
               <DurationWrapper result={build.result}>
                 {build.result == 'passed' && <IconCircleCheck size="15" />}
                 {build.result == 'failed' && <IconCircleCross size="15" />}
-                {build.status} in <Duration ms={this.getDurationbuild()} short={true} />
+                {build.status} {moment(build.finished_at).fromNow()} in{' '}
+                <Duration ms={this.getDuration(build)} short={true} />
               </DurationWrapper>}
             <Time>
-              <IconClock size="18" />
+              <IconClock size="15" />
               {build.status === 'queued'
                 ? <span>
                     created {moment(build.created_at).fromNow()}
