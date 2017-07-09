@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields
 
+from .source import SourceSchema
+
 
 class BuildSchema(Schema):
     id = fields.UUID(dump_only=True)
@@ -8,3 +10,4 @@ class BuildSchema(Schema):
     finished_at = fields.DateTime(attribute="date_finished")
     status = fields.Str()
     result = fields.Str()
+    source = fields.Nested(SourceSchema())

@@ -1,3 +1,5 @@
+from sqlalchemy.orm import joinedload
+
 from zeus.models import Build, Repository
 
 from .base import Resource
@@ -15,7 +17,9 @@ class RepositoryBuildsResource(Resource):
         if not repo:
             return self.not_found()
 
-        query = Build.query.filter(
+        query = Build.query.options(
+            joinedload('source').joinedload('revision'),
+        ).filter(
             Build.repository_id == repository_id,
         )
         return self.respond_with_schema(builds_schema, query)
