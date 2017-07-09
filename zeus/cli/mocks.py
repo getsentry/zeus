@@ -1,9 +1,11 @@
 import click
 
 from random import randint
+from sqlalchemy.exc import IntegrityError
 
 from zeus import factories, models
 from zeus.config import db
+from zeus.db.utils import try_create
 
 from .base import cli
 
@@ -12,15 +14,22 @@ def mock_single_repository(builds=10, user_ids=()):
     repo = factories.RepositoryFactory(
         status=models.RepositoryStatus.active,
     )
-    db.session.add(repo)
-    db.session.flush()
-    click.echo('Created {!r}'.format(repo))
+    try:
+        with db.session.begin_nested():
+            db.session.add(repo)
+    except IntegrityError:
+        repo = models.Repository.query.unrestricted_unsafe().filter(
+            models.Repository.name == repo.name
+        ).first()
+    else:
+        click.echo('Created {!r}'.format(repo))
 
     for user_id in user_ids:
-        db.session.add(models.RepositoryAccess(
-            repository_id=repo.id,
-            user_id=user_id,
-        ))
+        try_create(models.RepositoryAccess, {
+            'repository_id': repo.id,
+            'user_id': user_id,
+        })
+
     db.session.flush()
 
     for n in range(builds):
