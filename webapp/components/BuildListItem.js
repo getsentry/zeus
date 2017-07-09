@@ -46,7 +46,7 @@ export default class BuildListItem extends Component {
             {build.result == 'passed' && <IconCircleCheck size="15" />}
             {build.result == 'failed' && <IconCircleCross size="15" />}
             {build.status == 'finished' &&
-              <Duration ms={this.getDurationbuild()} short={true} />}
+              <Duration ms={this.getDuration(build)} short={true} />}
           </DurationWrapper>
           <Time>
             <IconClock size="15" />
