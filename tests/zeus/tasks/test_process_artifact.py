@@ -1,4 +1,4 @@
-from zeus.tasks.process_artifact import process_artifact
+from zeus.tasks import process_artifact
 
 
 def test_simple(mocker, default_artifact):

@@ -25,7 +25,6 @@ class TestResult(object):
         result=None,
         duration=None,
         date_created=None,
-        reruns=None,
         artifacts=None
     ):
         self.job = job
@@ -35,7 +34,6 @@ class TestResult(object):
         self.result = result or Result.unknown
         self.duration = duration  # ms
         self.date_created = date_created or datetime.utcnow()
-        self.reruns = reruns or 0
         self.artifacts = artifacts
 
     @property
@@ -49,7 +47,7 @@ class TestResult(object):
         return '.'
 
     @property
-    def name_sha(self):
+    def hash(self):
         return TestCase.calculate_sha(self.name)
 
     @property
@@ -62,16 +60,16 @@ class TestResult(object):
 
 
 class TestResultManager(object):
-    def __init__(self, step):
-        self.step = step
+    def __init__(self, job):
+        self.job = job
 
     def clear(self):
         """
         Removes all existing test data from this job.
         """
         TestCase.query.filter(
-            TestCase.step_id == self.step.id,
-        ).delete(synchronize_session=False)
+            TestCase.job_id == self.job.id,
+        )
 
     def save(self, test_list):
         if not test_list:
@@ -85,12 +83,11 @@ class TestResultManager(object):
             testcase = TestCase(
                 job=job,
                 repository_id=repository_id,
-                name_sha=test.name_sha,
+                hash=test.hash,
                 name=test.name,
                 duration=test.duration,
                 message=test.message,
                 result=test.result,
-                reruns=test.reruns,
                 date_created=test.date_created,
             )
             db.session.add(testcase)
@@ -98,10 +95,12 @@ class TestResultManager(object):
             if test.artifacts:
                 for ta in test.artifacts:
                     testartifact = Artifact(
+                        repository_id=repository_id,
+                        testcase_id=testcase.id,
+                        job_id=job.id,
                         name=ta['name'],
-                        type=ta['type'],
-                        testcase=testcase,
-                        job=job,
+                        # TODO(dcramer): mimetype detection?
+                        # type=getattr(Artifactta['type'],
                     )
                     testartifact.save_base64_content(ta['base64'])
                     db.session.add(testartifact)
@@ -112,7 +111,6 @@ class TestResultManager(object):
             self._record_test_counts(test_list)
             self._record_test_failures(test_list)
             self._record_test_duration(test_list)
-            self._record_test_rerun_counts(test_list)
         except Exception:
             current_app.logger.exception('Failed to record aggregate test statistics')
 
@@ -120,13 +118,13 @@ class TestResultManager(object):
         create_or_update(
             ItemStat,
             where={
-                'item_id': self.step.id,
-                'name': 'test_count',
+                'item_id': self.job.id,
+                'name': 'tests.count',
             },
             values={
                 'value':
                     db.session.query(func.count(TestCase.id)).filter(
-                        TestCase.step_id == self.step.id,
+                        TestCase.job_id == self.job.id,
                     ).as_scalar(),
             }
         )
@@ -136,13 +134,13 @@ class TestResultManager(object):
         create_or_update(
             ItemStat,
             where={
-                'item_id': self.step.id,
-                'name': 'test_failures',
+                'item_id': self.job.id,
+                'name': 'tests.failures',
             },
             values={
                 'value':
                     db.session.query(func.count(TestCase.id)).filter(
-                        TestCase.step_id == self.step.id,
+                        TestCase.job_id == self.job.id,
                         TestCase.result == Result.failed,
                     ).as_scalar(),
             }
@@ -153,29 +151,13 @@ class TestResultManager(object):
         create_or_update(
             ItemStat,
             where={
-                'item_id': self.step.id,
-                'name': 'test_duration',
+                'item_id': self.job.id,
+                'name': 'tests.duration',
             },
             values={
                 'value':
                     db.session.query(func.coalesce(func.sum(TestCase.duration), 0)).filter(
-                        TestCase.step_id == self.step.id,
-                    ).as_scalar(),
-            }
-        )
-
-    def _record_test_rerun_counts(self, test_list):
-        create_or_update(
-            ItemStat,
-            where={
-                'item_id': self.step.id,
-                'name': 'test_rerun_count',
-            },
-            values={
-                'value':
-                    db.session.query(func.count(TestCase.id)).filter(
-                        TestCase.step_id == self.step.id,
-                        TestCase.reruns > 0,
+                        TestCase.job_id == self.job.id,
                     ).as_scalar(),
             }
         )

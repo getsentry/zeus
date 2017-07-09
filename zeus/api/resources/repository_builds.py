@@ -2,21 +2,17 @@ from sqlalchemy.orm import joinedload
 
 from zeus.models import Build, Repository
 
-from .base import Resource
+from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema
 
 builds_schema = BuildSchema(many=True, strict=True)
 
 
-class RepositoryBuildsResource(Resource):
-    def get(self, repository_name: str):
+class RepositoryBuildsResource(BaseRepositoryResource):
+    def get(self, repo: Repository):
         """
         Return a list of builds for the given repository.
         """
-        repo = Repository.query.filter(Repository.name == repository_name).first()
-        if not repo:
-            return self.not_found()
-
         query = Build.query.options(
             joinedload('source').joinedload('revision'),
         ).filter(

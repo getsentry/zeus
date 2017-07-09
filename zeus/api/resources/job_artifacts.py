@@ -3,51 +3,31 @@ from sqlalchemy.exc import IntegrityError
 
 from zeus.config import db
 from zeus.constants import Result
-from zeus.models import Artifact, Build, Job, Repository
+from zeus.models import Artifact, Job
 from zeus.tasks import process_artifact
 
-from .base import Resource
+from .base_job import BaseJobResource
 from ..schemas import ArtifactSchema
 
 artifact_schema = ArtifactSchema(strict=True)
 artifacts_schema = ArtifactSchema(strict=True, many=True)
 
 
-class JobArtifactsResource(Resource):
-    def get(self, repository_name: str, build_number: int, job_number: int):
+class JobArtifactsResource(BaseJobResource):
+    def get(self, job: Job):
         """
         Return a list of artifacts for a given job.
         """
-        job = Job.query.join(Build, Build.id == Job.build_id).join(
-            Repository, Repository.id == Build.repository_id
-        ).filter(
-            Repository.name == repository_name,
-            Build.number == build_number,
-            Job.number == job_number,
-        ).first()
-        if not job:
-            return self.not_found()
-
         query = Artifact.query.filter(
             Artifact.job_id == job.id,
         ).order_by(Artifact.name.asc())
 
         return self.respond_with_schema(artifacts_schema, query)
 
-    def post(self, repository_name: str, build_number: int, job_number: int):
+    def post(self, job: Job):
         """
         Create a new artifact for the given job.
         """
-        job = Job.query.join(Build, Build.id == Job.build_id).join(
-            Repository, Repository.id == Build.repository_id
-        ).filter(
-            Repository.name == repository_name,
-            Build.number == build_number,
-            Job.number == job_number,
-        ).first()
-        if not job:
-            return self.not_found()
-
         # dont bother storing artifacts for aborted jobs
         if job.result == Result.aborted:
             return self.error('job was aborted', status=410)

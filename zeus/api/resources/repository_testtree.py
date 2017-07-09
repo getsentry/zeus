@@ -5,18 +5,14 @@ from zeus.constants import Result, Status
 from zeus.models import Build, Repository, TestCase, Job, Source
 from zeus.utils.trees import build_tree
 
-from .base import Resource
+from .base_repository import BaseRepositoryResource
 
 
-class RepositoryTestTreeResource(Resource):
-    def get(self, repository_name: str):
+class RepositoryTestTreeResource(BaseRepositoryResource):
+    def get(self, repo: Repository):
         """
         Return a tree of testcases for the given repository.
         """
-        repo = Repository.query.filter(Repository.name == repository_name).first()
-        if not repo:
-            return self.not_found()
-
         parent = request.args.get('parent')
 
         latest_build = Build.query.join(

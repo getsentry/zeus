@@ -27,7 +27,7 @@ class BuildFactory(factory.Factory):
         )
     )
     date_finished = factory.LazyAttribute(
-        lambda o: faker.date_time_between(o.date_started, 'now') if o.status == Status.finished else None
+        lambda o: faker.date_time_between(o.date_started, o.date_started + timedelta(minutes=30)) if o.status == Status.finished else None
     )
 
     class Meta:
