@@ -34,9 +34,9 @@ export default class BuildListItem extends Component {
           <TestCount>
             {testCount}
           </TestCount>
-          <TestCount>
+          <Coverage>
             {parseInt(lineCoverageDiff * 100, 10)}%
-          </TestCount>
+          </Coverage>
           <Branch>
             {branch}
           </Branch>
@@ -104,6 +104,13 @@ const Message = styled.div`
 `;
 
 const TestCount = styled.div`
+  flex: 1;
+  font-family: "Monaco", monospace;
+  font-size: 12px;
+`;
+
+const Coverage = styled.div`
+  flex: 1;
   font-family: "Monaco", monospace;
   font-size: 12px;
 `;
