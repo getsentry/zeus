@@ -65,8 +65,7 @@ def default_revision(db_session, default_repo):
 @pytest.fixture(scope='function')
 def default_source(db_session, default_revision):
     r = factories.SourceFactory(
-        repository=default_revision.repository,
-        revision_sha=default_revision.sha,
+        revision=default_revision,
     )
     db_session.add(r)
     db_session.commit()
@@ -74,9 +73,8 @@ def default_source(db_session, default_revision):
 
 
 @pytest.fixture(scope='function')
-def default_build(db_session, default_repo, default_source):
+def default_build(db_session, default_source):
     r = factories.BuildFactory(
-        repository=default_repo,
         source=default_source,
         date_started=datetime.utcnow() - timedelta(minutes=6),
         date_finished=datetime.utcnow(),
@@ -91,7 +89,6 @@ def default_build(db_session, default_repo, default_source):
 @pytest.fixture(scope='function')
 def default_job(db_session, default_build):
     r = factories.JobFactory(
-        repository=default_build.repository,
         build=default_build,
         date_started=datetime.utcnow() - timedelta(minutes=6),
         date_finished=datetime.utcnow(),
@@ -106,7 +103,6 @@ def default_job(db_session, default_build):
 @pytest.fixture(scope='function')
 def default_artifact(db_session, default_job):
     r = factories.ArtifactFactory(
-        repository=default_job.repository,
         job=default_job,
     )
     db_session.add(r)
@@ -117,7 +113,6 @@ def default_artifact(db_session, default_job):
 @pytest.fixture(scope='function')
 def default_testcase(db_session, default_job):
     r = factories.TestCaseFactory(
-        repository=default_job.repository,
         job=default_job,
     )
     db_session.add(r)
