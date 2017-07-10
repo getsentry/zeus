@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import styled, {css} from 'styled-components';
 
 import AsyncComponent from '../components/AsyncComponent';
+import {Breadcrumbs, Crumb, CrumbLink} from '../components/Breadcrumbs';
 import BuildAuthor from '../components/BuildAuthor';
 import BuildDuration from '../components/BuildDuration';
-import {HeaderLink, HorizontalHeader} from '../components/HorizontalHeader';
 import TabbedNavItem from '../components/TabbedNavItem';
 import TimeSince from '../components/TimeSince';
 
@@ -42,16 +42,18 @@ export default class BuildDetails extends AsyncComponent {
   }
 
   renderBody() {
-    let {repo} = this.context;
     let {build} = this.state;
     let {buildNumber, repoName} = this.props.params;
     return (
       <div>
-        <HorizontalHeader>
-          <HeaderLink to={`/repos/${repo.name}`}>
-            {repo.name}
-          </HeaderLink>
-        </HorizontalHeader>
+        <Breadcrumbs>
+          <CrumbLink to={`/repos/${repoName}/builds`}>
+            {repoName}
+          </CrumbLink>
+          <Crumb active={true}>
+            #{build.number}
+          </Crumb>
+        </Breadcrumbs>
         <BuildSummary>
           <Header>
             <Message>
@@ -104,7 +106,7 @@ export default class BuildDetails extends AsyncComponent {
   }
 }
 
-const Section = styled.div`padding: 30px;`;
+const Section = styled.div`padding: 20px;`;
 
 const BuildSummary = styled(Section)`
   padding-top: 15px;

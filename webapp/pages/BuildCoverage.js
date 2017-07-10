@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import AsyncComponent from '../components/AsyncComponent';
+import Section from '../components/Section';
 
 export default class BuildCoverage extends AsyncComponent {
   static contextTypes = {
@@ -31,8 +32,6 @@ export default class BuildCoverage extends AsyncComponent {
     );
   }
 }
-
-const Section = styled.div`padding: 30px;`;
 
 const List = styled.div`
   border: 1px solid #d8d7e0;

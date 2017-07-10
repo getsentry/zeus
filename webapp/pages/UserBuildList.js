@@ -2,7 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import AsyncComponent from '../components/AsyncComponent';
+import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
 import BuildList from '../components/BuildList';
+import ScrollView from '../components/ScrollView';
 import Sidebar from '../components/Sidebar';
 
 export default class RepositoryBuildList extends AsyncComponent {
@@ -16,11 +18,11 @@ export default class RepositoryBuildList extends AsyncComponent {
       <div>
         <Sidebar params={this.props.params} />
         <BuildIndex>
-          <BuildBreadcrumbs>
-            <UserName>
+          <Breadcrumbs>
+            <Crumb active={true}>
               {this.getTitle()}
-            </UserName>
-          </BuildBreadcrumbs>
+            </Crumb>
+          </Breadcrumbs>
           <ScrollView>
             <UserBuildListBody {...this.props} />
           </ScrollView>
@@ -48,22 +50,4 @@ const BuildIndex = styled.div`
   bottom: 0;
   right: 0;
   background: #f8f9fb;
-`;
-
-const BuildBreadcrumbs = styled.div`
-  background: #fff;
-  padding: 20px;
-  box-shadow: inset 0 -1px 0 #dbdae3;
-`;
-
-const UserName = styled.div`font-size: 22px;`;
-
-const ScrollView = styled.div`
-  position: absolute;
-  top: 67px; /* TODO(ckj): calculate this dynamically */
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-  padding: 5px 20px 20px;
 `;

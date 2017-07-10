@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import AsyncComponent from '../components/AsyncComponent';
 import Duration from '../components/Duration';
+import Section from '../components/Section';
 
 export default class BuildTestList extends AsyncComponent {
   getEndpoints() {
@@ -26,8 +27,6 @@ export default class BuildTestList extends AsyncComponent {
     );
   }
 }
-
-const Section = styled.div`padding: 30px;`;
 
 const List = styled.div`
   border: 1px solid #d8d7e0;
