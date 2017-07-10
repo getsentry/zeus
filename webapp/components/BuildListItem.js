@@ -48,14 +48,17 @@ export default class BuildListItem extends Component {
               </Box>
             </Flex>
           </Box>
-          <Box width={2 / 12}>
+          <Box width={1 / 12} style={{textAlign: 'center'}}>
             <BuildDuration build={build} short={true} />
           </Box>
-          <Box width={2 / 12}>
+          <Box width={1 / 12} style={{textAlign: 'center'}}>
             <BuildCoverage build={build} />
           </Box>
           <Box width={2 / 12}>
-            <BuildAuthor build={build} /> <TimeSince date={build.created_at} />
+            <BuildAuthor build={build} />
+          </Box>
+          <Box width={2 / 12} style={{textAlign: 'right'}}>
+            <TimeSince date={build.created_at} />
           </Box>
         </Flex>
       </BuildListItemLink>

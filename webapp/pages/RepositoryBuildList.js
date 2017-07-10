@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import {Flex, Box} from 'grid-styled';
 
 import AsyncComponent from '../components/AsyncComponent';
-import BuildListItem from '../components/BuildListItem';
-import Panel from '../components/Panel';
+import BuildList from '../components/BuildList';
 import Sidebar from '../components/Sidebar';
 import TabbedNavItem from '../components/TabbedNavItem';
 
@@ -38,29 +36,7 @@ export default class RepositoryBuildList extends AsyncComponent {
               </TabbedNavItem>
               <TabbedNavItem>All builds</TabbedNavItem>
             </TabbedNav>
-            <Panel>
-              <BuildListHeader>
-                <Flex>
-                  <Box flex="1" width={6 / 12} pr={15}>
-                    Build
-                  </Box>
-                  <Box width={2 / 12}>Duration</Box>
-                  <Box width={2 / 12}>Coverage</Box>
-                  <Box width={2 / 12}>When</Box>
-                </Flex>
-              </BuildListHeader>
-              <div>
-                {this.state.buildList.map(build => {
-                  return (
-                    <BuildListItem
-                      key={build.id}
-                      build={build}
-                      params={this.props.params}
-                    />
-                  );
-                })}
-              </div>
-            </Panel>
+            <BuildList params={this.props.params} buildList={this.state.buildList} />
           </ScrollView>
         </BuildIndex>
       </div>
@@ -89,15 +65,6 @@ const TabbedNav = styled.div`
   overflow: hidden;
   margin-bottom: 20px;
   box-shadow: inset 0 -1px 0 #dbdae3;
-`;
-
-const BuildListHeader = styled.div`
-  padding: 10px 15px;
-  border-bottom: 1px solid #dbdae3;
-  font-size: 13px;
-  color: #767488;
-  font-weight: 500;
-  text-transform: uppercase;
 `;
 
 const ScrollView = styled.div`
