@@ -1,3 +1,4 @@
+from collections import defaultdict
 from marshmallow import Schema, fields, pre_dump
 
 
@@ -21,10 +22,10 @@ class StatsSchema(Schema):
 
     @pre_dump
     def process_stats(self, data):
-        result = {}
+        result = defaultdict(lambda: defaultdict(int))
         for stat in data:
             bits = stat.name.split('.', 1)
             if len(bits) != 2:
                 continue
-            result[bits[0]].append(bits[1])
+            result[bits[0]][bits[1]] = stat.value
         return result
