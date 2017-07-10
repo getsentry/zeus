@@ -18,7 +18,7 @@ REPO_ROOT = {repo_root}
 @click.option('--github-client-id', prompt='GitHub Client ID', help='GitHub Client ID')
 @click.option('--github-client-secret', prompt='GitHub Client Secret', help='GitHub Client Secret')
 @click.argument('path', default='~/.zeus/')
-def init(path, no_input, github_client_id, github_client_secret):
+def init(path, github_client_id, github_client_secret):
     path = os.path.expanduser(path)
     if not os.path.exists(path):
         os.makedirs(path)
