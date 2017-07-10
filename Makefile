@@ -4,7 +4,7 @@ MAKEFLAGS += --jobs=$(CPUS)
 develop: setup-git install-requirements
 
 upgrade: install-requirements
-	bin/upgrade
+	zeus db upgrade
 
 setup-git:
 	pip install pre-commit==0.15.0
