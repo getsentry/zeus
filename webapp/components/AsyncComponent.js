@@ -140,14 +140,18 @@ export default class AsyncComponent extends Component {
     // return <RouteError error={error} component={this} onRetry={this.remountComponent} />;
   }
 
+  renderContent() {
+    return this.state.loading
+      ? this.renderLoading()
+      : this.state.error
+        ? this.renderError(new Error('Unable to load all required endpoints'))
+        : this.renderBody();
+  }
+
   render() {
     return (
       <DocumentTitle title={this.getTitle()}>
-        {this.state.loading
-          ? this.renderLoading()
-          : this.state.error
-            ? this.renderError(new Error('Unable to load all required endpoints'))
-            : this.renderBody()}
+        {this.renderContent()}
       </DocumentTitle>
     );
   }

@@ -41,19 +41,31 @@ export default class BuildDetails extends AsyncComponent {
     return 'Build Details';
   }
 
-  renderBody() {
+  render() {
+    // happens before loading is done
     let {build} = this.state;
-    let {buildNumber, repoName} = this.props.params;
+    let {repoName} = this.props.params;
     return (
       <div>
         <Breadcrumbs>
           <CrumbLink to={`/repos/${repoName}/builds`}>
             {repoName}
           </CrumbLink>
-          <Crumb active={true}>
-            #{build.number}
-          </Crumb>
+          {build &&
+            <Crumb active={true}>
+              #{build.number}
+            </Crumb>}
         </Breadcrumbs>
+        {this.renderContent()}
+      </div>
+    );
+  }
+
+  renderBody() {
+    let {build} = this.state;
+    let {buildNumber, repoName} = this.props.params;
+    return (
+      <div>
         <BuildSummary>
           <Header>
             <Message>
