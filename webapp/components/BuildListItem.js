@@ -4,6 +4,7 @@ import {Link} from 'react-router';
 import styled, {css} from 'styled-components';
 import {Flex, Box} from 'grid-styled';
 
+import BuildAuthor from './BuildAuthor';
 import BuildCoverage from './BuildCoverage';
 import BuildDuration from './BuildDuration';
 import TimeSince from './TimeSince';
@@ -54,7 +55,7 @@ export default class BuildListItem extends Component {
             <BuildCoverage build={build} />
           </Box>
           <Box width={2 / 12}>
-            author <TimeSince date={build.created_at} />
+            <BuildAuthor build={build} /> <TimeSince date={build.created_at} />
           </Box>
         </Flex>
       </BuildListItemLink>

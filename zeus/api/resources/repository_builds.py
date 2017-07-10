@@ -15,6 +15,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         """
         query = Build.query.options(
             joinedload('source').joinedload('revision'),
+            joinedload('author'),
             subqueryload_all('stats'),
         ).filter(
             Build.repository_id == repo.id,

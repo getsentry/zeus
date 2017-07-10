@@ -15,6 +15,7 @@ class BuildIndexResource(Resource):
         """
         query = Build.query.options(
             joinedload('source').joinedload('revision'),
+            joinedload('author'),
             subqueryload_all('stats'),
         ).order_by(Build.date_created.desc()).limit(100)
         return self.respond_with_schema(builds_schema, query)

@@ -20,6 +20,7 @@ class Build(RepositoryBoundMixin, db.Model):
     source_id = db.Column(
         GUID, db.ForeignKey('source.id', ondelete='CASCADE'), nullable=False, index=True
     )
+    author_id = db.Column(GUID, db.ForeignKey('author.id'), index=True)
     number = db.Column(db.Integer, nullable=False)
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
     result = db.Column(Enum(Result), nullable=False, default=Result.unknown)
@@ -28,6 +29,7 @@ class Build(RepositoryBoundMixin, db.Model):
     date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     data = db.Column(JSONEncodedDict)
 
+    author = db.relationship('Author')
     source = db.relationship('Source', innerjoin=True)
     stats = db.relationship(
         'ItemStat',

@@ -17,6 +17,9 @@ class Revision(RepositoryBoundMixin, db.Model):
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     date_committed = db.Column(db.DateTime, default=datetime.utcnow)
 
+    author = db.relationship('Author', foreign_keys=[author_id])
+    committer = db.relationship('Author', foreign_keys=[committer_id])
+
     __tablename__ = 'revision'
     __table_args__ = (db.UniqueConstraint(
         'repository_id',

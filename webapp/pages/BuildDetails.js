@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled, {css} from 'styled-components';
 
 import AsyncComponent from '../components/AsyncComponent';
+import BuildAuthor from '../components/BuildAuthor';
 import BuildDuration from '../components/BuildDuration';
 import {HeaderLink, HorizontalHeader} from '../components/HorizontalHeader';
 import TabbedNavItem from '../components/TabbedNavItem';
@@ -76,6 +77,9 @@ export default class BuildDetails extends AsyncComponent {
                     started <TimeSince date={build.started_at} />
                   </span>}
             </Time>
+            <Author>
+              <BuildAuthor build={build} />
+            </Author>
             <Commit>
               {build.source.revision.sha.substr(0, 7)}
             </Commit>
@@ -181,6 +185,8 @@ export const DurationWrapper = styled.div`
 `;
 
 const Time = styled.div``;
+
+const Author = styled.div``;
 
 const Commit = styled(Branch)`
   flex: 1;
