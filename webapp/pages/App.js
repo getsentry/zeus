@@ -4,11 +4,12 @@ import {connect} from 'react-redux';
 import {authSession, logout} from '../actions/auth';
 import styled from 'styled-components';
 
-import AsyncComponent from '../components/AsyncComponent';
+import AsyncPage from '../components/AsyncPage';
+import PageLoadingIndicator from '../components/PageLoadingIndicator';
 
 import './App.css';
 
-class AuthedContext extends AsyncComponent {
+class AuthedContext extends AsyncPage {
   static childContextTypes = {
     repoList: PropTypes.arrayOf(PropTypes.object)
   };
@@ -42,7 +43,7 @@ class App extends Component {
     return (
       <div className="App">
         {this.props.isAuthenticated === null
-          ? <div>Loading!</div>
+          ? <PageLoadingIndicator />
           : <AuthedContext>
               {this.props.children}
             </AuthedContext>}

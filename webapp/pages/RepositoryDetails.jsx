@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import AsyncComponent from '../components/AsyncComponent';
+import AsyncPage from '../components/AsyncPage';
 import Sidebar from '../components/Sidebar';
 
-export default class RepositoryDetails extends AsyncComponent {
+export default class RepositoryDetails extends AsyncPage {
   static contextTypes = {
-    ...AsyncComponent.contextTypes,
+    ...AsyncPage.contextTypes,
     repoList: PropTypes.arrayOf(PropTypes.object).isRequired
   };
 
   static childContextTypes = {
-    ...AsyncComponent.childContextTypes,
+    ...AsyncPage.childContextTypes,
     ...RepositoryDetails.contextTypes,
     repo: PropTypes.object.isRequired
   };

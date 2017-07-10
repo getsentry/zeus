@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import AsyncComponent from '../components/AsyncComponent';
+import AsyncPage from '../components/AsyncPage';
 import Duration from '../components/Duration';
 import Section from '../components/Section';
 
-export default class BuildTestList extends AsyncComponent {
+export default class BuildTestList extends AsyncPage {
   getEndpoints() {
     let {buildNumber, repoName} = this.props.params;
     return [['testList', `/repos/${repoName}/builds/${buildNumber}/tests`]];

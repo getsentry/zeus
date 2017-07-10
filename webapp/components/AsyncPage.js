@@ -3,9 +3,11 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {isEqual} from 'lodash';
 
+import PageLoadingIndicator from './PageLoadingIndicator';
+
 import {Client} from '../api';
 
-export default class AsyncComponent extends Component {
+export default class AsyncPage extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired
   };
@@ -30,8 +32,8 @@ export default class AsyncComponent extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.fetchData = AsyncComponent.errorHandler(this, this.fetchData.bind(this));
-    this.render = AsyncComponent.errorHandler(this, this.render.bind(this));
+    this.fetchData = AsyncPage.errorHandler(this, this.fetchData.bind(this));
+    this.render = AsyncPage.errorHandler(this, this.render.bind(this));
 
     this.state = this.getDefaultState(props, context);
   }
@@ -131,7 +133,7 @@ export default class AsyncComponent extends Component {
   }
 
   renderLoading() {
-    return <p>Loading...</p>;
+    return <PageLoadingIndicator />;
   }
 
   renderError(error) {

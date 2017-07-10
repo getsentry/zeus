@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, {css} from 'styled-components';
 
-import AsyncComponent from '../components/AsyncComponent';
+import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, Crumb, CrumbLink} from '../components/Breadcrumbs';
 import BuildAuthor from '../components/BuildAuthor';
 import BuildDuration from '../components/BuildDuration';
@@ -13,14 +13,14 @@ import IconCircleCheck from '../assets/IconCircleCheck';
 import IconCircleCross from '../assets/IconCircleCross';
 import IconClock from '../assets/IconClock';
 
-export default class BuildDetails extends AsyncComponent {
+export default class BuildDetails extends AsyncPage {
   static contextTypes = {
-    ...AsyncComponent.contextTypes,
+    ...AsyncPage.contextTypes,
     repo: PropTypes.object.isRequired
   };
 
   static childContextTypes = {
-    ...AsyncComponent.childContextTypes,
+    ...AsyncPage.childContextTypes,
     ...BuildDetails.contextTypes,
     build: PropTypes.object.isRequired
   };

@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import AsyncComponent from '../components/AsyncComponent';
+import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
 import BuildList from '../components/BuildList';
 import ScrollView from '../components/ScrollView';
 import TabbedNavItem from '../components/TabbedNavItem';
 
-export default class RepositoryBuildList extends AsyncComponent {
+export default class RepositoryBuildList extends AsyncPage {
   static contextTypes = {
-    ...AsyncComponent.contextTypes,
+    ...AsyncPage.contextTypes,
     repo: PropTypes.object.isRequired
   };
 
@@ -41,7 +41,7 @@ export default class RepositoryBuildList extends AsyncComponent {
   }
 }
 
-class RepositoryBuildListBody extends AsyncComponent {
+class RepositoryBuildListBody extends AsyncPage {
   getEndpoints() {
     let {repoName} = this.props.params;
     return [['buildList', `/repos/${repoName}/builds`]];

@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import AsyncComponent from '../components/AsyncComponent';
+import AsyncPage from '../components/AsyncPage';
 import Section from '../components/Section';
 
-export default class BuildCoverage extends AsyncComponent {
+export default class BuildCoverage extends AsyncPage {
   static contextTypes = {
-    ...AsyncComponent.contextTypes,
+    ...AsyncPage.contextTypes,
     build: PropTypes.object.isRequired
   };
 

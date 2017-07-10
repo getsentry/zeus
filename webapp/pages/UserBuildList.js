@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import AsyncComponent from '../components/AsyncComponent';
+import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
 import BuildList from '../components/BuildList';
 import ScrollView from '../components/ScrollView';
 import Sidebar from '../components/Sidebar';
 
-export default class RepositoryBuildList extends AsyncComponent {
+export default class RepositoryBuildList extends AsyncPage {
   getTitle() {
     let {userID} = this.props.params;
     return userID ? 'Builds' : 'My Builds';
@@ -32,7 +32,7 @@ export default class RepositoryBuildList extends AsyncComponent {
   }
 }
 
-class UserBuildListBody extends AsyncComponent {
+class UserBuildListBody extends AsyncPage {
   getEndpoints() {
     let {userID} = this.props.params;
     return [['buildList', `/users/${userID || 'me'}/builds`]];

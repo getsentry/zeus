@@ -1,12 +1,16 @@
 from marshmallow import Schema
-from flask import jsonify, request, Response
+from flask import current_app, jsonify, request, Response
 from flask.views import View
+from time import sleep
 
 
 class Resource(View):
     methods = ['GET', 'POST', 'PUT', 'DELETE']
 
     def dispatch_request(self, *args, **kwargs) -> Response:
+        delay = current_app.config.get('API_DELAY', 0)
+        if delay:
+            sleep(delay / 1000)
         try:
             method = getattr(self, request.method.lower())
         except AttributeError:
