@@ -49,8 +49,14 @@ export default class BuildListItem extends Component {
             <BuildDuration build={build} short={true} />
           </Box>
           <Box width={2 / 12}>
-            {build.lineCoverageDiff >= 0
-              ? `${parseInt(build.lineCoverageDiff * 100, 10)}%`
+            {build.stats.coverage.diff_lines_covered >= 0
+              ? `${parseInt(
+                  build.stats.coverage.diff_lines_covered /
+                    (build.stats.coverage.diff_lines_uncovered +
+                      build.stats.coverage.diff_lines_uncovered) *
+                    100,
+                  10
+                )}%`
               : ''}
           </Box>
           <Box width={2 / 12}>

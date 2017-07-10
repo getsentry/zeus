@@ -1,4 +1,4 @@
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus.models import Build, Repository
 
@@ -15,6 +15,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         """
         query = Build.query.options(
             joinedload('source').joinedload('revision'),
+            subqueryload_all('stats'),
         ).filter(
             Build.repository_id == repo.id,
         ).order_by(Build.number.desc()).limit(100)

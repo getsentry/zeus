@@ -36,7 +36,6 @@ def aggregate_build_stats_for_job(job_id: UUID):
     # stats elsewhere)
     record_coverage_stats(job)
 
-    # this point
     lock_key = 'aggstatsbuild:{build_id}'.format(
         build_id=job.build_id.hex,
     )

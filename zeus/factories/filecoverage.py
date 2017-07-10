@@ -19,6 +19,10 @@ class FileCoverageFactory(factory.Factory):
     repository = factory.SelfAttribute('job.repository')
     repository_id = factory.SelfAttribute('job.repository_id')
     data = 'CCCUUUU'
+    lines_covered = 3
+    lines_uncovered = 4
+    diff_lines_covered = 3
+    diff_lines_uncovered = 3
     date_created = factory.Faker('date_time')
 
     class Meta:

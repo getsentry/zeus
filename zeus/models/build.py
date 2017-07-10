@@ -29,6 +29,14 @@ class Build(RepositoryBoundMixin, db.Model):
     data = db.Column(JSONEncodedDict)
 
     source = db.relationship('Source', innerjoin=True)
+    stats = db.relationship(
+        'ItemStat',
+        foreign_keys='[ItemStat.item_id]',
+        primaryjoin='ItemStat.item_id == Build.id',
+        lazy='subquery',
+        viewonly=True,
+        uselist=True
+    )
 
     __tablename__ = 'build'
     __table_args__ = (db.UniqueConstraint('repository_id', 'number', name='unq_build_number'), )

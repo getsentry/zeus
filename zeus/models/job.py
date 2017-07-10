@@ -29,6 +29,14 @@ class Job(RepositoryBoundMixin, db.Model):
     build = db.relationship(
         'Build', backref=db.backref('jobs', order_by='Job.date_created'), innerjoin=True
     )
+    stats = db.relationship(
+        'ItemStat',
+        foreign_keys='[ItemStat.item_id]',
+        primaryjoin='ItemStat.item_id == Job.id',
+        lazy='subquery',
+        viewonly=True,
+        uselist=True
+    )
 
     __tablename__ = 'job'
     __table_args__ = (db.UniqueConstraint('build_id', 'number', name='unq_job_number'), )

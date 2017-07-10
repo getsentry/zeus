@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from zeus import factories, models
 from zeus.config import db
 from zeus.db.utils import try_create
+from zeus.tasks import aggregate_build_stats_for_job
 
 from .base import cli
 
@@ -28,7 +29,7 @@ def mock_single_repository(builds=10, user_ids=()):
     else:
         click.echo('Created {!r}'.format(repo))
 
-    db.session.flush()
+    db.session.commit()
 
     for user_id in user_ids:
         try_create(models.RepositoryAccess, {
@@ -36,7 +37,7 @@ def mock_single_repository(builds=10, user_ids=()):
             'user_id': user_id,
         })
 
-    db.session.flush()
+    db.session.commit()
 
     for n in range(builds):
         revision = factories.RevisionFactory(
@@ -60,9 +61,10 @@ def mock_single_repository(builds=10, user_ids=()):
             db.session.add_all(
                 factories.FileCoverageFactory.create_batch(size=randint(0, 50), job=job)
             )
-        db.session.flush()
+            db.session.flush()
+            aggregate_build_stats_for_job(job.id)
 
-    db.session.commit()
+        db.session.commit()
 
 
 @cli.group('mocks')

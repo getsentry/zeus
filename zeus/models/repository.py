@@ -84,6 +84,15 @@ class Repository(db.Model):
     last_update = Column(DateTime)
     last_update_attempt = Column(DateTime)
 
+    options = db.relationship(
+        'ItemOption',
+        foreign_keys='[ItemOption.item_id]',
+        primaryjoin='ItemOption.item_id == Repository.id',
+        lazy='subquery',
+        viewonly=True,
+        uselist=True
+    )
+
     query_class = RepositoryAccessBoundQuery
 
     __tablename__ = 'repository'
