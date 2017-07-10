@@ -2,7 +2,7 @@ from base64 import b64encode
 
 from zeus import auth
 from zeus.constants import Result
-from zeus.models import Artifact, ItemStat, TestCase
+from zeus.models import Artifact, ItemStat, TestCase as ZeusTestCase
 from zeus.utils.testresult import (
     TestResult as ZeusTestResult, TestResultManager as ZeusTestResultManager
 )
@@ -39,7 +39,7 @@ def test_full(default_job):
     manager = ZeusTestResultManager(default_job)
     manager.save(results)
 
-    testcase_list = sorted(TestCase.query.all(), key=lambda x: x.name)
+    testcase_list = sorted(ZeusTestCase.query.all(), key=lambda x: x.name)
 
     assert len(testcase_list) == 2
 
