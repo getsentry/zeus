@@ -57,6 +57,9 @@ def mock_single_repository(builds=10, user_ids=()):
         for job in factories.JobFactory.create_batch(size=randint(1, 10), build=build):
             db.session.add(job)
             db.session.add_all(factories.TestCaseFactory.create_batch(size=randint(0, 50), job=job))
+            db.session.add_all(
+                factories.FileCoverageFactory.create_batch(size=randint(0, 50), job=job)
+            )
         db.session.flush()
 
     db.session.commit()
