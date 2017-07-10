@@ -4,12 +4,40 @@ import './PageLoadingIndicator.css';
 
 export default class PageLoadingIndicator extends Component {
   render() {
-    let points = 16;
+    let points = 50;
+    let duration = 2; // seconds
+    let durationPerBit = duration / points;
+    let bitWidth = 100 / points;
+    let height = 4;
     return (
-      <div className="loading-line">
-        {[...Array(16)].map(i => {
+      <div
+        style={{
+          display: 'block',
+          height: height,
+          position: 'fixed',
+          width: '100%',
+          left: 0,
+          right: 0,
+          top: 0
+        }}>
+        {[...Array(points)].map((_, i) => {
+          console.log(durationPerBit * (i + 1));
           return (
-            <span key={i} className="loading-bit" style={{width: `${100 / points}%`}} />
+            <span
+              key={i}
+              style={{
+                display: 'inline-block',
+                borderRadius: 0,
+                background: '#fff',
+                height: height,
+                opacity: 0,
+                position: 'absolute',
+                left: `${bitWidth * i}%`,
+                width: `${bitWidth}%`,
+                animationDelay: `${durationPerBit * (i + 1)}s`,
+                animation: `${duration}s ease infinite pageLoadingAnim`
+              }}
+            />
           );
         })}
       </div>
