@@ -4,6 +4,7 @@ MAKEFLAGS += --jobs=$(CPUS)
 develop: setup-git install-requirements
 
 upgrade: install-requirements
+	createdb -E utf-8 zeus || true
 	zeus db upgrade
 
 setup-git:
