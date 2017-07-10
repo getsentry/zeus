@@ -21,4 +21,5 @@ app.add_resource(
     '/repos/<repository_name>/builds/<build_number>/jobs/<job_number>/artifacts',
     r.JobArtifactsResource
 )
+app.add_resource('/users/<user_id>/builds', r.UserBuildsResource)
 app.add_resource('/<path:path>', r.CatchallResource)

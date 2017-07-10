@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router';
 import styled, {css} from 'styled-components';
+
+import SidebarLink from './SidebarLink';
 
 export default class SidebarRepoItem extends Component {
   static propTypes = {
@@ -11,51 +12,27 @@ export default class SidebarRepoItem extends Component {
   render() {
     const {name, status} = {...this.props.repo};
     return (
-      <SidebarRepoItemLink to={`/repos/${name}`}>
-        <SidebarRepoItemName>
-          {name}
-        </SidebarRepoItemName>
-        <SidebarRepoItemStatus status={status} />
-      </SidebarRepoItemLink>
+      <SidebarLink to={`/repos/${name}`}>
+        <SidebarRepoItemWrapper>
+          <SidebarRepoItemName>
+            {name}
+          </SidebarRepoItemName>
+          <SidebarRepoItemStatus status={status} />
+        </SidebarRepoItemWrapper>
+      </SidebarLink>
     );
   }
 }
 
-const SidebarRepoItemLink = styled(Link)`
+const SidebarRepoItemWrapper = styled.div`
   display: flex;
   align-items: center;
   height: 30px;
-  color: #B9B6CE;
   position: relative;
-
-  &:hover {
-    color: #fff;
-  }
-
-  &.${props => props.activeClassName} {
-    color: #fff;
-
-    &:before {
-      background: #7B6BE6;
-      display: block;
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -20px;
-      right: -20px;
-      bottom: 0;
-      z-index: -1;
-    }
-  }
 `;
-
-SidebarRepoItemLink.defaultProps = {
-  activeClassName: 'active'
-};
 
 const SidebarRepoItemName = styled.div`
   flex: 1;
-  font-size: 14px;
   padding-right: 5px;
   text-overflow: ellipsis;
   white-space: nowrap;

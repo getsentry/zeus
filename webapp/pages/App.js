@@ -10,11 +10,11 @@ import './App.css';
 
 class AuthedContext extends AsyncComponent {
   static childContextTypes = {
-    repoList: PropTypes.arrayOf(PropTypes.object).isRequired
+    repoList: PropTypes.arrayOf(PropTypes.object)
   };
 
   getChildContext() {
-    return {repoList: this.state.repoList};
+    return {repoList: this.state.repoList || []};
   }
 
   getEndpoints() {

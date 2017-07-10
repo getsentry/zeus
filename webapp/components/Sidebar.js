@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import Logo from '../assets/Logo';
 import NavHeading from './NavHeading';
+import SidebarLink from './SidebarLink';
 import SidebarRepoItem from './SidebarRepoItem';
 
 class RepositoryList extends Component {
@@ -27,9 +28,12 @@ export default class Sidebar extends Component {
   render() {
     return (
       <SidebarWrapper>
-        <Link to="/">
-          <Logo size="30" />
-        </Link>
+        <div style={{marginBottom: 20}}>
+          <Link to="/">
+            <Logo size="30" />
+          </Link>
+        </div>
+        <SidebarLink to="/builds">My Builds</SidebarLink>
         <SidebarNavHeading>Repositories</SidebarNavHeading>
         <RepositoryList />
       </SidebarWrapper>
@@ -46,7 +50,7 @@ const SidebarWrapper = styled.div`
   left: 0;
   bottom: 0;
   width: 220px;
-  background-image: linear-gradient(
+  padding-top: linear-gradient(
     rgba(123, 107, 230, 0.10) 25%,
     rgba(118, 211, 146, 0.10) 100%
   );
