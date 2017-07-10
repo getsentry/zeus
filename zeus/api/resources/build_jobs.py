@@ -1,3 +1,5 @@
+from sqlalchemy.orm import subqueryload_all
+
 from zeus.models import Build, Job
 
 from .base_build import BaseBuildResource
@@ -11,5 +13,7 @@ class BuildJobsResource(BaseBuildResource):
         """
         Return a list of jobs for a given build.
         """
-        query = Job.query.filter(Job.build_id == build.id).order_by(Job.number.asc())
+        query = Job.query.options(
+            subqueryload_all('stats'),
+        ).filter(Job.build_id == build.id).order_by(Job.number.asc())
         return self.respond_with_schema(jobs_schema, query)

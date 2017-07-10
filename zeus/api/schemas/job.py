@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields
 
 from .fields import ResultField, StatusField
+from .stats import StatsSchema
 
 
 class JobSchema(Schema):
@@ -11,3 +12,4 @@ class JobSchema(Schema):
     finished_at = fields.DateTime(attribute="date_finished")
     status = StatusField()
     result = ResultField()
+    stats = fields.Nested(StatsSchema(), dump_only=True)

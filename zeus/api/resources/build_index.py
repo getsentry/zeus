@@ -1,3 +1,5 @@
+from sqlalchemy.orm import joinedload, subqueryload_all
+
 from zeus.models import Build
 
 from .base import Resource
@@ -11,5 +13,8 @@ class BuildIndexResource(Resource):
         """
         Return a list of builds.
         """
-        query = Build.query.all()
+        query = Build.query.options(
+            joinedload('source').joinedload('revision'),
+            subqueryload_all('stats'),
+        ).order_by(Build.date_created.desc()).limit(100)
         return self.respond_with_schema(builds_schema, query)
