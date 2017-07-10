@@ -49,5 +49,4 @@ def aggregate_status(status_list):
 
 
 def aggregate_result(result_list):
-    return _aggregate_constant_result(result_list, RESULT_PRIORITY,
-                                      Result.unknown)
+    return _aggregate_constant_result(result_list, RESULT_PRIORITY, Result.unknown)
