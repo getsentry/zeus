@@ -8,7 +8,6 @@ import {Flex, Box} from 'grid-styled';
 import BuildDuration from './BuildDuration';
 import IconCircleCheck from '../assets/IconCircleCheck';
 import IconCircleCross from '../assets/IconCircleCross';
-import IconClock from '../assets/IconClock';
 
 export default class BuildListItem extends Component {
   static contextTypes = {

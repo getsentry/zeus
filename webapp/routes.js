@@ -2,6 +2,7 @@ import React from 'react';
 import {IndexRoute, Route} from 'react-router';
 
 import App from './components/App';
+import BuildCoverage from './components/BuildCoverage';
 import BuildDetails from './components/BuildDetails';
 import BuildJobList from './components/BuildJobList';
 import BuildTestList from './components/BuildTestList';
@@ -21,6 +22,7 @@ export default (
       <Route path="builds/:buildNumber" component={BuildDetails}>
         <IndexRoute component={BuildJobList} />
         <Route path="tests" component={BuildTestList} />
+        <Route path="coverage" component={BuildCoverage} />
       </Route>
     </Route>
     <Route path="/login" component={Login} />

@@ -9,6 +9,9 @@ app.add_resource('/repos', r.RepositoryIndexResource)
 app.add_resource('/repos/<repository_name>/builds', r.RepositoryBuildsResource)
 app.add_resource('/repos/<repository_name>/test-tree', r.RepositoryTestTreeResource)
 app.add_resource('/repos/<repository_name>/builds/<build_number>', r.BuildDetailsResource)
+app.add_resource(
+    '/repos/<repository_name>/builds/<build_number>/file-coverage', r.BuildFileCoverageResource
+)
 app.add_resource('/repos/<repository_name>/builds/<build_number>/jobs', r.BuildJobsResource)
 app.add_resource('/repos/<repository_name>/builds/<build_number>/tests', r.BuildTestsResource)
 app.add_resource(
