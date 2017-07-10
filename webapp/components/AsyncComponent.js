@@ -56,7 +56,7 @@ export default class AsyncComponent extends Component {
     let endpoints = this.getEndpoints();
     let state = {
       // has all data finished requesting?
-      loading: true,
+      loading: endpoints.length > 0,
       // is there an error loading ANY data?
       error: false,
       errors: {}

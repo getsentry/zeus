@@ -5,29 +5,39 @@ import AsyncComponent from '../components/AsyncComponent';
 import BuildList from '../components/BuildList';
 import Sidebar from '../components/Sidebar';
 
-export default class UserBuildList extends AsyncComponent {
-  getEndpoints() {
+export default class RepositoryBuildList extends AsyncComponent {
+  getTitle() {
     let {userID} = this.props.params;
-    return [['buildList', `/users/${userID || 'me'}/builds`]];
+    return userID ? 'Builds' : 'My Builds';
   }
 
   renderBody() {
-    let {userID} = this.props.params;
     return (
       <div>
         <Sidebar params={this.props.params} />
         <BuildIndex>
           <BuildBreadcrumbs>
             <UserName>
-              {!userID && 'My '}Builds
+              {this.getTitle()}
             </UserName>
           </BuildBreadcrumbs>
           <ScrollView>
-            <BuildList params={this.props.params} buildList={this.state.buildList} />
+            <UserBuildListBody {...this.props} />
           </ScrollView>
         </BuildIndex>
       </div>
     );
+  }
+}
+
+class UserBuildListBody extends AsyncComponent {
+  getEndpoints() {
+    let {userID} = this.props.params;
+    return [['buildList', `/users/${userID || 'me'}/builds`]];
+  }
+
+  renderBody() {
+    return <BuildList params={this.props.params} buildList={this.state.buildList} />;
   }
 }
 

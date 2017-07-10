@@ -13,9 +13,8 @@ export default class RepositoryBuildList extends AsyncComponent {
     repo: PropTypes.object.isRequired
   };
 
-  getEndpoints() {
-    let {repoName} = this.props.params;
-    return [['buildList', `/repos/${repoName}/builds`]];
+  getTitle() {
+    return this.context.repo.name;
   }
 
   renderBody() {
@@ -36,11 +35,22 @@ export default class RepositoryBuildList extends AsyncComponent {
               </TabbedNavItem>
               <TabbedNavItem>All builds</TabbedNavItem>
             </TabbedNav>
-            <BuildList params={this.props.params} buildList={this.state.buildList} />
+            <RepositoryBuildListBody {...this.props} />
           </ScrollView>
         </BuildIndex>
       </div>
     );
+  }
+}
+
+class RepositoryBuildListBody extends AsyncComponent {
+  getEndpoints() {
+    let {repoName} = this.props.params;
+    return [['buildList', `/repos/${repoName}/builds`]];
+  }
+
+  renderBody() {
+    return <BuildList params={this.props.params} buildList={this.state.buildList} />;
   }
 }
 
