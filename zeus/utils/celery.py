@@ -18,7 +18,13 @@ class Celery(object):
         class ContextTask(celery.Task):
             abstract = True
 
+            # TODO(dcramer): I THINK we dont need app_context when we're already within context,
+            # but its 100% causing issues with sqlalchemy sessions and relationships if you
+            # are calling a task inline (vs .delay)
             def __call__(self, *args, **kwargs):
+                _app_context = kwargs.pop('_app_context', True)
+                if not _app_context:
+                    return super(ContextTask, self).__call__(*args, **kwargs)
                 with app.app_context():
                     return super(ContextTask, self).__call__(*args, **kwargs)
 

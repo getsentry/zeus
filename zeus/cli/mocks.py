@@ -12,7 +12,7 @@ from .base import cli
 
 
 def mock_single_repository(builds=10, user_ids=()):
-    repo = factories.RepositoryFactory(
+    repo = factories.RepositoryFactory.build(
         status=models.RepositoryStatus.active,
     )
     try:
@@ -29,8 +29,6 @@ def mock_single_repository(builds=10, user_ids=()):
     else:
         click.echo('Created {!r}'.format(repo))
 
-    db.session.commit()
-
     for user_id in user_ids:
         try_create(models.RepositoryAccess, {
             'repository_id': repo.id,
@@ -43,26 +41,15 @@ def mock_single_repository(builds=10, user_ids=()):
         revision = factories.RevisionFactory(
             repository=repo,
         )
-        db.session.add(revision)
-        db.session.flush()
-
         source = factories.SourceFactory(revision=revision)
-        db.session.add(source)
-        db.session.flush()
-
         build = factories.BuildFactory(source=source)
-        db.session.add(build)
-        db.session.flush()
         click.echo('Created {!r}'.format(build))
 
         for job in factories.JobFactory.create_batch(size=randint(1, 10), build=build):
-            db.session.add(job)
-            db.session.add_all(factories.TestCaseFactory.create_batch(size=randint(0, 50), job=job))
-            db.session.add_all(
-                factories.FileCoverageFactory.create_batch(size=randint(0, 50), job=job)
-            )
-            db.session.flush()
-            aggregate_build_stats_for_job(job.id)
+            factories.TestCaseFactory.create_batch(size=randint(0, 50), job=job)
+            factories.FileCoverageFactory.create_batch(size=randint(0, 50), job=job)
+            db.session.commit()
+            aggregate_build_stats_for_job(job_id=job.id, _app_context=False)
 
         db.session.commit()
 
