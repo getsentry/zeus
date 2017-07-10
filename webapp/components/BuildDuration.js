@@ -9,13 +9,18 @@ export default class BuildDuration extends Component {
   };
 
   getDuration(build) {
-    if (!build.finished_at && build.started_at) {
-      return new Date().getTime() - new Date(build.finished_at).getTime();
+    if (!build.finished_at) {
+      if (build.started_at) {
+        return new Date().getTime() - new Date(build.started_at).getTime();
+      }
+      return null;
     }
     return new Date(build.finished_at).getTime() - new Date(build.started_at).getTime();
   }
 
   render() {
-    return <Duration ms={this.getDuration(this.props.build)} {...this.props} />;
+    let duration = this.getDuration(this.props.build);
+    if (duration === null) return null;
+    return <Duration ms={duration} {...this.props} />;
   }
 }

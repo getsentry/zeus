@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router';
-import moment from 'moment';
 import styled, {css} from 'styled-components';
 import {Flex, Box} from 'grid-styled';
 
 import BuildCoverage from './BuildCoverage';
 import BuildDuration from './BuildDuration';
+import TimeSince from './TimeSince';
+
 import IconCircleCheck from '../assets/IconCircleCheck';
 import IconCircleCross from '../assets/IconCircleCross';
 
@@ -53,7 +54,7 @@ export default class BuildListItem extends Component {
             <BuildCoverage build={build} />
           </Box>
           <Box width={2 / 12}>
-            author {moment(build.created_at).fromNow()}
+            author <TimeSince date={build.created_at} />
           </Box>
         </Flex>
       </BuildListItemLink>

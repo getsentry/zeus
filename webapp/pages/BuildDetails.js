@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import styled, {css} from 'styled-components';
 
 import AsyncComponent from '../components/AsyncComponent';
 import BuildDuration from '../components/BuildDuration';
 import {HeaderLink, HorizontalHeader} from '../components/HorizontalHeader';
 import TabbedNavItem from '../components/TabbedNavItem';
+import TimeSince from '../components/TimeSince';
 
 import IconCircleCheck from '../assets/IconCircleCheck';
 import IconCircleCross from '../assets/IconCircleCross';
@@ -63,17 +63,17 @@ export default class BuildDetails extends AsyncComponent {
               <DurationWrapper result={build.result}>
                 {build.result == 'passed' && <IconCircleCheck size="15" />}
                 {build.result == 'failed' && <IconCircleCross size="15" />}
-                {build.status} {moment(build.finished_at).fromNow()} in{' '}
+                {build.status} <TimeSince date={build.finished_at} /> in{' '}
                 <BuildDuration build={build} short={true} />
               </DurationWrapper>}
             <Time>
               <IconClock size="15" />
               {build.status === 'queued'
                 ? <span>
-                    created {moment(build.created_at).fromNow()}
+                    created <TimeSince date={build.created_at} />
                   </span>
                 : <span>
-                    started {moment(build.started_at).fromNow()}
+                    started <TimeSince date={build.started_at} />
                   </span>}
             </Time>
             <Commit>
