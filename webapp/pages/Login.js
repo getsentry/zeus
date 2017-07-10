@@ -2,7 +2,7 @@ import Icon from 'react-icon-base';
 import React, {Component} from 'react';
 import styled from 'styled-components';
 
-import NavHeading from './NavHeading';
+import NavHeading from '../components/NavHeading';
 
 export default class Login extends Component {
   render() {

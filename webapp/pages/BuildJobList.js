@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import AsyncComponent from './AsyncComponent';
+import AsyncComponent from '../components/AsyncComponent';
 
 export default class BuildJobList extends AsyncComponent {
   static contextTypes = {

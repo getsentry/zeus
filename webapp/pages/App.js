@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {authSession, logout} from '../actions/auth';
 import styled from 'styled-components';
 
-import AsyncComponent from './AsyncComponent';
+import AsyncComponent from '../components/AsyncComponent';
 
 import './App.css';
 

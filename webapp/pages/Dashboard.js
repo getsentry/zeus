@@ -1,7 +1,7 @@
 import React from 'react';
 
-import AsyncComponent from './AsyncComponent';
-import Sidebar from './Sidebar';
+import AsyncComponent from '../components/AsyncComponent';
+import Sidebar from '../components/Sidebar';
 
 export default class Dashboard extends AsyncComponent {
   renderBody() {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import AsyncComponent from './AsyncComponent';
+import AsyncComponent from '../components/AsyncComponent';
 
 export default class RepositoryDetails extends AsyncComponent {
   static contextTypes = {

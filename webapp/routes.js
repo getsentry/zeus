@@ -1,16 +1,16 @@
 import React from 'react';
 import {IndexRoute, Route} from 'react-router';
 
-import App from './components/App';
-import BuildCoverage from './components/BuildCoverage';
-import BuildDetails from './components/BuildDetails';
-import BuildJobList from './components/BuildJobList';
-import BuildTestList from './components/BuildTestList';
-import Dashboard from './components/Dashboard';
-import Login from './components/Login';
-import NotFound from './components/NotFound';
-import RepositoryDetails from './components/RepositoryDetails';
-import RepositoryBuildList from './components/RepositoryBuildList';
+import App from './pages/App';
+import BuildCoverage from './pages/BuildCoverage';
+import BuildDetails from './pages/BuildDetails';
+import BuildJobList from './pages/BuildJobList';
+import BuildTestList from './pages/BuildTestList';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import NotFound from './pages/NotFound';
+import RepositoryDetails from './pages/RepositoryDetails';
+import RepositoryBuildList from './pages/RepositoryBuildList';
 
 import requireAuth from './utils/requireAuth';
 

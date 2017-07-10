@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import styled, {css} from 'styled-components';
 
-import AsyncComponent from './AsyncComponent';
-import BuildDuration from './BuildDuration';
-import {HeaderLink, HorizontalHeader} from './HorizontalHeader';
-import TabbedNavItem from './TabbedNavItem';
+import AsyncComponent from '../components/AsyncComponent';
+import BuildDuration from '../components/BuildDuration';
+import {HeaderLink, HorizontalHeader} from '../components/HorizontalHeader';
+import TabbedNavItem from '../components/TabbedNavItem';
 
 import IconCircleCheck from '../assets/IconCircleCheck';
 import IconCircleCross from '../assets/IconCircleCross';

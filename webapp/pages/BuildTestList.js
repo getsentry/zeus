@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import AsyncComponent from './AsyncComponent';
-import Duration from './Duration';
+import AsyncComponent from '../components/AsyncComponent';
+import Duration from '../components/Duration';
 
 export default class BuildTestList extends AsyncComponent {
   getEndpoints() {

@@ -5,6 +5,7 @@ import moment from 'moment';
 import styled, {css} from 'styled-components';
 import {Flex, Box} from 'grid-styled';
 
+import BuildCoverage from './BuildCoverage';
 import BuildDuration from './BuildDuration';
 import IconCircleCheck from '../assets/IconCircleCheck';
 import IconCircleCross from '../assets/IconCircleCross';
@@ -49,15 +50,7 @@ export default class BuildListItem extends Component {
             <BuildDuration build={build} short={true} />
           </Box>
           <Box width={2 / 12}>
-            {build.stats.coverage.diff_lines_covered >= 0
-              ? `${parseInt(
-                  build.stats.coverage.diff_lines_covered /
-                    (build.stats.coverage.diff_lines_uncovered +
-                      build.stats.coverage.diff_lines_uncovered) *
-                    100,
-                  10
-                )}%`
-              : ''}
+            <BuildCoverage build={build} />
           </Box>
           <Box width={2 / 12}>
             author {moment(build.created_at).fromNow()}
