@@ -4,7 +4,7 @@ import moment from 'moment';
 import styled, {css} from 'styled-components';
 
 import AsyncComponent from './AsyncComponent';
-import Duration from './Duration';
+import BuildDuration from './BuildDuration';
 import {HeaderLink, HorizontalHeader} from './HorizontalHeader';
 import TabbedNavItem from './TabbedNavItem';
 
@@ -40,10 +40,6 @@ export default class BuildDetails extends AsyncComponent {
     return 'Build Details';
   }
 
-  getDuration(build) {
-    return new Date(build.finished_at).getTime() - new Date(build.started_at).getTime();
-  }
-
   renderBody() {
     let {repo} = this.context;
     let {build} = this.state;
@@ -68,7 +64,7 @@ export default class BuildDetails extends AsyncComponent {
                 {build.result == 'passed' && <IconCircleCheck size="15" />}
                 {build.result == 'failed' && <IconCircleCross size="15" />}
                 {build.status} {moment(build.finished_at).fromNow()} in{' '}
-                <Duration ms={this.getDuration(build)} short={true} />
+                <BuildDuration build={build} short={true} />
               </DurationWrapper>}
             <Time>
               <IconClock size="15" />

@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import moment from 'moment';
 import styled, {css} from 'styled-components';
-import { Flex, Box } from 'grid-styled';
+import {Flex, Box} from 'grid-styled';
 
+import BuildDuration from './BuildDuration';
 import IconCircleCheck from '../assets/IconCircleCheck';
 import IconCircleCross from '../assets/IconCircleCross';
 import IconClock from '../assets/IconClock';
@@ -24,7 +25,7 @@ export default class BuildListItem extends Component {
     return (
       <BuildListItemLink to={`/repos/${repo.name}/builds/${build.number}`}>
         <Flex align="center">
-          <Box flex='1' width={6/12} pr={15}>
+          <Box flex="1" width={6 / 12} pr={15}>
             <Flex>
               <Box width={15} mr={8}>
                 <StatusIcon status={build.result}>
@@ -32,9 +33,9 @@ export default class BuildListItem extends Component {
                   {build.result == 'failed' && <IconCircleCross size="15" />}
                 </StatusIcon>
               </Box>
-              <Box flex='1' style={{minWidth: 0}}>
+              <Box flex="1" style={{minWidth: 0}}>
                 <Message>
-                  #{build.number} {' '} {build.source.revision.message}
+                  #{build.number} {build.source.revision.message}
                 </Message>
                 <Meta>
                   <Branch>branch-name</Branch>
@@ -45,15 +46,15 @@ export default class BuildListItem extends Component {
               </Box>
             </Flex>
           </Box>
-          <Box width={2/12}>
-            Duration
+          <Box width={2 / 12}>
+            <BuildDuration build={build} short={true} />
           </Box>
-          <Box width={2/12}>
+          <Box width={2 / 12}>
             {build.lineCoverageDiff >= 0
               ? `${parseInt(build.lineCoverageDiff * 100, 10)}%`
               : ''}
           </Box>
-          <Box width={2/12}>
+          <Box width={2 / 12}>
             author {moment(build.created_at).fromNow()}
           </Box>
         </Flex>
