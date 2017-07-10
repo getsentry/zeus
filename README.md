@@ -74,7 +74,8 @@ zeus
     ├── actions             // redux actions
     ├── components          // react components
     ├── reducers            // redux reducers
-    └── routes.js           // routes (react-router)
+    ├── routes.js           // routes (react-router)
+    └── pages.js            // react components (pages)
 ```
 
 ## Data Model
@@ -87,7 +88,8 @@ zeus
 zeus
 ├── Repository
 |   ├── ItemOption
-|   └── Build
+|   ├── Build
+|   |   ├── Author
 |   |   ├── ItemStat
 |   |   ├── Source
 |   |   └── Job
@@ -97,9 +99,10 @@ zeus
 |   |       └── TestCase
 |   |           ├── Artifact
 |   |           └── ItemStat
-|   └── Revision
-|       ├── Author
-|       └── Source
+|   └── Source
+|       ├── Patch
+|       └── Revision
+|           └── Author
 └── User
     └── Identity
 ```
