@@ -5,6 +5,7 @@ from random import choice
 
 from zeus import models
 
+from .base import ModelFactory
 from .types import GUIDFactory
 
 orgs = ('ab', 'vitae')
@@ -12,7 +13,7 @@ orgs = ('ab', 'vitae')
 names = ('culpa', 'ipsa', 'eum', 'alias')
 
 
-class RepositoryFactory(factory.Factory):
+class RepositoryFactory(ModelFactory):
     id = GUIDFactory()
     url = factory.LazyAttribute(
         lambda o: 'https://github.com/getsentry/%s.git' % (o.name.lower(), )

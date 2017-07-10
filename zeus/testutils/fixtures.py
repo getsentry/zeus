@@ -10,13 +10,10 @@ DATA_FIXTURES = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 't
 
 
 @pytest.fixture(scope='function')
-def default_user(db_session):
-    r = factories.UserFactory(
+def default_user():
+    return factories.UserFactory(
         email='foo@example.com',
     )
-    db_session.add(r)
-    db_session.commit()
-    return r
 
 
 @pytest.fixture(scope='function')
@@ -28,15 +25,12 @@ def default_login(client, default_user):
 
 
 @pytest.fixture(scope='function')
-def default_repo(db_session):
-    r = factories.RepositoryFactory(
+def default_repo():
+    return factories.RepositoryFactory(
         url='https://github.com/getsentry/zeus.git',
         backend=models.RepositoryBackend.git,
         status=models.RepositoryStatus.active,
     )
-    db_session.add(r)
-    db_session.commit()
-    return r
 
 
 @pytest.fixture(scope='function')
@@ -52,82 +46,61 @@ def default_repo_access(db_session, default_repo, default_user):
 
 
 @pytest.fixture(scope='function')
-def default_revision(db_session, default_repo):
-    r = factories.RevisionFactory(
+def default_revision(default_repo):
+    return factories.RevisionFactory(
         repository=default_repo,
         sha='884ea9e17b53933febafd7e02d8bd28f3c9d479d',
     )
-    db_session.add(r)
-    db_session.commit()
-    return r
 
 
 @pytest.fixture(scope='function')
-def default_source(db_session, default_revision):
-    r = factories.SourceFactory(
+def default_source(default_revision):
+    return factories.SourceFactory(
         revision=default_revision,
     )
-    db_session.add(r)
-    db_session.commit()
-    return r
 
 
 @pytest.fixture(scope='function')
-def default_build(db_session, default_source):
-    r = factories.BuildFactory(
+def default_build(default_source):
+    return factories.BuildFactory(
         source=default_source,
         date_started=datetime.utcnow() - timedelta(minutes=6),
         date_finished=datetime.utcnow(),
         result=Result.passed,
         status=Status.finished,
     )
-    db_session.add(r)
-    db_session.commit()
-    return r
 
 
 @pytest.fixture(scope='function')
-def default_job(db_session, default_build):
-    r = factories.JobFactory(
+def default_job(default_build):
+    return factories.JobFactory(
         build=default_build,
         date_started=datetime.utcnow() - timedelta(minutes=6),
         date_finished=datetime.utcnow(),
         result=Result.passed,
         status=Status.finished,
     )
-    db_session.add(r)
-    db_session.commit()
-    return r
 
 
 @pytest.fixture(scope='function')
-def default_artifact(db_session, default_job):
-    r = factories.ArtifactFactory(
+def default_artifact(default_job):
+    return factories.ArtifactFactory(
         job=default_job,
     )
-    db_session.add(r)
-    db_session.commit()
-    return r
 
 
 @pytest.fixture(scope='function')
-def default_testcase(db_session, default_job):
-    r = factories.TestCaseFactory(
+def default_testcase(default_job):
+    return factories.TestCaseFactory(
         job=default_job,
     )
-    db_session.add(r)
-    db_session.commit()
-    return r
 
 
 @pytest.fixture(scope='function')
-def default_filecoverage(db_session, default_job):
-    r = factories.FileCoverageFactory(
+def default_filecoverage(default_job):
+    return factories.FileCoverageFactory(
         job=default_job,
     )
-    db_session.add(r)
-    db_session.commit()
-    return r
 
 
 @pytest.fixture(scope='session')

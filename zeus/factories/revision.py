@@ -3,8 +3,10 @@ import factory.faker
 
 from zeus import models
 
+from .base import ModelFactory
 
-class RevisionFactory(factory.Factory):
+
+class RevisionFactory(ModelFactory):
     sha = factory.Faker('sha1')
     repository = factory.SubFactory('zeus.factories.RepositoryFactory')
     repository_id = factory.SelfAttribute('repository.id')

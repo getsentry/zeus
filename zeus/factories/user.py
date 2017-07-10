@@ -2,10 +2,11 @@ import factory
 
 from zeus import models
 
+from .base import ModelFactory
 from .types import GUIDFactory
 
 
-class UserFactory(factory.Factory):
+class UserFactory(ModelFactory):
     id = GUIDFactory()
     email = factory.Faker('email')
     date_created = factory.Faker('date_time')

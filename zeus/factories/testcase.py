@@ -7,10 +7,11 @@ faker = Factory.create()
 from zeus import models
 from zeus.constants import Result
 
+from .base import ModelFactory
 from .types import GUIDFactory
 
 
-class TestCaseFactory(factory.Factory):
+class TestCaseFactory(ModelFactory):
     id = GUIDFactory()
     name = factory.LazyAttribute(
         lambda o: 'tests.%s.%s.%s' % (faker.word(), faker.word(), faker.word())

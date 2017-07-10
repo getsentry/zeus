@@ -7,10 +7,11 @@ faker = Factory.create()
 from zeus import models
 from zeus.constants import Result, Status
 
+from .base import ModelFactory
 from .types import GUIDFactory
 
 
-class JobFactory(factory.Factory):
+class JobFactory(ModelFactory):
     id = GUIDFactory()
     build = factory.SubFactory('zeus.factories.BuildFactory')
     build_id = factory.SelfAttribute('build.id')

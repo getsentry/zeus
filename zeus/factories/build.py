@@ -7,12 +7,13 @@ faker = Factory.create()
 from zeus import models
 from zeus.constants import Result, Status
 
+from .base import ModelFactory
 from .types import GUIDFactory
 
 
 # TODO(dcramer): this should reflect attributes of its Jobs (and
 # then needs updated when children are added)
-class BuildFactory(factory.Factory):
+class BuildFactory(ModelFactory):
     id = GUIDFactory()
     source = factory.SubFactory('zeus.factories.SourceFactory')
     source_id = factory.SelfAttribute('source.id')

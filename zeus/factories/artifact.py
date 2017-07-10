@@ -2,10 +2,11 @@ import factory
 
 from zeus import models
 
+from .base import ModelFactory
 from .types import GUIDFactory
 
 
-class ArtifactFactory(factory.Factory):
+class ArtifactFactory(ModelFactory):
     id = GUIDFactory()
     job = factory.SubFactory('zeus.factories.JobFactory')
     job_id = factory.SelfAttribute('job.id')

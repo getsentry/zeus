@@ -2,10 +2,11 @@ import factory
 
 from zeus import models
 
+from .base import ModelFactory
 from .types import GUIDFactory
 
 
-class SourceFactory(factory.Factory):
+class SourceFactory(ModelFactory):
     id = GUIDFactory()
     revision = factory.SubFactory('zeus.factories.RevisionFactory')
     date_created = factory.Faker('date_time')

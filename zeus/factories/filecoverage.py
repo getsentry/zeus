@@ -6,10 +6,11 @@ faker = Factory.create()
 
 from zeus import models
 
+from .base import ModelFactory
 from .types import GUIDFactory
 
 
-class FileCoverageFactory(factory.Factory):
+class FileCoverageFactory(ModelFactory):
     id = GUIDFactory()
     filename = factory.LazyAttribute(
         lambda o: 'tests/%s/%s/%s.py' % (faker.word(), faker.word(), faker.word())
