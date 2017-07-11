@@ -13,3 +13,5 @@ class JobSchema(Schema):
     status = StatusField()
     result = ResultField()
     stats = fields.Nested(StatsSchema(), dump_only=True)
+    provider = fields.Str(dump_only=True)
+    external_id = fields.Str(dump_only=True)

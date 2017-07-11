@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from uuid import uuid4
+from secrets import token_hex
 
 from zeus.config import db
 from zeus.db.types import GUID
@@ -22,14 +22,14 @@ class ApiToken(db.Model):
     expires_at = db.Column(
         db.DateTime, nullable=True, default=lambda: datetime.utcnow() + DEFAULT_EXPIRATION
     )
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     __tablename__ = 'api_token'
     __repr__ = model_repr('id')
 
     @classmethod
     def generate_token(cls):
-        return uuid4().hex + uuid4().hex
+        return token_hex(32)
 
     def is_expired(self):
         if not self.expires_at:

@@ -57,7 +57,11 @@ def test_process(mocker, default_job):
             job_id=default_job.id,
             repository_id=default_job.repository_id,
             filename='setup.py',
-            data='CUNNNNCCNNNUNNNUUUUUU'
+            data='CUNNNNCCNNNUNNNUUUUUU',
+            lines_covered=2,
+            lines_uncovered=7,
+            diff_lines_covered=2,
+            diff_lines_uncovered=7,
         )
     ]
 
@@ -72,7 +76,11 @@ def test_process(mocker, default_job):
             job_id=default_job.id,
             repository_id=default_job.repository_id,
             filename='setup.py',
-            data='NUUNNNNNNNNUCCNU'
+            data='NUUNNNNNNNNUCCNU',
+            lines_covered=2,
+            lines_uncovered=4,
+            diff_lines_covered=2,
+            diff_lines_uncovered=4,
         )
     ]
 

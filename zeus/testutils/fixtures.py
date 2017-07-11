@@ -104,8 +104,15 @@ def default_filecoverage(default_job):
 
 
 @pytest.fixture(scope='function')
-def default_api_token(default_job):
+def default_api_token():
     return factories.ApiTokenFactory()
+
+
+@pytest.fixture(scope='function')
+def default_hook_token(default_repo):
+    return factories.HookTokenFactory(
+        repository=default_repo,
+    )
 
 
 @pytest.fixture(scope='session')

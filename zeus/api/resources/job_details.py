@@ -1,5 +1,4 @@
 from zeus.config import db
-from zeus.constants import Status
 from zeus.models import Job
 from zeus.tasks import aggregate_build_stats_for_job
 
@@ -21,6 +20,8 @@ class JobDetailsResource(BaseJobResource):
         Update a job.
         """
         result = self.schema_from_request(job_schema, partial=True)
+        if result.errors:
+            return self.respond(result.errors, 403)
         data = result.data
         if data.get('status'):
             job.status = data['status']
@@ -30,7 +31,6 @@ class JobDetailsResource(BaseJobResource):
             db.session.add(job)
             db.session.commit()
 
-        if job.status == Status.finished:
             aggregate_build_stats_for_job.delay(job_id=job.id)
 
         return self.respond_with_schema(job_schema, job)

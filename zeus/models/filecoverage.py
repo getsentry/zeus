@@ -10,13 +10,13 @@ class FileCoverage(RepositoryBoundMixin, db.Model):
     id = db.Column(GUID, nullable=False, primary_key=True, default=GUID.default_value)
     job_id = db.Column(GUID, db.ForeignKey('job.id', ondelete='CASCADE'), nullable=False)
     filename = db.Column(db.String(256), nullable=False, primary_key=True)
-    data = db.Column(db.Text)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    data = db.Column(db.Text, nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-    lines_covered = db.Column(db.Integer)
-    lines_uncovered = db.Column(db.Integer)
-    diff_lines_covered = db.Column(db.Integer)
-    diff_lines_uncovered = db.Column(db.Integer)
+    lines_covered = db.Column(db.Integer, nullable=False)
+    lines_uncovered = db.Column(db.Integer, nullable=False)
+    diff_lines_covered = db.Column(db.Integer, nullable=False)
+    diff_lines_uncovered = db.Column(db.Integer, nullable=False)
 
     job = db.relationship('Job', innerjoin=True, uselist=False)
 

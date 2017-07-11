@@ -11,5 +11,6 @@ app.add_url_rule(
     '/auth/github/complete',
     view_func=v.GitHubCompleteView.as_view('github-complete', complete_url='web.index')
 )
+app.add_url_rule('/hooks/job/<token_id>/<signature>', view_func=v.job_hook, methods=['POST'])
 app.add_url_rule('/<path:path>', view_func=v.index)
 app.add_url_rule('/', 'index', view_func=v.index)

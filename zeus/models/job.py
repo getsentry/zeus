@@ -24,7 +24,9 @@ class Job(RepositoryBoundMixin, db.Model):
     date_started = db.Column(db.DateTime, nullable=True)
     date_finished = db.Column(db.DateTime, nullable=True)
     date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    data = db.Column(JSONEncodedDict)
+    data = db.Column(JSONEncodedDict, nullable=True)
+    provider = db.Column(db.String, nullable=True)
+    external_id = db.Column(db.String(64), nullable=True)
 
     build = db.relationship(
         'Build', backref=db.backref('jobs', order_by='Job.date_created'), innerjoin=True
@@ -39,7 +41,10 @@ class Job(RepositoryBoundMixin, db.Model):
     )
 
     __tablename__ = 'job'
-    __table_args__ = (db.UniqueConstraint('build_id', 'number', name='unq_job_number'), )
+    __table_args__ = (
+        db.UniqueConstraint('build_id', 'number', name='unq_job_number'),
+        db.UniqueConstraint('repository_id', 'provider', 'external_id', name='unq_job_provider')
+    )
     __repr__ = model_repr('repository_id', 'build_id', 'status', 'result')
 
 

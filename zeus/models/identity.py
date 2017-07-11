@@ -15,8 +15,8 @@ class Identity(db.Model):
     )
     external_id = db.Column(db.String(64), unique=True, nullable=False)
     provider = db.Column(db.String(32), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    config = db.Column(JSONEncodedDict)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    config = db.Column(JSONEncodedDict, nullable=False)
 
     user = db.relationship('User')
 

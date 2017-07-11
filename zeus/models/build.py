@@ -27,7 +27,9 @@ class Build(RepositoryBoundMixin, db.Model):
     date_started = db.Column(db.DateTime, nullable=True)
     date_finished = db.Column(db.DateTime, nullable=True)
     date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    data = db.Column(JSONEncodedDict)
+    data = db.Column(JSONEncodedDict, nullable=True)
+    provider = db.Column(db.String, nullable=True)
+    external_id = db.Column(db.String(64), nullable=True)
 
     author = db.relationship('Author')
     source = db.relationship('Source', innerjoin=True)
@@ -41,7 +43,10 @@ class Build(RepositoryBoundMixin, db.Model):
     )
 
     __tablename__ = 'build'
-    __table_args__ = (db.UniqueConstraint('repository_id', 'number', name='unq_build_number'), )
+    __table_args__ = (
+        db.UniqueConstraint('repository_id', 'number', name='unq_build_number'),
+        db.UniqueConstraint('repository_id', 'provider', 'external_id', name='unq_build_provider')
+    )
     __repr__ = model_repr('repository_id', 'source_id', 'status', 'result')
 
 

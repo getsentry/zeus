@@ -79,10 +79,10 @@ class Repository(db.Model):
     url = Column(String(200), nullable=False, unique=True)
     backend = Column(Enum(RepositoryBackend), default=RepositoryBackend.unknown, nullable=False)
     status = Column(Enum(RepositoryStatus), default=RepositoryStatus.inactive, nullable=False)
-    data = Column(JSONEncodedDict)
+    data = Column(JSONEncodedDict, nullable=True)
     date_created = Column(DateTime, default=datetime.utcnow, nullable=False)
-    last_update = Column(DateTime)
-    last_update_attempt = Column(DateTime)
+    last_update = Column(DateTime, nullable=True)
+    last_update_attempt = Column(DateTime, nullable=True)
 
     options = db.relationship(
         'ItemOption',

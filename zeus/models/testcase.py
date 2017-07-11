@@ -21,8 +21,8 @@ class TestCase(RepositoryBoundMixin, db.Model):
     name = db.Column(db.Text, nullable=False)
     result = db.Column(Enum(Result), default=Result.unknown, nullable=False)
     # duration, in milliseconds
-    duration = db.Column(db.Integer, default=0)
-    message = db.deferred(db.Column(db.Text))
+    duration = db.Column(db.Integer, default=0, nullable=True)
+    message = db.deferred(db.Column(db.Text, nullable=True))
     date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     job = db.relationship('Job')
