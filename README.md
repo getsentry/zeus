@@ -130,12 +130,12 @@ Using the subpath, you'll be able to access several endpoints:
 
 The prefix will be generated for you as part of the a new hook, and is made up of the Hook's GUID and it's signature:
 
-http://example.com/hooks/{hook-id}/{hooks-signature}/{path}
+http://example.com/hooks/{hook-id}/{hook-signature}/{path}
 
 Each endpoint takes an external ID, which is used as a unique query parameter. The constraints are coupled to the parent object. For example, to create or patch a build:
 
 ```
-POST http://example.com/hooks/{hook-id}/{hooks-signature}/builds/abc
+POST http://example.com/hooks/{hook-id}/{hook-signature}/builds/abc
 ```
 
 This will look for a Build object with the following characteristics:
