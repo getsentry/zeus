@@ -5,7 +5,7 @@ import './PageLoadingIndicator.css';
 export default class PageLoadingIndicator extends Component {
   render() {
     let points = 50;
-    let duration = 2; // seconds
+    let duration = 1; // seconds
     let durationPerBit = duration / points;
     let bitWidth = 100 / points;
     let height = 4;
@@ -35,7 +35,10 @@ export default class PageLoadingIndicator extends Component {
                 left: `${bitWidth * i}%`,
                 width: `${bitWidth}%`,
                 animationDelay: `${durationPerBit * (i + 1)}s`,
-                animation: `${duration}s ease infinite pageLoadingAnim`
+                animationName: 'pageLoadingAnim',
+                animationDuration: `${duration}s`,
+                animationIterationCount: 'infinite',
+                animationTimingFunction: 'ease'
               }}
             />
           );
