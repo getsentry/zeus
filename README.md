@@ -140,7 +140,7 @@ POST http://example.com/hooks/{hook-id}/{hooks-signature}/builds/abc
 
 This will look for a Build object with the following characteristics:
 
-- `provider=travis-ci`
+- `provider={Hook.provider}`
 - `external_id=abc`
 - `repository_id={Hook.repository_id}`
 
