@@ -3,7 +3,7 @@ from flask import current_app, g, session
 from typing import List, Optional
 
 from zeus.config import db
-from zeus.models import RepositoryAccess, User
+from zeus.models import ApiToken, ApiTokenRepositoryAccess, RepositoryAccess, User
 
 
 class Tenant(object):
@@ -18,8 +18,34 @@ class Tenant(object):
         if not user:
             return cls()
 
-        # TODO(dcramer); we currently grant access to all repos
         return UserTenant(user_id=user.id)
+
+    @classmethod
+    def from_api_token(cls, token: ApiToken):
+        if not token:
+            return cls()
+
+        return ApiTokenTenant(token_id=token.id)
+
+
+class ApiTokenTenant(Tenant):
+    def __init__(self, token_id: str):
+        self.token_id = token_id
+
+    def __repr__(self):
+        return '<{} token_id={}>'.format(type(self).__name__, self.token_id)
+
+    @cached_property
+    def repository_ids(self) -> List:
+        if not self.user_id:
+            return None
+
+        return [
+            r[0]
+            for r in db.session.query(ApiTokenRepositoryAccess.repository_id).filter(
+                RepositoryAccess.apitoken_id == self.token_id,
+            )
+        ]
 
 
 class UserTenant(Tenant):
@@ -40,14 +66,6 @@ class UserTenant(Tenant):
                 RepositoryAccess.user_id == self.user_id,
             )
         ]
-
-    @classmethod
-    def from_user(cls, user):
-        if not user:
-            return cls()
-
-        # TODO(dcramer); we currently grant access to all repos
-        return cls(user_id=user.id)
 
 
 def get_user_from_request() -> Optional[User]:

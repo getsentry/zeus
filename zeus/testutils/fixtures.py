@@ -103,6 +103,11 @@ def default_filecoverage(default_job):
     )
 
 
+@pytest.fixture(scope='function')
+def default_api_token(default_job):
+    return factories.ApiTokenFactory()
+
+
 @pytest.fixture(scope='session')
 def sample_xunit():
     with open(os.path.join(DATA_FIXTURES, 'sample-xunit.xml')) as fp:
