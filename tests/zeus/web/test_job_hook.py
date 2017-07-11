@@ -1,5 +1,5 @@
 def test_index(client, default_hook_token):
-    path = '/hooks/job/{}/{}'.format(default_hook_token.id, default_hook_token.get_signature())
+    path = '/hooks/{}/{}/job'.format(default_hook_token.id, default_hook_token.get_signature())
     payload = {
         'provider': 'travis',
         'build': {
