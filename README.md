@@ -125,7 +125,9 @@ zeus hooks add https://github.com/getsentry/zeus.git travis-ci
 Using the subpath, you'll be able to access several endpoints:
 
 - `{prefix}/builds/{build-external-id}`
+  -> /api/repos/{Hook.repository_id}/builds
 - `{prefix}/builds/{build-external-id}/jobs/{job-external-id}`
+  -> /api/repos/{Hook.repository_id}/builds/{Build.number}/jobs
 - `{prefix}/builds/{build-external-id}/jobs/{job-external-id}/artifacts`
 
 The prefix will be generated for you as part of the a new hook, and is made up of the Hook's GUID and it's signature:
