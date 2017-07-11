@@ -22,11 +22,9 @@ class JobDetailsResource(BaseJobResource):
         result = self.schema_from_request(job_schema, partial=True)
         if result.errors:
             return self.respond(result.errors, 403)
-        data = result.data
-        if data.get('status'):
-            job.status = data['status']
-        if data.get('result'):
-            job.result = data['result']
+        for key, value in result.data.items():
+            if getattr(job, key) != value:
+                setattr(job, key, value)
         if db.session.is_modified(job):
             db.session.add(job)
             db.session.commit()

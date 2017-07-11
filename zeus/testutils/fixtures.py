@@ -109,8 +109,8 @@ def default_api_token():
 
 
 @pytest.fixture(scope='function')
-def default_hook_token(default_repo):
-    return factories.HookTokenFactory(
+def default_hook(default_repo):
+    return factories.HookFactory(
         repository=default_repo,
     )
 

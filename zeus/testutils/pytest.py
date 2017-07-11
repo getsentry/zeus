@@ -25,6 +25,7 @@ def app(request, session_config):
         GITHUB_CLIENT_ID='github.client-id',
         GITHUB_CLIENT_SECRET='github.client-secret',
     )
+    app.testing = True
     yield app
 
 

@@ -1,3 +1,4 @@
+from zeus.config import db
 from zeus.models import Build
 
 from .base_build import BaseBuildResource
@@ -11,4 +12,20 @@ class BuildDetailsResource(BaseBuildResource):
         """
         Return a build.
         """
+        return self.respond_with_schema(build_schema, build)
+
+    def put(self, build: Build):
+        """
+        Update a build.
+        """
+        result = self.schema_from_request(build_schema, partial=True)
+        if result.errors:
+            return self.respond(result.errors, 403)
+        for key, value in result.data.items():
+            if getattr(build, key) != value:
+                setattr(build, key, value)
+        if db.session.is_modified(build):
+            db.session.add(build)
+            db.session.commit()
+
         return self.respond_with_schema(build_schema, build)

@@ -6,10 +6,11 @@ from .base import ModelFactory
 from .types import GUIDFactory
 
 
-class HookTokenFactory(ModelFactory):
+class HookFactory(ModelFactory):
     id = GUIDFactory()
     repository = factory.SubFactory('zeus.factories.RepositoryFactory')
     repository_id = factory.SelfAttribute('repository.id')
+    provider = 'travis'
 
     class Meta:
-        model = models.HookToken
+        model = models.Hook

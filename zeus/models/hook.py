@@ -10,17 +10,18 @@ from zeus.db.types import GUID
 from zeus.db.utils import model_repr
 
 
-class HookToken(RepositoryBoundMixin, db.Model):
+class Hook(RepositoryBoundMixin, db.Model):
     """
-    An webhook token bound to a single respository
+    An webhook bound to a single respository.
     """
     id = db.Column(GUID, primary_key=True, default=GUID.default_value)
     token = db.Column(
-        db.LargeBinary(64), default=lambda: HookToken.generate_token(), unique=True, nullable=False
+        db.LargeBinary(64), default=lambda: Hook.generate_token(), unique=True, nullable=False
     )
+    provider = db.Column(db.String(64), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-    __tablename__ = 'hook_token'
+    __tablename__ = 'hook'
     __repr__ = model_repr('repository_id')
 
     @classmethod

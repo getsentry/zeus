@@ -60,4 +60,4 @@ def test_update_job_to_in_progress(
 
     assert default_job.status == Status.in_progress
 
-    assert not mock_delay.mock_calls
+    mock_delay.assert_called_once_with(job_id=default_job.id)
