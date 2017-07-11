@@ -86,7 +86,11 @@ zeus
 
 ```
 zeus
+├── ApiToken
+|   └── ApiTokenRepositoryAccess
+├── Hook
 ├── Repository
+|   ├── RepositoryAccess
 |   ├── ItemOption
 |   ├── Build
 |   |   ├── Author
@@ -106,3 +110,38 @@ zeus
 └── User
     └── Identity
 ```
+
+
+## Hooks
+
+A subset of APIs are exposed using simple hook credentials. These credentials are coupled to a provider (e.g. `travis-ci`) and a single repository.
+
+To create a new hook:
+
+```
+zeus hooks add https://github.com/getsentry/zeus.git travis-ci
+```
+
+Using the subpath, you'll be able to access several endpoints:
+
+- `{prefix}/builds/{build-external-id}`
+- `{prefix}/builds/{build-external-id}/jobs/{job-external-id}`
+- `{prefix}/builds/{build-external-id}/jobs/{job-external-id}/artifacts`
+
+The prefix will be generated for you as part of the a new hook, and is made up of the Hook's GUID and it's signature:
+
+http://example.com/hooks/{hook-id}/{hooks-signature}/{path}
+
+Each endpoint takes an external ID, which is used as a unique query parameter. The constraints are coupled to the parent object. For example, to create or patch a build:
+
+```
+POST http://example.com/hooks/{hook-id}/{hooks-signature}/builds/abc
+```
+
+This will look for a Build object with the following characteristics:
+
+- `provider=travis-ci`
+- `external_id=abc`
+- `repository_id={Hook.repository_id}`
+
+If a match is found, it will be updated with the given API parameters. If it isn't found, it will be created.
