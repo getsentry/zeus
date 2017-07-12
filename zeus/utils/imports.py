@@ -1,7 +1,7 @@
 import pkgutil
 
 
-def import_string(path):
+def import_string(path: str):
     """
     Path must be module.path.ClassName
 
@@ -19,7 +19,7 @@ def import_string(path):
         raise ImportError from exc
 
 
-def import_submodules(context, root_module, path):
+def import_submodules(context: dict, root_module: str, path: str):
     """
     Import all submodules and register them in the ``context`` namespace.
 

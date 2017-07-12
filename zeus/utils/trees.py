@@ -1,7 +1,8 @@
 from collections import defaultdict
+from typing import Dict, List, Set
 
 
-def build_flat_tree(tests, sep='.', min_children=1):
+def build_flat_tree(tests: List[str], sep: str='.', min_children: int=1) -> Dict[str, Set[str]]:
     tree = defaultdict(set)
 
     # Build a mapping of prefix => set(children)
@@ -14,7 +15,8 @@ def build_flat_tree(tests, sep='.', min_children=1):
     return tree
 
 
-def build_tree(tests, sep='.', min_children=1, parent=''):
+def build_tree(tests: List[str], sep: str='.', min_children: int=1,
+               parent: str='') -> Dict[str, Set[str]]:
     tree = defaultdict(set)
 
     # Build a mapping of prefix => set(children)

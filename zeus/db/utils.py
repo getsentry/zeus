@@ -3,7 +3,7 @@ from zeus.config import db
 from sqlalchemy.exc import IntegrityError
 
 
-def try_create(model, where, defaults=None):
+def try_create(model, where: dict, defaults: dict=None):
     if defaults is None:
         defaults = {}
 
@@ -20,14 +20,14 @@ def try_create(model, where, defaults=None):
     return instance
 
 
-def try_update(model, where, values):
+def try_update(model, where: dict, values: dict):
     result = db.session.query(type(model)).filter_by(**where).update(
         values, synchronize_session=False
     )
     return result.rowcount > 0
 
 
-def get_or_create(model, where, defaults=None):
+def get_or_create(model, where: dict, defaults: dict=None):
     if defaults is None:
         defaults = {}
 
@@ -50,7 +50,7 @@ def get_or_create(model, where, defaults=None):
     return instance, created
 
 
-def create_or_update(model, where, values=None):
+def create_or_update(model, where: dict, values: dict=None):
     if values is None:
         values = {}
 
@@ -72,7 +72,7 @@ def create_or_update(model, where, values=None):
     return instance, created
 
 
-def create_or_get(model, where, values=None):
+def create_or_get(model, where: dict, values: dict=None):
     if values is None:
         values = {}
 
@@ -92,7 +92,7 @@ def create_or_get(model, where, values=None):
     return instance, created
 
 
-def update(instance, values):
+def update(instance, values: dict):
     for key, value in values.items():
         if getattr(instance, key) != value:
             setattr(instance, key, value)

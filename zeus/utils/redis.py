@@ -25,7 +25,7 @@ class Redis(object):
         return getattr(self.redis, name)
 
     @contextmanager
-    def lock(self, lock_key, timeout=3, expire=None, nowait=False):
+    def lock(self, lock_key: str, timeout: int=3, expire: int=None, nowait: bool=False):
         conn = self.redis
 
         if expire is None:
@@ -61,8 +61,8 @@ class Redis(object):
             except Exception as e:
                 self.logger.exception(e)
 
-    def incr(self, key):
+    def incr(self, key: str):
         self.redis.incr(key)
 
-    def decr(self, key):
+    def decr(self, key: str):
         self.redis.decr(key)

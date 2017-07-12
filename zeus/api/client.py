@@ -1,6 +1,7 @@
 from json import dumps
-from flask import current_app
+from flask import current_app, Response
 from flask.testing import make_test_environ_builder
+from typing import Mapping, BinaryIO
 from werkzeug.test import Client
 
 
@@ -17,7 +18,15 @@ class APIClient(object):
     >>> print response
     """
 
-    def dispatch(self, path, method, data=None, files=None, json=None, request=None):
+    def dispatch(
+        self,
+        path: str,
+        method: str,
+        data: dict=None,
+        files: Mapping[str, BinaryIO]=None,
+        json: dict=None,
+        request=None
+    ) -> Response:
         if request:
             assert not json
             assert not data
