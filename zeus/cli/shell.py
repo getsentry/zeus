@@ -10,8 +10,8 @@ def shell():
     from flask.globals import _app_ctx_stack
     app = _app_ctx_stack.top.app
     banner = 'Python %s on %s\nIPython: %s\nApp: %s%s\nInstance: %s\n' % (
-        sys.version, sys.platform, IPython.__version__, app.import_name, app.debug and ' [debug]' or
-        '', app.instance_path,
+        sys.version, sys.platform, IPython.__version__, app.import_name,
+        app.debug and ' [debug]' or '', app.instance_path,
     )
 
     ctx = {}

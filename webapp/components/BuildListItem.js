@@ -105,18 +105,6 @@ const Message = styled.div`
   overflow: hidden;
 `;
 
-const TestCount = styled.div`
-  flex: 1;
-  font-family: "Monaco", monospace;
-  font-size: 12px;
-`;
-
-const Coverage = styled.div`
-  flex: 1;
-  font-family: "Monaco", monospace;
-  font-size: 12px;
-`;
-
 const Branch = styled.div`
   font-family: "Monaco", monospace;
   font-size: 12px;

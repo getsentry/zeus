@@ -10,14 +10,14 @@ const TabbedNavItem = styled(Link)`
   padding: 15px 0;
   border-bottom: 3px solid transparent;
 
-  &.${(props) => props.activeClassName} {
+  &.${props => props.activeClassName} {
     color: #39364E;
     border-bottom: 3px solid #7B6BE6;
   }
 `;
 
 TabbedNavItem.defaultProps = {
-  activeClassName: 'active',
+  activeClassName: 'active'
 };
 
 export default TabbedNavItem;

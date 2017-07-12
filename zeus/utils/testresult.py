@@ -123,9 +123,9 @@ class TestResultManager(object):
             },
             values={
                 'value':
-                    db.session.query(func.count(TestCase.id)).filter(
-                        TestCase.job_id == self.job.id,
-                    ).as_scalar(),
+                db.session.query(func.count(TestCase.id)).filter(
+                    TestCase.job_id == self.job.id,
+                ).as_scalar(),
             }
         )
         db.session.commit()
@@ -139,10 +139,10 @@ class TestResultManager(object):
             },
             values={
                 'value':
-                    db.session.query(func.count(TestCase.id)).filter(
-                        TestCase.job_id == self.job.id,
-                        TestCase.result == Result.failed,
-                    ).as_scalar(),
+                db.session.query(func.count(TestCase.id)).filter(
+                    TestCase.job_id == self.job.id,
+                    TestCase.result == Result.failed,
+                ).as_scalar(),
             }
         )
         db.session.commit()
@@ -156,8 +156,8 @@ class TestResultManager(object):
             },
             values={
                 'value':
-                    db.session.query(func.coalesce(func.sum(TestCase.duration), 0)).filter(
-                        TestCase.job_id == self.job.id,
-                    ).as_scalar(),
+                db.session.query(func.coalesce(func.sum(TestCase.duration), 0)).filter(
+                    TestCase.job_id == self.job.id,
+                ).as_scalar(),
             }
         )
