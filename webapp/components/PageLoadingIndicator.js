@@ -21,7 +21,6 @@ export default class PageLoadingIndicator extends Component {
           top: 0
         }}>
         {[...Array(points)].map((_, i) => {
-          console.log(durationPerBit * (i + 1));
           return (
             <span
               key={i}
