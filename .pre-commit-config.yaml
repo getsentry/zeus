@@ -6,6 +6,11 @@
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
 -   repo: git://github.com/pre-commit/mirrors-yapf
-    sha: v0.16.0
+    sha: v0.16.2
     hooks:
     -   id: yapf
+-   repo: git://github.com/getsentry/pre-commit-hooks
+    sha: daa33dd69ff71affa95250287272471c1f5f0995
+    hooks:
+    -   id: prettier
+    -   id: eslint
