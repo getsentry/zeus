@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
+import RepositoryTestList from './pages/RepositoryTestList';
 import UserBuildList from './pages/UserBuildList';
 
 import requireAuth from './utils/requireAuth';
@@ -20,6 +21,7 @@ export default (
     <Route path="/builds" component={requireAuth(UserBuildList)} />
     <Route path="/repos/:repoName" component={requireAuth(RepositoryDetails)}>
       <IndexRoute component={RepositoryBuildList} />
+      <Route path="tests" component={RepositoryTestList} />
       <Route path="builds/:buildNumber" component={BuildDetails}>
         <IndexRoute component={BuildJobList} />
         <Route path="tests" component={BuildTestList} />

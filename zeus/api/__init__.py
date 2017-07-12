@@ -7,6 +7,7 @@ app.add_resource('/auth', r.AuthIndexResource)
 app.add_resource('/builds', r.BuildIndexResource)
 app.add_resource('/repos', r.RepositoryIndexResource)
 app.add_resource('/repos/<repository_name>/builds', r.RepositoryBuildsResource)
+app.add_resource('/repos/<repository_name>/tests', r.RepositoryTestsResource)
 app.add_resource('/repos/<repository_name>/test-tree', r.RepositoryTestTreeResource)
 app.add_resource('/repos/<repository_name>/builds/<build_number>', r.BuildDetailsResource)
 app.add_resource(
