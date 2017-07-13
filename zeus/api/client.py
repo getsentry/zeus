@@ -58,7 +58,6 @@ class APIClient(object):
             raise APIError(
                 'Request returned invalid content type: %s' % (response.headers['Content-Type'], )
             )
-        # TODO(dcramer): ideally we wouldn't encode + decode this
         return response
 
     delete = partialmethod(dispatch, method='DELETE')
