@@ -8,4 +8,5 @@ export default styled.div`
   bottom: 0;
   overflow: auto;
   padding: 20px 0;
+  background: #f8f9fb;
 `;
