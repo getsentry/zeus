@@ -7,7 +7,6 @@ from zeus.config import db
 from zeus.constants import Result
 from zeus.db.utils import create_or_update
 from zeus.models import Artifact, ItemStat, TestCase
-from zeus.utils import timezone
 
 
 class TestResult(object):
@@ -17,15 +16,7 @@ class TestResult(object):
     """
 
     def __init__(
-        self,
-        job,
-        name,
-        message=None,
-        package=None,
-        result=None,
-        duration=None,
-        date_created=None,
-        artifacts=None
+        self, job, name, message=None, package=None, result=None, duration=None, artifacts=None
     ):
         self.job = job
         self._name = name
@@ -33,7 +24,6 @@ class TestResult(object):
         self.message = message
         self.result = result or Result.unknown
         self.duration = duration  # ms
-        self.date_created = date_created or timezone.now()
         self.artifacts = artifacts
 
     @property
@@ -88,7 +78,6 @@ class TestResultManager(object):
                 duration=test.duration,
                 message=test.message,
                 result=test.result,
-                date_created=test.date_created,
             )
             db.session.add(testcase)
 
