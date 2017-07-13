@@ -31,11 +31,15 @@ export default class BuildJobList extends AsyncPage {
       <div>
         <Section>
           <SectionHeading>Coverage</SectionHeading>
-          <CoverageSummary coverage={this.state.diffCoverage} />
+          <CoverageSummary coverage={this.state.diffCoverage} collapsable={true} />
         </Section>
         <Section>
           <SectionHeading>Failing Tests</SectionHeading>
-          <TestList testList={this.state.testFailures} params={this.props.params} />
+          <TestList
+            testList={this.state.testFailures}
+            params={this.props.params}
+            collapsable={true}
+          />
         </Section>
         <Section>
           <SectionHeading>Jobs</SectionHeading>

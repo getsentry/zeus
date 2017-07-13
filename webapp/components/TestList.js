@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import {Client} from '../api';
 
+import Collapsable from './Collapsable';
 import ObjectDuration from './ObjectDuration';
 import ObjectResult from './ObjectResult';
 import Panel from './Panel';
@@ -85,15 +86,27 @@ class TestListItem extends Component {
 
 export default class TestList extends Component {
   static propTypes = {
-    testList: PropTypes.arrayOf(PropTypes.object).isRequired
+    testList: PropTypes.arrayOf(PropTypes.object).isRequired,
+    collapsable: PropTypes.bool,
+    maxVisible: PropTypes.number
+  };
+
+  static defaultProps = {
+    collapsable: false
   };
 
   render() {
     return (
       <Panel>
-        {this.props.testList.map(test => {
-          return <TestListItem params={this.props.params} test={test} key={test.name} />;
-        })}
+        <Collapsable
+          collapsable={this.props.collapsable}
+          maxVisible={this.props.maxVisible}>
+          {this.props.testList.map(test => {
+            return (
+              <TestListItem params={this.props.params} test={test} key={test.name} />
+            );
+          })}
+        </Collapsable>
       </Panel>
     );
   }
