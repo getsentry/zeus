@@ -1,5 +1,7 @@
+from flask import request
 from sqlalchemy.orm import contains_eager
 
+from zeus.constants import Result
 from zeus.models import Job, Build, TestCase
 
 from .base_build import BaseBuildResource
@@ -19,5 +21,12 @@ class BuildTestsResource(BaseBuildResource):
         ).filter(
             Job.build_id == build.id,
         )
+
+        result = request.args.get('result')
+        if result:
+            try:
+                query = query.filter(TestCase.result == getattr(Result, result))
+            except AttributeError:
+                raise NotImplementedError
 
         return self.respond_with_schema(testcases_schema, query)
