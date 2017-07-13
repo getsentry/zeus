@@ -29,7 +29,7 @@ class RepositoryTestTreeResource(BaseRepositoryResource):
 
         if not latest_build:
             current_app.logger.info('no successful builds found for repository')
-            return self.respond({})
+            return self.respond({'groups': [], 'trail': []})
 
         job_list = db.session.query(Job.id).filter(
             Job.build_id == latest_build.id,

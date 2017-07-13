@@ -1,16 +1,22 @@
+-   repo: git://github.com/pre-commit/mirrors-yapf
+    sha: v0.16.2
+    hooks:
+    -   id: yapf
+-   repo: git://github.com/pre-commit/pre-commit-hooks
+    sha: v0.9.1
+    hooks:
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+-   repo: git://github.com/getsentry/pre-commit-hooks
+    sha: daa33dd69ff71affa95250287272471c1f5f0995
+    hooks:
+    -   id: prettier
+-   repo: git://github.com/getsentry/pre-commit-hooks
+    sha: daa33dd69ff71affa95250287272471c1f5f0995
+    hooks:
+    -   id: eslint
 -   repo: git://github.com/pre-commit/pre-commit-hooks
     sha: v0.9.1
     hooks:
     -   id: debug-statements
     -   id: flake8
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
--   repo: git://github.com/pre-commit/mirrors-yapf
-    sha: v0.16.2
-    hooks:
-    -   id: yapf
--   repo: git://github.com/getsentry/pre-commit-hooks
-    sha: daa33dd69ff71affa95250287272471c1f5f0995
-    hooks:
-    -   id: prettier
-    -   id: eslint

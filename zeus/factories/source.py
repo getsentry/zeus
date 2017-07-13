@@ -9,7 +9,6 @@ from .types import GUIDFactory
 class SourceFactory(ModelFactory):
     id = GUIDFactory()
     revision = factory.SubFactory('zeus.factories.RevisionFactory')
-    date_created = factory.Faker('date_time')
 
     # automatically populated from revision
     repository = factory.SelfAttribute('revision.repository')

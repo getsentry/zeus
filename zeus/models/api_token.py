@@ -1,9 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from secrets import token_hex
+from sqlalchemy.sql import func
 
 from zeus.config import db
 from zeus.db.types import GUID
 from zeus.db.utils import model_repr
+from zeus.utils import timezone
 
 DEFAULT_EXPIRATION = timedelta(days=30)
 
@@ -20,9 +22,16 @@ class ApiToken(db.Model):
         db.String(64), default=lambda: ApiToken.generate_token(), unique=True, nullable=False
     )
     expires_at = db.Column(
-        db.DateTime, nullable=True, default=lambda: datetime.utcnow() + DEFAULT_EXPIRATION
+        db.TIMESTAMP(timezone=True),
+        nullable=True,
+        default=lambda: timezone.now() + DEFAULT_EXPIRATION
     )
-    date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    date_created = db.Column(
+        db.TIMESTAMP(timezone=True),
+        default=timezone.now,
+        server_default=func.now(),
+        nullable=False,
+    )
 
     __tablename__ = 'api_token'
     __repr__ = model_repr('id')
@@ -35,11 +44,11 @@ class ApiToken(db.Model):
         if not self.expires_at:
             return False
 
-        return datetime.utcnow() >= self.expires_at
+        return timezone.now() >= self.expires_at
 
     def refresh(self, expires_at=None):
         if expires_at is None:
-            expires_at = datetime.utcnow() + DEFAULT_EXPIRATION
+            expires_at = timezone.now() + DEFAULT_EXPIRATION
 
         with db.session.begin_nested():
             self.token = type(self).generate_token()

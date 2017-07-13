@@ -13,7 +13,6 @@ class ArtifactFactory(ModelFactory):
     repository = factory.SelfAttribute('job.repository')
     repository_id = factory.SelfAttribute('job.repository_id')
     name = factory.Faker('file_name')
-    date_created = factory.Faker('date_time')
 
     class Meta:
         model = models.Artifact

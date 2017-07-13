@@ -1,13 +1,12 @@
 from sqlalchemy import event
 from sqlalchemy.sql import func, select
 
-from datetime import datetime
-
 from zeus.config import db
 from zeus.constants import Status, Result
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import Enum, GUID, JSONEncodedDict
 from zeus.db.utils import model_repr
+from zeus.utils import timezone
 
 
 class Build(RepositoryBoundMixin, db.Model):
@@ -24,9 +23,14 @@ class Build(RepositoryBoundMixin, db.Model):
     number = db.Column(db.Integer, nullable=False)
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
     result = db.Column(Enum(Result), nullable=False, default=Result.unknown)
-    date_started = db.Column(db.DateTime, nullable=True)
-    date_finished = db.Column(db.DateTime, nullable=True)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    date_started = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
+    date_finished = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
+    date_created = db.Column(
+        db.TIMESTAMP(timezone=True),
+        default=timezone.now,
+        server_default=func.now(),
+        nullable=False
+    )
     data = db.Column(JSONEncodedDict, nullable=True)
     provider = db.Column(db.String, nullable=True)
     external_id = db.Column(db.String(64), nullable=True)

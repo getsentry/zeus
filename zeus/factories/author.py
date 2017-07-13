@@ -11,7 +11,6 @@ class AuthorFactory(ModelFactory):
     repository_id = factory.SelfAttribute('repository.id')
     name = factory.Faker('first_name')
     email = factory.Faker('email')
-    date_created = factory.Faker('date_time')
 
     class Meta:
         model = models.Author

@@ -3,28 +3,28 @@ from zeus.constants import Result, Status
 
 
 def test_simple(
-    client, db_session, default_login, default_repo, default_repo_access, default_source,
+    client, db_session, default_login, default_repo, default_repo_access, default_revision,
     default_build
 ):
+    source = factories.SourceFactory(
+        revision=default_revision,
+    )
 
     # an unfinished build which shouldn't be used
     build = factories.BuildFactory(
-        repository=default_repo,
-        source=default_source,
+        source=source,
         status=Status.in_progress,
     )
     db_session.add(build)
 
     # a couple of needed jobs that split the tests
     job1 = factories.JobFactory(
-        repository=default_repo,
         build=default_build,
         status=Status.finished,
         result=Result.passed,
     )
     db_session.add(job1)
     job2 = factories.JobFactory(
-        repository=default_repo,
         build=default_build,
         status=Status.finished,
         result=Result.passed,
@@ -33,21 +33,18 @@ def test_simple(
 
     # and finally our testcases
     test1 = factories.TestCaseFactory(
-        repository=default_repo,
         job=job1,
         name='foo.bar',
         duration=50,
     )
     db_session.add(test1)
     test2 = factories.TestCaseFactory(
-        repository=default_repo,
         job=job1,
         name='foo.baz',
         duration=70,
     )
     db_session.add(test2)
     test3 = factories.TestCaseFactory(
-        repository=default_repo,
         job=job2,
         name='blah.blah',
         duration=10,

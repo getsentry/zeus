@@ -15,8 +15,6 @@ class RevisionFactory(ModelFactory):
     )
     author_id = factory.SelfAttribute('author.id')
     message = factory.faker.Faker('sentence')
-    date_created = factory.Faker('date_time')
-    date_committed = factory.Faker('date_time')
 
     class Meta:
         model = models.Revision

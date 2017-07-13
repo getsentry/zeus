@@ -9,7 +9,6 @@ from .types import GUIDFactory
 class UserFactory(ModelFactory):
     id = GUIDFactory()
     email = factory.Faker('email')
-    date_created = factory.Faker('date_time')
 
     class Meta:
         model = models.User

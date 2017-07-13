@@ -25,7 +25,6 @@ class FileCoverageFactory(ModelFactory):
     lines_uncovered = factory.Faker('random_int', min=0, max=100)
     diff_lines_covered = 0
     diff_lines_uncovered = 0
-    date_created = factory.Faker('date_time')
 
     class Meta:
         model = models.FileCoverage

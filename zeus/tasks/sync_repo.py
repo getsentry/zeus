@@ -1,5 +1,5 @@
 from celery import shared_task
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import current_app
 
 from zeus import auth
@@ -29,7 +29,7 @@ def sync_repo(repo_id, max_log_passes=10):
     Repository.query.filter(
         Repository.id == repo.id,
     ).update({
-        'last_update_attempt': datetime.utcnow(),
+        'last_update_attempt': datetime.now(timezone.utc),
     })
     db.session.commit()
 
@@ -57,7 +57,7 @@ def sync_repo(repo_id, max_log_passes=10):
     Repository.query.filter(
         Repository.id == repo.id,
     ).update({
-        'last_update': datetime.utcnow(),
+        'last_update': datetime.now(timezone.utc),
     })
     db.session.commit()
 

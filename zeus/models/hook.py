@@ -1,13 +1,14 @@
 import hmac
 
-from datetime import datetime
 from hashlib import sha256
 from secrets import compare_digest, token_bytes
+from sqlalchemy.sql import func
 
 from zeus.config import db
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import GUID
 from zeus.db.utils import model_repr
+from zeus.utils import timezone
 
 
 class Hook(RepositoryBoundMixin, db.Model):
@@ -19,7 +20,12 @@ class Hook(RepositoryBoundMixin, db.Model):
         db.LargeBinary(64), default=lambda: Hook.generate_token(), unique=True, nullable=False
     )
     provider = db.Column(db.String(64), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    date_created = db.Column(
+        db.TIMESTAMP(timezone=True),
+        default=timezone.now,
+        server_default=func.now(),
+        nullable=False
+    )
 
     __tablename__ = 'hook'
     __repr__ = model_repr('repository_id')

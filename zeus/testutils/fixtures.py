@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from zeus import factories, models
 from zeus.constants import Result, Status
@@ -63,7 +63,7 @@ def default_parent_revision(default_repo, default_revision):
 
 
 @pytest.fixture(scope='function')
-def default_source(default_revision):
+def default_source(default_revision, default_patch):
     return factories.SourceFactory(
         revision=default_revision,
         patch=default_patch,
@@ -81,10 +81,9 @@ def default_patch(default_parent_revision):
 def default_build(default_source):
     return factories.BuildFactory(
         source=default_source,
-        date_started=datetime.utcnow() - timedelta(minutes=6),
-        date_finished=datetime.utcnow(),
-        result=Result.passed,
-        status=Status.finished,
+        date_started=datetime.now(timezone.utc) - timedelta(minutes=6),
+        date_finished=datetime.now(timezone.utc),
+        passed=True,
     )
 
 
@@ -92,8 +91,8 @@ def default_build(default_source):
 def default_job(default_build):
     return factories.JobFactory(
         build=default_build,
-        date_started=datetime.utcnow() - timedelta(minutes=6),
-        date_finished=datetime.utcnow(),
+        date_started=datetime.now(timezone.utc) - timedelta(minutes=6),
+        date_finished=datetime.now(timezone.utc),
         result=Result.passed,
         status=Status.finished,
     )

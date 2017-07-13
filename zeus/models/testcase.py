@@ -1,6 +1,5 @@
 import re
 
-from datetime import datetime
 from hashlib import sha1
 from sqlalchemy import event
 
@@ -23,7 +22,6 @@ class TestCase(RepositoryBoundMixin, db.Model):
     # duration, in milliseconds
     duration = db.Column(db.Integer, default=0, nullable=True)
     message = db.deferred(db.Column(db.Text, nullable=True))
-    date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     job = db.relationship('Job')
 

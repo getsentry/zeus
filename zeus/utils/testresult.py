@@ -1,6 +1,5 @@
 import re
 
-from datetime import datetime
 from flask import current_app
 from sqlalchemy.sql import func
 
@@ -8,6 +7,7 @@ from zeus.config import db
 from zeus.constants import Result
 from zeus.db.utils import create_or_update
 from zeus.models import Artifact, ItemStat, TestCase
+from zeus.utils import timezone
 
 
 class TestResult(object):
@@ -33,7 +33,7 @@ class TestResult(object):
         self.message = message
         self.result = result or Result.unknown
         self.duration = duration  # ms
-        self.date_created = date_created or datetime.utcnow()
+        self.date_created = date_created or timezone.now()
         self.artifacts = artifacts
 
     @property

@@ -6,6 +6,7 @@ faker = Factory.create()
 
 from zeus import models
 from zeus.constants import Result, Status
+from zeus.utils import timezone
 
 from .base import ModelFactory
 from .types import GUIDFactory
@@ -19,7 +20,7 @@ class JobFactory(ModelFactory):
     repository_id = factory.SelfAttribute('repository.id')
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
-    date_created = factory.LazyAttribute(lambda o: faker.date_time_between('-45m', '-15m'))
+    date_created = factory.LazyAttribute(lambda o: timezone.now() - timedelta(minutes=30))
     date_started = factory.LazyAttribute(
         lambda o: (
             faker.date_time_between(o.date_created, o.date_created + timedelta(minutes=1)) if o.status in [Status.finished, Status.in_progress] else None

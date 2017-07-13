@@ -13,7 +13,6 @@ class PatchFactory(ModelFactory):
     diff = factory.LazyAttribute(lambda o: open(
         os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 'tests', 'fixtures', 'sample.diff')
     ).read())
-    date_created = factory.Faker('date_time')
 
     # automatically populated from revision
     repository = factory.SelfAttribute('parent_revision.repository')

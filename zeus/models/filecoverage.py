@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from zeus.config import db
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import GUID
@@ -11,7 +9,6 @@ class FileCoverage(RepositoryBoundMixin, db.Model):
     job_id = db.Column(GUID, db.ForeignKey('job.id', ondelete='CASCADE'), nullable=False)
     filename = db.Column(db.String(256), nullable=False, primary_key=True)
     data = db.Column(db.Text, nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     lines_covered = db.Column(db.Integer, nullable=False)
     lines_uncovered = db.Column(db.Integer, nullable=False)

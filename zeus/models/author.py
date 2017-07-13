@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from zeus.config import db
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import GUID
@@ -15,7 +13,6 @@ class Author(RepositoryBoundMixin, db.Model):
     id = db.Column(GUID, primary_key=True, default=GUID.default_value)
     name = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), nullable=True)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     __tablename__ = 'author'
     __table_args__ = (db.UniqueConstraint('repository_id', 'email', name='unq_author_email'), )

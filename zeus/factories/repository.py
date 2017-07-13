@@ -21,7 +21,6 @@ class RepositoryFactory(ModelFactory):
     name = factory.LazyAttribute(lambda o: '%s%s' % (choice(orgs), choice(names)))
     backend = models.RepositoryBackend.git
     status = models.RepositoryStatus.active
-    date_created = factory.Faker('date_time')
 
     class Meta:
         model = models.Repository
