@@ -43,18 +43,16 @@ export default class BuildDetails extends AsyncPage {
 
   render() {
     // happens before loading is done
-    let {build} = this.state;
-    let {repoName} = this.props.params;
+    let {repoName, buildNumber} = this.props.params;
     return (
       <div>
         <Breadcrumbs>
-          <CrumbLink to={`/repos/${repoName}/builds`}>
+          <CrumbLink to={`/repos/${repoName}`}>
             {repoName}
           </CrumbLink>
-          {build &&
-            <Crumb active={true}>
-              #{build.number}
-            </Crumb>}
+          <Crumb active={true}>
+            #{buildNumber}
+          </Crumb>
         </Breadcrumbs>
         {this.renderContent()}
       </div>
