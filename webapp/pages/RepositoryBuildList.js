@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
 import BuildList from '../components/BuildList';
+import Section from '../components/Section';
 import ScrollView from '../components/ScrollView';
 import TabbedNavItem from '../components/TabbedNavItem';
 
@@ -28,13 +29,15 @@ export default class RepositoryBuildList extends AsyncPage {
           </Crumb>
         </Breadcrumbs>
         <ScrollView>
-          <TabbedNav>
-            <TabbedNavItem to="/" activeNavClass="active">
-              My builds
-            </TabbedNavItem>
-            <TabbedNavItem>All builds</TabbedNavItem>
-          </TabbedNav>
-          <RepositoryBuildListBody {...this.props} />
+          <Section>
+            <TabbedNav>
+              <TabbedNavItem to="/" activeNavClass="active">
+                My builds
+              </TabbedNavItem>
+              <TabbedNavItem>All builds</TabbedNavItem>
+            </TabbedNav>
+            <RepositoryBuildListBody {...this.props} />
+          </Section>
         </ScrollView>
       </div>
     );

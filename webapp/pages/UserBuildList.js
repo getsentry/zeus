@@ -5,6 +5,7 @@ import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
 import BuildList from '../components/BuildList';
 import Content from '../components/Content';
 import Section from '../components/Section';
+import ScrollView from '../components/ScrollView';
 import Sidebar from '../components/Sidebar';
 
 export default class RepositoryBuildList extends AsyncPage {
@@ -23,9 +24,11 @@ export default class RepositoryBuildList extends AsyncPage {
               {this.getTitle()}
             </Crumb>
           </Breadcrumbs>
-          <Section>
-            <UserBuildListBody {...this.props} />
-          </Section>
+          <ScrollView>
+            <Section>
+              <UserBuildListBody {...this.props} />
+            </Section>
+          </ScrollView>
         </Content>
       </div>
     );

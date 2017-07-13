@@ -7,5 +7,5 @@ export default styled.div`
   right: 0;
   bottom: 0;
   overflow: auto;
-  padding: 5px 20px 20px;
+  padding: 0 0 20px;
 `;
