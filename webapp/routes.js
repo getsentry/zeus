@@ -4,7 +4,7 @@ import {IndexRoute, Route, IndexRedirect} from 'react-router';
 import App from './pages/App';
 import BuildCoverage from './pages/BuildCoverage';
 import BuildDetails from './pages/BuildDetails';
-import BuildJobList from './pages/BuildJobList';
+import BuildOverview from './pages/BuildOverview';
 import BuildTestList from './pages/BuildTestList';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
@@ -23,7 +23,7 @@ export default (
       <IndexRoute component={RepositoryBuildList} />
       <Route path="tests" component={RepositoryTestList} />
       <Route path="builds/:buildNumber" component={BuildDetails}>
-        <IndexRoute component={BuildJobList} />
+        <IndexRoute component={BuildOverview} />
         <Route path="tests" component={BuildTestList} />
         <Route path="coverage" component={BuildCoverage} />
       </Route>

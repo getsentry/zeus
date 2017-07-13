@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import {Flex, Box} from 'grid-styled';
 
 import BuildListItem from '../components/BuildListItem';
 import Panel from '../components/Panel';
+import ResultGridHeader from '../components/ResultGridHeader';
 
 export default class BuildList extends Component {
   static propTypes = {
@@ -14,7 +14,7 @@ export default class BuildList extends Component {
   render() {
     return (
       <Panel>
-        <BuildListHeader>
+        <ResultGridHeader>
           <Flex>
             <Box flex="1" width={6 / 12} pr={15}>
               Build
@@ -30,7 +30,7 @@ export default class BuildList extends Component {
               When
             </Box>
           </Flex>
-        </BuildListHeader>
+        </ResultGridHeader>
         <div>
           {this.props.buildList.map(build => {
             return (
@@ -42,12 +42,3 @@ export default class BuildList extends Component {
     );
   }
 }
-
-const BuildListHeader = styled.div`
-  padding: 10px 15px;
-  border-bottom: 1px solid #dbdae3;
-  font-size: 13px;
-  color: #767488;
-  font-weight: 500;
-  text-transform: uppercase;
-`;

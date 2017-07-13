@@ -5,15 +5,19 @@ import Duration from './Duration';
 
 const ONE_MINUTE_IN_MS = 60000;
 
-export default class BuildDuration extends Component {
+export default class dataDuration extends Component {
   static propTypes = {
-    build: PropTypes.object.isRequired
+    data: PropTypes.shape({
+      started_at: PropTypes.string,
+      finished_at: PropTypes.string,
+      duration: PropTypes.number
+    }).isRequired
   };
 
   constructor(props, context) {
     super(props, context);
     this.state = {
-      duration: this.getDuration(props.build)
+      duration: this.getDuration(props.data)
     };
   }
 
@@ -29,9 +33,9 @@ export default class BuildDuration extends Component {
   }
 
   setDurationTicker() {
-    let {build} = this.props;
+    let {data} = this.props;
 
-    if (!build.finished_at) {
+    if (!data.finished_at) {
       this.ticker = setTimeout(() => {
         this.setState({
           duration: this.getDuration()
@@ -41,15 +45,16 @@ export default class BuildDuration extends Component {
     }
   }
 
-  getDuration(build) {
-    if (!build) build = this.props.build;
-    if (!build.finished_at) {
-      if (build.started_at) {
-        return new Date().getTime() - new Date(build.started_at).getTime();
+  getDuration(data) {
+    if (!data) data = this.props.data;
+    if (data.duration) return data.duration;
+    if (!data.finished_at) {
+      if (data.started_at) {
+        return new Date().getTime() - new Date(data.started_at).getTime();
       }
       return null;
     }
-    return new Date(build.finished_at).getTime() - new Date(build.started_at).getTime();
+    return new Date(data.finished_at).getTime() - new Date(data.started_at).getTime();
   }
 
   render() {

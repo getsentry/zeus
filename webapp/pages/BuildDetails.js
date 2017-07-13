@@ -5,7 +5,7 @@ import styled, {css} from 'styled-components';
 import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, Crumb, CrumbLink} from '../components/Breadcrumbs';
 import BuildAuthor from '../components/BuildAuthor';
-import BuildDuration from '../components/BuildDuration';
+import ObjectDuration from '../components/ObjectDuration';
 import TabbedNavItem from '../components/TabbedNavItem';
 import TimeSince from '../components/TimeSince';
 
@@ -79,7 +79,7 @@ export default class BuildDetails extends AsyncPage {
                 {build.result == 'passed' && <IconCircleCheck size="15" />}
                 {build.result == 'failed' && <IconCircleCross size="15" />}
                 {build.status} <TimeSince date={build.finished_at} /> in{' '}
-                <BuildDuration build={build} short={true} />
+                <ObjectDuration data={build} short={true} />
               </DurationWrapper>}
             <Time>
               <IconClock size="15" />
@@ -102,7 +102,7 @@ export default class BuildDetails extends AsyncPage {
             <TabbedNavItem
               to={`/repos/${repoName}/builds/${buildNumber}`}
               onlyActiveOnIndex={true}>
-              Jobs
+              Overview
             </TabbedNavItem>
             <TabbedNavItem to={`/repos/${repoName}/builds/${buildNumber}/tests`}>
               Tests

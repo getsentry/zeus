@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router';
-import styled, {css} from 'styled-components';
+import styled from 'styled-components';
 import {Flex, Box} from 'grid-styled';
 
 import BuildAuthor from './BuildAuthor';
 import BuildCoverage from './BuildCoverage';
-import BuildDuration from './BuildDuration';
+import ObjectDuration from './ObjectDuration';
+import ObjectResult from './ObjectResult';
+import ResultGridRow from './ResultGridRow';
 import TimeSince from './TimeSince';
-
-import IconCircleCheck from '../assets/IconCircleCheck';
-import IconCircleCross from '../assets/IconCircleCross';
 
 export default class BuildListItem extends Component {
   static contextTypes = {
@@ -26,41 +25,40 @@ export default class BuildListItem extends Component {
     let {build} = this.props;
     return (
       <BuildListItemLink to={`/repos/${repo.name}/builds/${build.number}`}>
-        <Flex align="center">
-          <Box flex="1" width={6 / 12} pr={15}>
-            <Flex>
-              <Box width={15} mr={8}>
-                <StatusIcon status={build.result}>
-                  {build.result == 'passed' && <IconCircleCheck size="15" />}
-                  {build.result == 'failed' && <IconCircleCross size="15" />}
-                </StatusIcon>
-              </Box>
-              <Box flex="1" style={{minWidth: 0}}>
-                <Message>
-                  #{build.number} {build.source.revision.message}
-                </Message>
-                <Meta>
-                  <Branch>branch-name</Branch>
-                  <Commit>
-                    {build.source.revision.sha.substr(0, 7)}
-                  </Commit>
-                </Meta>
-              </Box>
-            </Flex>
-          </Box>
-          <Box width={1 / 12} style={{textAlign: 'center'}}>
-            <BuildDuration build={build} short={true} />
-          </Box>
-          <Box width={1 / 12} style={{textAlign: 'center'}}>
-            <BuildCoverage build={build} />
-          </Box>
-          <Box width={2 / 12}>
-            <BuildAuthor build={build} />
-          </Box>
-          <Box width={2 / 12} style={{textAlign: 'right'}}>
-            <TimeSince date={build.created_at} />
-          </Box>
-        </Flex>
+        <ResultGridRow>
+          <Flex align="center">
+            <Box flex="1" width={6 / 12} pr={15}>
+              <Flex>
+                <Box width={15} mr={8}>
+                  <ObjectResult data={build} />
+                </Box>
+                <Box flex="1" style={{minWidth: 0}}>
+                  <Message>
+                    #{build.number} {build.source.revision.message}
+                  </Message>
+                  <Meta>
+                    <Branch>branch-name</Branch>
+                    <Commit>
+                      {build.source.revision.sha.substr(0, 7)}
+                    </Commit>
+                  </Meta>
+                </Box>
+              </Flex>
+            </Box>
+            <Box width={1 / 12} style={{textAlign: 'center'}}>
+              <ObjectDuration data={build} short={true} />
+            </Box>
+            <Box width={1 / 12} style={{textAlign: 'center'}}>
+              <BuildCoverage build={build} />
+            </Box>
+            <Box width={2 / 12}>
+              <BuildAuthor build={build} />
+            </Box>
+            <Box width={2 / 12} style={{textAlign: 'right'}}>
+              <TimeSince date={build.created_at} />
+            </Box>
+          </Flex>
+        </ResultGridRow>
       </BuildListItemLink>
     );
   }
@@ -68,10 +66,6 @@ export default class BuildListItem extends Component {
 
 const BuildListItemLink = styled(Link)`
   display: block;
-  padding: 10px 15px;
-  color: #39364E;
-  border-bottom: 1px solid #DBDAE3;
-  font-size: 14px;
 
   &:hover {
     background-color: #F0EFF5;
@@ -133,30 +127,4 @@ const Meta = styled.div`
     margin-right: 5px;
     color: #bfbfcb;
   }
-`;
-
-export const StatusIcon = styled.div`
-  ${props => {
-    switch (props.status) {
-      case 'passed':
-        return css`
-          svg {
-            color: #76D392;
-          }
-        `;
-      case 'failed':
-        return css`
-          color: #F06E5B;
-          svg {
-            color: #F06E5B;
-          }
-        `;
-      default:
-        return css`
-          svg {
-            color: #BFBFCB;
-          }
-        `;
-    }
-  }};
 `;

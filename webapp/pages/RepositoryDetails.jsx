@@ -54,5 +54,6 @@ const Content = styled.div`
   left: 220px;
   bottom: 0;
   right: 0;
+  overflow-y: scroll;
   background: #f8f9fb;
 `;
