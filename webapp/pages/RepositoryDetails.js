@@ -49,11 +49,6 @@ export default class RepositoryDetails extends AsyncPage {
 }
 
 const Content = styled.div`
-  position: fixed;
-  top: 0;
-  left: 220px;
-  bottom: 0;
-  right: 0;
-  overflow-y: scroll;
+  margin-left: 220px;
   background: #f8f9fb;
 `;
