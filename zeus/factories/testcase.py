@@ -28,9 +28,7 @@ class TestCaseFactory(ModelFactory):
         model = models.TestCase
 
     class Params:
-        failed = factory.Trait(
-            result=Result.failed,
-        )
+        failed = factory.Trait(result=Result.failed, message='A failure occurred')
         passed = factory.Trait(
             result=Result.passed,
         )

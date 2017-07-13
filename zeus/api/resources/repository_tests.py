@@ -5,9 +5,9 @@ from zeus.constants import Result, Status
 from zeus.models import Build, Repository, TestCase, Job, Source
 
 from .base_repository import BaseRepositoryResource
-from ..schemas import TestCaseSchema
+from ..schemas import TestCaseSummarySchema
 
-testcases_schema = TestCaseSchema(many=True, strict=True)
+testcases_schema = TestCaseSummarySchema(many=True, strict=True)
 
 
 class RepositoryTestsResource(BaseRepositoryResource):

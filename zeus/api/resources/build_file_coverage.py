@@ -22,7 +22,7 @@ class BuildFileCoverageResource(BaseBuildResource):
             Job.build_id == build.id,
         )
 
-        diff_only = request.args.get('diff_only')
+        diff_only = request.args.get('diff_only') in ('1', 'yes', 'true')
         if diff_only:
             query = query.filter(
                 or_(FileCoverage.diff_lines_covered > 0, FileCoverage.diff_lines_uncovered > 0)

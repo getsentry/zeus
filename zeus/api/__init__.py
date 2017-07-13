@@ -16,6 +16,9 @@ app.add_resource(
 app.add_resource('/repos/<repository_name>/builds/<build_number>/jobs', r.BuildJobsResource)
 app.add_resource('/repos/<repository_name>/builds/<build_number>/tests', r.BuildTestsResource)
 app.add_resource(
+    '/repos/<repository_name>/builds/<build_number>/tests/<test_name>', r.TestDetailsResource
+)
+app.add_resource(
     '/repos/<repository_name>/builds/<build_number>/jobs/<job_number>', r.JobDetailsResource
 )
 app.add_resource(

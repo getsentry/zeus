@@ -5,9 +5,9 @@ from zeus.constants import Result
 from zeus.models import Job, Build, TestCase
 
 from .base_build import BaseBuildResource
-from ..schemas import TestCaseSchema
+from ..schemas import TestCaseSummarySchema
 
-testcases_schema = TestCaseSchema(many=True, strict=True)
+testcases_schema = TestCaseSummarySchema(many=True, strict=True)
 
 
 class BuildTestsResource(BaseBuildResource):

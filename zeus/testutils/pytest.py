@@ -40,15 +40,16 @@ def db(request, app, session_config):
 
         config.alembic.upgrade()
 
-        @event.listens_for(Session, "after_transaction_end")
-        def restart_savepoint(session, transaction):
-            if transaction.nested and not transaction._parent.nested:
-                session.begin_nested()
-
         # TODO: need to kill db connections in order to drop database
         #     config.db.drop_all()
         #     os.system('dropdb %s' % db_name)
         return config.db
+
+
+@event.listens_for(Session, "after_transaction_end")
+def restart_savepoint(session, transaction):
+    if transaction.nested and not transaction._parent.nested:
+        session.begin_nested()
 
 
 @pytest.fixture(scope='function')
