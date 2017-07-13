@@ -35,7 +35,7 @@ export default class BuildJobList extends AsyncPage {
         </Section>
         <Section>
           <SectionHeading>Failing Tests</SectionHeading>
-          <TestList testList={this.state.testFailures} />
+          <TestList testList={this.state.testFailures} params={this.props.params} />
         </Section>
         <Section>
           <SectionHeading>Jobs</SectionHeading>
