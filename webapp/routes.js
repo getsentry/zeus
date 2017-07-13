@@ -4,6 +4,7 @@ import {IndexRoute, Route, IndexRedirect} from 'react-router';
 import App from './pages/App';
 import BuildCoverage from './pages/BuildCoverage';
 import BuildDetails from './pages/BuildDetails';
+import BuildDiff from './pages/BuildDiff';
 import BuildOverview from './pages/BuildOverview';
 import BuildTestList from './pages/BuildTestList';
 import Login from './pages/Login';
@@ -24,8 +25,9 @@ export default (
       <Route path="tests" component={RepositoryTestList} />
       <Route path="builds/:buildNumber" component={BuildDetails}>
         <IndexRoute component={BuildOverview} />
-        <Route path="tests" component={BuildTestList} />
         <Route path="coverage" component={BuildCoverage} />
+        <Route path="diff" component={BuildDiff} />
+        <Route path="tests" component={BuildTestList} />
       </Route>
     </Route>
     <Route path="/login" component={Login} />

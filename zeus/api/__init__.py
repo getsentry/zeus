@@ -14,6 +14,7 @@ app.add_resource(
     '/repos/<repository_name>/builds/<build_number>/file-coverage', r.BuildFileCoverageResource
 )
 app.add_resource('/repos/<repository_name>/builds/<build_number>/jobs', r.BuildJobsResource)
+app.add_resource('/repos/<repository_name>/builds/<build_number>/source', r.BuildSourceResource)
 app.add_resource('/repos/<repository_name>/builds/<build_number>/tests', r.BuildTestsResource)
 app.add_resource(
     '/repos/<repository_name>/builds/<build_number>/tests/<test_name>', r.TestDetailsResource

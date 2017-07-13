@@ -109,6 +109,9 @@ export default class BuildDetails extends AsyncPage {
             <TabbedNavItem to={`/repos/${repoName}/builds/${buildNumber}/coverage`}>
               Code Coverage
             </TabbedNavItem>
+            <TabbedNavItem to={`/repos/${repoName}/builds/${buildNumber}/diff`}>
+              Diff
+            </TabbedNavItem>
           </Tabs>
         </BuildSummary>
         {this.props.children}
