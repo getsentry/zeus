@@ -45,12 +45,17 @@ def mock_single_repository(builds=10, user_ids=()):
         build = factories.BuildFactory(source=source)
         click.echo('Created {!r}'.format(build))
 
-        for n in range(1, 10):
+        for n in range(1, 4):
             has_failure = randint(0, 2) == 0
             job = factories.JobFactory.create(build=build, failed=has_failure)
 
             for n in range(randint(0, 50)):
-                factories.TestCaseFactory.create(job=job, failed=has_failure and randint(0, 5) == 0)
+                test_failed = has_failure and randint(0, 5) == 0
+                factories.TestCaseFactory.create(
+                    job=job,
+                    failed=test_failed,
+                    passed=not test_failed,
+                )
             for n in range(randint(0, 50)):
                 factories.FileCoverageFactory.create(job=job, in_diff=randint(0, 5) == 0)
             db.session.commit()
