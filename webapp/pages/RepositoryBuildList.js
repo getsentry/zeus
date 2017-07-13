@@ -29,13 +29,13 @@ export default class RepositoryBuildList extends AsyncPage {
           </Crumb>
         </Breadcrumbs>
         <ScrollView>
+          <TabbedNav>
+            <TabbedNavItem to="/" activeNavClass="active">
+              My builds
+            </TabbedNavItem>
+            <TabbedNavItem>All builds</TabbedNavItem>
+          </TabbedNav>
           <Section>
-            <TabbedNav>
-              <TabbedNavItem to="/" activeNavClass="active">
-                My builds
-              </TabbedNavItem>
-              <TabbedNavItem>All builds</TabbedNavItem>
-            </TabbedNav>
             <RepositoryBuildListBody {...this.props} />
           </Section>
         </ScrollView>
@@ -57,6 +57,6 @@ class RepositoryBuildListBody extends AsyncPage {
 
 const TabbedNav = styled.div`
   overflow: hidden;
-  margin-bottom: 20px;
+  margin: 0 20px;
   box-shadow: inset 0 -1px 0 #dbdae3;
 `;
