@@ -13,7 +13,7 @@ export default class BuildTestList extends AsyncPage {
   renderBody() {
     return (
       <Section>
-        <TestList testList={this.state.testList} />
+        <TestList testList={this.state.testList} params={this.props.params} />
       </Section>
     );
   }
