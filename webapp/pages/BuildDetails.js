@@ -6,11 +6,11 @@ import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, Crumb, CrumbLink} from '../components/Breadcrumbs';
 import BuildAuthor from '../components/BuildAuthor';
 import ObjectDuration from '../components/ObjectDuration';
+import ObjectResult from '../components/ObjectResult';
+import ScrollView from '../components/ScrollView';
 import TabbedNavItem from '../components/TabbedNavItem';
 import TimeSince from '../components/TimeSince';
 
-import IconCircleCheck from '../assets/IconCircleCheck';
-import IconCircleCross from '../assets/IconCircleCross';
 import IconClock from '../assets/IconClock';
 
 export default class BuildDetails extends AsyncPage {
@@ -63,7 +63,7 @@ export default class BuildDetails extends AsyncPage {
     let {build} = this.state;
     let {buildNumber, repoName} = this.props.params;
     return (
-      <div>
+      <ScrollView>
         <BuildSummary>
           <Header>
             <Message>
@@ -73,9 +73,8 @@ export default class BuildDetails extends AsyncPage {
           <Meta>
             {build.status === 'finished' &&
               <DurationWrapper result={build.result}>
-                {build.result == 'passed' && <IconCircleCheck size="15" />}
-                {build.result == 'failed' && <IconCircleCross size="15" />}
-                {build.status} <TimeSince date={build.finished_at} /> in{' '}
+                <ObjectResult data={build} />
+                {build.result} <TimeSince date={build.finished_at} /> in{' '}
                 <ObjectDuration data={build} short={true} />
               </DurationWrapper>}
             <Time>
@@ -113,7 +112,7 @@ export default class BuildDetails extends AsyncPage {
           </Tabs>
         </BuildSummary>
         {this.props.children}
-      </div>
+      </ScrollView>
     );
   }
 }
@@ -121,8 +120,8 @@ export default class BuildDetails extends AsyncPage {
 const Section = styled.div`padding: 20px;`;
 
 const BuildSummary = styled(Section)`
-  padding-top: 15px;
   padding-bottom: 0;
+  padding-top: 0;
   box-shadow: inset 0 -1px 0 #E0E4E8;
 `;
 

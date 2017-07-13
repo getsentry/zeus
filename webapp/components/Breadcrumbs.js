@@ -34,7 +34,7 @@ export const Crumb = styled.span`
   }
 
   &:last-child {
-    color: #aaa;
+    color: #666;
     &:after {
       display: none;
     }
