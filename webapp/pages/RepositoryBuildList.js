@@ -57,6 +57,6 @@ class RepositoryBuildListBody extends AsyncPage {
 
 const TabbedNav = styled.div`
   overflow: hidden;
-  margin: 15px 20px 0;
+  margin: 0 20px 20px;
   box-shadow: inset 0 -1px 0 #dbdae3;
 `;

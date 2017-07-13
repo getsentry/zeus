@@ -127,7 +127,7 @@ const BuildSummary = styled(Section)`
 `;
 
 const Tabs = styled.div`
-  margin-top: 5px;
+  margin-bottom: 20px;
   overflow: hidden;
 `;
 
@@ -153,6 +153,7 @@ const Meta = styled.div`
   display: flex;
   align-items: center;
   margin-top: 5px;
+  margin-bottom: 15px;
   color: #7f7d8f;
   font-size: 14px;
 
