@@ -71,7 +71,6 @@ export default class BuildDetails extends AsyncPage {
             <Message>
               {build.source.revision.message}
             </Message>
-            <Branch>branch-name</Branch>
           </Header>
           <Meta>
             {build.status === 'finished' &&

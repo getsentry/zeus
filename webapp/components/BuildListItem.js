@@ -34,10 +34,9 @@ export default class BuildListItem extends Component {
                 </Box>
                 <Box flex="1" style={{minWidth: 0}}>
                   <Message>
-                    #{build.number} {build.source.revision.message}
+                    #{build.number} {build.source.revision.message.split('\n')[0]}
                   </Message>
                   <Meta>
-                    <Branch>branch-name</Branch>
                     <Commit>
                       {build.source.revision.sha.substr(0, 7)}
                     </Commit>
