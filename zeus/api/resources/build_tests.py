@@ -29,4 +29,6 @@ class BuildTestsResource(BaseBuildResource):
             except AttributeError:
                 raise NotImplementedError
 
+        query = query.order_by((TestCase.result == Result.failed).desc(), TestCase.name.asc())
+
         return self.respond_with_schema(testcases_schema, query)
