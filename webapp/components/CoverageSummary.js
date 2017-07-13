@@ -28,6 +28,9 @@ export default class CoverageSummary extends Component {
           </Flex>
         </ResultGridHeader>
         {this.props.coverage.map(fileCoverage => {
+          let totalDiffLines =
+            fileCoverage.diff_lines_covered + fileCoverage.diff_lines_uncovered;
+
           return (
             <ResultGridRow key={fileCoverage.filename}>
               <Flex align="center">
@@ -35,18 +38,17 @@ export default class CoverageSummary extends Component {
                   {fileCoverage.filename}
                 </Box>
                 <Box width={1 / 12} style={{textAlign: 'right'}}>
-                  {parseInt(
-                    fileCoverage.lines_covered /
-                      (fileCoverage.lines_covered + fileCoverage.lines_uncovered) *
-                      1000,
-                    10
-                  ) / 10}%
+                  {totalDiffLines
+                    ? `${parseInt(
+                        fileCoverage.diff_lines_covered / totalDiffLines * 1000,
+                        10
+                      ) / 10}%`
+                    : ''}
                 </Box>
                 <Box width={1 / 12} style={{textAlign: 'right'}}>
                   {parseInt(
-                    fileCoverage.diff_lines_covered /
-                      (fileCoverage.diff_lines_covered +
-                        fileCoverage.diff_lines_uncovered) *
+                    fileCoverage.lines_covered /
+                      (fileCoverage.lines_covered + fileCoverage.lines_uncovered) *
                       1000,
                     10
                   ) / 10}%

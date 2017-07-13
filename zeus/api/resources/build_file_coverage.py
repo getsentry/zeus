@@ -28,4 +28,9 @@ class BuildFileCoverageResource(BaseBuildResource):
                 or_(FileCoverage.diff_lines_covered > 0, FileCoverage.diff_lines_uncovered > 0)
             )
 
+        query = query.order_by(
+            (FileCoverage.diff_lines_covered + FileCoverage.diff_lines_uncovered > 0).desc(),
+            FileCoverage.filename.asc()
+        )
+
         return self.respond_with_schema(filecoverage_schema, query)
