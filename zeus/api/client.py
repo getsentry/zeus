@@ -1,8 +1,7 @@
 from json import dumps
 from flask import current_app, Response
-from flask.testing import make_test_environ_builder
+from functools import partialmethod
 from typing import Mapping, BinaryIO
-from werkzeug.test import Client
 
 
 class APIError(Exception):
@@ -38,21 +37,21 @@ class APIClient(object):
         if json:
             assert not data
             data = dumps(json)
-
-        builder = make_test_environ_builder(
-            app=current_app,
-            path='/api/{}'.format(path.lstrip('/')),
-            method=method,
-            content_type=request.content_type if request else 'application/json',
-            data=data,
-        )
-        if files:
+        elif files:
+            if not data:
+                data = {}
             for key, value in files.items():
-                builder.files[key] = value
+                data[key] = value
 
         with current_app.test_client() as client:
-            # XXX(dcramer): FlaskClient does not accept the builder argument
-            response = Client.open(client, builder)
+            response = client.open(
+                path='/api/{}'.format(path.lstrip('/')),
+                method=method,
+                content_type=(
+                    request.content_type if request else ('application/json' if json else None)
+                ),
+                data=data,
+            )
         if not (200 <= response.status_code < 300):
             raise APIError('Request returned invalid status code: %d' % (response.status_code, ))
         if response.headers['Content-Type'] != 'application/json':
@@ -62,26 +61,13 @@ class APIClient(object):
         # TODO(dcramer): ideally we wouldn't encode + decode this
         return response
 
-    def delete(self, *args, **kwargs):
-        return self.dispatch(method='DELETE', *args, **kwargs)
-
-    def get(self, *args, **kwargs):
-        return self.dispatch(method='GET', *args, **kwargs)
-
-    def head(self, *args, **kwargs):
-        return self.dispatch(method='HEAD', *args, **kwargs)
-
-    def options(self, *args, **kwargs):
-        return self.dispatch(method='OPTIONS', *args, **kwargs)
-
-    def patch(self, *args, **kwargs):
-        return self.dispatch(method='PATCH', *args, **kwargs)
-
-    def post(self, *args, **kwargs):
-        return self.dispatch(method='POST', *args, **kwargs)
-
-    def put(self, *args, **kwargs):
-        return self.dispatch(method='PUT', *args, **kwargs)
+    delete = partialmethod(dispatch, method='DELETE')
+    get = partialmethod(dispatch, method='GET')
+    head = partialmethod(dispatch, method='HEAD')
+    options = partialmethod(dispatch, method='OPTIONS')
+    patch = partialmethod(dispatch, method='PATCH')
+    post = partialmethod(dispatch, method='POST')
+    put = partialmethod(dispatch, method='PUT')
 
 
 api_client = APIClient()
