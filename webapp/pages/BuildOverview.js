@@ -28,24 +28,25 @@ export default class BuildJobList extends AsyncPage {
 
   renderBody() {
     return (
-      <div>
-        <Section>
+      <Section>
+        {this.state.testFailures.length !== 0 &&
+          <div>
+            <SectionHeading>Failing Tests</SectionHeading>
+            <TestList
+              testList={this.state.testFailures}
+              params={this.props.params}
+              collapsable={true}
+            />
+          </div>}
+        <div>
           <SectionHeading>Coverage</SectionHeading>
           <CoverageSummary coverage={this.state.diffCoverage} collapsable={true} />
-        </Section>
-        <Section>
-          <SectionHeading>Failing Tests</SectionHeading>
-          <TestList
-            testList={this.state.testFailures}
-            params={this.props.params}
-            collapsable={true}
-          />
-        </Section>
-        <Section>
+        </div>
+        <div>
           <SectionHeading>Jobs</SectionHeading>
           <JobList build={this.context.build} jobList={this.state.jobList} />
-        </Section>
-      </div>
+        </div>
+      </Section>
     );
   }
 }
