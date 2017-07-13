@@ -1,10 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
 import BuildList from '../components/BuildList';
-import ScrollView from '../components/ScrollView';
+import Content from '../components/Content';
+import Section from '../components/Section';
 import Sidebar from '../components/Sidebar';
 
 export default class RepositoryBuildList extends AsyncPage {
@@ -17,16 +17,16 @@ export default class RepositoryBuildList extends AsyncPage {
     return (
       <div>
         <Sidebar params={this.props.params} />
-        <BuildIndex>
+        <Content>
           <Breadcrumbs>
             <Crumb active={true}>
               {this.getTitle()}
             </Crumb>
           </Breadcrumbs>
-          <ScrollView>
+          <Section>
             <UserBuildListBody {...this.props} />
-          </ScrollView>
-        </BuildIndex>
+          </Section>
+        </Content>
       </div>
     );
   }
@@ -42,12 +42,3 @@ class UserBuildListBody extends AsyncPage {
     return <BuildList params={this.props.params} buildList={this.state.buildList} />;
   }
 }
-
-const BuildIndex = styled.div`
-  position: fixed;
-  top: 0;
-  left: 220px;
-  bottom: 0;
-  right: 0;
-  background: #f8f9fb;
-`;

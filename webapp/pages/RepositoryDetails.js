@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 
 import AsyncPage from '../components/AsyncPage';
+import Content from '../components/Content';
 import Sidebar from '../components/Sidebar';
 
 export default class RepositoryDetails extends AsyncPage {
@@ -47,8 +47,3 @@ export default class RepositoryDetails extends AsyncPage {
     );
   }
 }
-
-const Content = styled.div`
-  margin-left: 220px;
-  background: #f8f9fb;
-`;
