@@ -3,15 +3,21 @@ from zeus.constants import Result, Status
 
 
 def test_simple(
-    client, db_session, default_login, default_repo, default_repo_access, default_revision,
-    default_build
+    client, db_session, default_login, default_repo, default_repo_access, default_revision
 ):
     source = factories.SourceFactory(
         revision=default_revision,
     )
 
-    # an unfinished build which shouldn't be used
+    # finished build
     build = factories.BuildFactory(
+        source=source,
+        passed=True,
+    )
+    db_session.add(build)
+
+    # an unfinished build which shouldn't be used
+    factories.BuildFactory(
         source=source,
         status=Status.in_progress,
     )
@@ -19,13 +25,13 @@ def test_simple(
 
     # a couple of needed jobs that split the tests
     job1 = factories.JobFactory(
-        build=default_build,
+        build=build,
         status=Status.finished,
         result=Result.passed,
     )
     db_session.add(job1)
     job2 = factories.JobFactory(
-        build=default_build,
+        build=build,
         status=Status.finished,
         result=Result.passed,
     )
