@@ -45,9 +45,14 @@ def mock_single_repository(builds=10, user_ids=()):
         build = factories.BuildFactory(source=source)
         click.echo('Created {!r}'.format(build))
 
-        for job in factories.JobFactory.create_batch(size=randint(1, 10), build=build):
-            factories.TestCaseFactory.create_batch(size=randint(0, 50), job=job)
-            factories.FileCoverageFactory.create_batch(size=randint(0, 50), job=job)
+        for n in range(1, 10):
+            has_failure = randint(0, 2) == 0
+            job = factories.JobFactory.create(build=build, failed=has_failure)
+
+            for n in range(randint(0, 50)):
+                factories.TestCaseFactory.create(job=job, failed=has_failure and randint(0, 5) == 0)
+            for n in range(randint(0, 50)):
+                factories.FileCoverageFactory.create(job=job, in_diff=randint(0, 5) == 0)
             db.session.commit()
             aggregate_build_stats_for_job(job_id=job.id, _app_context=False)
 

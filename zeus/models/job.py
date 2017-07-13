@@ -45,7 +45,7 @@ class Job(RepositoryBoundMixin, db.Model):
         db.UniqueConstraint('build_id', 'number', name='unq_job_number'),
         db.UniqueConstraint('build_id', 'provider', 'external_id', name='unq_job_provider')
     )
-    __repr__ = model_repr('repository_id', 'build_id', 'status', 'result')
+    __repr__ = model_repr('build_id', 'number', 'status', 'result')
 
 
 @event.listens_for(Job.build_id, 'set', retval=False)

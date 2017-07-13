@@ -4,6 +4,7 @@ import factory.fuzzy
 from faker import Factory
 faker = Factory.create()
 
+from random import randint
 from zeus import models
 
 from .base import ModelFactory
@@ -20,11 +21,19 @@ class FileCoverageFactory(ModelFactory):
     repository = factory.SelfAttribute('job.repository')
     repository_id = factory.SelfAttribute('repository.id')
     data = 'CCCUUUU'
-    lines_covered = 3
-    lines_uncovered = 4
-    diff_lines_covered = 3
-    diff_lines_uncovered = 3
+    lines_covered = factory.Faker('random_int', min=0, max=100)
+    lines_uncovered = factory.Faker('random_int', min=0, max=100)
+    diff_lines_covered = 0
+    diff_lines_uncovered = 0
     date_created = factory.Faker('date_time')
 
     class Meta:
         model = models.FileCoverage
+
+    class Params:
+        in_diff = factory.Trait(
+            diff_lines_covered=factory.
+            LazyAttribute(lambda o: max(o.lines_covered - randint(0, 3), 0)),
+            diff_lines_uncovered=factory.
+            LazyAttribute(lambda o: max(o.lines_covered - randint(0, 5), 0)),
+        )

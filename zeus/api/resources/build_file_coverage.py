@@ -1,3 +1,5 @@
+from flask import request
+from operator import or_
 from sqlalchemy.orm import contains_eager
 
 from zeus.models import Build, FileCoverage, Job
@@ -19,5 +21,11 @@ class BuildFileCoverageResource(BaseBuildResource):
         ).filter(
             Job.build_id == build.id,
         )
+
+        diff_only = request.args.get('diff_only')
+        if diff_only:
+            query = query.filter(
+                or_(FileCoverage.diff_lines_covered > 0, FileCoverage.diff_lines_uncovered > 0)
+            )
 
         return self.respond_with_schema(filecoverage_schema, query)

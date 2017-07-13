@@ -47,7 +47,7 @@ class Build(RepositoryBoundMixin, db.Model):
         db.UniqueConstraint('repository_id', 'number', name='unq_build_number'),
         db.UniqueConstraint('repository_id', 'provider', 'external_id', name='unq_build_provider')
     )
-    __repr__ = model_repr('repository_id', 'source_id', 'status', 'result')
+    __repr__ = model_repr('number', 'status', 'result')
 
 
 @event.listens_for(Build.repository_id, 'set', retval=False)
