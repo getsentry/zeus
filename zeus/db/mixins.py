@@ -1,9 +1,26 @@
 import sqlalchemy
 
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.sql import func
 
 from zeus.db.types import GUID
 from zeus.config import db
+from zeus.utils import timezone
+
+
+class StandardAttributes(object):
+    @declared_attr
+    def id(cls):
+        return db.Column(GUID, primary_key=True, default=GUID.default_value)
+
+    @declared_attr
+    def date_created(cls):
+        return db.Column(
+            db.TIMESTAMP(timezone=True),
+            default=timezone.now,
+            server_default=func.now(),
+            nullable=False
+        )
 
 
 # https://bitbucket.org/zzzeek/sqlalchemy/wiki/UsageRecipes/PreFilteredQuery

@@ -2,12 +2,10 @@ import enum
 
 from base64 import b64decode
 from io import BytesIO
-from sqlalchemy.sql import func
 
 from zeus.config import db
-from zeus.db.mixins import RepositoryBoundMixin
+from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
 from zeus.db.types import Enum, File, FileData, GUID
-from zeus.utils import timezone
 
 ARTIFACT_STORAGE_OPTIONS = {
     'path': 'artifacts',
@@ -24,8 +22,7 @@ class ArtifactType(enum.Enum):
         return self.name
 
 
-class Artifact(RepositoryBoundMixin, db.Model):
-    id = db.Column(GUID, nullable=False, primary_key=True, default=GUID.default_value)
+class Artifact(RepositoryBoundMixin, StandardAttributes, db.Model):
     job_id = db.Column(GUID, db.ForeignKey('job.id', ondelete='CASCADE'), nullable=False)
     testcase_id = db.Column(GUID, db.ForeignKey('testcase.id', ondelete='CASCADE'), nullable=True)
     name = db.Column(db.String(length=256), nullable=False)
@@ -38,12 +35,6 @@ class Artifact(RepositoryBoundMixin, db.Model):
         # TODO(dcramer): this is super hacky but not sure a better way to
         # do it with SQLAlchemy
         default=lambda: FileData({}, ARTIFACT_STORAGE_OPTIONS)
-    )
-    date_created = db.Column(
-        db.TIMESTAMP(timezone=True),
-        default=timezone.now,
-        server_default=func.now(),
-        nullable=False
     )
 
     job = db.relationship('Job', innerjoin=True, uselist=False)

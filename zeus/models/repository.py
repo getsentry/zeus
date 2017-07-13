@@ -4,14 +4,13 @@ import sqlalchemy
 
 from flask import current_app
 from sqlalchemy import event
-from sqlalchemy.sql import func
 from urllib.parse import urlparse
 
 from zeus.config import db
-from zeus.db.types import Enum, GUID, JSONEncodedDict
+from zeus.db.mixins import StandardAttributes
+from zeus.db.types import Enum, JSONEncodedDict
 from zeus.db.utils import model_repr
 from zeus.utils.text import slugify
-from zeus.utils import timezone
 
 
 class RepositoryBackend(enum.Enum):
@@ -70,23 +69,15 @@ class RepositoryAccessBoundQuery(db.Query):
         return rv
 
 
-class Repository(db.Model):
+class Repository(StandardAttributes, db.Model):
     """
     Represents a single repository.
     """
-    id = db.Column(GUID, primary_key=True, default=GUID.default_value)
-
     name = db.Column(db.String(200), nullable=False, unique=True)
     url = db.Column(db.String(200), nullable=False, unique=True)
     backend = db.Column(Enum(RepositoryBackend), default=RepositoryBackend.unknown, nullable=False)
     status = db.Column(Enum(RepositoryStatus), default=RepositoryStatus.inactive, nullable=False)
     data = db.Column(JSONEncodedDict, nullable=True)
-    date_created = db.Column(
-        db.TIMESTAMP(timezone=True),
-        default=timezone.now,
-        server_default=func.now(),
-        nullable=False
-    )
     last_update = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     last_update_attempt = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
 

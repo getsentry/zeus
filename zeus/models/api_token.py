@@ -1,20 +1,18 @@
 from datetime import timedelta
 from secrets import token_hex
-from sqlalchemy.sql import func
 
 from zeus.config import db
-from zeus.db.types import GUID
+from zeus.db.mixins import StandardAttributes
 from zeus.db.utils import model_repr
 from zeus.utils import timezone
 
 DEFAULT_EXPIRATION = timedelta(days=30)
 
 
-class ApiToken(db.Model):
+class ApiToken(StandardAttributes, db.Model):
     """
     An API token.
     """
-    id = db.Column(GUID, primary_key=True, default=GUID.default_value)
     access_token = db.Column(
         db.String(64), default=lambda: ApiToken.generate_token(), unique=True, nullable=False
     )
@@ -25,12 +23,6 @@ class ApiToken(db.Model):
         db.TIMESTAMP(timezone=True),
         nullable=True,
         default=lambda: timezone.now() + DEFAULT_EXPIRATION
-    )
-    date_created = db.Column(
-        db.TIMESTAMP(timezone=True),
-        default=timezone.now,
-        server_default=func.now(),
-        nullable=False,
     )
 
     __tablename__ = 'api_token'
