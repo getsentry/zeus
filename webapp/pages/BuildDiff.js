@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
+import Diff from '../components/Diff';
 import Section from '../components/Section';
 
 export default class BuildDiff extends AsyncPage {
@@ -18,8 +19,11 @@ export default class BuildDiff extends AsyncPage {
   renderBody() {
     return (
       <Section>
-        {this.state.source.diff ||
-          <em>No source information was available for this build.</em>}
+        {this.state.source.diff
+          ? <Diff diff={this.state.source.diff} />
+          : <Section>
+              <em>No source information was available for this build.</em>
+            </Section>}
       </Section>
     );
   }

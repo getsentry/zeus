@@ -25,6 +25,11 @@ if (localStorage.auth) {
   store.dispatch(setAuth(localStorage.auth));
 }
 
+import hljs from 'highlight.js/lib/highlight';
+import diff from 'highlight.js/lib/languages/diff';
+
+hljs.registerLanguage('diff', diff);
+
 render(
   <Provider store={store}>
     <Router history={browserHistory} routes={routes} />

@@ -54,9 +54,26 @@ def default_revision(default_repo):
 
 
 @pytest.fixture(scope='function')
+def default_parent_revision(default_repo, default_revision):
+    return factories.RevisionFactory(
+        repository=default_repo,
+        parents=[default_revision.sha],
+        sha='adba8d362c656c7f97f5da9fa4e644be1b72a449',
+    )
+
+
+@pytest.fixture(scope='function')
 def default_source(default_revision):
     return factories.SourceFactory(
         revision=default_revision,
+        patch=default_patch,
+    )
+
+
+@pytest.fixture(scope='function')
+def default_patch(default_parent_revision):
+    return factories.PatchFactory(
+        parent_revision=default_parent_revision,
     )
 
 
@@ -136,4 +153,10 @@ def sample_cobertura():
 @pytest.fixture(scope='session')
 def sample_jacoco():
     with open(os.path.join(DATA_FIXTURES, 'sample-jacoco.xml')) as fp:
+        return fp.read()
+
+
+@pytest.fixture(scope='session')
+def sample_diff():
+    with open(os.path.join(DATA_FIXTURES, 'sample.diff')) as fp:
         return fp.read()

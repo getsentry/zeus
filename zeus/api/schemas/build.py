@@ -2,7 +2,7 @@ from marshmallow import Schema, fields
 
 from .author import AuthorSchema
 from .fields import ResultField, StatusField
-from .source import SourceSchema
+from .source import SourceSummarySchema
 from .stats import StatsSchema
 
 
@@ -15,7 +15,7 @@ class BuildSchema(Schema):
     status = StatusField(dump_only=True)
     result = ResultField(dump_only=True)
     author = fields.Nested(AuthorSchema(), dump_only=True)
-    source = fields.Nested(SourceSchema(), dump_only=True)
+    source = fields.Nested(SourceSummarySchema(), dump_only=True)
     stats = fields.Nested(StatsSchema(), dump_only=True)
     provider = fields.Str(dump_only=True)
     external_id = fields.Str(dump_only=True)

@@ -37,12 +37,20 @@ def mock_single_repository(builds=10, user_ids=()):
 
     db.session.commit()
 
+    parent_revision = None
     for n in range(builds):
-        revision = factories.RevisionFactory(
+        revision = factories.RevisionFactory.create(
             repository=repo,
+            parents=[parent_revision.sha] if parent_revision else None,
         )
-        source = factories.SourceFactory(revision=revision)
-        build = factories.BuildFactory(source=source)
+        source = factories.SourceFactory.create(
+            revision=revision,
+            patch=factories.PatchFactory(
+                parent_revision=parent_revision,
+            ) if parent_revision else None,
+        )
+        parent_revision = revision
+        build = factories.BuildFactory.create(source=source)
         click.echo('Created {!r}'.format(build))
 
         for n in range(1, 4):

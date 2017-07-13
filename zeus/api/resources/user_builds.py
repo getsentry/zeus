@@ -22,6 +22,7 @@ class UserBuildsResource(Resource):
 
         query = Build.query.options(
             joinedload('source').joinedload('revision'),
+            joinedload('source').joinedload('patch'),
             joinedload('author'),
             subqueryload_all('stats'),
         ).filter(

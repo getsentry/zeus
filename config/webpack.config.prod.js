@@ -226,6 +226,11 @@ module.exports = {
     // It is absolutely essential that NODE_ENV was set to production here.
     // Otherwise React will be compiled in the very slow development mode.
     new webpack.DefinePlugin(env.stringified),
+    // optimize out highlight.js languages we dont need
+    new webpack.ContextReplacementPlugin(
+      /highlight\.js\/lib\/languages$/,
+      new RegExp(`^./(${['diff'].join('|')})$`)
+    ),
     // Minify the code.
     new webpack.optimize.UglifyJsPlugin({
       compress: {
