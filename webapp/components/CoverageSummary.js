@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Flex, Box} from 'grid-styled';
 
 import Panel from './Panel';
-import ResultGridHeader from './ResultGridRow';
+import ResultGridHeader from './ResultGridHeader';
 import ResultGridRow from './ResultGridRow';
 
 export default class CoverageSummary extends Component {
