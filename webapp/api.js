@@ -30,9 +30,13 @@ export class Request {
       if (xhr.readyState === Request.DONE) {
         let responseData = this.processResponseText(xhr);
         if (xhr.status === Request.OK) {
-          resolve(responseData, xhr);
+          responseData.xhr = xhr;
+          resolve(responseData);
         } else {
-          reject(new Error(xhr.statusText), responseData, xhr);
+          let error = new Error(xhr.responseText);
+          error.data = responseData;
+          error.xhr = xhr;
+          reject(error);
         }
       }
     };
@@ -95,10 +99,6 @@ export class Client {
     let method = options.method || (options.data ? 'POST' : 'GET');
     let data = options.data;
     let id = this.uniqueId();
-
-    if (data !== undefined && method !== 'GET') {
-      data = JSON.stringify(data);
-    }
 
     let fullUrl;
     if (path.indexOf(this.baseUrl) === -1) {

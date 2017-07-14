@@ -6,7 +6,13 @@ from . import views as v
 app = Blueprint('web', __name__)
 app.add_url_rule(
     '/auth/github',
-    view_func=v.GitHubLoginView.as_view('github-login', authorized_url='web.github-complete')
+    view_func=v.GitHubAuthView.as_view('github-auth', authorized_url='web.github-complete')
+)
+app.add_url_rule(
+    '/auth/github/upgrade',
+    view_func=v.GitHubAuthView.as_view(
+        'github-upgrade', authorized_url='web.github-complete', scopes=('user:email', 'repo')
+    )
 )
 app.add_url_rule(
     '/auth/github/complete',

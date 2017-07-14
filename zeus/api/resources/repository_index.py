@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Identity, ItemOption, Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider
+from zeus.models import Identity, ItemOption, Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider, RepositoryStatus
 from zeus.tasks import import_repo
 from zeus.utils import ssh
 from zeus.utils.github import GitHubClient
@@ -47,6 +47,13 @@ class RepositoryIndexResource(Resource):
             identity = Identity.query.filter(
                 Identity.provider == 'github', Identity.user_id == auth.get_current_user().id
             ).first()
+            if 'repo' not in identity.config['scopes']:
+                return self.respond(
+                    {
+                        'needUpgrade': True,
+                        'upgradeUrl': '/auth/github/upgrade'
+                    }, 401
+                )
             assert identity
 
             # fetch repository details using their credentials
@@ -62,8 +69,9 @@ class RepositoryIndexResource(Resource):
                 repo, created = Repository(
                     backend=RepositoryBackend.git,
                     provider=RepositoryProvider.github,
+                    status=RepositoryStatus.active,
                     external_id=str(repo_data['id']),
-                    name=repo_data['full_name'],
+                    name=repo_data['name'],
                     url=repo_data['clone_url'],
                     data={'github': {
                         'full_name': repo_data['full_name']
@@ -91,7 +99,10 @@ class RepositoryIndexResource(Resource):
                     }
                 )
         elif provider == 'native':
-            repo, created = Repository(**data), True
+            repo, created = Repository(
+                status=RepositoryStatus.active,
+                **data,
+            ), True
             db.session.add(repo)
 
         db.session.flush()
@@ -104,6 +115,7 @@ class RepositoryIndexResource(Resource):
                 ))
                 db.session.flush()
         except IntegrityError:
+            raise
             pass
 
         db.session.commit()

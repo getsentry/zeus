@@ -2,6 +2,7 @@ import React from 'react';
 import {IndexRoute, Route, IndexRedirect} from 'react-router';
 
 import App from './pages/App';
+import AddRepository from './pages/AddRepository';
 import BuildCoverage from './pages/BuildCoverage';
 import BuildDetails from './pages/BuildDetails';
 import BuildDiff from './pages/BuildDiff';
@@ -19,6 +20,7 @@ import requireAuth from './utils/requireAuth';
 export default (
   <Route path="/" component={App}>
     <IndexRedirect to="/builds" />
+    <Route path="/add-repository" component={requireAuth(AddRepository)} />
     <Route path="/builds" component={requireAuth(UserBuildList)} />
     <Route path="/repos/:repoName" component={requireAuth(RepositoryDetails)}>
       <IndexRoute component={RepositoryBuildList} />

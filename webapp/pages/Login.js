@@ -2,6 +2,8 @@ import Icon from 'react-icon-base';
 import React, {Component} from 'react';
 import styled from 'styled-components';
 
+import Container from '../components/Container';
+import Modal from '../components/Modal';
 import NavHeading from '../components/NavHeading';
 
 export default class Login extends Component {
@@ -24,19 +26,6 @@ export default class Login extends Component {
     );
   }
 }
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Modal = styled.div`
-  border: 1px solid #ddd;
-  max-width: 500px;
-  padding: 20px;
-  margin: 40px;
-`;
 
 const GitHubLogin = styled.a`
   color: #fff;

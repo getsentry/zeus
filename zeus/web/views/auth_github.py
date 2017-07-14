@@ -10,14 +10,14 @@ from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI
 from zeus.models import Identity, User
 
 
-def get_auth_flow(redirect_uri=None, scopes=()):
+def get_auth_flow(redirect_uri=None, scopes=('user:email', )):
     # XXX(dcramer): we have to generate this each request because oauth2client
     # doesn't want you to set redirect_uri as part of the request, which causes
     # a lot of runtime issues.
     return OAuth2WebServerFlow(
         client_id=current_app.config['GITHUB_CLIENT_ID'],
         client_secret=current_app.config['GITHUB_CLIENT_SECRET'],
-        scope='user:email',
+        scope=','.join(scopes),
         redirect_uri=redirect_uri,
         user_agent='zeus/{0}'.format(
             zeus.VERSION,
@@ -27,14 +27,15 @@ def get_auth_flow(redirect_uri=None, scopes=()):
     )
 
 
-class GitHubLoginView(MethodView):
-    def __init__(self, authorized_url):
+class GitHubAuthView(MethodView):
+    def __init__(self, authorized_url, scopes=('user:email', )):
         self.authorized_url = authorized_url
-        super(GitHubLoginView, self).__init__()
+        self.scopes = scopes
+        super(GitHubAuthView, self).__init__()
 
     def get(self):
         redirect_uri = url_for(self.authorized_url, _external=True)
-        flow = get_auth_flow(redirect_uri=redirect_uri)
+        flow = get_auth_flow(redirect_uri=redirect_uri, scopes=self.scopes)
         auth_uri = flow.step1_get_authorize_url()
         return redirect(auth_uri)
 
@@ -49,9 +50,15 @@ class GitHubCompleteView(MethodView):
         flow = get_auth_flow(redirect_uri=redirect_uri)
         response = flow.step2_exchange(request.args['code'])
 
+        scopes = response.token_response['scope'].split(',')
+
+        if 'user:email' not in scopes:
+            raise NotImplementedError
+
         identity_config = {
             'access_token': response.access_token,
             'refresh_token': response.refresh_token,
+            'scopes': scopes,
         }
 
         # fetch user details

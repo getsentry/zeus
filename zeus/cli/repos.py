@@ -3,6 +3,7 @@ import click
 from zeus.config import db
 from zeus.models import Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider, RepositoryStatus, User
 from zeus.tasks import import_repo, sync_repo
+from zeus.utils.text import slugify
 
 from .base import cli
 
@@ -20,7 +21,7 @@ def repos():
 def add(repository_name, url, backend, active):
     repo = Repository(
         url=url,
-        name=repository_name,
+        name=slugify(repository_name),
         backend=getattr(RepositoryBackend, backend),
         status=RepositoryStatus.active if active else RepositoryStatus.inactive,
         provider=RepositoryProvider.native,

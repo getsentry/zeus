@@ -1,14 +1,13 @@
-from celery import shared_task
 from datetime import datetime, timezone
 from flask import current_app
 
 from zeus import auth
-from zeus.config import db
+from zeus.config import celery, db
 from zeus.models import Repository, RepositoryStatus
 
 
 # TODO(dcramer): a lot of this code is shared with import_repo
-@shared_task(max_retries=None)
+@celery.task(max_retries=None)
 def sync_repo(repo_id, max_log_passes=10):
     auth.set_current_tenant(auth.Tenant(repository_ids=[repo_id]))
 

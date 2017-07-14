@@ -34,12 +34,19 @@ export default class Sidebar extends Component {
           </Link>
         </div>
         <SidebarLink to="/builds">My Builds</SidebarLink>
-        <SidebarNavHeading>Repositories</SidebarNavHeading>
+        <SidebarNavHeading>
+          Repositories <AddRepoLink to="/add-repository">Add</AddRepoLink>
+        </SidebarNavHeading>
         <RepositoryList />
       </SidebarWrapper>
     );
   }
 }
+
+const AddRepoLink = styled(Link)`
+  position: absolute;
+  right: 0;
+`;
 
 const SidebarWrapper = styled.div`
   background: #39364e;
@@ -59,6 +66,7 @@ const SidebarWrapper = styled.div`
 
 const SidebarNavHeading = styled(NavHeading)`
   color: #8783A3;
+  position: relative;
   margin-top: 20px;
   margin-bottom: 10px;
   font-weight: 400;

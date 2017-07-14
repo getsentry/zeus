@@ -1,13 +1,13 @@
-from celery import shared_task
 from flask import current_app
 
 from zeus import auth
 from zeus.artifacts import manager as default_manager
+from zeus.config import celery
 from zeus.constants import Result
 from zeus.models import Artifact
 
 
-@shared_task
+@celery.task
 def process_artifact(artifact_id, manager=None, **kwargs):
     artifact = Artifact.query.unrestricted_unsafe().get(artifact_id)
     if artifact is None:

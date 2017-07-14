@@ -1,9 +1,8 @@
-from celery import shared_task
 from sqlalchemy.sql import func
 from uuid import UUID
 
 from zeus import auth
-from zeus.config import db, redis
+from zeus.config import celery, db, redis
 from zeus.constants import Result, Status
 from zeus.db.utils import create_or_update
 from zeus.models import Build, FileCoverage, ItemStat, Job
@@ -15,7 +14,7 @@ STATS = (
 )
 
 
-@shared_task
+@celery.task
 def aggregate_build_stats_for_job(job_id: UUID):
     """
     Given a job, aggregate its data upwards into the Build.abs
