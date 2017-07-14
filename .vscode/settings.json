@@ -25,10 +25,14 @@
     },
 
     "[javascript]": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 2,
         "editor.formatOnSave": true
     },
 
     "[python]": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 4,
         "editor.formatOnSave": true
     },
 
