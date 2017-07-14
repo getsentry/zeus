@@ -10,7 +10,7 @@ export default class BuildCoverage extends Component {
     let {build} = this.props;
     return (
       <span>
-        {build.source.author.name}
+        {build.source.author.email || build.source.author.name}
       </span>
     );
   }

@@ -27,7 +27,7 @@ export default class BuildListItem extends Component {
       <BuildListItemLink to={`/repos/${repo.name}/builds/${build.number}`}>
         <ResultGridRow>
           <Flex align="center">
-            <Box flex="1" width={6 / 12} pr={15}>
+            <Box flex="1" width={8 / 12} pr={15}>
               <Flex>
                 <Box width={15} mr={8}>
                   <ObjectResult data={build} />
@@ -40,6 +40,9 @@ export default class BuildListItem extends Component {
                     <Commit>
                       {build.source.revision.sha.substr(0, 7)}
                     </Commit>
+                    <Author>
+                      <BuildAuthor build={build} />
+                    </Author>
                   </Meta>
                 </Box>
               </Flex>
@@ -49,9 +52,6 @@ export default class BuildListItem extends Component {
             </Box>
             <Box width={1 / 12} style={{textAlign: 'center'}}>
               <BuildCoverage build={build} />
-            </Box>
-            <Box width={2 / 12}>
-              <BuildAuthor build={build} />
             </Box>
             <Box width={2 / 12} style={{textAlign: 'right'}}>
               <TimeSince date={build.created_at} />
@@ -98,13 +98,13 @@ const Message = styled.div`
   overflow: hidden;
 `;
 
-const Branch = styled.div`
+const Author = styled.div`
   font-family: "Monaco", monospace;
   font-size: 12px;
   font-weight: 600;
 `;
 
-const Commit = styled(Branch)`
+const Commit = styled(Author)`
   font-weight: 400;
 `;
 
