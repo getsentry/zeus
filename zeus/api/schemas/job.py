@@ -10,6 +10,7 @@ class JobSchema(Schema):
     created_at = fields.DateTime(attribute="date_created", dump_only=True)
     started_at = fields.DateTime(attribute="date_started")
     finished_at = fields.DateTime(attribute="date_finished")
+    label = fields.Str()
     status = StatusField()
     result = ResultField()
     stats = fields.Nested(StatsSchema(), dump_only=True)

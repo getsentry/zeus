@@ -19,6 +19,7 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     )
     author_id = db.Column(GUID, db.ForeignKey('author.id'), index=True)
     number = db.Column(db.Integer, nullable=False)
+    label = db.Column(db.String, nullable=False)
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
     result = db.Column(Enum(Result), nullable=False, default=Result.unknown)
     date_started = db.Column(db.TIMESTAMP(timezone=True), nullable=True)

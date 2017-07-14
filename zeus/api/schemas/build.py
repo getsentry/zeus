@@ -9,6 +9,7 @@ from .stats import StatsSchema
 class BuildSchema(Schema):
     id = fields.UUID(dump_only=True)
     number = fields.Number(dump_only=True)
+    label = fields.Str()
     created_at = fields.DateTime(attribute="date_created", dump_only=True)
     started_at = fields.DateTime(attribute="date_started", dump_only=True)
     finished_at = fields.DateTime(attribute="date_finished", dump_only=True)
@@ -22,7 +23,10 @@ class BuildSchema(Schema):
 
 
 class BuildCreateSchema(Schema):
-    author = fields.UUID()
+    # author will default to the source author
+    author = fields.Nested(AuthorSchema(), required=False)
+    # label is only required if they're specifying a source with a patch (which they cant do yet)
+    label = fields.Str(required=False)
     revision_sha = fields.Str()
     provider = fields.Str()
     external_id = fields.Str()

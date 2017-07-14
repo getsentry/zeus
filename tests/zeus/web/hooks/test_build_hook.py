@@ -7,7 +7,17 @@ def test_new_build(client, default_source, default_repo, default_hook):
 
     path = '/hooks/{}/{}/builds/{}'.format(default_hook.id, default_hook.get_signature(), build_xid)
 
-    resp = client.post(path, json={'revision_sha': default_source.revision_sha})
+    resp = client.post(
+        path,
+        json={
+            'revision_sha': default_source.revision_sha,
+            'label': 'test build',
+            'author': {
+                'name': 'foo',
+                'email': 'foo@example.com'
+            }
+        }
+    )
     assert resp.status_code == 200, repr(resp.data)
 
     build = Build.query.unrestricted_unsafe().get(resp.json()['id'])
@@ -15,7 +25,6 @@ def test_new_build(client, default_source, default_repo, default_hook):
     assert build.repository_id == default_repo.id
     assert build.provider == default_hook.provider
     assert build.external_id == build_xid
-    assert build.source_id == default_source.id
 
 
 def test_existing_build(client, default_source, default_repo, default_hook):
@@ -31,5 +40,13 @@ def test_existing_build(client, default_source, default_repo, default_hook):
 
     resp = client.post(
         path,
+        json={
+            'revision_sha': default_source.revision_sha,
+            'label': 'test build',
+            'author': {
+                'name': 'foo',
+                'email': 'foo@example.com'
+            }
+        }
     )
     assert resp.status_code == 200, repr(resp.data)

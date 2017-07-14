@@ -18,6 +18,7 @@ class JobFactory(ModelFactory):
     build_id = factory.SelfAttribute('build.id')
     repository = factory.SelfAttribute('build.repository')
     repository_id = factory.SelfAttribute('repository.id')
+    label = factory.faker.Faker('sentence')
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
     date_created = factory.LazyAttribute(lambda o: timezone.now() - timedelta(minutes=30))

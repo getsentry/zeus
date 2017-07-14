@@ -16,6 +16,7 @@ from .types import GUIDFactory
 # then needs updated when children are added)
 class BuildFactory(ModelFactory):
     id = GUIDFactory()
+    label = factory.faker.Faker('sentence')
     source = factory.SubFactory('zeus.factories.SourceFactory')
     source_id = factory.SelfAttribute('source.id')
     repository = factory.SelfAttribute('source.repository')
@@ -27,7 +28,8 @@ class BuildFactory(ModelFactory):
     date_created = factory.LazyAttribute(lambda o: timezone.now() - timedelta(minutes=30))
     date_started = factory.LazyAttribute(
         lambda o: (
-            faker.date_time_between(o.date_created, o.date_created + timedelta(minutes=1)) if o.status in [Status.finished, Status.in_progress] else None
+            faker.date_time_between(o.date_created, o.date_created + timedelta(minutes=1))
+            if o.status in [Status.finished, Status.in_progress] else None
         )
     )
     date_finished = factory.LazyAttribute(

@@ -17,6 +17,7 @@ class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
         GUID, db.ForeignKey('build.id', ondelete='CASCADE'), nullable=False, index=True
     )
     number = db.Column(db.Integer, nullable=False)
+    label = db.Column(db.String, nullable=True)
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
     result = db.Column(Enum(Result), nullable=False, default=Result.unknown)
     date_started = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
