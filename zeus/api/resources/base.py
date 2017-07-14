@@ -3,8 +3,6 @@ from flask import current_app, jsonify, request, Response
 from flask.views import View
 from time import sleep
 
-from ..authentication import ApiTokenAuthentication
-
 
 class AuthenticationFailed(Exception):
     pass
@@ -13,7 +11,7 @@ class AuthenticationFailed(Exception):
 class Resource(View):
     methods = ['GET', 'POST', 'PUT', 'DELETE']
 
-    authentication_classes = (ApiTokenAuthentication, )
+    authentication_classes = ()
 
     def dispatch_request(self, *args, **kwargs) -> Response:
         delay = current_app.config.get('API_DELAY', 0)

@@ -1,10 +1,10 @@
 from zeus.config import db
-from zeus.db.mixins import RepositoryBoundMixin
+from zeus.db.mixins import ProjectBoundMixin
 from zeus.db.types import GUID
 from zeus.db.utils import model_repr
 
 
-class FileCoverage(RepositoryBoundMixin, db.Model):
+class FileCoverage(ProjectBoundMixin, db.Model):
     id = db.Column(GUID, nullable=False, primary_key=True, default=GUID.default_value)
     job_id = db.Column(GUID, db.ForeignKey('job.id', ondelete='CASCADE'), nullable=False)
     filename = db.Column(db.String(256), nullable=False, primary_key=True)
@@ -19,4 +19,4 @@ class FileCoverage(RepositoryBoundMixin, db.Model):
 
     __tablename__ = 'filecoverage'
     __table_args__ = (db.UniqueConstraint('job_id', 'filename', name='unq_job_filname'), )
-    __repr__ = model_repr('repository_id', 'job_id', 'filename')
+    __repr__ = model_repr('job_id', 'filename')

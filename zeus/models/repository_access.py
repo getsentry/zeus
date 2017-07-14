@@ -1,9 +1,10 @@
 from zeus.config import db
+from zeus.db.mixins import OrganizationBoundMixin
 from zeus.db.types import GUID
 from zeus.db.utils import model_repr
 
 
-class RepositoryAccess(db.Model):
+class RepositoryAccess(OrganizationBoundMixin, db.Model):
     repository_id = db.Column(GUID, db.ForeignKey('repository.id'), primary_key=True)
     user_id = db.Column(GUID, db.ForeignKey('user.id'), primary_key=True)
 

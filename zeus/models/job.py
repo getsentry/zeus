@@ -3,12 +3,12 @@ from sqlalchemy.sql import func, select
 
 from zeus.config import db
 from zeus.constants import Status, Result
-from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
+from zeus.db.mixins import ProjectBoundMixin, StandardAttributes
 from zeus.db.types import Enum, GUID, JSONEncodedDict
 from zeus.db.utils import model_repr
 
 
-class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
+class Job(ProjectBoundMixin, StandardAttributes, db.Model):
     """
     A single job, which is the actual execution unit for a build.
     """

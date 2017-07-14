@@ -12,6 +12,8 @@ class PatchFactory(ModelFactory):
     parent_revision = factory.SubFactory('zeus.factories.RevisionFactory')
     repository = factory.SelfAttribute('parent_revision.repository')
     repository_id = factory.SelfAttribute('parent_revision.repository_id')
+    organization = factory.SelfAttribute('repository.organization')
+    organization_id = factory.SelfAttribute('organization.id')
     parent_revision_sha = factory.SelfAttribute('parent_revision.sha')
     diff = factory.LazyAttribute(lambda o: open(
         os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 'tests', 'fixtures', 'sample.diff')

@@ -33,8 +33,22 @@ def default_login(client, default_user):
 
 
 @pytest.fixture(scope='function')
-def default_repo():
+def default_org():
+    return factories.OrganizationFactory(name='getsentry')
+
+
+@pytest.fixture(scope='function')
+def default_project(default_repo):
+    return factories.ProjectFactory(
+        repository=default_repo,
+        name='zeus',
+    )
+
+
+@pytest.fixture(scope='function')
+def default_repo(default_org):
     return factories.RepositoryFactory(
+        organization=default_org,
         url='https://github.com/getsentry/zeus.git',
         backend=models.RepositoryBackend.git,
         status=models.RepositoryStatus.active,
@@ -125,11 +139,6 @@ def default_filecoverage(default_job):
     return factories.FileCoverageFactory(
         job=default_job,
     )
-
-
-@pytest.fixture(scope='function')
-def default_api_token():
-    return factories.ApiTokenFactory()
 
 
 @pytest.fixture(scope='function')

@@ -181,7 +181,7 @@ class RevisionResult(object):
             Author,
             where={
                 'email': email,
-                'repository_id': repository.id,
+                'repository_id': repository.organization_id,
             },
             defaults={
                 'name': name,

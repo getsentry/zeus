@@ -24,7 +24,7 @@ class StandardAttributes(object):
 
 
 # https://bitbucket.org/zzzeek/sqlalchemy/wiki/UsageRecipes/PreFilteredQuery
-class RepositoryBoundQuery(db.Query):
+class BoundQuery(db.Query):
     current_constrained = True
 
     def get(self, ident):
@@ -41,30 +41,81 @@ class RepositoryBoundQuery(db.Query):
         # others.
         return db.Query.from_self(self.constrained(), *ent)
 
-    def constrained(self):
-        from zeus.auth import get_current_tenant
-
-        if not self.current_constrained:
-            return self
-
-        mzero = self._mapper_zero()
-        if mzero is not None:
-            tenant = get_current_tenant()
-            if tenant.repository_ids:
-                return self.enable_assertions(False).filter(
-                    mzero.class_.repository_id.in_(tenant.repository_ids)
-                )
-            else:
-                return self.enable_assertions(False).filter(sqlalchemy.sql.false())
-        return self
-
     def unrestricted_unsafe(self):
         rv = self._clone()
         rv.current_constrained = False
         return rv
 
+    def constrained(self):
+        if not self.current_constrained:
+            return self
 
-class RepositoryBoundMixin(object):
+        mzero = self._mapper_zero()
+        if mzero is not None:
+            constraints = self.get_constraints(mzero)
+            return self.enable_assertions(False).filter(constraints)
+        return self
+
+
+class OrganizationBoundQuery(BoundQuery):
+    def get_constraints(self, mzero):
+        from zeus.auth import get_current_tenant
+
+        tenant = get_current_tenant()
+        if tenant.organization_ids:
+            return mzero.class_.organization_id.in_(tenant.organization_ids)
+        return sqlalchemy.sql.false()
+
+
+class ProjectBoundQuery(BoundQuery):
+    def get_constraints(self, mzero):
+        from zeus.auth import get_current_tenant
+
+        tenant = get_current_tenant()
+        if tenant.project_ids:
+            return mzero.class_.project_id.in_(tenant.project_ids)
+        return sqlalchemy.sql.false()
+
+
+class RepositoryBoundQuery(BoundQuery):
+    def get_constraints(self, mzero):
+        from zeus.auth import get_current_tenant
+
+        tenant = get_current_tenant()
+        if tenant.project_ids:
+            return mzero.class_.repository_id.in_(tenant.repository_ids)
+        return sqlalchemy.sql.false()
+
+
+class OrganizationBoundMixin(object):
+    query_class = OrganizationBoundQuery
+
+    @declared_attr
+    def organization_id(cls):
+        return db.Column(
+            GUID, db.ForeignKey('organization.id', ondelete='CASCADE'), nullable=False, index=True
+        )
+
+    @declared_attr
+    def organization(cls):
+        return db.relationship('Organization', innerjoin=True, uselist=False)
+
+
+class ProjectBoundMixin(OrganizationBoundMixin):
+    query_class = ProjectBoundQuery
+
+    @declared_attr
+    def project_id(cls):
+        return db.Column(
+            GUID, db.ForeignKey('project.id', ondelete='CASCADE'), nullable=False, index=True
+        )
+
+    @declared_attr
+    def project(cls):
+        return db.relationship('Project', innerjoin=True, uselist=False)
+
+
+class RepositoryBoundMixin(OrganizationBoundMixin):
     query_class = RepositoryBoundQuery
 
     @declared_attr

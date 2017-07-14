@@ -3,7 +3,6 @@ import click
 from zeus.config import db
 from zeus.models import Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider, RepositoryStatus, User
 from zeus.tasks import import_repo, sync_repo
-from zeus.utils.text import slugify
 
 from .base import cli
 
@@ -14,14 +13,12 @@ def repos():
 
 
 @repos.command()
-@click.argument('repository_name', required=True)
+@click.argument('repository_url', required=True)
 @click.option('--backend', default='git', type=click.Choice(['git']))
-@click.option('--url')
 @click.option('--active/--inactive', default=True)
-def add(repository_name, url, backend, active):
+def add(repository_url, backend, active):
     repo = Repository(
-        url=url,
-        name=slugify(repository_name),
+        url=repository_url,
         backend=getattr(RepositoryBackend, backend),
         status=RepositoryStatus.active if active else RepositoryStatus.inactive,
         provider=RepositoryProvider.native,
@@ -35,10 +32,10 @@ def add(repository_name, url, backend, active):
 
 
 @repos.command()
-@click.argument('repository_name', required=True)
-def sync(repository_name):
+@click.argument('repository_url', required=True)
+def sync(repository_url):
     repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.name == repository_name,
+        Repository.url == repository_url,
     ).first()
     sync_repo(repo_id=repo.id)
 
@@ -49,11 +46,11 @@ def access():
 
 
 @access.command('add')
-@click.argument('repository_name', required=True)
+@click.argument('repository_url', required=True)
 @click.argument('email', required=True)
-def access_add(repository_name, email):
+def access_add(repository_url, email):
     repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.name == repository_name,
+        Repository.url == repository_url,
     ).first()
     user = User.query.filter(User.email == email).first()
     assert repo
