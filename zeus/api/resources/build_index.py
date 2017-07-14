@@ -14,8 +14,9 @@ class BuildIndexResource(Resource):
         Return a list of builds.
         """
         query = Build.query.options(
+            joinedload('source').joinedload('author'),
             joinedload('source').joinedload('revision'),
-            joinedload('author'),
+            joinedload('source').joinedload('patch'),
             subqueryload_all('stats'),
         ).order_by(Build.date_created.desc()).limit(100)
         return self.respond_with_schema(builds_schema, query)

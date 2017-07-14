@@ -1,7 +1,7 @@
 from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus.config import db
-from zeus.models import Author, Build, Repository, Source
+from zeus.models import Build, Repository, Source
 
 from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema, BuildCreateSchema
@@ -17,9 +17,9 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         Return a list of builds for the given repository.
         """
         query = Build.query.options(
+            joinedload('source').joinedload('author'),
             joinedload('source').joinedload('revision'),
             joinedload('source').joinedload('patch'),
-            joinedload('author'),
             subqueryload_all('stats'),
         ).filter(
             Build.repository_id == repo.id,
@@ -43,31 +43,27 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         if not source:
             return self.error('invalid source')
 
-        author_data = data.pop('author')
-        if author_data.get('email'):
-            author = Author.query.filter(
-                Author.repository_id == repo.id, Author.email == author_data['email']
-            ).first()
-        else:
-            author = None
-        if not author:
-            author = Author(repository_id=repo.id, **author_data)
-            db.session.add(author)
-            db.session.flush()
+        # TODO(dcramer): only if we create a source via a patch will we need the author
+        # author_data = data.pop('author')
+        # if author_data.get('email'):
+        #     author = Author.query.filter(
+        #         Author.repository_id == repo.id, Author.email == author_data['email']
+        #     ).first()
+        # else:
+        #     author = None
+        # if not author:
+        #     author = Author(repository_id=repo.id, **author_data)
+        #     db.session.add(author)
+        #     db.session.flush()
 
         build = Build(repository=repo, **data)
         # TODO(dcramer): we should convert source in the schema
-        build.author = author
-        build.author_id = author.id
         build.source = source
         build.source_id = source.id
         if not source.patch_id:
             if not build.label:
                 build.label = source.revision.message.split('\n')[0]
-            if not build.author_id:
-                build.author_id = source.revision.author_id
         assert build.source_id
-        assert build.author_id
         db.session.add(build)
         db.session.commit()
 

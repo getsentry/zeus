@@ -11,7 +11,9 @@ class Source(RepositoryBoundMixin, StandardAttributes, db.Model):
     patch_id = db.Column(GUID, db.ForeignKey('patch.id'), unique=True, nullable=True)
     revision_sha = db.Column(db.String(40), nullable=False)
     data = db.Column(JSONEncodedDict, nullable=True)
+    author_id = db.Column(GUID, db.ForeignKey('author.id'), index=True)
 
+    author = db.relationship('Author')
     patch = db.relationship(
         'Patch',
     )

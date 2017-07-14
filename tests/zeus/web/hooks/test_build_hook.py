@@ -8,14 +8,9 @@ def test_new_build(client, default_source, default_repo, default_hook):
     path = '/hooks/{}/{}/builds/{}'.format(default_hook.id, default_hook.get_signature(), build_xid)
 
     resp = client.post(
-        path,
-        json={
+        path, json={
             'revision_sha': default_source.revision_sha,
             'label': 'test build',
-            'author': {
-                'name': 'foo',
-                'email': 'foo@example.com'
-            }
         }
     )
     assert resp.status_code == 200, repr(resp.data)
@@ -39,14 +34,9 @@ def test_existing_build(client, default_source, default_repo, default_hook):
     )
 
     resp = client.post(
-        path,
-        json={
+        path, json={
             'revision_sha': default_source.revision_sha,
             'label': 'test build',
-            'author': {
-                'name': 'foo',
-                'email': 'foo@example.com'
-            }
         }
     )
     assert resp.status_code == 200, repr(resp.data)

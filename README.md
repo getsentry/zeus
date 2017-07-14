@@ -93,7 +93,6 @@ zeus
 |   ├── RepositoryAccess
 |   ├── ItemOption
 |   ├── Build
-|   |   ├── Author
 |   |   ├── ItemStat
 |   |   ├── Source
 |   |   └── Job
@@ -104,6 +103,7 @@ zeus
 |   |           ├── Artifact
 |   |           └── ItemStat
 |   └── Source
+|       ├── Author
 |       ├── Patch
 |       └── Revision
 |           └── Author

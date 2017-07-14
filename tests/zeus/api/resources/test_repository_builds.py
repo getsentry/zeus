@@ -22,10 +22,6 @@ def test_repo_build_create(
         json={
             'revision_sha': default_source.revision_sha,
             'label': 'test build',
-            'author': {
-                'name': 'foo',
-                'email': 'foo@example.com'
-            }
         }
     )
     assert resp.status_code == 200, repr(resp.data)
@@ -35,5 +31,3 @@ def test_repo_build_create(
     assert build.repository_id == default_repo.id
     assert build.source_id == default_source.id
     assert build.label == 'test build'
-    assert build.author.email == 'foo@example.com'
-    assert build.author.name == 'foo'

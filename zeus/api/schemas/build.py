@@ -1,6 +1,5 @@
 from marshmallow import Schema, fields
 
-from .author import AuthorSchema
 from .fields import ResultField, StatusField
 from .source import SourceSummarySchema
 from .stats import StatsSchema
@@ -15,7 +14,6 @@ class BuildSchema(Schema):
     finished_at = fields.DateTime(attribute="date_finished", dump_only=True)
     status = StatusField(dump_only=True)
     result = ResultField(dump_only=True)
-    author = fields.Nested(AuthorSchema(), dump_only=True)
     source = fields.Nested(SourceSummarySchema(), dump_only=True)
     stats = fields.Nested(StatsSchema(), dump_only=True)
     provider = fields.Str(dump_only=True)
@@ -23,8 +21,6 @@ class BuildSchema(Schema):
 
 
 class BuildCreateSchema(Schema):
-    # author will default to the source author
-    author = fields.Nested(AuthorSchema(), required=False)
     # label is only required if they're specifying a source with a patch (which they cant do yet)
     label = fields.Str(required=False)
     revision_sha = fields.Str()

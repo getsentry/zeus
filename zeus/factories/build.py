@@ -21,8 +21,6 @@ class BuildFactory(ModelFactory):
     source_id = factory.SelfAttribute('source.id')
     repository = factory.SelfAttribute('source.repository')
     repository_id = factory.SelfAttribute('repository.id')
-    author = factory.SelfAttribute('source.revision.author')
-    author_id = factory.SelfAttribute('author.id')
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
     date_created = factory.LazyAttribute(lambda o: timezone.now() - timedelta(minutes=30))

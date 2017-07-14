@@ -17,7 +17,6 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     source_id = db.Column(
         GUID, db.ForeignKey('source.id', ondelete='CASCADE'), nullable=False, index=True
     )
-    author_id = db.Column(GUID, db.ForeignKey('author.id'), index=True)
     number = db.Column(db.Integer, nullable=False)
     label = db.Column(db.String, nullable=False)
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
@@ -28,7 +27,6 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     provider = db.Column(db.String, nullable=True)
     external_id = db.Column(db.String(64), nullable=True)
 
-    author = db.relationship('Author')
     source = db.relationship('Source', innerjoin=True)
     stats = db.relationship(
         'ItemStat',
