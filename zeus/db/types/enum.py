@@ -1,6 +1,6 @@
-__all__ = ['Enum']
+__all__ = ['Enum', 'IntEnum', 'StrEnum']
 
-from sqlalchemy.types import TypeDecorator, INT
+from sqlalchemy.types import TypeDecorator, INT, STRINGTYPE
 
 
 class Enum(TypeDecorator):
@@ -21,3 +21,11 @@ class Enum(TypeDecorator):
         elif self.enum:
             return self.enum(value)
         return value
+
+
+class IntEnum(Enum):
+    pass
+
+
+class StrEnum(Enum):
+    impl = STRINGTYPE

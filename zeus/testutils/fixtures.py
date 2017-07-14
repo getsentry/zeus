@@ -17,6 +17,14 @@ def default_user():
 
 
 @pytest.fixture(scope='function')
+def default_identity(default_user):
+    return factories.IdentityFactory(
+        user=default_user,
+        github=True,
+    )
+
+
+@pytest.fixture(scope='function')
 def default_login(client, default_user):
     with client.session_transaction() as session:
         session['uid'] = default_user.id.hex

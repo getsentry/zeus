@@ -11,3 +11,8 @@ class RepositorySchema(Schema):
     url = fields.Str()
     backend = EnumField(RepositoryBackend)
     created_at = fields.DateTime(attribute='date_created', dump_only=True)
+
+
+class GitHubRepositorySchema(Schema):
+    id = fields.UUID(dump_only=True)
+    github_name = fields.Str(load_from='github.name')

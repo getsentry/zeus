@@ -4,6 +4,7 @@ install_requires = [
     'blinker==1.4',
     'cached-property==1.3.0',
     'celery==4.0.2',
+    'cryptography==1.9',
     'flask==0.12.2',
     'flask-alembic==2.0.1',
     'flask-sqlalchemy==2.2',
@@ -14,7 +15,7 @@ install_requires = [
     'psycopg2==2.7.1',
     'raven==6.1.0',
     'redis==2.10.5',
-    'requests==2.18.1',
+    'requests[security]==2.18.1',
     'unidecode==0.04.21',
 ]
 
@@ -43,5 +44,9 @@ setup(
         'console_scripts': ['zeus=zeus.cli:main'],
     },
     long_description=open('README.md').read(),
+    extras_require={
+        'dev': dev_requires,
+        'tests': test_requires,
+    },
     install_requires=install_requires + dev_requires + test_requires,
 )

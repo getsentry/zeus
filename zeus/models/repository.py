@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 
 from zeus.config import db
 from zeus.db.mixins import StandardAttributes
-from zeus.db.types import Enum, JSONEncodedDict
+from zeus.db.types import Enum, StrEnum, JSONEncodedDict
 from zeus.db.utils import model_repr
 from zeus.utils.text import slugify
 
@@ -16,6 +16,14 @@ from zeus.utils.text import slugify
 class RepositoryBackend(enum.Enum):
     unknown = 0
     git = 1
+
+    def __str__(self):
+        return self.name
+
+
+class RepositoryProvider(enum.Enum):
+    native = 'native'
+    github = 'github'
 
     def __str__(self):
         return self.name
@@ -77,6 +85,10 @@ class Repository(StandardAttributes, db.Model):
     url = db.Column(db.String(200), nullable=False, unique=True)
     backend = db.Column(Enum(RepositoryBackend), default=RepositoryBackend.unknown, nullable=False)
     status = db.Column(Enum(RepositoryStatus), default=RepositoryStatus.inactive, nullable=False)
+    provider = db.Column(
+        StrEnum(RepositoryProvider), default=RepositoryProvider.native, nullable=False
+    )
+    external_id = db.Column(db.String(64))
     data = db.Column(JSONEncodedDict, nullable=True)
     last_update = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     last_update_attempt = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
@@ -93,7 +105,8 @@ class Repository(StandardAttributes, db.Model):
     query_class = RepositoryAccessBoundQuery
 
     __tablename__ = 'repository'
-    __repr__ = model_repr('name', 'url')
+    __table_args__ = (db.UniqueConstraint('provider', 'external_id', name='unq_external_id'), )
+    __repr__ = model_repr('name', 'url', 'provider')
 
     def get_vcs(self):
         from zeus.models import ItemOption
