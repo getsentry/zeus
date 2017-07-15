@@ -5,37 +5,37 @@ import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
 import ScrollView from '../components/ScrollView';
 
-export default class RepositoryTestList extends AsyncPage {
+export default class ProjectTestList extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
-    repo: PropTypes.object.isRequired
+    project: PropTypes.object.isRequired
   };
 
   getTitle() {
-    return this.context.repo.name;
+    return this.context.project.name;
   }
 
   renderBody() {
-    let {repo} = this.context;
+    let {project} = this.context;
     return (
       <div>
         <Breadcrumbs>
           <Crumb active={true}>
-            {repo.name}
+            {project.name}
           </Crumb>
         </Breadcrumbs>
         <ScrollView>
-          <RepositoryTestListBody {...this.props} />
+          <ProjectTestListBody {...this.props} />
         </ScrollView>
       </div>
     );
   }
 }
 
-class RepositoryTestListBody extends AsyncPage {
+class ProjectTestListBody extends AsyncPage {
   getEndpoints() {
-    let {repoName} = this.props.params;
-    return [['testList', `/repos/${repoName}/tests`]];
+    let {orgName, projectName} = this.props.params;
+    return [['testList', `/projects/${orgName}/${projectName}/tests`]];
   }
 
   renderBody() {

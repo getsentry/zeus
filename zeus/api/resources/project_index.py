@@ -1,3 +1,5 @@
+from sqlalchemy.orm import joinedload
+
 from zeus.models import Project
 
 from .base import Resource
@@ -11,5 +13,8 @@ class ProjectIndexResource(Resource):
         """
         Return a list of projects.
         """
-        query = Project.query.all()
+        query = Project.query.options(
+            joinedload('organization'),
+            joinedload('repository'),
+        ).all()
         return self.respond_with_schema(projects_schema, query)

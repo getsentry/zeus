@@ -4,34 +4,34 @@ import styled, {css} from 'styled-components';
 
 import SidebarLink from './SidebarLink';
 
-export default class SidebarRepoItem extends Component {
+export default class SidebarProjectItem extends Component {
   static propTypes = {
-    repo: PropTypes.object.isRequired
+    project: PropTypes.object.isRequired
   };
 
   render() {
-    const {name, status} = {...this.props.repo};
+    const {project} = this.props;
     return (
-      <SidebarLink to={`/repos/${name}`}>
-        <SidebarRepoItemWrapper>
-          <SidebarRepoItemName>
-            {name}
-          </SidebarRepoItemName>
-          <SidebarRepoItemStatus status={status} />
-        </SidebarRepoItemWrapper>
+      <SidebarLink to={`/${project.organization.name}/${project.name}`}>
+        <SidebarProjectItemWrapper>
+          <SidebarProjectItemName>
+            {project.organization.name}/{project.name}
+          </SidebarProjectItemName>
+          <SidebarProjectItemStatus result={project.result} />
+        </SidebarProjectItemWrapper>
       </SidebarLink>
     );
   }
 }
 
-const SidebarRepoItemWrapper = styled.div`
+const SidebarProjectItemWrapper = styled.div`
   display: flex;
   align-items: center;
   height: 30px;
   position: relative;
 `;
 
-const SidebarRepoItemName = styled.div`
+const SidebarProjectItemName = styled.div`
   flex: 1;
   padding-right: 5px;
   text-overflow: ellipsis;
@@ -39,18 +39,18 @@ const SidebarRepoItemName = styled.div`
   overflow: hidden;
 `;
 
-const SidebarRepoItemStatus = styled.div`
+const SidebarProjectItemStatus = styled.div`
   width: 10px;
   height: 10px;
   border-radius: 10px;
 
   ${props => {
-    switch (props.status) {
-      case 'pass':
+    switch (props.result) {
+      case 'passed':
         return css`
           background-color: #76D392;
         `;
-      case 'fail':
+      case 'failed':
         return css`
           background-color: #F06E5B;
         `;

@@ -9,23 +9,23 @@ import Section from '../components/Section';
 import ScrollView from '../components/ScrollView';
 import TabbedNavItem from '../components/TabbedNavItem';
 
-export default class RepositoryBuildList extends AsyncPage {
+export default class ProjectBuildList extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
-    repo: PropTypes.object.isRequired
+    project: PropTypes.object.isRequired
   };
 
   getTitle() {
-    return this.context.repo.name;
+    return this.context.project.name;
   }
 
   renderBody() {
-    let {repo} = this.context;
+    let {project} = this.context;
     return (
       <div>
         <Breadcrumbs>
           <Crumb active={true}>
-            {repo.name}
+            {project.name}
           </Crumb>
         </Breadcrumbs>
         <ScrollView>
@@ -46,8 +46,8 @@ export default class RepositoryBuildList extends AsyncPage {
 
 class RepositoryBuildListBody extends AsyncPage {
   getEndpoints() {
-    let {repoName} = this.props.params;
-    return [['buildList', `/repos/${repoName}/builds`]];
+    let {orgName, projectName} = this.props.params;
+    return [['buildList', `/projects/${orgName}/${projectName}/builds`]];
   }
 
   renderBody() {
