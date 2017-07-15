@@ -39,7 +39,7 @@ def init(path, github_client_id, github_client_secret):
                 secret_key=repr(binascii.hexlify(os.urandom(24))),
                 github_client_id=repr(github_client_id),
                 github_client_secret=repr(github_client_secret),
-                repo_root=repo_path,
+                repo_root=repr(repo_path),
             ).encode('utf-8')
         )
     click.echo('Configuration written at {}'.format(config_path))
