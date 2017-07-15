@@ -12,8 +12,13 @@ export default class BuildCoverage extends AsyncPage {
   };
 
   getEndpoints() {
-    let {buildNumber, repoName} = this.props.params;
-    return [['coverage', `/repos/${repoName}/builds/${buildNumber}/file-coverage`]];
+    let {buildNumber, orgName, projectName} = this.props.params;
+    return [
+      [
+        'coverage',
+        `/projects/${orgName}/${projectName}/builds/${buildNumber}/file-coverage`
+      ]
+    ];
   }
 
   renderBody() {

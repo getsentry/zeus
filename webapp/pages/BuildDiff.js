@@ -12,8 +12,10 @@ export default class BuildDiff extends AsyncPage {
   };
 
   getEndpoints() {
-    let {buildNumber, repoName} = this.props.params;
-    return [['source', `/repos/${repoName}/builds/${buildNumber}/source`]];
+    let {buildNumber, orgName, projectName} = this.props.params;
+    return [
+      ['source', `/projects/${orgName}/${projectName}/builds/${buildNumber}/source`]
+    ];
   }
 
   renderBody() {

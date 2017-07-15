@@ -43,12 +43,12 @@ export default class BuildDetails extends AsyncPage {
 
   render() {
     // happens before loading is done
-    let {repoName, buildNumber} = this.props.params;
+    let {orgName, projectName, buildNumber} = this.props.params;
     return (
       <div>
         <Breadcrumbs>
-          <CrumbLink to={`/repos/${repoName}`}>
-            {repoName}
+          <CrumbLink to={`/${orgName}/${projectName}`}>
+            {orgName}/{projectName}
           </CrumbLink>
           <Crumb active={true}>
             #{buildNumber}
@@ -61,7 +61,7 @@ export default class BuildDetails extends AsyncPage {
 
   renderBody() {
     let {build} = this.state;
-    let {buildNumber, repoName} = this.props.params;
+    let {buildNumber, orgName, projectName} = this.props.params;
     return (
       <ScrollView>
         <BuildSummary>
@@ -96,17 +96,18 @@ export default class BuildDetails extends AsyncPage {
           </Meta>
           <Tabs>
             <TabbedNavItem
-              to={`/repos/${repoName}/builds/${buildNumber}`}
+              to={`/${orgName}/${projectName}/builds/${buildNumber}`}
               onlyActiveOnIndex={true}>
               Overview
             </TabbedNavItem>
-            <TabbedNavItem to={`/repos/${repoName}/builds/${buildNumber}/tests`}>
+            <TabbedNavItem to={`/${orgName}/${projectName}/builds/${buildNumber}/tests`}>
               Tests
             </TabbedNavItem>
-            <TabbedNavItem to={`/repos/${repoName}/builds/${buildNumber}/coverage`}>
+            <TabbedNavItem
+              to={`/${orgName}/${projectName}/builds/${buildNumber}/coverage`}>
               Code Coverage
             </TabbedNavItem>
-            <TabbedNavItem to={`/repos/${repoName}/builds/${buildNumber}/diff`}>
+            <TabbedNavItem to={`/${orgName}/${projectName}/builds/${buildNumber}/diff`}>
               Diff
             </TabbedNavItem>
           </Tabs>

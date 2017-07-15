@@ -27,9 +27,10 @@ class TestDetails extends Component {
 
   componentDidMount() {
     let {params, test} = this.props;
+    let {buildNumber, orgName, projectName} = params;
     this.api
       .request(
-        `/repos/${params.repoName}/builds/${params.buildNumber}/tests/${test.name}`
+        `/projects/${orgName}/${projectName}/builds/${buildNumber}/tests/${test.name}`
       )
       .then(testDetails => {
         this.setState({loading: false, testDetails});
