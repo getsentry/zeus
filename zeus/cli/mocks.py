@@ -34,9 +34,25 @@ def mock_single_repository(builds=10, user_ids=()):
         status=models.RepositoryStatus.active,
     )
 
-    project = factories.ProjectFactory(
+    for user_id in user_ids:
+        try_create(
+            models.RepositoryAccess, {
+                'organization_id': org.id,
+                'repository_id': repo.id,
+                'user_id': user_id,
+            }
+        )
+
+    project = factories.ProjectFactory.build(
         repository=repo,
     )
+    try:
+        with db.session.begin_nested():
+            db.session.add(project)
+    except IntegrityError:
+        project = models.Project.query.unrestricted_unsafe().filter(
+            models.Project.organization_id == org.id, models.Project.name == project.name
+        ).first()
 
     db.session.commit()
 
@@ -70,7 +86,7 @@ def mock_single_repository(builds=10, user_ids=()):
             for n in range(randint(0, 50)):
                 factories.FileCoverageFactory.create(job=job, in_diff=randint(0, 5) == 0)
             db.session.commit()
-            aggregate_build_stats_for_job(job_id=job.id, _app_context=False)
+            aggregate_build_stats_for_job(job_id=job.id)
 
         db.session.commit()
 

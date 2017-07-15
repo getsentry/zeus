@@ -5,7 +5,7 @@ import AsyncPage from '../components/AsyncPage';
 import Content from '../components/Content';
 import Sidebar from '../components/Sidebar';
 
-export default class RepositoryDetails extends AsyncPage {
+export default class ProjectDetails extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
     projectList: PropTypes.arrayOf(PropTypes.object).isRequired
@@ -13,14 +13,14 @@ export default class RepositoryDetails extends AsyncPage {
 
   static childContextTypes = {
     ...AsyncPage.childContextTypes,
-    ...RepositoryDetails.contextTypes,
+    ...ProjectDetails.contextTypes,
     project: PropTypes.object.isRequired
   };
 
   getChildContext() {
     return {
       ...this.context,
-      project: this.state.repo
+      project: this.state.project
     };
   }
 
@@ -35,7 +35,7 @@ export default class RepositoryDetails extends AsyncPage {
   }
 
   getTitle() {
-    return this.state.repo.name;
+    return this.state.project.name;
   }
 
   renderBody() {

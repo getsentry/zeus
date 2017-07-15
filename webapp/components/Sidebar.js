@@ -17,7 +17,7 @@ class ProjectList extends Component {
     return (
       <div>
         {this.context.projectList.map(project => {
-          return <SidebarProjectItem key={project.id} repo={project} />;
+          return <SidebarProjectItem key={project.id} project={project} />;
         })}
       </div>
     );
