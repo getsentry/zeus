@@ -1,7 +1,5 @@
-from sqlalchemy.orm import joinedload
-
 from zeus.config import db
-from zeus.models import Build, Source
+from zeus.models import Build
 
 from .base_build import BaseBuildResource
 from ..schemas import BuildSchema
@@ -14,8 +12,6 @@ class BuildDetailsResource(BaseBuildResource):
         """
         Return a build.
         """
-        build.source = Source.query.options(joinedload('revision'),
-                                            joinedload('patch')).get(build.source_id)
         return self.respond_with_schema(build_schema, build)
 
     def put(self, build: Build):

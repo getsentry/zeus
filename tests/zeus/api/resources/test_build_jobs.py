@@ -2,10 +2,12 @@
 
 
 def test_build_jobs_list(
-    client, default_login, default_repo, default_build, default_job, default_repo_access
+    client, default_login, default_org, default_project, default_build, default_job,
+    default_repo_access
 ):
     resp = client.get(
-        '/api/repos/{}/builds/{}/jobs'.format(default_repo.name, default_build.number)
+        '/api/projects/{}/{}/builds/{}/jobs'.
+        format(default_org.name, default_project.name, default_build.number)
     )
     assert resp.status_code == 200
     data = resp.json()
@@ -14,10 +16,11 @@ def test_build_jobs_list(
 
 
 def test_build_jobs_list_empty(
-    client, default_login, default_repo, default_build, default_repo_access
+    client, default_login, default_org, default_project, default_build, default_repo_access
 ):
     resp = client.get(
-        '/api/repos/{}/builds/{}/jobs'.format(default_repo.name, default_build.number)
+        '/api/projects/{}/{}/builds/{}/jobs'.
+        format(default_org.name, default_project.name, default_build.number)
     )
     assert resp.status_code == 200
     data = resp.json()

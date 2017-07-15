@@ -165,7 +165,8 @@ class CoverageHandler(ArtifactHandler):
 
             result = FileCoverage(
                 job_id=job.id,
-                repository_id=job.repository_id,
+                project_id=job.project_id,
+                organization_id=job.organization_id,
                 filename=filename,
                 data=''.join(file_coverage),
             )
@@ -203,7 +204,8 @@ class CoverageHandler(ArtifactHandler):
 
                 result = FileCoverage(
                     job_id=job.id,
-                    repository_id=job.repository_id,
+                    project_id=job.project_id,
+                    organization_id=job.organization_id,
                     filename=filename,
                     data=''.join(file_coverage),
                 )

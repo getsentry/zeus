@@ -7,7 +7,7 @@ from zeus.db.utils import model_repr
 
 class OrganizationAccessBoundQuery(BoundQuery):
     def get_constraints(self, mzero):
-        from sentry import auth
+        from zeus import auth
 
         tenant = auth.get_current_tenant()
         if tenant.organization_ids:

@@ -1,4 +1,5 @@
 from flask import current_app
+from sqlalchemy.orm import joinedload
 
 from zeus import auth
 from zeus.artifacts import manager as default_manager
@@ -9,11 +10,19 @@ from zeus.models import Artifact
 
 @celery.task
 def process_artifact(artifact_id, manager=None, **kwargs):
-    artifact = Artifact.query.unrestricted_unsafe().get(artifact_id)
+    artifact = Artifact.query.unrestricted_unsafe().options(
+        joinedload('project'),
+    ).get(artifact_id)
     if artifact is None:
         return
 
-    auth.set_current_tenant(auth.Tenant(repository_ids=[artifact.repository_id]))
+    auth.set_current_tenant(
+        auth.Tenant(
+            organization_ids=[artifact.organization_id],
+            project_ids=[artifact.project_id],
+            repository_ids=[artifact.project.repository_id],
+        )
+    )
 
     if not artifact.file:
         return

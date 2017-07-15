@@ -20,7 +20,9 @@ class TestCaseFactory(ModelFactory):
     job_id = factory.SelfAttribute('job.id')
     result = factory.Iterator([Result.failed, Result.passed])
     duration = factory.Faker('random_int', min=1, max=100000)
-    organization = factory.SelfAttribute('job.organization')
+    project = factory.SelfAttribute('job.project')
+    project_id = factory.SelfAttribute('project.id')
+    organization = factory.SelfAttribute('project.organization')
     organization_id = factory.SelfAttribute('organization.id')
 
     class Meta:

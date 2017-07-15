@@ -3,9 +3,10 @@ from zeus.constants import Result, Status
 from zeus.models import Job
 
 
-def test_new_job(client, default_source, default_repo, default_hook):
+def test_new_job(client, default_project, default_source, default_repo, default_hook):
     build = factories.BuildFactory(
         source=default_source,
+        project=default_project,
         provider=default_hook.provider,
         external_id='3',
     )
@@ -30,16 +31,18 @@ def test_new_job(client, default_source, default_repo, default_hook):
     job = Job.query.unrestricted_unsafe().get(resp.json()['id'])
     assert job
     assert job.build_id == build.id
-    assert job.repository_id == build.repository_id
+    assert job.project_id == build.project_id
+    assert job.organization_id == build.organization_id
     assert job.provider == default_hook.provider
     assert job.external_id == job_xid
     assert job.result == Result.passed
     assert job.status == Status.finished
 
 
-def test_existing_job(client, default_source, default_repo, default_hook):
+def test_existing_job(client, default_project, default_source, default_repo, default_hook):
     build = factories.BuildFactory(
         source=default_source,
+        project=default_project,
         provider=default_hook.provider,
         external_id='3',
     )

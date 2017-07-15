@@ -38,9 +38,8 @@ def test_login_complete(client, mocker):
         datetime(2013, 9, 19, 22, 15, 22),
         GITHUB_TOKEN_URI,
         'foo/1.0',
-        id_token={
-            'hd': 'example.com',
-            'email': 'foo@example.com',
+        token_response={
+            'scope': 'user:email',
         },
     )
 
@@ -67,4 +66,5 @@ def test_login_complete(client, mocker):
     assert identity.config == {
         'access_token': access_token,
         'refresh_token': refresh_token,
+        'scopes': ['user:email'],
     }

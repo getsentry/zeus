@@ -37,7 +37,7 @@ class RepositoryStatus(enum.Enum):
 
 class RepositoryAccessBoundQuery(BoundQuery):
     def get_constraints(self, mzero):
-        from sentry import auth
+        from zeus import auth
         tenant = auth.get_current_tenant()
         if tenant.repository_ids:
             return mzero.class_.id.in_(tenant.repository_ids)
@@ -48,6 +48,8 @@ class Repository(OrganizationBoundMixin, StandardAttributes, db.Model):
     """
     Represents a single repository.
     """
+    query_class = RepositoryAccessBoundQuery
+
     provider = db.Column(
         StrEnum(RepositoryProvider), default=RepositoryProvider.native, nullable=False
     )

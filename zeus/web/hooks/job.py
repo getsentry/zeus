@@ -9,6 +9,8 @@ from .base import BaseHook
 class JobHook(BaseHook):
     def post(self, hook, build_xid, job_xid):
         build = Build.query.filter(
+            Build.organization_id == hook.organization_id,
+            Build.project_id == hook.project_id,
             Build.provider == hook.provider,
             Build.external_id == build_xid,
         ).first()
@@ -27,8 +29,9 @@ class JobHook(BaseHook):
 
         if job:
             response = client.put(
-                '/repos/{}/builds/{}/jobs/{}'.format(
-                    hook.repository.name,
+                '/projects/{}/{}/builds/{}/jobs/{}'.format(
+                    hook.organization.name,
+                    hook.project.name,
                     job.build.number,
                     job.number,
                 ),
@@ -36,10 +39,12 @@ class JobHook(BaseHook):
             )
         else:
             response = client.post(
-                '/repos/{}/builds/{}/jobs'.format(
-                    hook.repository.name,
+                '/projects/{}/{}/builds/{}/jobs'.format(
+                    hook.organization.name,
+                    hook.project.name,
                     build.number,
-                ), json=json
+                ),
+                json=json
             )
 
         return response

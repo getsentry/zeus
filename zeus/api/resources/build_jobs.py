@@ -29,7 +29,9 @@ class BuildJobsResource(BaseBuildResource):
         if result.errors:
             return self.respond(result.errors, 403)
         data = result.data
-        job = Job(build=build, repository_id=build.repository_id, **data)
+        job = Job(
+            build=build, project_id=build.project_id, organization_id=build.organization_id, **data
+        )
         db.session.add(job)
         db.session.commit()
 

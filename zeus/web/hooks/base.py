@@ -13,6 +13,7 @@ class BaseHook(View):
 
         hook = Hook.query.unrestricted_unsafe().options(
             joinedload('project'),
+            joinedload('organization'),
         ).get(hook_id)
         if not hook.is_valid_signature(signature):
             return '', 403
@@ -25,6 +26,7 @@ class BaseHook(View):
         auth.set_current_tenant(
             auth.Tenant(
                 organization_ids=[hook.project.organization_id],
+                repository_ids=[hook.project.repository_id],
                 project_ids=[hook.project_id],
             )
         )

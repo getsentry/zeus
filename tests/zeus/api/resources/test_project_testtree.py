@@ -3,7 +3,8 @@ from zeus.constants import Result, Status
 
 
 def test_simple(
-    client, db_session, default_login, default_repo, default_repo_access, default_revision
+    client, db_session, default_login, default_org, default_project, default_repo_access,
+    default_revision
 ):
     source = factories.SourceFactory(
         revision=default_revision,
@@ -12,6 +13,7 @@ def test_simple(
     # finished build
     build = factories.BuildFactory(
         source=source,
+        project=default_project,
         passed=True,
     )
     db_session.add(build)
@@ -19,6 +21,7 @@ def test_simple(
     # an unfinished build which shouldn't be used
     factories.BuildFactory(
         source=source,
+        project=default_project,
         status=Status.in_progress,
     )
     db_session.add(build)
@@ -59,7 +62,7 @@ def test_simple(
 
     db_session.commit()
 
-    path = '/api/repos/{}/test-tree'.format(default_repo.name)
+    path = '/api/projects/{}/{}/test-tree'.format(default_org.name, default_project.name)
 
     resp = client.get(path)
     assert resp.status_code == 200

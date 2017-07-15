@@ -9,6 +9,8 @@ from .base import BaseHook
 class JobArtifactsHook(BaseHook):
     def post(self, hook, build_xid, job_xid):
         build = Build.query.filter(
+            Build.organization_id == hook.organization_id,
+            Build.project_id == hook.project_id,
             Build.provider == hook.provider,
             Build.external_id == build_xid,
         ).first()
@@ -24,8 +26,9 @@ class JobArtifactsHook(BaseHook):
             return self.respond('', 404)
 
         return client.post(
-            '/repos/{}/builds/{}/jobs/{}/artifacts'.format(
-                hook.repository.name,
+            '/projects/{}/{}/builds/{}/jobs/{}/artifacts'.format(
+                hook.organization.name,
+                hook.project.name,
                 job.build.number,
                 job.number,
             ),

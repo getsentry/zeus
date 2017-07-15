@@ -19,7 +19,9 @@ class BuildFactory(ModelFactory):
     label = factory.faker.Faker('sentence')
     project = factory.SubFactory('zeus.factories.ProjectFactory')
     project_id = factory.SelfAttribute('project.id')
-    source = factory.SubFactory('zeus.factories.SourceFactory')
+    source = factory.SubFactory(
+        'zeus.factories.SourceFactory', repository=factory.SelfAttribute('..project.repository')
+    )
     source_id = factory.SelfAttribute('source.id')
     organization = factory.SelfAttribute('project.organization')
     organization_id = factory.SelfAttribute('organization.id')

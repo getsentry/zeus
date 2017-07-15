@@ -25,7 +25,7 @@ class StandardAttributes(object):
 
 # https://bitbucket.org/zzzeek/sqlalchemy/wiki/UsageRecipes/PreFilteredQuery
 class BoundQuery(db.Query):
-    current_constrained = True
+    current_restricted = True
 
     def get(self, ident):
         # override get() so that the flag is always checked in the
@@ -33,21 +33,21 @@ class BoundQuery(db.Query):
         return db.Query.get(self.populate_existing(), ident)
 
     def __iter__(self):
-        return db.Query.__iter__(self.constrained())
+        return db.Query.__iter__(self.restricted())
 
     def from_self(self, *ent):
         # override from_self() to automatically apply
         # the criterion too.   this works with count() and
         # others.
-        return db.Query.from_self(self.constrained(), *ent)
+        return db.Query.from_self(self.restricted(), *ent)
 
     def unrestricted_unsafe(self):
         rv = self._clone()
-        rv.current_constrained = False
+        rv.current_restricted = False
         return rv
 
-    def constrained(self):
-        if not self.current_constrained:
+    def restricted(self):
+        if not self.current_restricted:
             return self
 
         mzero = self._mapper_zero()
@@ -82,7 +82,7 @@ class RepositoryBoundQuery(BoundQuery):
         from zeus.auth import get_current_tenant
 
         tenant = get_current_tenant()
-        if tenant.project_ids:
+        if tenant.repository_ids:
             return mzero.class_.repository_id.in_(tenant.repository_ids)
         return sqlalchemy.sql.false()
 

@@ -21,6 +21,14 @@ class IdentityFactory(ModelFactory):
             config={
                 'access_token': 'access-token',
                 'refresh_token': 'refresh-token',
-                'scopes': ['user:email'],
+                'scopes': ['user:email', 'repo'],
+            }
+        )
+        github_basic = factory.Trait(
+            provider='github',
+            config={
+                'access_token': 'access-token',
+                'refresh_token': 'refresh-token',
+                'scopes': ['user:email']
             }
         )

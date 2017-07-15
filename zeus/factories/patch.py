@@ -11,7 +11,7 @@ class PatchFactory(ModelFactory):
     id = GUIDFactory()
     parent_revision = factory.SubFactory('zeus.factories.RevisionFactory')
     repository = factory.SelfAttribute('parent_revision.repository')
-    repository_id = factory.SelfAttribute('parent_revision.repository_id')
+    repository_id = factory.SelfAttribute('repository.id')
     organization = factory.SelfAttribute('repository.organization')
     organization_id = factory.SelfAttribute('organization.id')
     parent_revision_sha = factory.SelfAttribute('parent_revision.sha')

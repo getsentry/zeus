@@ -4,8 +4,11 @@ from zeus import factories
 from zeus.models import Artifact
 
 
-def test_new_artifact(client, default_source, default_repo, default_hook, sample_xunit):
+def test_new_artifact(
+    client, default_project, default_source, default_repo, default_hook, sample_xunit
+):
     build = factories.BuildFactory(
+        project=default_project,
         source=default_source,
         provider=default_hook.provider,
         external_id='3',

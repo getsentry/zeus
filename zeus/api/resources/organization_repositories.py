@@ -3,12 +3,15 @@ from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Identity, ItemOption, Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider, RepositoryStatus
+from zeus.models import (
+    Identity, ItemOption, Organization, Repository, RepositoryAccess, RepositoryBackend,
+    RepositoryProvider, RepositoryStatus
+)
 from zeus.tasks import import_repo
 from zeus.utils import ssh
 from zeus.utils.github import GitHubClient
 
-from .base import Resource
+from .base_organization import BaseOrganizationResource
 from ..schemas import GitHubRepositorySchema, RepositorySchema
 
 repo_schema = RepositorySchema(strict=True)
@@ -16,15 +19,17 @@ github_repo_schema = GitHubRepositorySchema(strict=True)
 repos_schema = RepositorySchema(many=True, strict=True)
 
 
-class RepositoryIndexResource(Resource):
-    def get(self):
+class OrganizationRepositoriesResource(BaseOrganizationResource):
+    def get(self, org: Organization):
         """
-        Return a list of repositories.
+        Return a list of repositories for a given organization.
         """
-        query = Repository.query.all()
+        query = Repository.query.filter(
+            Repository.organization_id == org.id,
+        )
         return self.respond_with_schema(repos_schema, query)
 
-    def post(self):
+    def post(self, org: Organization):
         """
         Create a new repository.
         """
@@ -67,11 +72,11 @@ class RepositoryIndexResource(Resource):
             if repo is None:
                 # bind various github specific attributes
                 repo, created = Repository(
+                    organization=org,
                     backend=RepositoryBackend.git,
                     provider=RepositoryProvider.github,
                     status=RepositoryStatus.active,
                     external_id=str(repo_data['id']),
-                    name=repo_data['name'],
                     url=repo_data['clone_url'],
                     data={'github': {
                         'full_name': repo_data['full_name']
@@ -100,6 +105,7 @@ class RepositoryIndexResource(Resource):
                 )
         elif provider == 'native':
             repo, created = Repository(
+                organization=org,
                 status=RepositoryStatus.active,
                 **data,
             ), True
@@ -109,10 +115,13 @@ class RepositoryIndexResource(Resource):
 
         try:
             with db.session.begin_nested():
-                db.session.add(RepositoryAccess(
-                    repository=repo,
-                    user=auth.get_current_user(),
-                ))
+                db.session.add(
+                    RepositoryAccess(
+                        organization=org,
+                        repository=repo,
+                        user=auth.get_current_user(),
+                    )
+                )
                 db.session.flush()
         except IntegrityError:
             raise
