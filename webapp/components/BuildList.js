@@ -25,7 +25,6 @@ export default class BuildList extends Component {
             <Box width={1 / 12} style={{textAlign: 'center'}}>
               Coverage
             </Box>
-            <Box width={2 / 12}>Author</Box>
             <Box width={2 / 12} style={{textAlign: 'right'}}>
               When
             </Box>
