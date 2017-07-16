@@ -30,7 +30,9 @@ export class Request {
       if (xhr.readyState === Request.DONE) {
         let responseData = this.processResponseText(xhr);
         if (xhr.status >= 200 && xhr.status < 300) {
-          responseData.xhr = xhr;
+          // XXX(dcramer): this keeps the xhr ref around when
+          // we otherwise wouldn't want it
+          // responseData.xhr = xhr;
           resolve(responseData);
         } else {
           let error = new Error(xhr.responseText);
