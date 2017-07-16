@@ -12,7 +12,7 @@ def test_login(client):
     resp = client.get('/auth/github')
     assert resp.status_code == 302
     assert resp.headers['Location'] == \
-        '{}?client_id=github.client-id&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2Fgithub%2Fcomplete&scope=user%3Aemail&access_type=offline&response_type=code'.format(GITHUB_AUTH_URI)
+        '{}?client_id=github.client-id&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2Fgithub%2Fcomplete&scope=user%3Aemail%2Cread%3Aorg&access_type=offline&response_type=code'.format(GITHUB_AUTH_URI)
 
 
 def test_login_complete(client, mocker):
