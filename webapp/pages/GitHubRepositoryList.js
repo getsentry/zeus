@@ -6,6 +6,7 @@ import {Flex, Box} from 'grid-styled';
 
 import api from '../api';
 import {addIndicator, removeIndicator} from '../actions/indicators';
+import {addRepo, removeRepo, updateRepo} from '../actions/repos';
 import AsyncPage from '../components/AsyncPage';
 import Panel from '../components/Panel';
 import ResultGridRow from '../components/ResultGridRow';
@@ -67,10 +68,10 @@ class GitHubRepositoryList extends AsyncPage {
 
   onToggleRepo = (repoName, active = null) => {
     let {ghRepoList} = this.state;
-    let repo = ghRepoList.find(r => r.name === repoName);
-    if (active === null) active = !repo.active;
-    if (repo.loading || repo.active === active) return;
-    repo.loading = true;
+    let ghRepo = ghRepoList.find(r => r.name === repoName);
+    if (active === null) active = !ghRepo.active;
+    if (ghRepo.loading || ghRepo.active === active) return;
+    ghRepo.loading = true;
 
     // push the loading update
     let indicator = this.props.addIndicator('Saving changes..', 'loading');
@@ -86,16 +87,21 @@ class GitHubRepositoryList extends AsyncPage {
               name: repoName
             }
           })
-          .then(_ => {
-            let newRepoList = [...this.state.ghRepoList];
-            let newRepo = newRepoList.find(r => r.name === repo.name);
+          .then(repo => {
+            let newGhRepoList = [...this.state.ghRepoList];
+            let newGhRepo = newGhRepoList.find(r => r.name === ghRepo.name);
             // update the item in place
-            newRepo.active = active;
-            newRepo.loading = false;
-            this.setState({
-              ghRepoList: newRepoList
-            });
+            newGhRepo.active = active;
+            newGhRepo.loading = false;
+            if (active) {
+              this.props.addRepo(repo);
+            } else {
+              this.props.removeRepo(repo);
+            }
             this.props.removeIndicator(indicator);
+            this.setState({
+              ghRepoList: newGhRepoList
+            });
           })
           .catch(error => {
             this.props.addIndicator('An error occurred.', 'error', 5000);
@@ -164,4 +170,10 @@ class GitHubRepositoryList extends AsyncPage {
   }
 }
 
-export default connect(null, {addIndicator, removeIndicator})(GitHubRepositoryList);
+export default connect(null, {
+  addIndicator,
+  removeIndicator,
+  addRepo,
+  removeRepo,
+  updateRepo
+})(GitHubRepositoryList);

@@ -2,31 +2,47 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {authSession, logout} from '../actions/auth';
+import {loadRepos} from '../actions/repos';
 import styled from 'styled-components';
 
-import AsyncPage from '../components/AsyncPage';
 import Indicators from '../components/Indicators';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
 
 import './App.css';
 
-class AuthedContext extends AsyncPage {
+class RepositoryContext extends Component {
+  static propTypes = {
+    repoList: PropTypes.arrayOf(PropTypes.object),
+    loaded: PropTypes.bool
+  };
+
   static childContextTypes = {
-    repoList: PropTypes.arrayOf(PropTypes.object)
+    ...RepositoryContext.propTypes
   };
 
   getChildContext() {
-    return {repoList: this.state.repoList || []};
+    return {repoList: this.props.repoList};
   }
 
-  getEndpoints() {
-    return [['repoList', '/repos']];
+  componentWillMount() {
+    this.props.loadRepos();
   }
 
-  renderBody() {
+  render() {
+    if (!this.props.loaded) return null;
     return this.props.children;
   }
 }
+
+const AuthedContext = connect(
+  function(state) {
+    return {
+      repoList: state.repos.items,
+      loaded: state.repos.loaded
+    };
+  },
+  {loadRepos}
+)(RepositoryContext);
 
 class App extends Component {
   static propTypes = {
