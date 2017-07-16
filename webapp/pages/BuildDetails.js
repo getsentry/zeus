@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import styled, {css} from 'styled-components';
 
 import AsyncPage from '../components/AsyncPage';
-import {Breadcrumbs, Crumb, CrumbLink} from '../components/Breadcrumbs';
 import BuildAuthor from '../components/BuildAuthor';
+import {Breadcrumbs, Crumb, CrumbLink} from '../components/Breadcrumbs';
 import ObjectDuration from '../components/ObjectDuration';
 import ObjectResult from '../components/ObjectResult';
 import ScrollView from '../components/ScrollView';
@@ -33,8 +33,8 @@ export default class BuildDetails extends AsyncPage {
   }
 
   getEndpoints() {
-    let {buildNumber, repoName} = this.props.params;
-    return [['build', `/repos/${repoName}/builds/${buildNumber}`]];
+    let {buildNumber, ownerName, repoName} = this.props.params;
+    return [['build', `/repos/${ownerName}/${repoName}/builds/${buildNumber}`]];
   }
 
   getTitle() {
@@ -43,27 +43,29 @@ export default class BuildDetails extends AsyncPage {
 
   render() {
     // happens before loading is done
-    let {repoName, buildNumber} = this.props.params;
+    let {ownerName, repoName, buildNumber} = this.props.params;
     return (
       <div>
         <Breadcrumbs>
-          <CrumbLink to={`/repos/${repoName}`}>
-            {repoName}
+          <CrumbLink to={`/${ownerName}/${repoName}`}>
+            {ownerName}/{repoName}
           </CrumbLink>
-          <Crumb active={true}>
+          <Crumb>
             #{buildNumber}
           </Crumb>
         </Breadcrumbs>
-        {this.renderContent()}
+        <ScrollView>
+          {this.renderContent()}
+        </ScrollView>
       </div>
     );
   }
 
   renderBody() {
     let {build} = this.state;
-    let {buildNumber, repoName} = this.props.params;
+    let {buildNumber, ownerName, repoName} = this.props.params;
     return (
-      <ScrollView>
+      <div>
         <BuildSummary>
           <Header>
             <Message>
@@ -96,23 +98,26 @@ export default class BuildDetails extends AsyncPage {
           </Meta>
           <Tabs>
             <TabbedNavItem
-              to={`/repos/${repoName}/builds/${buildNumber}`}
+              to={`/repos/${ownerName}/${repoName}/builds/${buildNumber}`}
               onlyActiveOnIndex={true}>
               Overview
             </TabbedNavItem>
-            <TabbedNavItem to={`/repos/${repoName}/builds/${buildNumber}/tests`}>
+            <TabbedNavItem
+              to={`/repos/${ownerName}/${repoName}/builds/${buildNumber}/tests`}>
               Tests
             </TabbedNavItem>
-            <TabbedNavItem to={`/repos/${repoName}/builds/${buildNumber}/coverage`}>
+            <TabbedNavItem
+              to={`/repos/${ownerName}/${repoName}/builds/${buildNumber}/coverage`}>
               Code Coverage
             </TabbedNavItem>
-            <TabbedNavItem to={`/repos/${repoName}/builds/${buildNumber}/diff`}>
+            <TabbedNavItem
+              to={`/repos/${ownerName}/${repoName}/builds/${buildNumber}/diff`}>
               Diff
             </TabbedNavItem>
           </Tabs>
         </BuildSummary>
         {this.props.children}
-      </ScrollView>
+      </div>
     );
   }
 }

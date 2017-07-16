@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 
 import api from '../api';
 import AsyncPage from '../components/AsyncPage';
-import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
-import Content from '../components/Content';
-import ScrollView from '../components/ScrollView';
+import Button from '../components/Button';
+import Fieldset from '../components/Fieldset';
+import FormActions from '../components/FormActions';
+import Input from '../components/Input';
+import Label from '../components/Label';
+import Panel from '../components/Panel';
 import Section from '../components/Section';
-import SectionHeading from '../components/SectionHeading';
-import Sidebar from '../components/Sidebar';
+import SidebarLayout from '../components/SidebarLayout';
 
 class GitHubProviderOptions extends Component {
   static propTypes = {
@@ -40,16 +41,16 @@ class GitHubProviderOptions extends Component {
   render() {
     let {formValue} = this.state;
     return (
-      <fieldset>
+      <Fieldset>
         <Label>Repository name</Label>
-        <input
+        <Input
           type="text"
           name="github.name"
           value={formValue['github.name']}
           onChange={this.onChangeField}
           placeholder="e.g. getsentry/zeus"
         />
-      </fieldset>
+      </Fieldset>
     );
   }
 }
@@ -90,8 +91,8 @@ class AddRepositoryBody extends Component {
       .catch(error => {
         let {data, xhr} = error;
         if (xhr.status === 401) {
-          if (data.needUpgrade) {
-            window.location.href = data.upgradeUrl;
+          if (data.error == 'identity_needs_upgrade') {
+            window.location.href = data.url;
             return;
           }
         }
@@ -100,17 +101,17 @@ class AddRepositoryBody extends Component {
   };
 
   render() {
-    let providerList = [['github', 'GitHub.com'], ['native', 'Other']];
+    let providerList = [['github', 'GitHub.com']];
     return (
       <form onSubmit={this.onSubmit}>
-        <SectionHeading>Add Repository</SectionHeading>
+        <Label>Add Repository</Label>
         <p>Where is your repository hosted?</p>
         <ul>
           {providerList.map(([pId, pLabel]) => {
             return (
               <li key={pId}>
                 <Label key={pId}>
-                  <input
+                  <Input
                     type="radio"
                     name="provider"
                     value={pId}
@@ -124,18 +125,13 @@ class AddRepositoryBody extends Component {
           })}
         </ul>
         {this.renderProviderOptions()}
-        <div>
-          <button type="submit">Submit</button>
-        </div>
+        <FormActions>
+          <Button type="submit">Submit</Button>
+        </FormActions>
       </form>
     );
   }
 }
-
-const Label = styled.label`
-  margin-bottom: 10px;
-  display: block;
-`;
 
 export default class AddRepository extends AsyncPage {
   getTitle() {
@@ -144,21 +140,13 @@ export default class AddRepository extends AsyncPage {
 
   renderBody() {
     return (
-      <div>
-        <Sidebar params={this.props.params} />
-        <Content>
-          <Breadcrumbs>
-            <Crumb active={true}>
-              {this.getTitle()}
-            </Crumb>
-          </Breadcrumbs>
-          <ScrollView>
-            <Section>
-              <AddRepositoryBody {...this.props} />
-            </Section>
-          </ScrollView>
-        </Content>
-      </div>
+      <SidebarLayout title={this.getTitle()}>
+        <Section>
+          <Panel>
+            <AddRepositoryBody {...this.props} />
+          </Panel>
+        </Section>
+      </SidebarLayout>
     );
   }
 }

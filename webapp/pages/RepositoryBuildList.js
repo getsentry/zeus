@@ -46,8 +46,8 @@ export default class RepositoryBuildList extends AsyncPage {
 
 class RepositoryBuildListBody extends AsyncPage {
   getEndpoints() {
-    let {repoName} = this.props.params;
-    return [['buildList', `/repos/${repoName}/builds`]];
+    let {ownerName, repoName} = this.props.params;
+    return [['buildList', `/repos/${ownerName}/${repoName}/builds`]];
   }
 
   renderBody() {

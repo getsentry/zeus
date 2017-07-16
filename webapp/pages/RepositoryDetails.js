@@ -25,15 +25,16 @@ export default class RepositoryDetails extends AsyncPage {
   }
 
   getDefaultState(props, context) {
-    let {repoName} = props.params;
+    let {ownerName, repoName} = props.params;
     let {repoList} = context;
     let state = super.getDefaultState(props, context);
-    state.repo = repoList.find(r => r.name === repoName);
+    state.repo = repoList.find(r => r.ownerName === ownerName && r.name === repoName);
     return state;
   }
 
   getTitle() {
-    return this.state.repo.name;
+    let {repo} = this.state;
+    return `${repo.ownerName}/${repo.name}`;
   }
 
   renderBody() {

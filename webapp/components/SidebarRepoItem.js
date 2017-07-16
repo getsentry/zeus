@@ -10,14 +10,14 @@ export default class SidebarRepoItem extends Component {
   };
 
   render() {
-    const {name, status} = {...this.props.repo};
+    let {repo} = this.props;
     return (
-      <SidebarLink to={`/repos/${name}`}>
+      <SidebarLink to={`/repos/${repo.ownerName}/${repo.name}`}>
         <SidebarRepoItemWrapper>
           <SidebarRepoItemName>
-            {name}
+            {repo.ownerName}/{repo.name}
           </SidebarRepoItemName>
-          <SidebarRepoItemStatus status={status} />
+          <SidebarRepoItemStatus result={repo.result} />
         </SidebarRepoItemWrapper>
       </SidebarLink>
     );
@@ -45,12 +45,12 @@ const SidebarRepoItemStatus = styled.div`
   border-radius: 10px;
 
   ${props => {
-    switch (props.status) {
-      case 'pass':
+    switch (props.result) {
+      case 'passed':
         return css`
           background-color: #76D392;
         `;
-      case 'fail':
+      case 'failed':
         return css`
           background-color: #F06E5B;
         `;

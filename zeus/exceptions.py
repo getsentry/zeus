@@ -7,9 +7,8 @@ from json.decoder import JSONDecodeError
 class ApiError(Exception):
     code = None
     json = None
-    xml = None
 
-    def __init__(self, text, code=None):
+    def __init__(self, text=None, code=None):
         if code is not None:
             self.code = code
         self.text = text
@@ -20,7 +19,7 @@ class ApiError(Exception):
                 self.json = None
         else:
             self.json = None
-        super(ApiError, self).__init__(text[:128])
+        super(ApiError, self).__init__((text or '')[:128])
 
     @classmethod
     def from_response(cls, response):
@@ -31,3 +30,14 @@ class ApiError(Exception):
 
 class ApiUnauthorized(ApiError):
     code = 401
+
+
+class IdentityNeedsUpgrade(ApiUnauthorized):
+    def __init__(self, scope, identity):
+        ApiUnauthorized.__init__(self)
+        self.scope = scope
+        self.identity = identity
+
+    def get_upgrade_url(self):
+        if self.identity.provider == 'github':
+            return '/auth/github/upgrade'

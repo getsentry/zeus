@@ -1,7 +1,7 @@
 import click
 
 from zeus.config import db
-from zeus.models import Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider, RepositoryStatus, User
+from zeus.models import Repository, RepositoryAccess, RepositoryBackend, RepositoryStatus, User
 from zeus.tasks import import_repo, sync_repo
 from zeus.utils.text import slugify
 
@@ -14,17 +14,19 @@ def repos():
 
 
 @repos.command()
-@click.argument('repository_name', required=True)
+@click.argument('repository_full_name', required=True)
 @click.option('--backend', default='git', type=click.Choice(['git']))
 @click.option('--url')
 @click.option('--active/--inactive', default=True)
-def add(repository_name, url, backend, active):
+def add(repository_full_name, url, backend, active):
+    raise NotImplementedError
+    owner_name, repo_name = repository_full_name.split('/', 1)
     repo = Repository(
         url=url,
-        name=slugify(repository_name),
+        owner_name=slugify(owner_name),
+        name=slugify(repo_name),
         backend=getattr(RepositoryBackend, backend),
         status=RepositoryStatus.active if active else RepositoryStatus.inactive,
-        provider=RepositoryProvider.native,
     )
     db.session.add(repo)
     db.session.commit()
@@ -35,10 +37,12 @@ def add(repository_name, url, backend, active):
 
 
 @repos.command()
-@click.argument('repository_name', required=True)
-def sync(repository_name):
+@click.argument('repository_full_name', required=True)
+def sync(repository_full_name):
+    owner_name, repo_name = repository_full_name.split('/', 1)
     repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.name == repository_name,
+        Repository.owner_name == owner_name,
+        Repository.name == repo_name,
     ).first()
     sync_repo(repo_id=repo.id)
 
@@ -49,11 +53,13 @@ def access():
 
 
 @access.command('add')
-@click.argument('repository_name', required=True)
+@click.argument('repository_full_name', required=True)
 @click.argument('email', required=True)
-def access_add(repository_name, email):
+def access_add(repository_full_name, email):
+    owner_name, repo_name = repository_full_name.split('/', 1)
     repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.name == repository_name,
+        Repository.owner_name == owner_name,
+        Repository.name == repo_name,
     ).first()
     user = User.query.filter(User.email == email).first()
     assert repo

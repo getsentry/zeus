@@ -1,12 +1,9 @@
 import React from 'react';
 
 import AsyncPage from '../components/AsyncPage';
-import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
 import BuildList from '../components/BuildList';
-import Content from '../components/Content';
 import Section from '../components/Section';
-import ScrollView from '../components/ScrollView';
-import Sidebar from '../components/Sidebar';
+import SidebarLayout from '../components/SidebarLayout';
 
 export default class RepositoryBuildList extends AsyncPage {
   getTitle() {
@@ -16,21 +13,11 @@ export default class RepositoryBuildList extends AsyncPage {
 
   renderBody() {
     return (
-      <div>
-        <Sidebar params={this.props.params} />
-        <Content>
-          <Breadcrumbs>
-            <Crumb active={true}>
-              {this.getTitle()}
-            </Crumb>
-          </Breadcrumbs>
-          <ScrollView>
-            <Section>
-              <UserBuildListBody {...this.props} />
-            </Section>
-          </ScrollView>
-        </Content>
-      </div>
+      <SidebarLayout title={this.getTitle()}>
+        <Section>
+          <UserBuildListBody {...this.props} />
+        </Section>
+      </SidebarLayout>
     );
   }
 }

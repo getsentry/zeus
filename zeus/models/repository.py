@@ -3,14 +3,11 @@ import os.path
 import sqlalchemy
 
 from flask import current_app
-from sqlalchemy import event
-from urllib.parse import urlparse
 
 from zeus.config import db
 from zeus.db.mixins import StandardAttributes
 from zeus.db.types import Enum, StrEnum, JSONEncodedDict
 from zeus.db.utils import model_repr
-from zeus.utils.text import slugify
 
 
 class RepositoryBackend(enum.Enum):
@@ -22,7 +19,6 @@ class RepositoryBackend(enum.Enum):
 
 
 class RepositoryProvider(enum.Enum):
-    native = 'native'
     github = 'github'
 
     def __str__(self):
@@ -81,13 +77,15 @@ class Repository(StandardAttributes, db.Model):
     """
     Represents a single repository.
     """
-    name = db.Column(db.String(200), nullable=False, unique=True)
-    url = db.Column(db.String(200), nullable=False, unique=True)
+    # TODO(dcramer): we dont want to be coupled to GitHub (the concept of orgs)
+    # but right now we simply dont care, and this can be refactored later (URLs
+    # are tricky)
+    owner_name = db.Column(db.String(200), nullable=False)
+    name = db.Column(db.String(200), nullable=False)
+    url = db.Column(db.String(200), nullable=False)
     backend = db.Column(Enum(RepositoryBackend), default=RepositoryBackend.unknown, nullable=False)
     status = db.Column(Enum(RepositoryStatus), default=RepositoryStatus.inactive, nullable=False)
-    provider = db.Column(
-        StrEnum(RepositoryProvider), default=RepositoryProvider.native, nullable=False
-    )
+    provider = db.Column(StrEnum(RepositoryProvider), nullable=False)
     external_id = db.Column(db.String(64))
     data = db.Column(JSONEncodedDict, nullable=True)
     last_update = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
@@ -105,7 +103,10 @@ class Repository(StandardAttributes, db.Model):
     query_class = RepositoryAccessBoundQuery
 
     __tablename__ = 'repository'
-    __table_args__ = (db.UniqueConstraint('provider', 'external_id', name='unq_external_id'), )
+    __table_args__ = (
+        db.UniqueConstraint('provider', 'external_id', name='unq_repo_external_id'),
+        db.UniqueConstraint('owner_name', 'name', name='unq_repo_name'),
+    )
     __repr__ = model_repr('name', 'url', 'provider')
 
     def get_vcs(self):
@@ -129,11 +130,3 @@ class Repository(StandardAttributes, db.Model):
             return GitVcs(**kwargs)
         else:
             raise NotImplementedError('Invalid backend: {}'.format(self.backend))
-
-
-@event.listens_for(Repository.url, 'set', retval=False)
-def set_name(target, value, oldvalue, initiator):
-    if value and not target.name:
-        parts = urlparse(value)
-        target.name = slugify(parts.path.split('.git', 1)[0][1:])
-    return value
