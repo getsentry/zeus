@@ -4,7 +4,6 @@ import pytest
 from datetime import datetime, timedelta, timezone
 
 from zeus import factories, models
-from zeus.constants import Result, Status
 
 DATA_FIXTURES = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 'tests', 'fixtures')
 
@@ -104,8 +103,7 @@ def default_job(default_build):
         build=default_build,
         date_started=datetime.now(timezone.utc) - timedelta(minutes=6),
         date_finished=datetime.now(timezone.utc),
-        result=Result.passed,
-        status=Status.finished,
+        passed=True,
     )
 
 
@@ -120,6 +118,7 @@ def default_artifact(default_job):
 def default_testcase(default_job):
     return factories.TestCaseFactory(
         job=default_job,
+        passed=True,
     )
 
 

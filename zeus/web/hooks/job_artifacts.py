@@ -24,7 +24,8 @@ class JobArtifactsHook(BaseHook):
             return self.respond('', 404)
 
         return client.post(
-            '/repos/{}/builds/{}/jobs/{}/artifacts'.format(
+            '/repos/{}/{}/builds/{}/jobs/{}/artifacts'.format(
+                hook.repository.owner_name,
                 hook.repository.name,
                 job.build.number,
                 job.number,

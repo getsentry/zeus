@@ -59,7 +59,7 @@ def test_simple(
 
     db_session.commit()
 
-    path = '/api/repos/{}/test-tree'.format(default_repo.name)
+    path = '/api/repos/{}/{}/test-tree'.format(default_repo.owner_name, default_repo.name)
 
     resp = client.get(path)
     assert resp.status_code == 200

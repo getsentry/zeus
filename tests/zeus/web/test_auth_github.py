@@ -24,7 +24,7 @@ def test_login_complete(client, mocker):
         'GET',
         'https://api.github.com/user?access_token=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
         match_querystring=True,
-        body='{"id": 1, "email": "foo@example.com"}'
+        body='{"id": 1, "login": "test", "email": "foo@example.com"}'
     )
 
     access_token = 'b' * 40
@@ -38,9 +38,8 @@ def test_login_complete(client, mocker):
         datetime(2013, 9, 19, 22, 15, 22),
         GITHUB_TOKEN_URI,
         'foo/1.0',
-        id_token={
-            'hd': 'example.com',
-            'email': 'foo@example.com',
+        token_response={
+            'scope': 'user:email,read:org',
         },
     )
 
@@ -67,4 +66,6 @@ def test_login_complete(client, mocker):
     assert identity.config == {
         'access_token': access_token,
         'refresh_token': refresh_token,
+        'login': 'test',
+        'scopes': ['user:email', 'read:org'],
     }

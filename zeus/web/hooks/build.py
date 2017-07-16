@@ -19,16 +19,20 @@ class BuildHook(BaseHook):
 
         if build:
             response = client.put(
-                '/repos/{}/builds/{}'.format(
+                '/repos/{}/{}/builds/{}'.format(
+                    hook.repository.owner_name,
                     hook.repository.name,
                     build.number,
-                ), json=json
+                ),
+                json=json
             )
         else:
             response = client.post(
-                '/repos/{}/builds'.format(
+                '/repos/{}/{}/builds'.format(
+                    hook.repository.owner_name,
                     hook.repository.name,
-                ), json=json
+                ),
+                json=json
             )
 
         return response

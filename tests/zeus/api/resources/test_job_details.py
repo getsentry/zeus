@@ -5,8 +5,9 @@ def test_job_details(
     client, default_login, default_repo, default_build, default_job, default_repo_access
 ):
     resp = client.get(
-        '/api/repos/{}/builds/{}/jobs/{}'.
-        format(default_repo.name, default_build.number, default_job.number)
+        '/api/repos/{}/{}/builds/{}/jobs/{}'.format(
+            default_repo.owner_name, default_repo.name, default_build.number, default_job.number
+        )
     )
     assert resp.status_code == 200
     data = resp.json()
@@ -21,8 +22,8 @@ def test_update_job_to_finished(
     mock_delay = mocker.patch('zeus.tasks.aggregate_build_stats_for_job.delay')
 
     resp = client.put(
-        '/api/repos/{}/builds/{}/jobs/{}'.format(
-            default_repo.name, default_build.number, default_job.number
+        '/api/repos/{}/{}/builds/{}/jobs/{}'.format(
+            default_repo.owner_name, default_repo.name, default_build.number, default_job.number
         ),
         json={
             'result': 'failed',
@@ -47,8 +48,8 @@ def test_update_job_to_in_progress(
     mock_delay = mocker.patch('zeus.tasks.aggregate_build_stats_for_job.delay')
 
     resp = client.put(
-        '/api/repos/{}/builds/{}/jobs/{}'.format(
-            default_repo.name, default_build.number, default_job.number
+        '/api/repos/{}/{}/builds/{}/jobs/{}'.format(
+            default_repo.owner_name, default_repo.name, default_build.number, default_job.number
         ),
         json={
             'status': 'in_progress',

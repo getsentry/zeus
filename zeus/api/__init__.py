@@ -24,14 +24,16 @@ app.add_resource(
     '/repos/<owner_name>/<repo_name>/builds/<build_number>/tests', r.BuildTestsResource
 )
 app.add_resource(
-    '/repos/<owner_name>/<repo_name>/builds/<build_number>/tests/<test_name>', r.TestDetailsResource
-)
-app.add_resource(
     '/repos/<owner_name>/<repo_name>/builds/<build_number>/jobs/<job_number>', r.JobDetailsResource
 )
 app.add_resource(
     '/repos/<owner_name>/<repo_name>/builds/<build_number>/jobs/<job_number>/artifacts',
     r.JobArtifactsResource
 )
+app.add_resource(
+    '/repos/<owner_name>/<repo_name>/builds/<build_number>/jobs/<job_number>/tests',
+    r.JobTestsResource
+)
+app.add_resource('/tests/<test_id>', r.TestDetailsResource)
 app.add_resource('/users/<user_id>/builds', r.UserBuildsResource)
 app.add_resource('/<path:path>', r.CatchallResource)

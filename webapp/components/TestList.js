@@ -27,12 +27,9 @@ class TestDetails extends Component {
 
   componentDidMount() {
     let {test} = this.props;
-    let {buildNumber, ownerName, repoName} = this.props.params;
-    this.api
-      .request(`/repos/${ownerName}/${repoName}/builds/${buildNumber}/tests/${test.name}`)
-      .then(testDetails => {
-        this.setState({loading: false, testDetails});
-      });
+    this.api.request(`/tests/${test.id}`).then(testDetails => {
+      this.setState({loading: false, testDetails});
+    });
   }
 
   componentWillUnmount() {

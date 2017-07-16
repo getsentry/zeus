@@ -5,7 +5,8 @@ def test_build_jobs_list(
     client, default_login, default_repo, default_build, default_job, default_repo_access
 ):
     resp = client.get(
-        '/api/repos/{}/builds/{}/jobs'.format(default_repo.name, default_build.number)
+        '/api/repos/{}/{}/builds/{}/jobs'.
+        format(default_repo.owner_name, default_repo.name, default_build.number)
     )
     assert resp.status_code == 200
     data = resp.json()
@@ -17,7 +18,8 @@ def test_build_jobs_list_empty(
     client, default_login, default_repo, default_build, default_repo_access
 ):
     resp = client.get(
-        '/api/repos/{}/builds/{}/jobs'.format(default_repo.name, default_build.number)
+        '/api/repos/{}/{}/builds/{}/jobs'.
+        format(default_repo.owner_name, default_repo.name, default_build.number)
     )
     assert resp.status_code == 200
     data = resp.json()

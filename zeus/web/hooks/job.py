@@ -27,7 +27,8 @@ class JobHook(BaseHook):
 
         if job:
             response = client.put(
-                '/repos/{}/builds/{}/jobs/{}'.format(
+                '/repos/{}/{}/builds/{}/jobs/{}'.format(
+                    hook.repository.owner_name,
                     hook.repository.name,
                     job.build.number,
                     job.number,
@@ -36,10 +37,12 @@ class JobHook(BaseHook):
             )
         else:
             response = client.post(
-                '/repos/{}/builds/{}/jobs'.format(
+                '/repos/{}/{}/builds/{}/jobs'.format(
+                    hook.repository.owner_name,
                     hook.repository.name,
                     build.number,
-                ), json=json
+                ),
+                json=json
             )
 
         return response

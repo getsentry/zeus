@@ -21,6 +21,15 @@ class IdentityFactory(ModelFactory):
             config={
                 'access_token': 'access-token',
                 'refresh_token': 'refresh-token',
+                'scopes': ['user:email', 'read:org', 'repo'],
+                'login': 'test',
+            }
+        )
+        github_barebones = factory.Trait(
+            provider='github',
+            config={
+                'access_token': 'access-token',
+                'refresh_token': 'refresh-token',
                 'scopes': ['user:email', 'read:org'],
                 'login': 'test',
             }

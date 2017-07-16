@@ -8,8 +8,9 @@ def test_job_artifacts_list(
     default_repo_access
 ):
     resp = client.get(
-        '/api/repos/{}/builds/{}/jobs/{}/artifacts'.
-        format(default_repo.name, default_build.number, default_job.number)
+        '/api/repos/{}/{}/builds/{}/jobs/{}/artifacts'.format(
+            default_repo.owner_name, default_repo.name, default_build.number, default_job.number
+        )
     )
     assert resp.status_code == 200
     data = resp.json()
@@ -21,8 +22,9 @@ def test_job_artifacts_list_empty(
     client, default_login, default_repo, default_build, default_job, default_repo_access
 ):
     resp = client.get(
-        '/api/repos/{}/builds/{}/jobs/{}/artifacts'.
-        format(default_repo.name, default_build.number, default_job.number)
+        '/api/repos/{}/{}/builds/{}/jobs/{}/artifacts'.format(
+            default_repo.owner_name, default_repo.name, default_build.number, default_job.number
+        )
     )
     assert resp.status_code == 200
     data = resp.json()
@@ -34,8 +36,8 @@ def test_create_job_artifact(
     sample_xunit
 ):
     resp = client.post(
-        '/api/repos/{}/builds/{}/jobs/{}/artifacts'.format(
-            default_repo.name, default_build.number, default_job.number
+        '/api/repos/{}/{}/builds/{}/jobs/{}/artifacts'.format(
+            default_repo.owner_name, default_repo.name, default_build.number, default_job.number
         ),
         data={
             'name': 'junit.xml',
