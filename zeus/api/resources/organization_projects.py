@@ -19,6 +19,10 @@ class OrganizationProjectsResource(BaseOrganizationResource):
         return self.respond_with_schema(projects_schema, query)
 
     def post(self, org: Organization):
+        # TODO(dcramer): for now we're aiming for ease-of-use GH setup
+        # so we'll unlock custom projects down the road
+        raise NotImplementedError
+
         result = self.schema_from_request(project_schema)
         if result.errors:
             return self.respond(result.errors, 403)

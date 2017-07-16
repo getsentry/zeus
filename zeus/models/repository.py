@@ -3,6 +3,7 @@ import os.path
 import sqlalchemy
 
 from flask import current_app
+from sqlalchemy import event
 
 from zeus.config import db
 from zeus.db.mixins import BoundQuery, OrganizationBoundMixin, StandardAttributes
@@ -97,3 +98,23 @@ class Repository(OrganizationBoundMixin, StandardAttributes, db.Model):
             return GitVcs(**kwargs)
         else:
             raise NotImplementedError('Invalid backend: {}'.format(self.backend))
+
+
+@event.listens_for(Repository.provider, 'set', retval=False)
+def set_native_external_id(target, value, oldvalue, initiator):
+    if not value:
+        return value
+
+    if value == RepositoryProvider.native:
+        target.external_id = target.url
+    return value
+
+
+@event.listens_for(Repository.url, 'set', retval=False)
+def set_native_external_id(target, value, oldvalue, initiator):
+    if not value:
+        return value
+
+    if target.provider == RepositoryProvider.native:
+        target.external_id = value
+    return value

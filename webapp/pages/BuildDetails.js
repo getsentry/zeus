@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import styled, {css} from 'styled-components';
 
 import AsyncPage from '../components/AsyncPage';
-import {Breadcrumbs, Crumb, CrumbLink} from '../components/Breadcrumbs';
 import BuildAuthor from '../components/BuildAuthor';
 import ObjectDuration from '../components/ObjectDuration';
 import ObjectResult from '../components/ObjectResult';
-import ScrollView from '../components/ScrollView';
 import TabbedNavItem from '../components/TabbedNavItem';
 import TimeSince from '../components/TimeSince';
 
@@ -41,21 +39,21 @@ export default class BuildDetails extends AsyncPage {
     return 'Build Details';
   }
 
+  getCrumbs() {
+    let {orgName, projectName, buildNumber} = this.props.params;
+    return [
+      {to: `/${orgName}/${projectName}`, name: `${orgName}/${projectName}`},
+      {name: `#${buildNumber}`, active: true}
+    ];
+  }
+
   render() {
     // happens before loading is done
     let {orgName, projectName, buildNumber} = this.props.params;
     return (
-      <div>
-        <Breadcrumbs>
-          <CrumbLink to={`/${orgName}/${projectName}`}>
-            {orgName}/{projectName}
-          </CrumbLink>
-          <Crumb active={true}>
-            #{buildNumber}
-          </Crumb>
-        </Breadcrumbs>
+      <SidebarWrapper crumbs={this.getCrumbs()}>
         {this.renderContent()}
-      </div>
+      </SidebarWrapper>
     );
   }
 
@@ -63,7 +61,7 @@ export default class BuildDetails extends AsyncPage {
     let {build} = this.state;
     let {buildNumber, orgName, projectName} = this.props.params;
     return (
-      <ScrollView>
+      <div>
         <BuildSummary>
           <Header>
             <Message>
@@ -113,7 +111,7 @@ export default class BuildDetails extends AsyncPage {
           </Tabs>
         </BuildSummary>
         {this.props.children}
-      </ScrollView>
+      </div>
     );
   }
 }
