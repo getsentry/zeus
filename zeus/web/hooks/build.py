@@ -9,8 +9,6 @@ from .base import BaseHook
 class BuildHook(BaseHook):
     def post(self, hook, build_xid):
         build = Build.query.filter(
-            Build.organization_id == hook.organization_id,
-            Build.project_id == hook.project_id,
             Build.provider == hook.provider,
             Build.external_id == build_xid,
         ).first()
@@ -21,20 +19,16 @@ class BuildHook(BaseHook):
 
         if build:
             response = client.put(
-                '/projects/{}/{}/builds/{}'.format(
-                    hook.organization.name,
-                    hook.project.name,
+                '/repos/{}/builds/{}'.format(
+                    hook.repository.name,
                     build.number,
-                ),
-                json=json
+                ), json=json
             )
         else:
             response = client.post(
-                '/projects/{}/{}/builds'.format(
-                    hook.organization.name,
-                    hook.project.name,
-                ),
-                json=json
+                '/repos/{}/builds'.format(
+                    hook.repository.name,
+                ), json=json
             )
 
         return response

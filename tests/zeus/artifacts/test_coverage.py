@@ -15,15 +15,13 @@ def test_cobertura_result_generation(default_job, sample_cobertura):
     r1 = results[0]
     assert type(r1) == FileCoverage
     assert r1.job_id == default_job.id
-    assert r1.project_id == default_job.project_id
-    assert r1.organization_id == default_job.organization_id
+    assert r1.repository_id == default_job.repository_id
     assert r1.filename == 'setup.py'
     assert r1.data == 'NUNNNNNNNNNUCCNU'
     r2 = results[1]
     assert type(r2) == FileCoverage
     assert r2.job_id == default_job.id
-    assert r2.project_id == default_job.project_id
-    assert r2.organization_id == default_job.organization_id
+    assert r2.repository_id == default_job.repository_id
     assert r2.data == 'CCCNNNU'
 
 
@@ -38,8 +36,7 @@ def test_jacoco_result_generation(default_job, sample_jacoco):
     r1 = results[0]
     assert type(r1) == FileCoverage
     assert r1.job_id == default_job.id
-    assert r1.project_id == default_job.project_id
-    assert r1.organization_id == default_job.organization_id
+    assert r1.repository_id == default_job.repository_id
     assert r1.filename == 'src/main/java/com/dropbox/apx/onyx/api/resource/stats/StatsResource.java'
     assert r1.data == 'NNNNCCCCNNCCUU'
 
@@ -58,8 +55,7 @@ def test_process(mocker, default_job):
     get_coverage.return_value = [
         FileCoverage(
             job_id=default_job.id,
-            project_id=default_job.project_id,
-            organization_id=default_job.organization_id,
+            repository_id=default_job.repository_id,
             filename='setup.py',
             data='CUNNNNCCNNNUNNNUUUUUU',
             lines_covered=2,
@@ -78,8 +74,7 @@ def test_process(mocker, default_job):
     get_coverage.return_value = [
         FileCoverage(
             job_id=default_job.id,
-            project_id=default_job.project_id,
-            organization_id=default_job.organization_id,
+            repository_id=default_job.repository_id,
             filename='setup.py',
             data='NUUNNNNNNNNUCCNU',
             lines_covered=2,

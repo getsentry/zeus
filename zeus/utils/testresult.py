@@ -66,15 +66,13 @@ class TestResultManager(object):
             return
 
         job = self.job
-        organization_id = job.organization_id
-        project_id = job.project_id
+        repository_id = job.repository_id
 
         # create all test cases
         for test in test_list:
             testcase = TestCase(
                 job=job,
-                organization_id=organization_id,
-                project_id=project_id,
+                repository_id=repository_id,
                 hash=test.hash,
                 name=test.name,
                 duration=test.duration,
@@ -86,8 +84,7 @@ class TestResultManager(object):
             if test.artifacts:
                 for ta in test.artifacts:
                     testartifact = Artifact(
-                        organization_id=organization_id,
-                        project_id=project_id,
+                        repository_id=repository_id,
                         testcase_id=testcase.id,
                         job_id=job.id,
                         name=ta['name'],

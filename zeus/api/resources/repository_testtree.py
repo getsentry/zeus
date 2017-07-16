@@ -2,16 +2,16 @@ from flask import current_app, request
 
 from zeus.config import db
 from zeus.constants import Result, Status
-from zeus.models import Build, Project, TestCase, Job, Source
+from zeus.models import Build, Repository, TestCase, Job, Source
 from zeus.utils.trees import build_tree
 
-from .base_project import BaseProjectResource
+from .base_repository import BaseRepositoryResource
 
 
-class ProjectTestTreeResource(BaseProjectResource):
-    def get(self, project: Project):
+class RepositoryTestTreeResource(BaseRepositoryResource):
+    def get(self, repo: Repository):
         """
-        Return a tree of testcases for the given project.
+        Return a tree of testcases for the given repository.
         """
         parent = request.args.get('parent')
 
@@ -20,7 +20,7 @@ class ProjectTestTreeResource(BaseProjectResource):
             Source.id == Build.source_id,
         ).filter(
             Source.patch_id == None,  # NOQA
-            Build.project_id == project.id,
+            Build.repository_id == repo.id,
             Build.result == Result.passed,
             Build.status == Status.finished,
         ).order_by(
@@ -28,7 +28,7 @@ class ProjectTestTreeResource(BaseProjectResource):
         ).first()
 
         if not latest_build:
-            current_app.logger.info('no successful builds found for project')
+            current_app.logger.info('no successful builds found for repository')
             return self.respond({'groups': [], 'trail': []})
 
         job_list = db.session.query(Job.id).filter(

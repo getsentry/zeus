@@ -181,7 +181,7 @@ class RevisionResult(object):
             Author,
             where={
                 'email': email,
-                'organization_id': repository.organization_id,
+                'repository_id': repository.organization_id,
             },
             defaults={
                 'name': name,
@@ -210,7 +210,6 @@ class RevisionResult(object):
             values={
                 'author': author,
                 'committer': committer,
-                'organization_id': repository.organization_id,
                 'message': self.message,
                 'parents': self.parents,
                 'branches': self.branches,
@@ -221,12 +220,9 @@ class RevisionResult(object):
 
         # we also want to create a source for this item as it's the canonical
         # representation in the UI
-        try_create(
-            Source, {
-                'organization_id': repository.organization_id,
-                'revision_sha': self.id,
-                'repository': repository,
-            }
-        )
+        try_create(Source, {
+            'revision_sha': self.id,
+            'repository': repository,
+        })
 
         return (revision, created)

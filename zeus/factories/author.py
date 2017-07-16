@@ -7,7 +7,7 @@ from .base import ModelFactory
 
 
 class AuthorFactory(ModelFactory):
-    organization = factory.SubFactory('zeus.factories.OrganizationFactory')
+    organization = factory.SelfAttribute('repository.organization')
     organization_id = factory.SelfAttribute('organization.id')
     name = factory.Faker('first_name')
     email = factory.Faker('email')

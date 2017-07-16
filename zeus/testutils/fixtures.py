@@ -4,6 +4,7 @@ import pytest
 from datetime import datetime, timedelta, timezone
 
 from zeus import factories, models
+from zeus.constants import Result, Status
 
 DATA_FIXTURES = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 'tests', 'fixtures')
 
@@ -37,18 +38,6 @@ def default_org():
 
 
 @pytest.fixture(scope='function')
-def default_org_access(db_session, default_org, default_user):
-    access = models.OrganizationAccess(
-        organization_id=default_org.id,
-        user_id=default_user.id,
-    )
-    db_session.add(access)
-    db_session.commit()
-
-    return access
-
-
-@pytest.fixture(scope='function')
 def default_project(default_repo):
     return factories.ProjectFactory(
         repository=default_repo,
@@ -67,9 +56,8 @@ def default_repo(default_org):
 
 
 @pytest.fixture(scope='function')
-def default_repo_access(db_session, default_repo, default_org_access, default_user):
+def default_repo_access(db_session, default_repo, default_user):
     access = models.RepositoryAccess(
-        organization_id=default_repo.organization_id,
         user_id=default_user.id,
         repository_id=default_repo.id,
     )
@@ -112,10 +100,9 @@ def default_patch(default_parent_revision):
 
 
 @pytest.fixture(scope='function')
-def default_build(default_source, default_project):
+def default_build(default_source):
     return factories.BuildFactory(
         source=default_source,
-        project=default_project,
         date_started=datetime.now(timezone.utc) - timedelta(minutes=6),
         date_finished=datetime.now(timezone.utc),
         passed=True,
@@ -128,7 +115,8 @@ def default_job(default_build):
         build=default_build,
         date_started=datetime.now(timezone.utc) - timedelta(minutes=6),
         date_finished=datetime.now(timezone.utc),
-        passed=True,
+        result=Result.passed,
+        status=Status.finished,
     )
 
 
@@ -143,7 +131,6 @@ def default_artifact(default_job):
 def default_testcase(default_job):
     return factories.TestCaseFactory(
         job=default_job,
-        passed=True,
     )
 
 
@@ -155,9 +142,9 @@ def default_filecoverage(default_job):
 
 
 @pytest.fixture(scope='function')
-def default_hook(default_project):
+def default_hook(default_repo):
     return factories.HookFactory(
-        project=default_project,
+        repository=default_repo,
     )
 
 

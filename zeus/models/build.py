@@ -27,7 +27,7 @@ class Build(ProjectBoundMixin, StandardAttributes, db.Model):
     provider = db.Column(db.String, nullable=True)
     external_id = db.Column(db.String(64), nullable=True)
 
-    source = db.relationship('Source')
+    source = db.relationship('Source', innerjoin=True)
     stats = db.relationship(
         'ItemStat',
         foreign_keys='[ItemStat.item_id]',

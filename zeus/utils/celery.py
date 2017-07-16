@@ -20,13 +20,8 @@ class Celery(object):
 
     def init_app(self, app, sentry):
         self.app = app
-        new_celery = celery.Celery(
-            app.import_name,
-            broker=app.config['CELERY_BROKER_URL'],
-            backend=app.config['CELERY_RESULT_BACKEND'],
-        )
-        # XXX(dcramer): why the hell am I wasting time trying to make Celery work?
-        self.celery.__dict__.update(vars(new_celery))
+        self.celery.__autoset('broker_url', app.config['CELERY_BROKER_URL'])
+        self.celery.__autoset('result_backend', app.config['CELERY_RESULT_BACKEND'])
         self.celery.conf.update(app.config)
 
         task_prerun.connect(self._task_prerun)

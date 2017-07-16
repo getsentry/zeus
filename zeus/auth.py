@@ -54,16 +54,11 @@ class UserTenant(Tenant):
         if not self.user_id:
             return None
 
-        if not self.repository_ids:
-            return None
-
         return [
             r[0]
             for r in db.session.query(
                 Project.id,
-            ).filter(
-                Project.repository_id.in_(self.repository_ids),
-            )
+            ).filter(Project.organization_id.in_(self.organization_ids))
         ]
 
     @cached_property
@@ -71,13 +66,9 @@ class UserTenant(Tenant):
         if not self.user_id:
             return None
 
-        if not self.organization_ids:
-            return None
-
         return [
             r[0]
-            for r in db.session.query(RepositoryAccess.repository_id).filter(
-                RepositoryAccess.organization_id.in_(self.organization_ids),
+            for r in db.session.query(RepositoryAccess.organization_id).filter(
                 RepositoryAccess.user_id == self.user_id,
             )
         ]

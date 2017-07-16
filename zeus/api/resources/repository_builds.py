@@ -1,9 +1,9 @@
 from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus.config import db
-from zeus.models import Build, Project, Source
+from zeus.models import Build, Repository, Source
 
-from .base_project import BaseProjectResource
+from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema, BuildCreateSchema
 
 build_create_schema = BuildCreateSchema(strict=True)
@@ -11,10 +11,10 @@ build_schema = BuildSchema(strict=True)
 builds_schema = BuildSchema(many=True, strict=True)
 
 
-class ProjectBuildsResource(BaseProjectResource):
-    def get(self, project: Project):
+class RepositoryBuildsResource(BaseRepositoryResource):
+    def get(self, repo: Repository):
         """
-        Return a list of builds for the given project.
+        Return a list of builds for the given repository.
         """
         query = Build.query.options(
             joinedload('source').joinedload('author'),
@@ -22,11 +22,11 @@ class ProjectBuildsResource(BaseProjectResource):
             joinedload('source').joinedload('patch'),
             subqueryload_all('stats'),
         ).filter(
-            Build.project_id == project.id,
+            Build.repository_id == repo.id,
         ).order_by(Build.number.desc()).limit(100)
         return self.respond_with_schema(builds_schema, query)
 
-    def post(self, project: Project):
+    def post(self, repo: Repository):
         """
         Create a new build.
         """
@@ -38,7 +38,7 @@ class ProjectBuildsResource(BaseProjectResource):
         revision_sha = data.pop('revision_sha')
         source = Source.query.filter(
             Source.revision_sha == revision_sha,
-            Source.repository_id == project.repository_id,
+            Source.repository_id == repo.id,
         ).first()
         if not source:
             return self.error('invalid source')
@@ -56,9 +56,7 @@ class ProjectBuildsResource(BaseProjectResource):
         #     db.session.add(author)
         #     db.session.flush()
 
-        build = Build(**data)
-        build.organization_id = project.organization_id
-        build.project_id = project.id
+        build = Build(repository=repo, **data)
         # TODO(dcramer): we should convert source in the schema
         build.source = source
         build.source_id = source.id

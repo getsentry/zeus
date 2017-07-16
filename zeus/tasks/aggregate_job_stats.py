@@ -1,4 +1,3 @@
-from sqlalchemy.orm import joinedload
 from sqlalchemy.sql import func
 from uuid import UUID
 
@@ -23,21 +22,13 @@ def aggregate_build_stats_for_job(job_id: UUID):
     This should generally be fired upon a job's completion, or
     alternatively it can be used to repair aggregate data.
     """
-    job = Job.query.unrestricted_unsafe().options(
-        joinedload('project'),
-    ).filter(
+    job = Job.query.unrestricted_unsafe().filter(
         Job.id == job_id,
     ).first()
     if not job:
         raise ValueError
 
-    auth.set_current_tenant(
-        auth.Tenant(
-            organization_ids=[job.organization_id],
-            project_ids=[job.project_id],
-            repository_ids=[job.project.repository_id],
-        )
-    )
+    auth.set_current_tenant(auth.Tenant(repository_ids=[job.repository_id]))
 
     # record any job-specific stats that might not have been taken care elsewhere
     # (we might want to move TestResult's stats here as well, or move coverage's

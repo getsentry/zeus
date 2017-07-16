@@ -40,8 +40,7 @@ class JobArtifactsResource(BaseJobResource):
         result = self.schema_from_request(artifact_schema)
         artifact = result.data
         artifact.job_id = job.id
-        artifact.project_id = job.project_id
-        artifact.organization_id = job.organization_id
+        artifact.repository_id = job.repository_id
 
         if not artifact.name:
             artifact.name = file.filename

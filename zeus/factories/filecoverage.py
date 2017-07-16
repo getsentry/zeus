@@ -18,9 +18,7 @@ class FileCoverageFactory(ModelFactory):
     )
     job = factory.SubFactory('zeus.factories.JobFactory')
     job_id = factory.SelfAttribute('job.id')
-    project = factory.SelfAttribute('job.project')
-    project_id = factory.SelfAttribute('project.id')
-    organization = factory.SelfAttribute('project.organization')
+    organization = factory.SelfAttribute('job.organization')
     organization_id = factory.SelfAttribute('organization.id')
     data = 'CCCUUUU'
     lines_covered = factory.Faker('random_int', min=0, max=100)

@@ -9,17 +9,12 @@ from zeus.models import Repository, RepositoryStatus
 # TODO(dcramer): a lot of this code is shared with import_repo
 @celery.task(max_retries=None)
 def sync_repo(repo_id, max_log_passes=10):
-    repo = Repository.query.unrestricted_unsafe().get(repo_id)
+    auth.set_current_tenant(auth.Tenant(repository_ids=[repo_id]))
+
+    repo = Repository.query.get(repo_id)
     if not repo:
         current_app.logger.error('Repository %s not found', repo_id)
         return
-
-    auth.set_current_tenant(
-        auth.Tenant(
-            organization_ids=[repo.organization_id],
-            repository_ids=[repo_id],
-        )
-    )
 
     vcs = repo.get_vcs()
     if vcs is None:

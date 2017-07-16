@@ -1,18 +1,10 @@
 from datetime import datetime
 
-from zeus import auth
 from zeus.models import Repository, Revision
 from zeus.vcs.base import RevisionResult
 
 
 def test_revision_result(default_repo: Repository):
-    auth.set_current_tenant(
-        auth.Tenant(
-            organization_ids=[default_repo.organization_id],
-            repository_ids=[default_repo.id],
-        )
-    )
-
     result = RevisionResult(
         id='c' * 40,
         author='Foo Bar <foo@example.com>',

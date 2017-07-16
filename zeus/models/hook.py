@@ -10,12 +10,14 @@ from zeus.db.utils import model_repr
 
 class Hook(ProjectBoundMixin, StandardAttributes, db.Model):
     """
-    An webhook bound to a single project.
+    An webhook bound to a single respository.
     """
     token = db.Column(
         db.LargeBinary(64), default=lambda: Hook.generate_token(), unique=True, nullable=False
     )
     provider = db.Column(db.String(64), nullable=False)
+
+    project = db.relationship('Project')
 
     __tablename__ = 'hook'
     __repr__ = model_repr('project_id')

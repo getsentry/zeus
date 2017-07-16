@@ -10,7 +10,7 @@ class SourceFactory(ModelFactory):
     id = GUIDFactory()
     revision = factory.SubFactory('zeus.factories.RevisionFactory')
     repository = factory.SelfAttribute('revision.repository')
-    repository_id = factory.SelfAttribute('repository.id')
+    repository_id = factory.SelfAttribute('revision.repository_id')
     revision_sha = factory.SelfAttribute('revision.sha')
     author = factory.SelfAttribute('revision.author')
     author_id = factory.SelfAttribute('author.id')

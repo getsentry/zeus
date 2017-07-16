@@ -8,14 +8,8 @@ from zeus.utils.testresult import (
 )
 
 
-def test_full(default_project, default_job):
-    auth.set_current_tenant(
-        auth.Tenant(
-            organization_ids=[default_project.organization_id],
-            project_ids=[default_project.id],
-            repository_ids=[default_project.repository_id],
-        )
-    )
+def test_full(default_job):
+    auth.set_current_tenant(auth.Tenant(repository_ids=[default_job.repository_id]))
 
     results = [
         ZeusTestResult(
