@@ -35,9 +35,12 @@ def default_login(client, default_user):
 @pytest.fixture(scope='function')
 def default_repo():
     return factories.RepositoryFactory(
+        owner_name='getsentry',
+        name='zeus',
         url='https://github.com/getsentry/zeus.git',
         backend=models.RepositoryBackend.git,
         status=models.RepositoryStatus.active,
+        github=True,
     )
 
 

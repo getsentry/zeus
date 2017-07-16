@@ -3,7 +3,11 @@ from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Identity, ItemOption, Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider, RepositoryStatus
+from zeus.exceptions import IdentityNeedsUpgrade
+from zeus.models import (
+    Identity, ItemOption, Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider,
+    RepositoryStatus
+)
 from zeus.tasks import import_repo
 from zeus.utils import ssh
 from zeus.utils.github import GitHubClient
@@ -17,6 +21,17 @@ repos_schema = RepositorySchema(many=True, strict=True)
 
 
 class RepositoryIndexResource(Resource):
+    def get_github_client(self, user):
+        identity = Identity.query.filter(
+            Identity.provider == 'github', Identity.user_id == user.id
+        ).first()
+        if 'repo' not in identity.config['scopes']:
+            raise IdentityNeedsUpgrade(
+                scope='repo',
+                identity=identity,
+            )
+        return GitHubClient(token=identity.config['access_token'])
+
     def get(self):
         """
         Return a list of repositories.
@@ -42,22 +57,21 @@ class RepositoryIndexResource(Resource):
             return self.respond(result.errors, 403)
         data = result.data
 
+        user = auth.get_current_user()
+        assert user
+
         if provider == 'github':
-            # get their credentials
-            identity = Identity.query.filter(
-                Identity.provider == 'github', Identity.user_id == auth.get_current_user().id
-            ).first()
-            if 'repo' not in identity.config['scopes']:
+            try:
+                github = self.get_github_client(user)
+            except IdentityNeedsUpgrade as exc:
                 return self.respond(
                     {
-                        'needUpgrade': True,
-                        'upgradeUrl': '/auth/github/upgrade'
+                        'error': 'identity_needs_upgrade',
+                        'url': exc.get_upgrade_url(),
                     }, 401
                 )
-            assert identity
 
             # fetch repository details using their credentials
-            github = GitHubClient(token=identity.config['access_token'])
             repo_data = github.get('/repos/{}'.format(data['github_name']))
 
             repo, created = Repository.query.filter(
@@ -99,11 +113,7 @@ class RepositoryIndexResource(Resource):
                     }
                 )
         elif provider == 'native':
-            repo, created = Repository(
-                status=RepositoryStatus.active,
-                **data,
-            ), True
-            db.session.add(repo)
+            raise NotImplementedError
 
         db.session.flush()
 
@@ -115,7 +125,6 @@ class RepositoryIndexResource(Resource):
                 ))
                 db.session.flush()
         except IntegrityError:
-            raise
             pass
 
         db.session.commit()

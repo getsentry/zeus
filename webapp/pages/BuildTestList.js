@@ -6,8 +6,8 @@ import TestList from '../components/TestList';
 
 export default class BuildTestList extends AsyncPage {
   getEndpoints() {
-    let {buildNumber, repoName} = this.props.params;
-    return [['testList', `/repos/${repoName}/builds/${buildNumber}/tests`]];
+    let {buildNumber, ownerName, repoName} = this.props.params;
+    return [['testList', `/repos/${ownerName}/${repoName}/builds/${buildNumber}/tests`]];
   }
 
   renderBody() {

@@ -14,18 +14,15 @@ from .base import cli
 def mock_single_repository(builds=10, user_ids=()):
     repo = factories.RepositoryFactory.build(
         status=models.RepositoryStatus.active,
+        github=True,
     )
     try:
         with db.session.begin_nested():
             db.session.add(repo)
     except IntegrityError:
         repo = models.Repository.query.unrestricted_unsafe().filter(
-            models.Repository.name == repo.name
+            models.Repository.owner_name == repo.owner_name, models.Repository.name == repo.name
         ).first()
-        if not repo:
-            repo = models.Repository.query.unrestricted_unsafe().filter(
-                models.Repository.url == repo.url
-            ).first()
     else:
         click.echo('Created {!r}'.format(repo))
 
@@ -67,7 +64,7 @@ def mock_single_repository(builds=10, user_ids=()):
             for n in range(randint(0, 50)):
                 factories.FileCoverageFactory.create(job=job, in_diff=randint(0, 5) == 0)
             db.session.commit()
-            aggregate_build_stats_for_job(job_id=job.id, _app_context=False)
+            aggregate_build_stats_for_job(job_id=job.id)
 
         db.session.commit()
 

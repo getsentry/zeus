@@ -34,8 +34,8 @@ export default class RepositoryTestList extends AsyncPage {
 
 class RepositoryTestListBody extends AsyncPage {
   getEndpoints() {
-    let {repoName} = this.props.params;
-    return [['testList', `/repos/${repoName}/tests`]];
+    let {ownerName, repoName} = this.props.params;
+    return [['testList', `/repos/${ownerName}/${repoName}/tests`]];
   }
 
   renderBody() {
