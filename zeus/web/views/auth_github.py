@@ -70,7 +70,7 @@ class GitHubCompleteView(MethodView):
             'access_token': oauth_response.access_token,
             'refresh_token': oauth_response.refresh_token,
             'scopes': scopes,
-            'username': user_data['name'],
+            'login': user_data['login'],
         }
 
         try:

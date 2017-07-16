@@ -21,7 +21,7 @@ class IdentityFactory(ModelFactory):
             config={
                 'access_token': 'access-token',
                 'refresh_token': 'refresh-token',
-                'scopes': ['user:email'],
-                'username': 'test',
+                'scopes': ['user:email', 'read:org'],
+                'login': 'test',
             }
         )

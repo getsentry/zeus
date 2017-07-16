@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import {Flex, Box} from 'grid-styled';
 
@@ -50,17 +51,27 @@ export default class GitHubRepositoryList extends AsyncPage {
   }
 
   getEndpoints() {
-    return [['ghRepoList', '/github/repos']];
+    return [
+      ['ghOrgList', '/github/orgs'],
+      [
+        'ghRepoList',
+        '/github/repos',
+        {
+          query: this.props.location.query
+        }
+      ]
+    ];
   }
 
   onDisableRepo(repoName) {
     throw new Error('Not implemented');
   }
 
-  onEnableRepo(repoName) {
+  onToggleRepo(repoName, active = null) {
     let {ghRepoList} = this.state;
     let repo = ghRepoList.find(r => r.name === repoName);
-    if (repo.loading || repo.active) return;
+    if (active === null) active = !repo.active;
+    if (repo.loading || repo.active === active) return;
     repo.loading = true;
 
     // push the loading update
@@ -70,7 +81,8 @@ export default class GitHubRepositoryList extends AsyncPage {
       },
       () => {
         api
-          .post('/github/repos', {
+          .request('/github/repos', {
+            method: active ? 'POST' : 'DELETE',
             data: {
               name: repoName
             }
@@ -79,7 +91,7 @@ export default class GitHubRepositoryList extends AsyncPage {
             let newRepoList = [...this.state.ghRepoList];
             let newRepo = newRepoList.find(r => r.name === repo.name);
             // update the item in place
-            newRepo.active = true;
+            newRepo.active = active;
             newRepo.loading = false;
             this.setState({
               ghRepoList: newRepoList
@@ -103,18 +115,46 @@ export default class GitHubRepositoryList extends AsyncPage {
 
   renderBody() {
     return (
-      <div>
-        {this.state.ghRepoList.map(ghRepo => {
-          return (
-            <GitHubRepoItem
-              key={ghRepo.name}
-              repo={ghRepo}
-              onEnableRepo={() => this.onEnableRepo(ghRepo.name)}
-              onDisableRepo={() => this.onDisableRepo(ghRepo.name)}
-            />
-          );
-        })}
-      </div>
+      <Flex>
+        <Box flex="1" width={2 / 12} pr={15}>
+          <ul>
+            <li key="_">
+              <Link
+                to={{
+                  query: {},
+                  pathname: this.props.location.pathname
+                }}>
+                mine
+              </Link>
+            </li>
+            {this.state.ghOrgList.map(ghOrg => {
+              return (
+                <li key={ghOrg.name}>
+                  <Link
+                    to={{
+                      query: {orgName: ghOrg.name},
+                      pathname: this.props.location.pathname
+                    }}>
+                    {ghOrg.name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </Box>
+        <Box width={10 / 12}>
+          {this.state.ghRepoList.map(ghRepo => {
+            return (
+              <GitHubRepoItem
+                key={ghRepo.name}
+                repo={ghRepo}
+                onEnableRepo={() => this.onEnableRepo(ghRepo.name)}
+                onDisableRepo={() => this.onDisableRepo(ghRepo.name)}
+              />
+            );
+          })}
+        </Box>
+      </Flex>
     );
   }
 }

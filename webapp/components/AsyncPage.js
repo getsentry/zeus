@@ -44,7 +44,10 @@ export default class AsyncPage extends Component {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
-    if (!isEqual(this.props.params, nextProps.params)) {
+    if (
+      !isEqual(this.props.params, nextProps.params) ||
+      !isEqual((this.props.location || {}).query, (nextProps.location || {}).query)
+    ) {
       this.remountComponent(nextProps, nextContext);
     }
   }

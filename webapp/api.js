@@ -60,17 +60,13 @@ export class Request {
   }
 }
 
-/**
- * Converts input parameters to API-compatible query arguments
- * @param params
- */
-export function paramsToQueryArgs(params) {
-  return params.itemIds
-    ? {id: params.itemIds} // items matching array of itemids
-    : params.query
-      ? {query: params.query} // items matching search query
-      : undefined; // all items
-}
+const toQueryString = obj => {
+  return Object.keys(obj).reduce((s, k, i) => {
+    return `${s}${i === 0 ? '' : '&'}${encodeURIComponent(k)}=${encodeURIComponent(
+      obj[k]
+    )}`;
+  }, '');
+};
 
 export class Client {
   constructor(options) {
@@ -95,7 +91,7 @@ export class Client {
   }
 
   request(path, options = {}) {
-    let query = window.encodeURIComponent(options.query || '');
+    let query = toQueryString(options.query || {});
     let method = options.method || (options.data ? 'POST' : 'GET');
     let data = options.data;
     let id = this.uniqueId();

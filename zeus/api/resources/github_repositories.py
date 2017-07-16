@@ -13,11 +13,9 @@ from zeus.utils import ssh
 from zeus.utils.github import GitHubClient
 
 from .base import Resource
-from ..schemas import GitHubRepositorySchema, RepositorySchema
+from ..schemas import RepositorySchema
 
 repo_schema = RepositorySchema(strict=True)
-github_repo_schema = GitHubRepositorySchema(strict=True)
-repos_schema = RepositorySchema(many=True, strict=True)
 
 
 class GitHubRepositoriesResource(Resource):
@@ -49,14 +47,15 @@ class GitHubRepositoriesResource(Resource):
             )
 
         # the results of =these API calls are going to need cached
-        owner_name = request.args.get('owner_name')
+        owner_name = request.args.get('orgName')
         if not owner_name:
             response = github.get('/user/repos')
         else:
             response = github.get('/orgs/{}/repos'.format(owner_name))
 
         active_repo_ids = frozenset(
-            db.session.query(Repository.external_id).filter(
+            r[0]
+            for r in db.session.query(Repository.external_id).filter(
                 Repository.provider == RepositoryProvider.github,
             )
         )
