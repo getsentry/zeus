@@ -3,11 +3,14 @@ import os.path
 import sqlalchemy
 
 from flask import current_app
+from sqlalchemy import event
+from urllib.parse import urlparse
 
 from zeus.config import db
-from zeus.db.mixins import BoundQuery, OrganizationBoundMixin, StandardAttributes
+from zeus.db.mixins import StandardAttributes
 from zeus.db.types import Enum, StrEnum, JSONEncodedDict
 from zeus.db.utils import model_repr
+from zeus.utils.text import slugify
 
 
 class RepositoryBackend(enum.Enum):
@@ -35,26 +38,57 @@ class RepositoryStatus(enum.Enum):
         return self.name
 
 
-class RepositoryAccessBoundQuery(BoundQuery):
-    def get_constraints(self, mzero):
-        from sentry import auth
-        tenant = auth.get_current_tenant()
-        if tenant.repository_ids:
-            return mzero.class_.id.in_(tenant.repository_ids)
-        return sqlalchemy.sql.false()
+class RepositoryAccessBoundQuery(db.Query):
+    current_constrained = True
+
+    def get(self, ident):
+        # override get() so that the flag is always checked in the
+        # DB as opposed to pulling from the identity map. - this is optional.
+        return db.Query.get(self.populate_existing(), ident)
+
+    def __iter__(self):
+        return db.Query.__iter__(self.constrained())
+
+    def from_self(self, *ent):
+        # override from_self() to automatically apply
+        # the criterion too.   this works with count() and
+        # others.
+        return db.Query.from_self(self.constrained(), *ent)
+
+    def constrained(self):
+        from zeus.auth import get_current_tenant
+
+        if not self.current_constrained:
+            return self
+
+        mzero = self._mapper_zero()
+        if mzero is not None:
+            tenant = get_current_tenant()
+            if tenant.repository_ids:
+                return self.enable_assertions(False
+                                              ).filter(mzero.class_.id.in_(tenant.repository_ids))
+            else:
+                return self.enable_assertions(False).filter(sqlalchemy.sql.false())
+        return self
+
+    def unrestricted_unsafe(self):
+        rv = self._clone()
+        rv.current_constrained = False
+        return rv
 
 
-class Repository(OrganizationBoundMixin, StandardAttributes, db.Model):
+class Repository(StandardAttributes, db.Model):
     """
     Represents a single repository.
     """
+    name = db.Column(db.String(200), nullable=False, unique=True)
+    url = db.Column(db.String(200), nullable=False, unique=True)
+    backend = db.Column(Enum(RepositoryBackend), default=RepositoryBackend.unknown, nullable=False)
+    status = db.Column(Enum(RepositoryStatus), default=RepositoryStatus.inactive, nullable=False)
     provider = db.Column(
         StrEnum(RepositoryProvider), default=RepositoryProvider.native, nullable=False
     )
     external_id = db.Column(db.String(64))
-    url = db.Column(db.String(200), nullable=False)
-    backend = db.Column(Enum(RepositoryBackend), default=RepositoryBackend.unknown, nullable=False)
-    status = db.Column(Enum(RepositoryStatus), default=RepositoryStatus.inactive, nullable=False)
     data = db.Column(JSONEncodedDict, nullable=True)
     last_update = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     last_update_attempt = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
@@ -68,11 +102,11 @@ class Repository(OrganizationBoundMixin, StandardAttributes, db.Model):
         uselist=True
     )
 
+    query_class = RepositoryAccessBoundQuery
+
     __tablename__ = 'repository'
-    __table_args__ = (
-        db.UniqueConstraint('organization_id', 'provider', 'external_id', name='unq_external_id'),
-    )
-    __repr__ = model_repr('url', 'provider', 'external_id')
+    __table_args__ = (db.UniqueConstraint('provider', 'external_id', name='unq_external_id'), )
+    __repr__ = model_repr('name', 'url', 'provider')
 
     def get_vcs(self):
         from zeus.models import ItemOption
@@ -95,3 +129,11 @@ class Repository(OrganizationBoundMixin, StandardAttributes, db.Model):
             return GitVcs(**kwargs)
         else:
             raise NotImplementedError('Invalid backend: {}'.format(self.backend))
+
+
+@event.listens_for(Repository.url, 'set', retval=False)
+def set_name(target, value, oldvalue, initiator):
+    if value and not target.name:
+        parts = urlparse(value)
+        target.name = slugify(parts.path.split('.git', 1)[0][1:])
+    return value

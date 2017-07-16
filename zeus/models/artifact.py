@@ -4,7 +4,7 @@ from base64 import b64decode
 from io import BytesIO
 
 from zeus.config import db
-from zeus.db.mixins import ProjectBoundMixin, StandardAttributes
+from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
 from zeus.db.types import Enum, File, FileData, GUID
 
 ARTIFACT_STORAGE_OPTIONS = {
@@ -22,7 +22,7 @@ class ArtifactType(enum.Enum):
         return self.name
 
 
-class Artifact(ProjectBoundMixin, StandardAttributes, db.Model):
+class Artifact(RepositoryBoundMixin, StandardAttributes, db.Model):
     job_id = db.Column(GUID, db.ForeignKey('job.id', ondelete='CASCADE'), nullable=False)
     testcase_id = db.Column(GUID, db.ForeignKey('testcase.id', ondelete='CASCADE'), nullable=True)
     name = db.Column(db.String(length=256), nullable=False)

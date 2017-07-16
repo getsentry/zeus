@@ -3,24 +3,15 @@ from flask import current_app, g, session
 from typing import List, Optional
 
 from zeus.config import db
-from zeus.models import OrganizationAccess, Project, RepositoryAccess, User
+from zeus.models import ApiToken, ApiTokenRepositoryAccess, RepositoryAccess, User
 
 
 class Tenant(object):
-    def __init__(
-        self,
-        organization_ids: Optional[str]=None,
-        project_ids: Optional[str]=None,
-        repository_ids: Optional[str]=None
-    ):
-        self.organization_ids = organization_ids or []
-        self.project_ids = project_ids or []
+    def __init__(self, repository_ids: Optional[str]=None):
         self.repository_ids = repository_ids or []
 
     def __repr__(self):
-        return '<{} organization_ids={} project_ids={} repository_ids={}>'.format(
-            type(self).__name__, self.organization_ids, self.project_ids, self.repository_ids
-        )
+        return '<{} repository_ids={}>'.format(type(self).__name__, self.repository_ids)
 
     @classmethod
     def from_user(cls, user: User):
@@ -28,6 +19,33 @@ class Tenant(object):
             return cls()
 
         return UserTenant(user_id=user.id)
+
+    @classmethod
+    def from_api_token(cls, token: ApiToken):
+        if not token:
+            return cls()
+
+        return ApiTokenTenant(token_id=token.id)
+
+
+class ApiTokenTenant(Tenant):
+    def __init__(self, token_id: str):
+        self.token_id = token_id
+
+    def __repr__(self):
+        return '<{} token_id={}>'.format(type(self).__name__, self.token_id)
+
+    @cached_property
+    def repository_ids(self) -> List:
+        if not self.user_id:
+            return None
+
+        return [
+            r[0]
+            for r in db.session.query(ApiTokenRepositoryAccess.repository_id).filter(
+                RepositoryAccess.apitoken_id == self.token_id,
+            )
+        ]
 
 
 class UserTenant(Tenant):
@@ -38,37 +56,13 @@ class UserTenant(Tenant):
         return '<{} user_id={}>'.format(type(self).__name__, self.user_id)
 
     @cached_property
-    def organization_ids(self) -> List:
-        if not self.user_id:
-            return None
-
-        return [
-            r[0]
-            for r in db.session.query(OrganizationAccess.organization_id).filter(
-                OrganizationAccess.user_id == self.user_id,
-            )
-        ]
-
-    @cached_property
-    def project_ids(self) -> List:
-        if not self.user_id:
-            return None
-
-        return [
-            r[0]
-            for r in db.session.query(
-                Project.id,
-            ).filter(Project.organization_id.in_(self.organization_ids))
-        ]
-
-    @cached_property
     def repository_ids(self) -> List:
         if not self.user_id:
             return None
 
         return [
             r[0]
-            for r in db.session.query(RepositoryAccess.organization_id).filter(
+            for r in db.session.query(RepositoryAccess.repository_id).filter(
                 RepositoryAccess.user_id == self.user_id,
             )
         ]

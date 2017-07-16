@@ -18,10 +18,10 @@ class TestCaseFactory(ModelFactory):
     )
     job = factory.SubFactory('zeus.factories.JobFactory')
     job_id = factory.SelfAttribute('job.id')
+    repository = factory.SelfAttribute('job.repository')
+    repository_id = factory.SelfAttribute('repository.id')
     result = factory.Iterator([Result.failed, Result.passed])
     duration = factory.Faker('random_int', min=1, max=100000)
-    organization = factory.SelfAttribute('job.organization')
-    organization_id = factory.SelfAttribute('organization.id')
 
     class Meta:
         model = models.TestCase

@@ -3,12 +3,12 @@ from sqlalchemy.sql import func, select
 
 from zeus.config import db
 from zeus.constants import Status, Result
-from zeus.db.mixins import ProjectBoundMixin, StandardAttributes
+from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
 from zeus.db.types import Enum, GUID, JSONEncodedDict
 from zeus.db.utils import model_repr
 
 
-class Build(ProjectBoundMixin, StandardAttributes, db.Model):
+class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     """
     A single build linked to a source.
 
@@ -39,13 +39,13 @@ class Build(ProjectBoundMixin, StandardAttributes, db.Model):
 
     __tablename__ = 'build'
     __table_args__ = (
-        db.UniqueConstraint('project_id', 'number', name='unq_build_number'),
-        db.UniqueConstraint('project_id', 'provider', 'external_id', name='unq_build_provider')
+        db.UniqueConstraint('repository_id', 'number', name='unq_build_number'),
+        db.UniqueConstraint('repository_id', 'provider', 'external_id', name='unq_build_provider')
     )
     __repr__ = model_repr('number', 'status', 'result')
 
 
-@event.listens_for(Build.project_id, 'set', retval=False)
+@event.listens_for(Build.repository_id, 'set', retval=False)
 def set_number(target, value, oldvalue, initiator):
     if value is not None and target.number is None:
         target.number = select([func.next_item_value(value)])

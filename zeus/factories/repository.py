@@ -8,16 +8,19 @@ from zeus import models
 from .base import ModelFactory
 from .types import GUIDFactory
 
+orgs = ('ab', 'vitae')
+
 names = ('culpa', 'ipsa', 'eum', 'alias')
 
 
 class RepositoryFactory(ModelFactory):
     id = GUIDFactory()
-    url = factory.LazyAttribute(lambda o: 'https://github.com/getsentry/%s.git' % (choice(names), ))
+    url = factory.LazyAttribute(
+        lambda o: 'https://github.com/getsentry/%s.git' % (o.name.lower(), )
+    )
+    name = factory.LazyAttribute(lambda o: '%s%s' % (choice(orgs), choice(names)))
     backend = models.RepositoryBackend.git
     status = models.RepositoryStatus.active
-    organization = factory.SubFactory('zeus.factories.OrganizationFactory')
-    organization_id = factory.SelfAttribute('organization.id')
 
     class Meta:
         model = models.Repository

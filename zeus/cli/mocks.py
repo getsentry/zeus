@@ -12,31 +12,28 @@ from .base import cli
 
 
 def mock_single_repository(builds=10, user_ids=()):
-    org = factories.OrganizationFactory.build()
-    try:
-        with db.session.begin_nested():
-            db.session.add(org)
-    except IntegrityError:
-        org = models.Organization.query.unrestricted_unsafe().filter(
-            models.Organization.name == org.name
-        ).first()
-
-    click.echo('Created {!r}'.format(org))
-
-    for user_id in user_ids:
-        try_create(models.OrganizationAccess, {
-            'organization_id': org.id,
-            'user_id': user_id,
-        })
-
-    repo = factories.RepositoryFactory(
-        organization=org,
+    repo = factories.RepositoryFactory.build(
         status=models.RepositoryStatus.active,
     )
+    try:
+        with db.session.begin_nested():
+            db.session.add(repo)
+    except IntegrityError:
+        repo = models.Repository.query.unrestricted_unsafe().filter(
+            models.Repository.name == repo.name
+        ).first()
+        if not repo:
+            repo = models.Repository.query.unrestricted_unsafe().filter(
+                models.Repository.url == repo.url
+            ).first()
+    else:
+        click.echo('Created {!r}'.format(repo))
 
-    project = factories.ProjectFactory(
-        repository=repo,
-    )
+    for user_id in user_ids:
+        try_create(models.RepositoryAccess, {
+            'repository_id': repo.id,
+            'user_id': user_id,
+        })
 
     db.session.commit()
 
@@ -53,7 +50,7 @@ def mock_single_repository(builds=10, user_ids=()):
             ) if parent_revision else None,
         )
         parent_revision = revision
-        build = factories.BuildFactory.create(project=project, source=source)
+        build = factories.BuildFactory.create(source=source)
         click.echo('Created {!r}'.format(build))
 
         for n in range(1, 4):

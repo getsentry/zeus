@@ -12,7 +12,7 @@ class BaseHook(View):
     def dispatch_request(self, hook_id, signature, *args, **kwargs) -> Response:
 
         hook = Hook.query.unrestricted_unsafe().options(
-            joinedload('project'),
+            joinedload('repository'),
         ).get(hook_id)
         if not hook.is_valid_signature(signature):
             return '', 403
@@ -22,12 +22,7 @@ class BaseHook(View):
         except AttributeError:
             return self.respond({'message': 'resource not found'}, 405)
 
-        auth.set_current_tenant(
-            auth.Tenant(
-                organization_ids=[hook.project.organization_id],
-                project_ids=[hook.project_id],
-            )
-        )
+        auth.set_current_tenant(auth.Tenant(repository_ids=[hook.repository_id]))
 
         resp = method(hook, *args, **kwargs)
         if isinstance(resp, Response):

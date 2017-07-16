@@ -14,8 +14,6 @@ class SourceFactory(ModelFactory):
     revision_sha = factory.SelfAttribute('revision.sha')
     author = factory.SelfAttribute('revision.author')
     author_id = factory.SelfAttribute('author.id')
-    organization = factory.SelfAttribute('revision.organization')
-    organization_id = factory.SelfAttribute('organization.id')
 
     class Meta:
         model = models.Source

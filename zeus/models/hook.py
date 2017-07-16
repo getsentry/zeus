@@ -4,11 +4,11 @@ from hashlib import sha256
 from secrets import compare_digest, token_bytes
 
 from zeus.config import db
-from zeus.db.mixins import ProjectBoundMixin, StandardAttributes
+from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
 from zeus.db.utils import model_repr
 
 
-class Hook(ProjectBoundMixin, StandardAttributes, db.Model):
+class Hook(RepositoryBoundMixin, StandardAttributes, db.Model):
     """
     An webhook bound to a single respository.
     """
@@ -17,17 +17,15 @@ class Hook(ProjectBoundMixin, StandardAttributes, db.Model):
     )
     provider = db.Column(db.String(64), nullable=False)
 
-    project = db.relationship('Project')
-
     __tablename__ = 'hook'
-    __repr__ = model_repr('project_id')
+    __repr__ = model_repr('repository_id')
 
     @classmethod
     def generate_token(cls):
         return token_bytes(64)
 
     def get_signature(self):
-        return hmac.new(key=self.token, msg=self.project_id.bytes, digestmod=sha256).hexdigest()
+        return hmac.new(key=self.token, msg=self.repository_id.bytes, digestmod=sha256).hexdigest()
 
     def is_valid_signature(self, signature):
         return compare_digest(self.get_signature(), signature)

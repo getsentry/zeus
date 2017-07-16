@@ -8,10 +8,8 @@ from .types import GUIDFactory
 
 class HookFactory(ModelFactory):
     id = GUIDFactory()
-    project = factory.SubFactory('zeus.factories.ProjectFactory')
-    project_id = factory.SelfAttribute('project.id')
-    organization = factory.SelfAttribute('project.organization')
-    organization_id = factory.SelfAttribute('organization.id')
+    repository = factory.SubFactory('zeus.factories.RepositoryFactory')
+    repository_id = factory.SelfAttribute('repository.id')
     provider = 'travis'
 
     class Meta:
