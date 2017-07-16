@@ -65,11 +65,7 @@ class GitHubRepositoryList extends AsyncPage {
     ];
   }
 
-  onDisableRepo(repoName) {
-    throw new Error('Not implemented');
-  }
-
-  onToggleRepo(repoName, active = null) {
+  onToggleRepo = (repoName, active = null) => {
     let {ghRepoList} = this.state;
     let repo = ghRepoList.find(r => r.name === repoName);
     if (active === null) active = !repo.active;
@@ -108,7 +104,7 @@ class GitHubRepositoryList extends AsyncPage {
           });
       }
     );
-  }
+  };
 
   render() {
     return (
@@ -157,8 +153,8 @@ class GitHubRepositoryList extends AsyncPage {
               <GitHubRepoItem
                 key={ghRepo.name}
                 repo={ghRepo}
-                onEnableRepo={() => this.onEnableRepo(ghRepo.name)}
-                onDisableRepo={() => this.onDisableRepo(ghRepo.name)}
+                onEnableRepo={() => this.onToggleRepo(ghRepo.name, true)}
+                onDisableRepo={() => this.onToggleRepo(ghRepo.name, false)}
               />
             );
           })}

@@ -36,8 +36,8 @@ export const addIndicator = (message, type, expiresAfter = 0) => {
   };
 };
 
-export const removeIndicator = id => {
+export const removeIndicator = indicator => {
   return dispatch => {
-    dispatch(_removeIndicator(id));
+    dispatch(_removeIndicator(indicator.id));
   };
 };
