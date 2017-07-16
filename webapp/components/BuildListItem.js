@@ -25,7 +25,8 @@ export default class BuildListItem extends Component {
     let {build} = this.props;
     return (
       <BuildListItemLink
-        to={`/${project.organization.name}/${project.name}/builds/${build.number}`}>
+        to={`/projects/${project.organization
+          .name}/${project.name}/builds/${build.number}`}>
         <ResultGridRow>
           <Flex align="center">
             <Box flex="1" width={8 / 12} pr={15}>

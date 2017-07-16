@@ -10,9 +10,9 @@ import BuildOverview from './pages/BuildOverview';
 import BuildTestList from './pages/BuildTestList';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
-import ProjectDetails from './pages/ProjectDetails';
-import ProjectBuildList from './pages/ProjectBuildList';
-import ProjectTestList from './pages/ProjectTestList';
+import RepositoryDetails from './pages/RepositoryDetails';
+import RepositoryBuildList from './pages/RepositoryBuildList';
+import RepositoryTestList from './pages/RepositoryTestList';
 import UserBuildList from './pages/UserBuildList';
 
 import requireAuth from './utils/requireAuth';
@@ -22,9 +22,9 @@ export default (
     <IndexRedirect to="/builds" />
     <Route path="/add-repository" component={requireAuth(AddRepository)} />
     <Route path="/builds" component={requireAuth(UserBuildList)} />
-    <Route path="/:orgName/:projectName" component={requireAuth(ProjectDetails)}>
-      <IndexRoute component={ProjectBuildList} />
-      <Route path="tests" component={ProjectTestList} />
+    <Route path="/repos/:repoName" component={requireAuth(RepositoryDetails)}>
+      <IndexRoute component={RepositoryBuildList} />
+      <Route path="tests" component={RepositoryTestList} />
       <Route path="builds/:buildNumber" component={BuildDetails}>
         <IndexRoute component={BuildOverview} />
         <Route path="coverage" component={BuildCoverage} />
