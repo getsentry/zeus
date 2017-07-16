@@ -16,7 +16,7 @@ import IconClock from '../assets/IconClock';
 export default class BuildDetails extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
-    project: PropTypes.object.isRequired
+    repo: PropTypes.object.isRequired
   };
 
   static childContextTypes = {
@@ -33,8 +33,8 @@ export default class BuildDetails extends AsyncPage {
   }
 
   getEndpoints() {
-    let {buildNumber, orgName, projectName} = this.props.params;
-    return [['build', `/projects/${orgName}/${projectName}/builds/${buildNumber}`]];
+    let {buildNumber, repoName} = this.props.params;
+    return [['build', `/repos/${repoName}/builds/${buildNumber}`]];
   }
 
   getTitle() {

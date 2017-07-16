@@ -13,7 +13,7 @@ import TimeSince from './TimeSince';
 
 export default class BuildListItem extends Component {
   static contextTypes = {
-    project: PropTypes.object.isRequired
+    repo: PropTypes.object.isRequired
   };
 
   static propTypes = {
@@ -21,12 +21,10 @@ export default class BuildListItem extends Component {
   };
 
   render() {
-    let {project} = this.context;
+    let {repo} = this.context;
     let {build} = this.props;
     return (
-      <BuildListItemLink
-        to={`/projects/${project.organization
-          .name}/${project.name}/builds/${build.number}`}>
+      <BuildListItemLink to={`/repos/${repo.name}/builds/${build.number}`}>
         <ResultGridRow>
           <Flex align="center">
             <Box flex="1" width={8 / 12} pr={15}>

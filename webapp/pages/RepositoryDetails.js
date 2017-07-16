@@ -8,29 +8,27 @@ import Sidebar from '../components/Sidebar';
 export default class RepositoryDetails extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
-    projectList: PropTypes.arrayOf(PropTypes.object).isRequired
+    repoList: PropTypes.arrayOf(PropTypes.object).isRequired
   };
 
   static childContextTypes = {
     ...AsyncPage.childContextTypes,
     ...RepositoryDetails.contextTypes,
-    project: PropTypes.object.isRequired
+    repo: PropTypes.object.isRequired
   };
 
   getChildContext() {
     return {
       ...this.context,
-      project: this.state.repo
+      repo: this.state.repo
     };
   }
 
   getDefaultState(props, context) {
-    let {orgName, projectName} = props.params;
-    let {projectList} = context;
+    let {repoName} = props.params;
+    let {repoList} = context;
     let state = super.getDefaultState(props, context);
-    state.project = projectList.find(
-      r => r.organization.name === orgName && r.name === projectName
-    );
+    state.repo = repoList.find(r => r.name === repoName);
     return state;
   }
 

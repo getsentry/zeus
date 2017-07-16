@@ -6,18 +6,18 @@ import styled from 'styled-components';
 import Logo from '../assets/Logo';
 import NavHeading from './NavHeading';
 import SidebarLink from './SidebarLink';
-import SidebarProjectItem from './SidebarProjectItem';
+import SidebarRepoItem from './SidebarRepoItem';
 
-class ProjectList extends Component {
+class RepositoryList extends Component {
   static contextTypes = {
-    projectList: PropTypes.arrayOf(PropTypes.object).isRequired
+    repoList: PropTypes.arrayOf(PropTypes.object).isRequired
   };
 
   render() {
     return (
       <div>
-        {this.context.projectList.map(project => {
-          return <SidebarProjectItem key={project.id} repo={project} />;
+        {this.context.repoList.map(repo => {
+          return <SidebarRepoItem key={repo.id} repo={repo} />;
         })}
       </div>
     );
@@ -35,9 +35,9 @@ export default class Sidebar extends Component {
         </div>
         <SidebarLink to="/builds">My Builds</SidebarLink>
         <SidebarNavHeading>
-          Projects <AddRepoLink to="/add-repository">Add</AddRepoLink>
+          Repositories <AddRepoLink to="/add-repository">Add</AddRepoLink>
         </SidebarNavHeading>
-        <ProjectList />
+        <RepositoryList />
       </SidebarWrapper>
     );
   }
