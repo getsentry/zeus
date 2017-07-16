@@ -11,19 +11,15 @@ import './App.css';
 
 class AuthedContext extends AsyncPage {
   static childContextTypes = {
-    orgList: PropTypes.arrayOf(PropTypes.object),
     projectList: PropTypes.arrayOf(PropTypes.object)
   };
 
   getChildContext() {
-    return {
-      orgList: this.state.orgList || [],
-      projectList: this.state.projectList || []
-    };
+    return {projectList: this.state.projectList || []};
   }
 
   getEndpoints() {
-    return [['orgList', '/organizations'], ['projectList', '/projects']];
+    return [['projectList', '/projects']];
   }
 
   renderBody() {

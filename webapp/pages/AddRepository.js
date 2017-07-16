@@ -78,10 +78,9 @@ class AddRepositoryBody extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    let {orgName} = this.props.params;
     let {provider, providerConfig} = this.state;
     api
-      .post(`/orgs/${orgName}/repos`, {
+      .post('/repos', {
         data: {
           provider,
           ...providerConfig

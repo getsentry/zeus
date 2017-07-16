@@ -1,6 +1,9 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
+import Content from '../components/Content';
+import Sidebar from '../components/Sidebar';
 
 export default class ProjectDetails extends AsyncPage {
   static contextTypes = {
@@ -32,11 +35,17 @@ export default class ProjectDetails extends AsyncPage {
   }
 
   getTitle() {
-    let {params} = this.props;
-    return `${params.orgName}/${params.projectName}`;
+    return this.state.project.name;
   }
 
   renderBody() {
-    return this.props.children;
+    return (
+      <div>
+        <Sidebar params={this.props.params} />
+        <Content>
+          {this.props.children}
+        </Content>
+      </div>
+    );
   }
 }
