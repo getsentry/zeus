@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Flex, Box} from 'grid-styled';
 
-import api from '../api';
 import {addIndicator, removeIndicator} from '../actions/indicators';
 import {addRepo, removeRepo, updateRepo} from '../actions/repos';
 import AsyncPage from '../components/AsyncPage';
@@ -80,7 +79,7 @@ class GitHubRepositoryList extends AsyncPage {
         ghRepoList: [...ghRepoList]
       },
       () => {
-        api
+        this.api
           .request('/github/repos', {
             method: active ? 'POST' : 'DELETE',
             data: {
