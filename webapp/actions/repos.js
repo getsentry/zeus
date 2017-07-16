@@ -30,14 +30,11 @@ export const updateRepo = payload => {
 
 export const loadRepos = () => {
   return dispatch => {
-    return api.get('/repos').then(
-      items => {
-        dispatch({
-          type: LOAD_REPO_LIST,
-          items
-        });
-      },
-      error => {}
-    );
+    return api.get('/repos').then(items => {
+      dispatch({
+        type: LOAD_REPO_LIST,
+        items
+      });
+    });
   };
 };

@@ -53,7 +53,7 @@ export default class AsyncPage extends Component {
   }
 
   componentWillUnmount() {
-    this.api.clear();
+    this.api && this.api.clear();
   }
 
   // XXX: cant call this getInitialState as React whines

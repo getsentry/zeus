@@ -5,15 +5,15 @@ import {authSession, logout} from '../actions/auth';
 import {loadRepos} from '../actions/repos';
 import styled from 'styled-components';
 
+import AsyncComponent from '../components/AsyncComponent';
 import Indicators from '../components/Indicators';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
 
 import './App.css';
 
-class RepositoryContext extends Component {
+class RepositoryContext extends AsyncComponent {
   static propTypes = {
-    repoList: PropTypes.arrayOf(PropTypes.object),
-    loaded: PropTypes.bool
+    repoList: PropTypes.arrayOf(PropTypes.object)
   };
 
   static childContextTypes = {
@@ -24,13 +24,8 @@ class RepositoryContext extends Component {
     return {repoList: this.props.repoList};
   }
 
-  componentWillMount() {
+  fetchData() {
     this.props.loadRepos();
-  }
-
-  render() {
-    if (!this.props.loaded) return null;
-    return this.props.children;
   }
 }
 
@@ -38,7 +33,7 @@ const AuthedContext = connect(
   function(state) {
     return {
       repoList: state.repos.items,
-      loaded: state.repos.loaded
+      loading: !state.repos.loaded
     };
   },
   {loadRepos}

@@ -7,7 +7,7 @@ from .fields import EnumField
 
 class RepositorySchema(Schema):
     id = fields.UUID(dump_only=True)
-    owner_name = fields.Str(load_from='ownerName', dump_to='ownerName')
+    owner_name = fields.Str()
     name = fields.Str()
     url = fields.Str()
     provider = fields.Str()
@@ -15,8 +15,6 @@ class RepositorySchema(Schema):
     created_at = fields.DateTime(
         attribute='date_created',
         dump_only=True,
-        load_from='createdAt',
-        dump_to='createdAt',
     )
 
 

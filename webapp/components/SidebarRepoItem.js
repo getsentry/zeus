@@ -12,10 +12,10 @@ export default class SidebarRepoItem extends Component {
   render() {
     let {repo} = this.props;
     return (
-      <SidebarLink to={`/${repo.ownerName}/${repo.name}`}>
+      <SidebarLink to={`/${repo.owner_name}/${repo.name}`}>
         <SidebarRepoItemWrapper>
           <SidebarRepoItemName>
-            {repo.ownerName}/{repo.name}
+            {repo.owner_name}/{repo.name}
           </SidebarRepoItemName>
           <SidebarRepoItemStatus result={repo.result} />
         </SidebarRepoItemWrapper>

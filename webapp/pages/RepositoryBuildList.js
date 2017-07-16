@@ -1,15 +1,19 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+
+import {loadBuildsForRepository} from '../actions/builds';
 
 import AsyncPage from '../components/AsyncPage';
+import AsyncComponent from '../components/AsyncComponent';
 import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
 import BuildList from '../components/BuildList';
 import Section from '../components/Section';
 import ScrollView from '../components/ScrollView';
+import TabbedNav from '../components/TabbedNav';
 import TabbedNavItem from '../components/TabbedNavItem';
 
-export default class RepositoryBuildList extends AsyncPage {
+class RepositoryBuildList extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
     repo: PropTypes.object.isRequired
@@ -25,7 +29,7 @@ export default class RepositoryBuildList extends AsyncPage {
       <div>
         <Breadcrumbs>
           <Crumb active={true}>
-            {repo.name}
+            {repo.owner_name}/{repo.name}
           </Crumb>
         </Breadcrumbs>
         <ScrollView>
@@ -36,7 +40,7 @@ export default class RepositoryBuildList extends AsyncPage {
             <TabbedNavItem>All builds</TabbedNavItem>
           </TabbedNav>
           <Section>
-            <RepositoryBuildListBody {...this.props} />
+            <BuildListBody {...this.props} />
           </Section>
         </ScrollView>
       </div>
@@ -44,19 +48,27 @@ export default class RepositoryBuildList extends AsyncPage {
   }
 }
 
-class RepositoryBuildListBody extends AsyncPage {
-  getEndpoints() {
+class BuildListBody extends AsyncComponent {
+  static propTypes = {
+    buildList: PropTypes.array
+  };
+
+  fetchData() {
     let {ownerName, repoName} = this.props.params;
-    return [['buildList', `/repos/${ownerName}/${repoName}/builds`]];
+    this.props.loadBuildsForRepository(ownerName, repoName);
   }
 
   renderBody() {
-    return <BuildList params={this.props.params} buildList={this.state.buildList} />;
+    return <BuildList params={this.props.params} buildList={this.props.buildList} />;
   }
 }
 
-const TabbedNav = styled.div`
-  overflow: hidden;
-  margin: 0 20px 20px;
-  box-shadow: inset 0 -1px 0 #dbdae3;
-`;
+export default connect(
+  function(state) {
+    return {
+      buildList: state.builds.items,
+      loading: !state.builds.loaded
+    };
+  },
+  {loadBuildsForRepository}
+)(RepositoryBuildList);

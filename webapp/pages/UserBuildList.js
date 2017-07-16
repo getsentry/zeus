@@ -1,11 +1,16 @@
 import React from 'react';
+import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
+
+import {loadBuildsForUser} from '../actions/builds';
 
 import AsyncPage from '../components/AsyncPage';
+import AsyncComponent from '../components/AsyncComponent';
 import BuildList from '../components/BuildList';
 import Section from '../components/Section';
 import SidebarLayout from '../components/SidebarLayout';
 
-export default class RepositoryBuildList extends AsyncPage {
+class UserBuildList extends AsyncPage {
   getTitle() {
     let {userID} = this.props.params;
     return userID ? 'Builds' : 'My Builds';
@@ -15,20 +20,33 @@ export default class RepositoryBuildList extends AsyncPage {
     return (
       <SidebarLayout title={this.getTitle()}>
         <Section>
-          <UserBuildListBody {...this.props} />
+          <BuildListBody {...this.props} />
         </Section>
       </SidebarLayout>
     );
   }
 }
 
-class UserBuildListBody extends AsyncPage {
-  getEndpoints() {
-    let {userID} = this.props.params;
-    return [['buildList', `/users/${userID || 'me'}/builds`]];
+class BuildListBody extends AsyncComponent {
+  static propTypes = {
+    buildList: PropTypes.array
+  };
+
+  fetchData() {
+    this.props.loadBuildsForUser();
   }
 
   renderBody() {
-    return <BuildList params={this.props.params} buildList={this.state.buildList} />;
+    return <BuildList params={this.props.params} buildList={this.props.buildList} />;
   }
 }
+
+export default connect(
+  function(state) {
+    return {
+      buildList: state.builds.items,
+      loading: !state.builds.loaded
+    };
+  },
+  {loadBuildsForUser}
+)(UserBuildList);
