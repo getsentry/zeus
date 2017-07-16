@@ -15,16 +15,13 @@ export default class BuildJobList extends AsyncPage {
   };
 
   getEndpoints() {
-    let {buildNumber, orgName, projectName} = this.props.params;
+    let {buildNumber, repoName} = this.props.params;
     return [
-      ['jobList', `/projects/${orgName}/${projectName}/builds/${buildNumber}/jobs`],
-      [
-        'testFailures',
-        `/projects/${orgName}/${projectName}/builds/${buildNumber}/tests?result=failed`
-      ],
+      ['jobList', `/repos/${repoName}/builds/${buildNumber}/jobs`],
+      ['testFailures', `/repos/${repoName}/builds/${buildNumber}/tests?result=failed`],
       [
         'diffCoverage',
-        `/projects/${orgName}/${projectName}/builds/${buildNumber}/file-coverage?diff_only=true`
+        `/repos/${repoName}/builds/${buildNumber}/file-coverage?diff_only=true`
       ]
     ];
   }

@@ -16,8 +16,7 @@ export default class ProjectBuildList extends AsyncPage {
   };
 
   getTitle() {
-    let {project} = this.context;
-    return `${project.organization.name}/${project.name}`;
+    return this.context.project.name;
   }
 
   renderBody() {
@@ -26,7 +25,7 @@ export default class ProjectBuildList extends AsyncPage {
       <div>
         <Breadcrumbs>
           <Crumb active={true}>
-            {project.organization.name}/{project.name}
+            {project.name}
           </Crumb>
         </Breadcrumbs>
         <ScrollView>
