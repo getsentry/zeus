@@ -29,7 +29,7 @@ export class Request {
     xhr.onreadystatechange = () => {
       if (xhr.readyState === Request.DONE) {
         let responseData = this.processResponseText(xhr);
-        if (xhr.status === Request.OK) {
+        if (xhr.status >= 200 && xhr.status < 300) {
           responseData.xhr = xhr;
           resolve(responseData);
         } else {

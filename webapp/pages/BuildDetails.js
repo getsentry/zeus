@@ -98,20 +98,18 @@ export default class BuildDetails extends AsyncPage {
           </Meta>
           <Tabs>
             <TabbedNavItem
-              to={`/repos/${ownerName}/${repoName}/builds/${buildNumber}`}
+              to={`/${ownerName}/${repoName}/builds/${buildNumber}`}
               onlyActiveOnIndex={true}>
               Overview
             </TabbedNavItem>
-            <TabbedNavItem
-              to={`/repos/${ownerName}/${repoName}/builds/${buildNumber}/tests`}>
+            <TabbedNavItem to={`/${ownerName}/${repoName}/builds/${buildNumber}/tests`}>
               Tests
             </TabbedNavItem>
             <TabbedNavItem
-              to={`/repos/${ownerName}/${repoName}/builds/${buildNumber}/coverage`}>
+              to={`/${ownerName}/${repoName}/builds/${buildNumber}/coverage`}>
               Code Coverage
             </TabbedNavItem>
-            <TabbedNavItem
-              to={`/repos/${ownerName}/${repoName}/builds/${buildNumber}/diff`}>
+            <TabbedNavItem to={`/${ownerName}/${repoName}/builds/${buildNumber}/diff`}>
               Diff
             </TabbedNavItem>
           </Tabs>

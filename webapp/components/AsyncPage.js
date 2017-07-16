@@ -129,7 +129,7 @@ export default class AsyncPage extends Component {
   }
 
   getTitle() {
-    return 'Zeus';
+    return null;
   }
 
   renderLoading() {
@@ -151,8 +151,15 @@ export default class AsyncPage extends Component {
   }
 
   render() {
+    let title = this.getTitle();
+    if (!title)
+      return (
+        <div>
+          {this.renderContent()}
+        </div>
+      );
     return (
-      <DocumentTitle title={this.getTitle()}>
+      <DocumentTitle title={title}>
         {this.renderContent()}
       </DocumentTitle>
     );

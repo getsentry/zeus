@@ -39,6 +39,10 @@ class App extends Component {
     this.props.authSession();
   }
 
+  getTitle() {
+    return 'Zeus';
+  }
+
   render() {
     return (
       <div className="App">

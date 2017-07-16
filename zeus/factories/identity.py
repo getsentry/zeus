@@ -22,5 +22,6 @@ class IdentityFactory(ModelFactory):
                 'access_token': 'access-token',
                 'refresh_token': 'refresh-token',
                 'scopes': ['user:email'],
+                'username': 'test',
             }
         )

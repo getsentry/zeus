@@ -3,7 +3,8 @@ import requests
 
 from flask import current_app, redirect, request, session, url_for
 from flask.views import MethodView
-from oauth2client.client import OAuth2WebServerFlow
+from oauth2client.client import FlowExchangeError, OAuth2WebServerFlow
+from sqlalchemy.exc import IntegrityError
 
 from zeus.config import db
 from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI
@@ -48,32 +49,32 @@ class GitHubCompleteView(MethodView):
     def get(self):
         redirect_uri = request.url
         flow = get_auth_flow(redirect_uri=redirect_uri)
-        response = flow.step2_exchange(request.args['code'])
+        try:
+            oauth_response = flow.step2_exchange(request.args['code'])
+        except FlowExchangeError:
+            return redirect('/?auth_error=true')
 
-        scopes = response.token_response['scope'].split(',')
+        scopes = oauth_response.token_response['scope'].split(',')
 
         if 'user:email' not in scopes:
             raise NotImplementedError
 
-        identity_config = {
-            'access_token': response.access_token,
-            'refresh_token': response.refresh_token,
-            'scopes': scopes,
-        }
-
         # fetch user details
         response = requests.get(
-            'https://api.github.com/user', params={'access_token': identity_config['access_token']}
+            'https://api.github.com/user', params={'access_token': oauth_response.access_token}
         )
         response.raise_for_status()
         user_data = response.json()
 
-        with db.session.begin_nested():
-            existing_identity = Identity.query.filter(
-                Identity.external_id == str(user_data['id']),
-                Identity.provider == 'github',
-            ).first()
-            if not existing_identity:
+        identity_config = {
+            'access_token': oauth_response.access_token,
+            'refresh_token': oauth_response.refresh_token,
+            'scopes': scopes,
+            'username': user_data['name'],
+        }
+
+        try:
+            with db.session.begin_nested():
                 user = User(
                     email=user_data['email'],
                 )
@@ -85,19 +86,18 @@ class GitHubCompleteView(MethodView):
                     config=identity_config,
                 )
                 db.session.add(identity)
-            else:
-                user = User.query.filter(
-                    Identity.external_id == str(user_data['id']),
-                    Identity.provider == 'github',
-                    Identity.user_id == User.id,
-                ).first()
-                Identity.query.filter(
-                    Identity.external_id == str(user_data['id']),
-                    Identity.provider == 'github',
-                ).update({
-                    'config': identity_config,
-                })
+            user_id = user.id
+        except IntegrityError:
+            identity = Identity.query.filter(
+                Identity.external_id == str(user_data['id']),
+                Identity.provider == 'github',
+            ).first()
+            identity.config = identity_config
+            db.session.add(identity)
+            user_id = identity.user_id
 
-        session['uid'] = user.id.hex
+        db.session.commit()
+
+        session['uid'] = user_id
 
         return redirect(url_for(self.complete_url))

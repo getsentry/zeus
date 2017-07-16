@@ -35,7 +35,7 @@ export default class Sidebar extends Component {
         </div>
         <SidebarLink to="/builds">My Builds</SidebarLink>
         <SidebarNavHeading>
-          Repositories <AddRepoLink to="/add-repository">Add</AddRepoLink>
+          Repositories <AddRepoLink to="/settings/github/repos">Add</AddRepoLink>
         </SidebarNavHeading>
         <RepositoryList />
       </SidebarWrapper>
