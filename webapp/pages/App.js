@@ -5,6 +5,7 @@ import {authSession, logout} from '../actions/auth';
 import styled from 'styled-components';
 
 import AsyncPage from '../components/AsyncPage';
+import Indicators from '../components/Indicators';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
 
 import './App.css';
@@ -46,6 +47,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Indicators />
         {this.props.isAuthenticated === null
           ? <PageLoadingIndicator />
           : <AuthedContext>

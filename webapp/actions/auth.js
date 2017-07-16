@@ -1,10 +1,10 @@
 import api from '../api';
 import {SET_CURRENT_AUTH} from './types';
 
-export function setAuth(data) {
+export function setAuth(payload) {
   return {
     type: SET_CURRENT_AUTH,
-    data
+    payload
   };
 }
 

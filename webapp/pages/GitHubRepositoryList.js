@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Flex, Box} from 'grid-styled';
 
 import api from '../api';
+import {addIndicator, removeIndicator} from '../actions/indicators';
 import AsyncPage from '../components/AsyncPage';
 import Panel from '../components/Panel';
 import ResultGridRow from '../components/ResultGridRow';
@@ -45,7 +47,7 @@ class GitHubRepoItem extends Component {
   }
 }
 
-export default class GitHubRepositoryList extends AsyncPage {
+class GitHubRepositoryList extends AsyncPage {
   getTitle() {
     return 'GitHub Repositories';
   }
@@ -75,6 +77,7 @@ export default class GitHubRepositoryList extends AsyncPage {
     repo.loading = true;
 
     // push the loading update
+    let indicator = this.props.addIndicator('Saving changes..', 'loading');
     this.setState(
       {
         ghRepoList: [...ghRepoList]
@@ -96,6 +99,12 @@ export default class GitHubRepositoryList extends AsyncPage {
             this.setState({
               ghRepoList: newRepoList
             });
+            this.props.removeIndicator(indicator);
+          })
+          .catch(error => {
+            this.props.addIndicator('An error occurred.', 'error', 5000);
+            this.props.removeIndicator(indicator);
+            throw error;
           });
       }
     );
@@ -158,3 +167,5 @@ export default class GitHubRepositoryList extends AsyncPage {
     );
   }
 }
+
+export default connect(null, {addIndicator, removeIndicator})(GitHubRepositoryList);

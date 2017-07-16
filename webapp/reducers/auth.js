@@ -9,7 +9,7 @@ const initialState = {
 export default (state = initialState, action = {}) => {
   switch (action.type) {
     case SET_CURRENT_AUTH:
-      return {...state, ...action.data};
+      return {...state, ...action.payload};
     default:
       return state;
   }

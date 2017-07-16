@@ -24,6 +24,12 @@
         "configFile": ".eslintrc"
     },
 
+    "[css]": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true
+    },
+
     "[javascript]": {
         "editor.detectIndentation": false,
         "editor.tabSize": 2,
