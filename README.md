@@ -10,6 +10,12 @@ The initial version aims to support Travis CI via GitHub, including:
 - code coverage
 - artifacts (e.g. from ``py.test --html``)
 
+## Requirements
+
+- Python 3 (3.6+)
+- Node
+- Postgres 9.4+
+
 ## Setup
 
 ```shell
