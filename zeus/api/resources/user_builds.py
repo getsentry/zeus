@@ -17,6 +17,8 @@ class UserBuildsResource(Resource):
         """
         if user_id == 'me':
             user = auth.get_current_user()
+            if not user:
+                return self.error('not authenticated', 401)
         else:
             user = User.query.get(user_id)
 
