@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields
 
 from .fields import ResultField, StatusField
+from .repository import RepositorySchema
 from .source import SourceSummarySchema
 from .stats import StatsSchema
 
@@ -18,6 +19,7 @@ class BuildSchema(Schema):
     stats = fields.Nested(StatsSchema(), dump_only=True)
     provider = fields.Str(dump_only=True)
     external_id = fields.Str(dump_only=True)
+    repository = fields.Nested(RepositorySchema(), dump_only=True)
 
 
 class BuildCreateSchema(Schema):

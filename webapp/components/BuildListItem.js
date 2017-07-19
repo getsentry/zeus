@@ -12,17 +12,13 @@ import ResultGridRow from './ResultGridRow';
 import TimeSince from './TimeSince';
 
 export default class BuildListItem extends Component {
-  static contextTypes = {
-    repo: PropTypes.object.isRequired
-  };
-
   static propTypes = {
     build: PropTypes.object.isRequired
   };
 
   render() {
-    let {repo} = this.context;
     let {build} = this.props;
+    let repo = build.repository;
     return (
       <BuildListItemLink to={`/${repo.owner_name}/${repo.name}/builds/${build.number}`}>
         <ResultGridRow>

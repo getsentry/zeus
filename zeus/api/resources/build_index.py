@@ -14,6 +14,8 @@ class BuildIndexResource(Resource):
         Return a list of builds.
         """
         query = Build.query.options(
+            joinedload('repository'),
+            joinedload('source'),
             joinedload('source').joinedload('author'),
             joinedload('source').joinedload('revision'),
             joinedload('source').joinedload('patch'),

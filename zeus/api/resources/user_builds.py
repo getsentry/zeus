@@ -23,7 +23,9 @@ class UserBuildsResource(Resource):
             user = User.query.get(user_id)
 
         query = Build.query.options(
+            joinedload('repository'),
             contains_eager('source'),
+            joinedload('source').joinedload('author'),
             joinedload('source').joinedload('revision'),
             joinedload('source').joinedload('patch'),
             subqueryload_all('stats'),
