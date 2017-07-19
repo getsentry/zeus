@@ -34,3 +34,12 @@ class ApiTokenAuthentication(object):
 
         auth.set_current_tenant(auth.Tenant.from_api_token(api_token))
         return True
+
+
+class SessionAuthentication(object):
+    def authenticate(self):
+        user = auth.get_current_user()
+        if not user:
+            return None
+        auth.set_current_tenant(auth.Tenant.from_user(user))
+        return True

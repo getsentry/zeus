@@ -3,7 +3,7 @@ from flask import current_app, jsonify, request, Response
 from flask.views import View
 from time import sleep
 
-from ..authentication import ApiTokenAuthentication
+from ..authentication import ApiTokenAuthentication, SessionAuthentication
 
 
 class AuthenticationFailed(Exception):
@@ -13,20 +13,29 @@ class AuthenticationFailed(Exception):
 class Resource(View):
     methods = ['GET', 'POST', 'PUT', 'DELETE']
 
-    authentication_classes = (ApiTokenAuthentication, )
+    authentication_classes = (ApiTokenAuthentication, SessionAuthentication)
 
     def dispatch_request(self, *args, **kwargs) -> Response:
         delay = current_app.config.get('API_DELAY', 0)
         if delay:
             sleep(delay / 1000)
 
-        for auth_cls in self.authentication_classes:
-            try:
-                if auth_cls().authenticate():
-                    break
-            except AuthenticationFailed:
-                return self.respond({'message': 'invalid credentials'}, 401)
-
+        credentials = None
+        if self.authentication_classes:
+            for auth_cls in self.authentication_classes:
+                try:
+                    credentials = auth_cls().authenticate()
+                    if credentials:
+                        break
+                except AuthenticationFailed:
+                    return self.respond({
+                        'error': 'invalid_auth',
+                    }, 401)
+            if not credentials:
+                return self.respond({
+                    'error': 'auth_required',
+                    'url': '/auth/github',
+                }, 401)
         try:
             method = getattr(self, request.method.lower())
         except AttributeError:

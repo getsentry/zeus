@@ -34,6 +34,8 @@ export class Request {
           // we otherwise wouldn't want it
           // responseData.xhr = xhr;
           resolve(responseData);
+        } else if (xhr.status === 401 && responseData.url) {
+          window.location.href = responseData.url;
         } else {
           let error = new Error(xhr.responseText);
           error.data = responseData;
