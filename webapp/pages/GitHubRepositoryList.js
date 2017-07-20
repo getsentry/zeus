@@ -38,8 +38,12 @@ class GitHubRepoItem extends Component {
             {repo.loading
               ? '...'
               : repo.active
-                ? <a onClick={this.props.onDisableRepo}>Disable</a>
-                : <a onClick={this.props.onEnableRepo}>Enable</a>}
+                ? <a onClick={this.props.onDisableRepo} style={{cursor: 'pointer'}}>
+                    Disable
+                  </a>
+                : <a onClick={this.props.onEnableRepo} style={{cursor: 'pointer'}}>
+                    Enable
+                  </a>}
           </Box>
         </Flex>
       </ResultGridRow>

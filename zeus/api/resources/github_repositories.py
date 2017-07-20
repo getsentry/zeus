@@ -1,8 +1,11 @@
+import json
+
 from flask import request
+from hashlib import md5
 from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
-from zeus.config import db
+from zeus.config import db, redis
 from zeus.exceptions import IdentityNeedsUpgrade
 from zeus.models import (
     Identity, ItemOption, Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider,
@@ -16,6 +19,36 @@ from .base import Resource
 from ..schemas import RepositorySchema
 
 repo_schema = RepositorySchema(strict=True)
+
+ONE_DAY = 60 * 60 * 24
+
+
+class GitHubCache(object):
+    def __init__(self, client):
+        self.client = client
+
+    def get_repos(self, owner, no_cache=False):
+        cache_key = 'gh:0:repos:{}'.format(md5(owner.encode('utf-8')).hexdigest() if owner else '')
+        if no_cache:
+            result = None
+        else:
+            result = redis.get(cache_key)
+
+        if result is None:
+            # TODO(dcramer): paginate
+            if not owner:
+                response = self.client.get('/user/repos', params={'type': 'owner'})
+            else:
+                response = self.client.get('/orgs/{}/repos'.format(owner))
+
+            result = [{
+                'id': r['id'],
+                'full_name': r['full_name'],
+            } for r in response]
+            redis.setex(cache_key, json.dumps(result), ONE_DAY)
+        else:
+            result = json.loads(result)
+        return result
 
 
 class GitHubRepositoriesResource(Resource):
@@ -46,12 +79,12 @@ class GitHubRepositoriesResource(Resource):
                 }, 401
             )
 
-        # the results of =these API calls are going to need cached
+        no_cache = request.args.get('noCache') in ('1', 'true')
+
+        # the results of these API calls are going to need cached
         owner_name = request.args.get('orgName')
-        if not owner_name:
-            response = github.get('/user/repos')
-        else:
-            response = github.get('/orgs/{}/repos'.format(owner_name))
+        cache = GitHubCache(github)
+        response = cache.get_repos(owner_name, no_cache=no_cache)
 
         active_repo_ids = frozenset(
             r[0]
