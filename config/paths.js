@@ -41,7 +41,7 @@ module.exports = {
   dotenv: resolveApp('.env'),
   appBuild: resolveApp('static'),
   appPublic: resolveApp('public'),
-  appIndexJs: resolveApp('webapp/index.js'),
+  appIndexJs: resolveApp('webapp/index'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('webapp'),
   yarnLockFile: resolveApp('yarn.lock'),
