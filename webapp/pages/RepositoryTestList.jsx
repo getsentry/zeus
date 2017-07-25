@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
-import ScrollView from '../components/ScrollView';
+import RepositoryContent from '../components/RepositoryContent';
+import TestList from '../components/TestList';
 
 export default class RepositoryTestList extends AsyncPage {
   static contextTypes = {
@@ -20,13 +21,16 @@ export default class RepositoryTestList extends AsyncPage {
     return (
       <div>
         <Breadcrumbs>
-          <Crumb active={true}>
+          <Crumb>
+            {repo.owner_name}
+          </Crumb>
+          <Crumb>
             {repo.name}
           </Crumb>
         </Breadcrumbs>
-        <ScrollView>
+        <RepositoryContent {...this.props}>
           <RepositoryTestListBody {...this.props} />
-        </ScrollView>
+        </RepositoryContent>
       </div>
     );
   }
@@ -39,16 +43,6 @@ class RepositoryTestListBody extends AsyncPage {
   }
 
   renderBody() {
-    return (
-      <ul>
-        {this.state.testList.map(test => {
-          return (
-            <li key={test.name}>
-              {test.name}
-            </li>
-          );
-        })}
-      </ul>
-    );
+    return <TestList testList={this.state.testList} />;
   }
 }

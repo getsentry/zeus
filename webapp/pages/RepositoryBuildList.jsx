@@ -8,10 +8,7 @@ import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
 import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
 import BuildList from '../components/BuildList';
-import Section from '../components/Section';
-import ScrollView from '../components/ScrollView';
-import TabbedNav from '../components/TabbedNav';
-import TabbedNavItem from '../components/TabbedNavItem';
+import RepositoryContent from '../components/RepositoryContent';
 
 class RepositoryBuildList extends AsyncPage {
   static contextTypes = {
@@ -25,8 +22,6 @@ class RepositoryBuildList extends AsyncPage {
 
   renderBody() {
     let {repo} = this.context;
-    let {ownerName, repoName} = this.props.params;
-    let basePath = `/${ownerName}/${repoName}`;
     return (
       <div>
         <Breadcrumbs>
@@ -37,28 +32,9 @@ class RepositoryBuildList extends AsyncPage {
             {repo.name}
           </Crumb>
         </Breadcrumbs>
-        <ScrollView>
-          <TabbedNav>
-            <TabbedNavItem
-              to={basePath}
-              query={{}}
-              activeClassName=""
-              className={
-                this.props.location.pathname === basePath &&
-                !(this.props.location.query || {}).show
-                  ? 'active'
-                  : ''
-              }>
-              My builds
-            </TabbedNavItem>
-            <TabbedNavItem to={basePath} query={{show: 'all'}}>
-              All builds
-            </TabbedNavItem>
-          </TabbedNav>
-          <Section>
-            <BuildListBody {...this.props} />
-          </Section>
-        </ScrollView>
+        <RepositoryContent {...this.props}>
+          <BuildListBody {...this.props} />
+        </RepositoryContent>
       </div>
     );
   }

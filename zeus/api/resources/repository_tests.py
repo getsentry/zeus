@@ -15,6 +15,7 @@ class RepositoryTestsResource(BaseRepositoryResource):
         """
         Return a list of testcases for the given repository.
         """
+        # use the most recent successful build to fetch test results
         latest_build = Build.query.join(
             Source,
             Source.id == Build.source_id,
@@ -24,7 +25,7 @@ class RepositoryTestsResource(BaseRepositoryResource):
             Build.result == Result.passed,
             Build.status == Status.finished,
         ).order_by(
-            Build.date_created.desc(),
+            Build.number.desc(),
         ).first()
 
         if not latest_build:
@@ -34,8 +35,10 @@ class RepositoryTestsResource(BaseRepositoryResource):
         job_list = db.session.query(Job.id).filter(
             Job.build_id == latest_build.id,
         )
+        if not job_list:
+            current_app.logger.info('no successful jobs found for build')
+            return self.respond([])
 
-        # use the most completed build to fetch test results
         query = TestCase.query.filter(
             TestCase.job_id.in_(job_list),
         )
