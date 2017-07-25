@@ -28,6 +28,14 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     external_id = db.Column(db.String(64), nullable=True)
     url = db.Column(db.String, nullable=True)
 
+    jobs = db.relationship(
+        'Job',
+        foreign_keys='[Job.build_id]',
+        primaryjoin='Job.build_id == Build.id',
+        lazy='subquery',
+        viewonly=True,
+        uselist=True,
+    )
     source = db.relationship('Source', innerjoin=True)
     stats = db.relationship(
         'ItemStat',
