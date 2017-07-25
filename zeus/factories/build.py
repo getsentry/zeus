@@ -2,7 +2,7 @@ import factory
 
 from datetime import timedelta
 from faker import Factory
-faker = Factory.create()
+from random import randint
 
 from zeus import models
 from zeus.constants import Result, Status
@@ -10,6 +10,8 @@ from zeus.utils import timezone
 
 from .base import ModelFactory
 from .types import GUIDFactory
+
+faker = Factory.create()
 
 
 # TODO(dcramer): this should reflect attributes of its Jobs (and
@@ -44,3 +46,12 @@ class BuildFactory(ModelFactory):
         passed = factory.Trait(result=Result.passed, status=Status.finished)
         aborted = factory.Trait(result=Result.aborted, status=Status.finished)
         anonymous = factory.Trait(author=None, author_id=None)
+        travis = factory.Trait(
+            provider='travis-ci',
+            external_id=factory.LazyAttribute(lambda o: randint(10000, 999999)),
+            url=factory.LazyAttribute(lambda o: 'https://travis-ci.org/{}/{}/builds/{}'.format(
+                o.repository.owner_name,
+                o.repository.name,
+                o.external_id,
+            )),
+        )

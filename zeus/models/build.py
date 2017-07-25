@@ -26,6 +26,7 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     data = db.Column(JSONEncodedDict, nullable=True)
     provider = db.Column(db.String, nullable=True)
     external_id = db.Column(db.String(64), nullable=True)
+    url = db.Column(db.String, nullable=True)
 
     source = db.relationship('Source', innerjoin=True)
     stats = db.relationship(

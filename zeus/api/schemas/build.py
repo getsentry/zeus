@@ -19,6 +19,7 @@ class BuildSchema(Schema):
     stats = fields.Nested(StatsSchema(), dump_only=True)
     provider = fields.Str(dump_only=True)
     external_id = fields.Str(dump_only=True)
+    url = fields.Str(dump_only=True)
     repository = fields.Nested(RepositorySchema(), dump_only=True)
 
 
@@ -28,3 +29,4 @@ class BuildCreateSchema(Schema):
     revision_sha = fields.Str()
     provider = fields.Str()
     external_id = fields.Str()
+    url = fields.Str()

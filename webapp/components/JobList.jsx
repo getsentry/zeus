@@ -24,6 +24,10 @@ export default class JobList extends Component {
                 <Box flex="1" width={11 / 12} pr={15}>
                   <ObjectResult data={job} />
                   #{build.number}.{job.number}
+                  {job.url &&
+                    <span>
+                      {' '}&mdash; <a href={job.url}>{job.url}</a>
+                    </span>}
                 </Box>
                 <Box width={1 / 12} style={{textAlign: 'right'}}>
                   <ObjectDuration data={job} short={true} />

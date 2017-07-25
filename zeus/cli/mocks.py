@@ -47,7 +47,7 @@ def mock_single_repository(builds=10, user_ids=()):
             ) if parent_revision and random() > 0.8 else None,
         )
         parent_revision = revision
-        build = factories.BuildFactory.create(source=source)
+        build = factories.BuildFactory.create(source=source, travis=True)
         click.echo('Created {!r}'.format(build))
 
         for n in range(1, 4):
@@ -56,6 +56,7 @@ def mock_single_repository(builds=10, user_ids=()):
                 build=build,
                 failed=has_failure,
                 passed=not has_failure,
+                travis=True,
             )
 
             for n in range(randint(0, 50)):

@@ -25,6 +25,7 @@ class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
     data = db.Column(JSONEncodedDict, nullable=True)
     provider = db.Column(db.String, nullable=True)
     external_id = db.Column(db.String(64), nullable=True)
+    url = db.Column(db.String, nullable=True)
 
     build = db.relationship(
         'Build', backref=db.backref('jobs', order_by='Job.date_created'), innerjoin=True
