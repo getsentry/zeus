@@ -43,17 +43,21 @@ export const loadBuilds = items => {
   };
 };
 
-export const loadBuildsForRepository = (ownerName, repoName) => {
+export const loadBuildsForRepository = (ownerName, repoName, query) => {
   return dispatch => {
     dispatch({
       type: PRE_LOAD_BUILD_LIST
     });
-    api.get(`/repos/${ownerName}/${repoName}/builds`).then(items => {
-      dispatch({
-        type: LOAD_BUILD_LIST,
-        items
+    api
+      .get(`/repos/${ownerName}/${repoName}/builds`, {
+        query
+      })
+      .then(items => {
+        dispatch({
+          type: LOAD_BUILD_LIST,
+          items
+        });
       });
-    });
   };
 };
 

@@ -25,6 +25,8 @@ class RepositoryBuildList extends AsyncPage {
 
   renderBody() {
     let {repo} = this.context;
+    let {ownerName, repoName} = this.props.params;
+    let basePath = `/${ownerName}/${repoName}`;
     return (
       <div>
         <Breadcrumbs>
@@ -37,10 +39,21 @@ class RepositoryBuildList extends AsyncPage {
         </Breadcrumbs>
         <ScrollView>
           <TabbedNav>
-            <TabbedNavItem to="/" activeNavClass="active">
+            <TabbedNavItem
+              to={basePath}
+              query={{}}
+              activeClassName=""
+              className={
+                this.props.location.pathname === basePath &&
+                !(this.props.location.query || {}).show
+                  ? 'active'
+                  : ''
+              }>
               My builds
             </TabbedNavItem>
-            <TabbedNavItem>All builds</TabbedNavItem>
+            <TabbedNavItem to={basePath} query={{show: 'all'}}>
+              All builds
+            </TabbedNavItem>
           </TabbedNav>
           <Section>
             <BuildListBody {...this.props} />
@@ -58,7 +71,7 @@ class BuildListBody extends AsyncComponent {
 
   fetchData() {
     let {ownerName, repoName} = this.props.params;
-    this.props.loadBuildsForRepository(ownerName, repoName);
+    this.props.loadBuildsForRepository(ownerName, repoName, this.props.location.query);
   }
 
   renderBody() {

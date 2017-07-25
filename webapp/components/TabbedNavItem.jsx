@@ -1,7 +1,7 @@
 import {Link} from 'react-router';
 import styled from 'styled-components';
 
-const TabbedNavItem = styled(Link)`
+export default styled(Link)`
   cursor: pointer;
   float: left;
   font-size: 15px;
@@ -10,14 +10,8 @@ const TabbedNavItem = styled(Link)`
   padding: 0 0 10px;
   border-bottom: 2px solid transparent;
 
-  &.${props => props.activeClassName} {
+  &.active {
     color: #39364E;
     border-bottom-color: #7B6BE6;
   }
 `;
-
-TabbedNavItem.defaultProps = {
-  activeClassName: 'active'
-};
-
-export default TabbedNavItem;
