@@ -1,4 +1,10 @@
-import {ADD_BUILD, LOAD_BUILD_LIST, REMOVE_BUILD, UPDATE_BUILD} from '../actions/types';
+import {
+  ADD_BUILD,
+  LOAD_BUILD_LIST,
+  PRE_LOAD_BUILD_LIST,
+  REMOVE_BUILD,
+  UPDATE_BUILD
+} from '../actions/types';
 
 const initialState = {
   items: [],
@@ -13,6 +19,11 @@ export default (state = initialState, action = {}) => {
         items: [action.payload, ...state.items]
       };
     // this should arguably dedupe to ensure correctness
+    case PRE_LOAD_BUILD_LIST:
+      return {
+        ...state,
+        loaded: false
+      };
     case LOAD_BUILD_LIST:
       return {
         ...state,

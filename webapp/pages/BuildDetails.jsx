@@ -47,8 +47,11 @@ export default class BuildDetails extends AsyncPage {
     return (
       <div>
         <Breadcrumbs>
+          <Crumb>
+            {ownerName}
+          </Crumb>
           <CrumbLink to={`/${ownerName}/${repoName}`}>
-            {ownerName}/{repoName}
+            {repoName}
           </CrumbLink>
           <Crumb>
             #{buildNumber}

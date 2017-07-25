@@ -1,5 +1,11 @@
 import api from '../api';
-import {ADD_BUILD, LOAD_BUILD_LIST, REMOVE_BUILD, UPDATE_BUILD} from './types';
+import {
+  ADD_BUILD,
+  LOAD_BUILD_LIST,
+  PRE_LOAD_BUILD_LIST,
+  REMOVE_BUILD,
+  UPDATE_BUILD
+} from './types';
 
 export const addBuild = payload => {
   return dispatch => {
@@ -39,6 +45,9 @@ export const loadBuilds = items => {
 
 export const loadBuildsForRepository = (ownerName, repoName) => {
   return dispatch => {
+    dispatch({
+      type: PRE_LOAD_BUILD_LIST
+    });
     api.get(`/repos/${ownerName}/${repoName}/builds`).then(items => {
       dispatch({
         type: LOAD_BUILD_LIST,

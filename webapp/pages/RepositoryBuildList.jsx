@@ -28,8 +28,11 @@ class RepositoryBuildList extends AsyncPage {
     return (
       <div>
         <Breadcrumbs>
-          <Crumb active={true}>
-            {repo.owner_name}/{repo.name}
+          <Crumb>
+            {repo.owner_name}
+          </Crumb>
+          <Crumb>
+            {repo.name}
           </Crumb>
         </Breadcrumbs>
         <ScrollView>
