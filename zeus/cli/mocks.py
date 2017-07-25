@@ -1,6 +1,6 @@
 import click
 
-from random import randint
+from random import randint, random
 from sqlalchemy.exc import IntegrityError
 
 from zeus import factories, models
@@ -44,7 +44,7 @@ def mock_single_repository(builds=10, user_ids=()):
             revision=revision,
             patch=factories.PatchFactory(
                 parent_revision=parent_revision,
-            ) if parent_revision else None,
+            ) if parent_revision and random() > 0.8 else None,
         )
         parent_revision = revision
         build = factories.BuildFactory.create(source=source)
@@ -52,7 +52,11 @@ def mock_single_repository(builds=10, user_ids=()):
 
         for n in range(1, 4):
             has_failure = randint(0, 2) == 0
-            job = factories.JobFactory.create(build=build, failed=has_failure)
+            job = factories.JobFactory.create(
+                build=build,
+                failed=has_failure,
+                passed=not has_failure,
+            )
 
             for n in range(randint(0, 50)):
                 test_failed = has_failure and randint(0, 5) == 0
