@@ -8,6 +8,8 @@ user_schema = UserSchema(strict=True)
 
 
 class AuthIndexResource(Resource):
+    auth_required = False
+
     def get(self):
         """
         Return information on the currently authenticated user.

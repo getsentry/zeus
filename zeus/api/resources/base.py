@@ -17,6 +17,8 @@ class Resource(View):
 
     authentication_classes = (ApiTokenAuthentication, SessionAuthentication)
 
+    auth_required = True
+
     def dispatch_request(self, *args, **kwargs) -> Response:
         delay = current_app.config.get('API_DELAY', 0)
         if delay:
@@ -33,11 +35,11 @@ class Resource(View):
                     return self.respond({
                         'error': 'invalid_auth',
                     }, 401)
-            if not credentials:
-                return self.respond({
-                    'error': 'auth_required',
-                    'url': '/auth/github',
-                }, 401)
+        if self.auth_required and not credentials:
+            return self.respond({
+                'error': 'auth_required',
+                'url': '/auth/github',
+            }, 401)
         try:
             method = getattr(self, request.method.lower())
         except AttributeError:
