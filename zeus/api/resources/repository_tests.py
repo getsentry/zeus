@@ -40,4 +40,4 @@ class RepositoryTestsResource(BaseRepositoryResource):
             TestCase.job_id.in_(job_list),
         )
 
-        return self.respond_with_schema(testcases_schema, query)
+        return self.paginate_with_schema(testcases_schema, query)

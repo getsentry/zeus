@@ -5,6 +5,8 @@ from time import sleep
 
 from ..authentication import ApiTokenAuthentication, SessionAuthentication
 
+LINK_HEADER = '<{uri}&page={page}>; rel="{name}"'
+
 
 class AuthenticationFailed(Exception):
     pass
@@ -65,3 +67,27 @@ class Resource(View):
         if result.errors:
             return self.error('invalid schema supplied')
         return self.respond(result.data, status)
+
+    def paginate_with_schema(self, schema: Schema, query, per_page: int=100) -> Response:
+        page = int(request.args.get('page', 1))
+        if not (page > 0):
+            page = 1
+
+        links = [LINK_HEADER.format(
+            uri=request.url,
+            name='next',
+            page=page + 1,
+        )]
+        if page > 1:
+            links.append(LINK_HEADER.format(
+                uri=request.url,
+                name='previous',
+                page=page - 1,
+            ))
+
+        result = query.offset((page - 1) * per_page).limit(per_page)
+
+        response = self.respond_with_schema(schema, result)
+        response.headers['X-Hits'] = query.count()
+        response.headers['Link'] = ', '.join(links)
+        return response

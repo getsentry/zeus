@@ -11,5 +11,5 @@ class RepositoryIndexResource(Resource):
         """
         Return a list of repositories.
         """
-        query = Repository.query.all()
-        return self.respond_with_schema(repos_schema, query)
+        query = Repository.query
+        return self.paginate_with_schema(repos_schema, query)

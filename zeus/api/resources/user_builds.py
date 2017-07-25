@@ -34,5 +34,5 @@ class UserBuildsResource(Resource):
             Build.source_id == Source.id,
         ).filter(
             Source.author_id.in_(db.session.query(Author.id).filter(Author.email == user.email))
-        ).order_by(Build.number.desc()).limit(100)
-        return self.respond_with_schema(builds_schema, query)
+        ).order_by(Build.number.desc())
+        return self.paginate_with_schema(builds_schema, query)
