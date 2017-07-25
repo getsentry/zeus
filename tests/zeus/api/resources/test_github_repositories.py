@@ -57,7 +57,10 @@ def test_new_repository_github(client, default_login, default_user, default_iden
 
 def test_list_github_repos(client, default_login, default_user, default_identity):
     responses.add(
-        'GET', 'https://api.github.com/user/repos', match_querystring=True, body=REPO_LIST_RESPONSE
+        'GET',
+        'https://api.github.com/user/repos?type=owner',
+        match_querystring=True,
+        body=REPO_LIST_RESPONSE
     )
 
     resp = client.get('/api/github/repos')
