@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields
 
+from .failurereason import FailureReasonSchema
 from .fields import ResultField, StatusField
 from .stats import StatsSchema
 
@@ -18,3 +19,4 @@ class JobSchema(Schema):
     provider = fields.Str()
     external_id = fields.Str()
     url = fields.Str()
+    failures = fields.List(fields.Nested(FailureReasonSchema), dump_only=True)

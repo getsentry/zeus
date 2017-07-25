@@ -18,6 +18,7 @@ class BuildJobsResource(BaseBuildResource):
         """
         query = Job.query.options(
             subqueryload_all('stats'),
+            subqueryload_all('failures'),
         ).filter(Job.build_id == build.id).order_by(Job.number.asc())
         return self.respond_with_schema(jobs_schema, query)
 

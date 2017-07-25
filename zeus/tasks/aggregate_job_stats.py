@@ -5,7 +5,7 @@ from zeus import auth
 from zeus.config import celery, db, redis
 from zeus.constants import Result, Status
 from zeus.db.utils import create_or_update
-from zeus.models import Build, FileCoverage, ItemStat, Job
+from zeus.models import (Build, FailureReason, FileCoverage, ItemStat, Job, TestCase)
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 
 STATS = (
@@ -35,6 +35,8 @@ def aggregate_build_stats_for_job(job_id: UUID):
     # stats elsewhere)
     record_coverage_stats(job)
 
+    record_failure_reasons(job)
+
     lock_key = 'aggstatsbuild:{build_id}'.format(
         build_id=job.build_id.hex,
     )
@@ -63,6 +65,32 @@ def aggregate_stat_for_build(build: Build, name: str, func_=func.sum):
         },
         values={'value': value},
     )
+
+
+def record_failure_reasons(job: Job):
+    has_failures = db.session.query(
+        TestCase.query.filter(
+            TestCase.job_id == job.id,
+            TestCase.result == Result.failed,
+        ).exists()
+    ).scalar()
+    any_failures = False
+
+    if has_failures:
+        any_failures = True
+        db.session.add(
+            FailureReason(
+                job_id=job.id,
+                repository_id=job.repository_id,
+                reason=FailureReason.Code.failing_tests,
+            )
+        )
+
+    if any_failures and job.result == Result.passed:
+        job.result = Result.failed
+        db.session.add(job)
+
+    db.session.flush()
 
 
 def record_coverage_stats(job: Job):

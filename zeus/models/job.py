@@ -38,6 +38,14 @@ class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
         viewonly=True,
         uselist=True
     )
+    failures = db.relationship(
+        'FailureReason',
+        foreign_keys='[FailureReason.job_id]',
+        primaryjoin='FailureReason.job_id == Job.id',
+        lazy='subquery',
+        viewonly=True,
+        uselist=True,
+    )
 
     __tablename__ = 'job'
     __table_args__ = (
