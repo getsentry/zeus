@@ -1,7 +1,5 @@
 import {ADD_BUILD, LOAD_BUILD_LIST, REMOVE_BUILD, UPDATE_BUILD} from '../actions/types';
 
-import {sortBy} from 'lodash';
-
 const initialState = {
   items: [],
   loaded: false
@@ -12,13 +10,13 @@ export default (state = initialState, action = {}) => {
     case ADD_BUILD:
       return {
         ...state,
-        items: sortBy([...state.items, action.payload], ['createdAt']).reverse()
+        items: [action.payload, ...state.items]
       };
     // this should arguably dedupe to ensure correctness
     case LOAD_BUILD_LIST:
       return {
         ...state,
-        items: sortBy([...action.items], ['createdAt']).reverse(),
+        items: [...action.items],
         loaded: true
       };
     case REMOVE_BUILD:
