@@ -10,9 +10,13 @@ import BuildTestList from './pages/BuildTestList';
 import Login from './pages/Login';
 import GitHubRepositoryList from './pages/GitHubRepositoryList';
 import NotFound from './pages/NotFound';
+import OwnerDetails from './pages/OwnerDetails';
 import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
+import RepositorySettings from './pages/RepositorySettings';
+import RepositoryTests from './pages/RepositoryTests';
 import RepositoryTestList from './pages/RepositoryTestList';
+import RepositoryTestTree from './pages/RepositoryTestTree';
 import UserBuildList from './pages/UserBuildList';
 
 import requireAuth from './utils/requireAuth';
@@ -23,9 +27,14 @@ export default (
     <Route path="/settings/github/repos" component={requireAuth(GitHubRepositoryList)} />
     <Route path="/builds" component={requireAuth(UserBuildList)} />
     <Route path="/login" component={Login} />
+    <Route path="/:ownerName" component={requireAuth(OwnerDetails)} />
     <Route path="/:ownerName/:repoName" component={requireAuth(RepositoryDetails)}>
       <IndexRoute component={RepositoryBuildList} />
-      <Route path="tests" component={RepositoryTestList} />
+      <Route path="settings" component={RepositorySettings} />
+      <Route path="tests" component={RepositoryTests}>
+        <IndexRoute component={RepositoryTestTree} />
+        <Route path="all" component={RepositoryTestList} />
+      </Route>
       <Route path="builds/:buildNumber" component={BuildDetails}>
         <IndexRoute component={BuildOverview} />
         <Route path="coverage" component={BuildCoverage} />

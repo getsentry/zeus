@@ -91,6 +91,6 @@ class RepositoryTestTreeResource(BaseRepositoryResource):
             trail = []
 
         return {
-            'groups': results,
+            'entries': results,
             'trail': trail,
         }

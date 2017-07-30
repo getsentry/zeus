@@ -6,9 +6,11 @@ import {loadBuildsForRepository} from '../actions/builds';
 
 import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
-import {Breadcrumbs, Crumb} from '../components/Breadcrumbs';
 import BuildList from '../components/BuildList';
 import RepositoryContent from '../components/RepositoryContent';
+import RepositoryHeader from '../components/RepositoryHeader';
+import TabbedNav from '../components/TabbedNav';
+import TabbedNavItem from '../components/TabbedNavItem';
 
 class RepositoryBuildList extends AsyncPage {
   static contextTypes = {
@@ -21,18 +23,38 @@ class RepositoryBuildList extends AsyncPage {
   }
 
   renderBody() {
-    let {repo} = this.context;
+    let props = this.props;
+    let repo = this.context.repo;
+    let basePath = `/${repo.owner_name}/${repo.name}`;
     return (
       <div>
-        <Breadcrumbs>
-          <Crumb>
-            {repo.owner_name}
-          </Crumb>
-          <Crumb>
-            {repo.name}
-          </Crumb>
-        </Breadcrumbs>
+        <RepositoryHeader />
         <RepositoryContent {...this.props}>
+          <TabbedNav>
+            <TabbedNavItem
+              to={basePath}
+              query={{}}
+              activeClassName=""
+              className={
+                props.location.pathname === basePath && !(props.location.query || {}).show
+                  ? 'active'
+                  : ''
+              }>
+              My builds
+            </TabbedNavItem>
+            <TabbedNavItem
+              to={basePath}
+              query={{show: 'all'}}
+              activeClassName=""
+              className={
+                props.location.pathname === basePath &&
+                (props.location.query || {}).show === 'all'
+                  ? 'active'
+                  : ''
+              }>
+              All builds
+            </TabbedNavItem>
+          </TabbedNav>
           <BuildListBody {...this.props} />
         </RepositoryContent>
       </div>

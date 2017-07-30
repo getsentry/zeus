@@ -7,6 +7,7 @@ import BuildAuthor from '../components/BuildAuthor';
 import {Breadcrumbs, Crumb, CrumbLink} from '../components/Breadcrumbs';
 import ObjectDuration from '../components/ObjectDuration';
 import ObjectResult from '../components/ObjectResult';
+import RepositoryHeader from '../components/RepositoryHeader';
 import ScrollView from '../components/ScrollView';
 import TabbedNavItem from '../components/TabbedNavItem';
 import TimeSince from '../components/TimeSince';
@@ -45,11 +46,11 @@ export default class BuildDetails extends AsyncPage {
     // happens before loading is done
     let {ownerName, repoName, buildNumber} = this.props.params;
     return (
-      <div>
+      <RepositoryHeader>
         <Breadcrumbs>
-          <Crumb>
+          <CrumbLink to={`/${ownerName}`}>
             {ownerName}
-          </Crumb>
+          </CrumbLink>
           <CrumbLink to={`/${ownerName}/${repoName}`}>
             {repoName}
           </CrumbLink>
@@ -60,7 +61,7 @@ export default class BuildDetails extends AsyncPage {
         <ScrollView>
           {this.renderContent()}
         </ScrollView>
-      </div>
+      </RepositoryHeader>
     );
   }
 

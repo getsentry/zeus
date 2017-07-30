@@ -64,29 +64,29 @@ def test_simple(
     resp = client.get(path)
     assert resp.status_code == 200
     data = resp.json()
-    assert len(data['groups']) == 2
-    assert data['groups'][0]['name'] == 'foo'
-    assert data['groups'][0]['path'] == 'foo'
-    assert data['groups'][0]['numTests'] == 2
-    assert data['groups'][0]['totalDuration'] == 120
-    assert data['groups'][1]['name'] == 'blah.blah'
-    assert data['groups'][1]['path'] == 'blah.blah'
-    assert data['groups'][1]['numTests'] == 1
-    assert data['groups'][1]['totalDuration'] == 10
+    assert len(data['entries']) == 2
+    assert data['entries'][0]['name'] == 'foo'
+    assert data['entries'][0]['path'] == 'foo'
+    assert data['entries'][0]['numTests'] == 2
+    assert data['entries'][0]['totalDuration'] == 120
+    assert data['entries'][1]['name'] == 'blah.blah'
+    assert data['entries'][1]['path'] == 'blah.blah'
+    assert data['entries'][1]['numTests'] == 1
+    assert data['entries'][1]['totalDuration'] == 10
     assert len(data['trail']) == 0
 
     resp = client.get('{}?parent=foo'.format(path))
     assert resp.status_code == 200
     data = resp.json()
-    assert len(data['groups']) == 2
-    assert data['groups'][0]['name'] == 'baz'
-    assert data['groups'][0]['path'] == 'foo.baz'
-    assert data['groups'][0]['numTests'] == 1
-    assert data['groups'][0]['totalDuration'] == 70
-    assert data['groups'][1]['name'] == 'bar'
-    assert data['groups'][1]['path'] == 'foo.bar'
-    assert data['groups'][1]['numTests'] == 1
-    assert data['groups'][1]['totalDuration'] == 50
+    assert len(data['entries']) == 2
+    assert data['entries'][0]['name'] == 'baz'
+    assert data['entries'][0]['path'] == 'foo.baz'
+    assert data['entries'][0]['numTests'] == 1
+    assert data['entries'][0]['totalDuration'] == 70
+    assert data['entries'][1]['name'] == 'bar'
+    assert data['entries'][1]['path'] == 'foo.bar'
+    assert data['entries'][1]['numTests'] == 1
+    assert data['entries'][1]['totalDuration'] == 50
     assert len(data['trail']) == 1
     assert data['trail'][0] == {
         'name': 'foo',
