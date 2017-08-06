@@ -1,3 +1,4 @@
+from base64 import b64encode
 from io import BytesIO
 
 from zeus.models import Artifact
@@ -42,6 +43,25 @@ def test_create_job_artifact(
         data={
             'name': 'junit.xml',
             'file': (BytesIO(sample_xunit.encode('utf-8')), 'junit.xml'),
+        },
+    )
+    assert resp.status_code == 201
+    data = resp.json()
+    artifact = Artifact.query.get(data['id'])
+    assert artifact.file.filename.endswith('junit.xml')
+
+
+def test_create_job_artifact_as_base64(
+    client, default_login, default_repo, default_build, default_job, default_repo_access,
+    sample_xunit
+):
+    resp = client.post(
+        '/api/repos/{}/{}/builds/{}/jobs/{}/artifacts'.format(
+            default_repo.owner_name, default_repo.name, default_build.number, default_job.number
+        ),
+        json={
+            'name': 'junit.xml',
+            'file': b64encode(sample_xunit.encode('utf-8')).decode('utf-8'),
         },
     )
     assert resp.status_code == 201

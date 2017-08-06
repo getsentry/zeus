@@ -1,6 +1,6 @@
 import pytest
 
-from zeus import auth, factories
+from zeus import factories
 from zeus.api.authentication import ApiTokenAuthentication, AuthenticationFailed
 
 
@@ -33,5 +33,5 @@ def test_valid_token(app, default_api_token):
     with app.test_request_context(
         '/', headers={'Authentication': 'Bearer: {}'.format(default_api_token.access_token)}
     ):
-        assert ApiTokenAuthentication().authenticate()
-        assert auth.get_current_tenant().token_id == default_api_token.id
+        tenant = ApiTokenAuthentication().authenticate()
+        assert tenant.token_id == default_api_token.id

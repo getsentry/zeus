@@ -5,9 +5,11 @@ class FileField(fields.Field):
     def _serialize(self, value, attr, obj):
         if value is None:
             return None
+        elif isinstance(value, dict):
+            return value
         return {'name': value.filename}
 
-    def _deserialize(value, attr, data):
-        if value is None:
-            return None
-        return value
+    def _deserialize(self, value, attr, data):
+        # XXX(dcramer): this would need to serialize into something compatible with
+        # the schema
+        return None

@@ -1,5 +1,8 @@
+from base64 import b64decode
+from io import BytesIO
 from flask import request
 from sqlalchemy.exc import IntegrityError
+from werkzeug.datastructures import FileStorage
 
 from zeus.config import db
 from zeus.constants import Result
@@ -27,15 +30,30 @@ class JobArtifactsResource(BaseJobResource):
     def post(self, job: Job):
         """
         Create a new artifact for the given job.
+
+        File can either be passed via standard multi-part form-data, or as a JSON value:
+
+        >>> {
+        >>>   "file": {
+        >>>       "name": "junit.xml",
+        >>>       "content": <base64-encoded string>,
+        >>> }
         """
         # dont bother storing artifacts for aborted jobs
         if job.result == Result.aborted:
             return self.error('job was aborted', status=410)
 
-        try:
-            file = request.files['file']
-        except KeyError:
-            return self.respond({'file': 'Missing data for required field.'}, status=403)
+        if request.content_type == 'application/json':
+            # file must be base64 encoded
+            file_data = request.json.get('file')
+            if not file_data:
+                return self.respond({'file': 'Missing file content.'}, status=403)
+            file = FileStorage(BytesIO(b64decode(file_data)), request.json.get('name'))
+        else:
+            try:
+                file = request.files['file']
+            except KeyError:
+                return self.respond({'file': 'Missing data for required field.'}, status=403)
 
         result = self.schema_from_request(artifact_schema)
         artifact = result.data
@@ -63,7 +81,7 @@ class JobArtifactsResource(BaseJobResource):
             return self.error('An artifact with this name already exists', 204)
 
         artifact.file.save(
-            request.files['file'],
+            file,
             '{0}/{1}/{2}_{3}'.format(
                 job.id.hex[:4], job.id.hex[4:], artifact.id.hex, artifact.name
             ),
