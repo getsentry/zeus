@@ -2,6 +2,7 @@ from json import dumps
 from flask import current_app, Response
 from functools import partialmethod
 from typing import Mapping, BinaryIO
+from zeus import auth
 
 
 class APIError(Exception):
@@ -24,7 +25,8 @@ class APIClient(object):
         data: dict=None,
         files: Mapping[str, BinaryIO]=None,
         json: dict=None,
-        request=None
+        request=None,
+        tenant=True,
     ) -> Response:
         if request:
             assert not json
@@ -33,6 +35,9 @@ class APIClient(object):
             data = request.data
             files = request.files
             json = None
+
+        if tenant is True:
+            tenant = auth.get_current_tenant()
 
         if json:
             assert not data
@@ -51,6 +56,9 @@ class APIClient(object):
                     request.content_type if request else ('application/json' if json else None)
                 ),
                 data=data,
+                environ_overrides={
+                    'zeus.tenant': tenant,
+                }
             )
         if not (200 <= response.status_code < 300):
             raise APIError('Request returned invalid status code: %d' % (response.status_code, ))

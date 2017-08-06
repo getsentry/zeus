@@ -32,8 +32,7 @@ class ApiTokenAuthentication(object):
         if api_token:
             g.current_api_token = api_token
 
-        auth.set_current_tenant(auth.Tenant.from_api_token(api_token))
-        return True
+        return auth.Tenant.from_api_token(api_token)
 
 
 class SessionAuthentication(object):
@@ -41,5 +40,4 @@ class SessionAuthentication(object):
         user = auth.get_current_user()
         if not user:
             return None
-        auth.set_current_tenant(auth.Tenant.from_user(user))
-        return True
+        return auth.Tenant.from_user(user)

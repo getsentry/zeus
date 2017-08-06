@@ -3,6 +3,8 @@ from flask import current_app, jsonify, request, Response
 from flask.views import View
 from time import sleep
 
+from zeus import auth
+
 from ..authentication import ApiTokenAuthentication, SessionAuthentication
 
 LINK_HEADER = '<{uri}&page={page}>; rel="{name}"'
@@ -24,22 +26,27 @@ class Resource(View):
         if delay:
             sleep(delay / 1000)
 
-        credentials = None
+        tenant = request.environ.get('zeus.tenant')
         if self.authentication_classes:
             for auth_cls in self.authentication_classes:
                 try:
-                    credentials = auth_cls().authenticate()
-                    if credentials:
+                    _tenant = auth_cls().authenticate()
+                    if _tenant:
+                        tenant = _tenant
                         break
                 except AuthenticationFailed:
                     return self.respond({
                         'error': 'invalid_auth',
                     }, 401)
-        if self.auth_required and not credentials:
+
+        if tenant:
+            auth.set_current_tenant(tenant)
+        elif self.auth_required:
             return self.respond({
                 'error': 'auth_required',
                 'url': '/auth/github',
             }, 401)
+
         try:
             method = getattr(self, request.method.lower())
         except AttributeError:
