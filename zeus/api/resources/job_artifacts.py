@@ -34,9 +34,8 @@ class JobArtifactsResource(BaseJobResource):
         File can either be passed via standard multi-part form-data, or as a JSON value:
 
         >>> {
-        >>>   "file": {
-        >>>       "name": "junit.xml",
-        >>>       "content": <base64-encoded string>,
+        >>>   "name": "junit.xml",
+        >>>   "file": <base64-encoded string>
         >>> }
         """
         # dont bother storing artifacts for aborted jobs
