@@ -6,7 +6,12 @@ from zeus import auth
 
 
 class APIError(Exception):
-    pass
+    @classmethod
+    def from_response(cls, response):
+        return cls(
+            'Request returned invalid status code: %d:\n%s' %
+            (response.status_code, response.data[:256].decode('utf-8'))
+        )
 
 
 class APIClient(object):
@@ -61,7 +66,7 @@ class APIClient(object):
                 }
             )
         if not (200 <= response.status_code < 300):
-            raise APIError('Request returned invalid status code: %d' % (response.status_code, ))
+            raise APIError.from_response(response)
         if response.headers['Content-Type'] != 'application/json':
             raise APIError(
                 'Request returned invalid content type: %s' % (response.headers['Content-Type'], )
