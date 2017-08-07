@@ -4,7 +4,7 @@ set -e
 
 # Perform an upgrade before booting up web/worker processes
 case "$1" in
-    run|worker)
+    zeus)
         gosu zeus zeus db upgrade
     ;;
 esac
