@@ -41,8 +41,8 @@ def create_app(_read_config=True, **config):
         'changes',
     ]
 
-    app.config['GITHUB_CLIENT_ID'] = None
-    app.config['GITHUB_CLIENT_SECRET'] = None
+    app.config['GITHUB_CLIENT_ID'] = os.environ.get('GITHUB_CLIENT_ID') or None
+    app.config['GITHUB_CLIENT_SECRET'] = os.environ.get('GITHUB_CLIENT_SECRET') or None
 
     app.config['CELERY_ACCEPT_CONTENT'] = ['zeus_json', 'json']
     app.config['CELERY_ACKS_LATE'] = True
@@ -63,7 +63,7 @@ def create_app(_read_config=True, **config):
     app.config['CELERYD_PREFETCH_MULTIPLIER'] = 1
     app.config['CELERYD_MAX_TASKS_PER_CHILD'] = 10000
 
-    app.config['REPO_ROOT'] = '/usr/local/cache/zeus-repos'
+    app.config['REPO_ROOT'] = os.environ.get('REPO_ROOT', '/usr/local/cache/zeus-repos')
 
     # app.config['DEFAULT_FILE_STORAGE'] = ''
 
