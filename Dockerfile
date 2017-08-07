@@ -5,6 +5,9 @@ ENV PYTHONUNBUFFERED 1
 
 ENV NODE_ENV production
 
+# add our user and group first to make sure their IDs get assigned consistently
+RUN groupadd -r zeus && useradd -r -m -g zeus zeus
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
@@ -13,6 +16,34 @@ RUN set -x \
     && apt-get -qy install -y --no-install-recommends \
         gcc git python3-all python3-all-dev python3-pip \
         libxml2-dev libxslt1-dev libpq-dev libffi-dev
+
+# grab gosu for easy step-down from root
+RUN set -x \
+    && export GOSU_VERSION=1.10 \
+    && apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/* \
+    && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
+    && wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
+    && export GNUPGHOME="$(mktemp -d)" \
+    && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
+    && rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
+    && chmod +x /usr/local/bin/gosu \
+    && gosu nobody true \
+    && apt-get purge -y --auto-remove wget
+
+# grab tini for signal processing and zombie killing
+RUN set -x \
+    && export TINI_VERSION=0.14.0 \
+    && apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/* \
+    && wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini" \
+    && wget -O /usr/local/bin/tini.asc "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini.asc" \
+    && export GNUPGHOME="$(mktemp -d)" \
+    && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 6380DC428747F6C393FEACA59A84159D7001A4E5 \
+    && gpg --batch --verify /usr/local/bin/tini.asc /usr/local/bin/tini \
+    && rm -r "$GNUPGHOME" /usr/local/bin/tini.asc \
+    && chmod +x /usr/local/bin/tini \
+    && tini -h \
+    && apt-get purge -y --auto-remove wget
 
 RUN set -x \
     && export NODE_VERSION=8.1.4 \
@@ -58,10 +89,17 @@ COPY . /usr/src/app
 RUN pip install -e .
 RUN node_modules/.bin/webpack --config=config/webpack.config.dev.js
 
+ENV REPO_ROOT /workspace/repos
+RUN mkdir -p $REPO_ROOT
+
+ENV PATH /usr/src/app/bin:$PATH
+
 # Make port 8080 available to the world outside this container
 EXPOSE 5000
 
-ENTRYPOINT ["/usr/src/app/docker-entrypoint.sh"]
+VOLUME /workspace
+
+ENTRYPOINT ["/usr/src/app/bin/docker-entrypoint"]
 
 # Run Zeus
 CMD ["run", "-p 5000"]

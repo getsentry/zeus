@@ -5,8 +5,18 @@ set -e
 # Perform an upgrade before booting up web/worker processes
 case "$1" in
     run|worker)
-        gosu zeus upgrade
+        gosu zeus zeus db upgrade
     ;;
 esac
+
+# Check if we're trying to execute a freight bin
+if [ -f "/usr/src/app/bin/$1" ]; then
+    set -- tini -- "$@"
+    if [ "$(id -u)" = '0' ]; then
+        mkdir -p "$REPO_ROOT"
+        chown -R zeus "$REPO_ROOT"
+        set -- gosu zeus "$@"
+    fi
+fi
 
 exec "$@"
