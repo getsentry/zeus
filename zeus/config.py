@@ -27,12 +27,14 @@ def create_app(_read_config=True, **config):
     )
 
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///zeus'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+        'SQLALCHEMY_DATABASE_URI', 'postgresql:///zeus'
+    )
     app.config['SQLALCHEMY_POOL_SIZE'] = 60
     app.config['SQLALCHEMY_MAX_OVERFLOW'] = 20
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    app.config['REDIS_URL'] = 'redis://localhost/0'
+    app.config['REDIS_URL'] = os.environ.get('REDIS_URL', 'redis://localhost/0')
 
     app.config['SENTRY_DSN'] = None
     app.config['SENTRY_INCLUDE_PATHS'] = [

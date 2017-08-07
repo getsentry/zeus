@@ -1,39 +1,15 @@
 from setuptools import setup, find_packages
 
-install_requires = [
-    'blinker==1.4',
-    'cached-property==1.3.0',
-    'celery==4.0.2',
-    'cryptography==1.9',
-    'flask==0.12.2',
-    'flask-alembic==2.0.1',
-    'flask-sqlalchemy==2.2',
-    'honcho==1.0.1',
-    'lxml==3.8.0',
-    'marshmallow==2.13.5',
-    'oauth2client==4.1.2',
-    'psycopg2==2.7.1',
-    'raven==6.1.0',
-    'redis==2.10.5',
-    'requests[security]==2.18.1',
-    'unidecode==0.04.21',
-]
 
-dev_requires = [
-    'flake8==3.3.0',
-    'ipython==6.1.0',
-    'yapf==0.16.2',
-]
+# we use pip requirements files to improve Docker layer caching
+def get_requirements(env):
+    with open('requirements-{}.txt'.format(env)) as fp:
+        return [x.strip() for x in fp.read().split('\n')]
 
-test_requires = [
-    'exam==0.10.6',
-    'factory_boy==2.8.1',
-    'pytest==3.1.2',
-    'pytest-cov==2.5.1',
-    'pytest-mock==1.6.0',
-    'pytest-responses==0.1.0',
-    'pytest-xdist==1.18.0',
-]
+
+install_requires = get_requirements('base')
+dev_requires = get_requirements('dev')
+test_requires = get_requirements('test')
 
 setup(
     name='zeus',
