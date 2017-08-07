@@ -61,5 +61,7 @@ RUN node_modules/.bin/webpack --config=config/webpack.config.dev.js
 # Make port 8080 available to the world outside this container
 EXPOSE 5000
 
+ENTRYPOINT ["/usr/src/app/docker-entrypoint.sh"]
+
 # Run Zeus
-CMD ["zeus", "run", "-p 5000"]
+CMD ["run", "-p 5000"]
