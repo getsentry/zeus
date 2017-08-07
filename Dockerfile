@@ -53,7 +53,7 @@ RUN pip install -e .
 RUN node_modules/.bin/webpack --config=config/webpack.config.dev.js
 
 # Make port 8080 available to the world outside this container
-EXPOSE 8080
+EXPOSE 5000
 
 # Run Zeus
-CMD ["zeus", "run", "--no-debugger", "--no-reload"]
+CMD ["zeus", "run", "-p 5000"]
