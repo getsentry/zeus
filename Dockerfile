@@ -46,6 +46,8 @@ COPY package.json /usr/src/app/
 RUN yarn install
 
 COPY requirements-base.txt /usr/src/app/
+COPY requirements-dev.txt /usr/src/app/
+COPY requirements-test.txt /usr/src/app/
 RUN pip install -r requirements-base.txt
 
 COPY . /usr/src/app
