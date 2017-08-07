@@ -11,7 +11,7 @@ WORKDIR /usr/src/app
 RUN set -x \
     && apt-get -qy update \
     && apt-get -qy install -y --no-install-recommends \
-        gcc python3-all python3-all-dev python3-pip \
+        gcc git python3-all python3-all-dev python3-pip \
         libxml2-dev libxslt1-dev libpq-dev libffi-dev
 
 RUN set -x \
