@@ -36,7 +36,7 @@ def create_app(_read_config=True, **config):
 
     app.config['REDIS_URL'] = os.environ.get('REDIS_URL', 'redis://localhost/0')
 
-    app.config['SENTRY_DSN'] = None
+    app.config['SENTRY_DSN'] = os.environ.get('SENTRY_DSN') or None
     app.config['SENTRY_INCLUDE_PATHS'] = [
         'changes',
     ]
