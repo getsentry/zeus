@@ -15,7 +15,7 @@ RUN set -x \
     && apt-get -qy update \
     && apt-get -qy install -y --no-install-recommends \
         gcc git python3-all python3-all-dev python3-pip \
-        libxml2-dev libxslt1-dev libpq-dev libffi-dev
+        libxml2-dev libxslt1-dev libpq-dev libffi-dev curl
 
 # grab gosu for easy step-down from root
 RUN set -x \
