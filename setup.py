@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 # we use pip requirements files to improve Docker layer caching
 def get_requirements(env):
     with open('requirements-{}.txt'.format(env)) as fp:
-        return [x.strip() for x in fp.read().split('\n')]
+        return [x.strip() for x in fp.read().split('\n') if not x.startswith('#')]
 
 
 install_requires = get_requirements('base')
