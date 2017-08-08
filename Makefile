@@ -26,7 +26,7 @@ install-js-requirements:
 	yarn install
 
 test:
-	py.test tests --tb=short
+	py.test tests
 
 reset-db:
 	$(MAKE) drop-db
