@@ -102,4 +102,4 @@ VOLUME /workspace
 ENTRYPOINT ["/usr/src/app/bin/docker-entrypoint"]
 
 # Run Zeus
-CMD ["zeus", "run", "-p 5000"]
+CMD ["zeus", "run", "-h 0.0.0.0", "-p 5000"]
