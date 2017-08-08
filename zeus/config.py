@@ -34,7 +34,17 @@ def create_app(_read_config=True, **config):
     app.config['SQLALCHEMY_MAX_OVERFLOW'] = 20
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    app.config['REDIS_URL'] = os.environ.get('REDIS_URL', 'redis://localhost/0')
+    # support for kubernetes
+    # https://kubernetes.io/docs/concepts/services-networking/service/
+    if os.environ.get('GET_HOSTS_FROM') == 'env':
+        REDIS_URL = 'redis://{}:{}/0'.format(
+            os.environ['REDIS_MASTER_SERVICE_HOST'],
+            os.environ['REDIS_MASTER_SERVICE_PORT'],
+        )
+    else:
+        REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
+
+    app.config['REDIS_URL'] = REDIS_URL
 
     app.config['SENTRY_DSN'] = os.environ.get('SENTRY_DSN') or None
     app.config['SENTRY_INCLUDE_PATHS'] = [
