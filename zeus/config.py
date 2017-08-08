@@ -43,6 +43,8 @@ def create_app(_read_config=True, **config):
         REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
         SQLALCHEMY_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql:///zeus')
 
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_URI
     app.config['SQLALCHEMY_POOL_SIZE'] = 60
