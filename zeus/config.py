@@ -26,14 +26,6 @@ def create_app(_read_config=True, **config):
         template_folder=os.path.join(ROOT, 'templates'),
     )
 
-    app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-        'SQLALCHEMY_DATABASE_URI', 'postgresql:///zeus'
-    )
-    app.config['SQLALCHEMY_POOL_SIZE'] = 60
-    app.config['SQLALCHEMY_MAX_OVERFLOW'] = 20
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
     # support for kubernetes
     # https://kubernetes.io/docs/concepts/services-networking/service/
     if os.environ.get('GET_HOSTS_FROM') == 'env':
@@ -41,8 +33,21 @@ def create_app(_read_config=True, **config):
             os.environ['REDIS_MASTER_SERVICE_HOST'],
             os.environ['REDIS_MASTER_SERVICE_PORT'],
         )
+        # Cloud SQL
+        # https://cloud.google.com/sql/docs/postgres/connect-container-engine
+        SQLALCHEMY_URI = 'postgresql://{}:{}@127.0.0.1:5432/zeus'.format(
+            os.environ['DB_USER'],
+            os.environ['DB_PASSWORD'],
+        )
     else:
         REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
+        SQLALCHEMY_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql:///zeus')
+
+    app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_URI
+    app.config['SQLALCHEMY_POOL_SIZE'] = 60
+    app.config['SQLALCHEMY_MAX_OVERFLOW'] = 20
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     app.config['REDIS_URL'] = REDIS_URL
 
