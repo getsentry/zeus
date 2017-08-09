@@ -172,6 +172,8 @@ class GitHubRepositoriesResource(Resource):
                     'read_only': True,
                 }
             )
+            # we need to commit before firing off the task
+            db.session.commit()
 
             import_repo.delay(repo_id=repo.id)
 

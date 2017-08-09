@@ -24,7 +24,9 @@ KEY_RESPONSE = """{
 }"""
 
 
-def test_new_repository_github(client, default_login, default_user, default_identity):
+def test_new_repository_github(client, mocker, default_login, default_user, default_identity):
+    mock_import_repo = mocker.patch('zeus.tasks.import_repo.delay')
+
     responses.add(
         'GET',
         'https://api.github.com/repos/getsentry/zeus',
@@ -53,6 +55,8 @@ def test_new_repository_github(client, default_login, default_user, default_iden
     access = list(RepositoryAccess.query.filter(RepositoryAccess.repository_id == repo.id))
     assert len(access) == 1
     assert access[0].user_id == default_user.id
+
+    mock_import_repo.asset_called_once_with(repo_id=repo.id)
 
 
 def test_list_github_repos(client, default_login, default_user, default_identity):
