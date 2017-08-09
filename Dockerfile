@@ -1,21 +1,29 @@
 # Use an official Python runtime as a parent image
 FROM python:3.6-slim
 
-ENV PYTHONUNBUFFERED 1
-
-ENV NODE_ENV production
-
 # add our user and group first to make sure their IDs get assigned consistently
 RUN groupadd -r zeus && useradd -r -m -g zeus zeus
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+ENV PYTHONUNBUFFERED 1
+ENV NODE_ENV production
+
+# Sane defaults for pip
+ENV PIP_NO_CACHE_DIR off
+ENV PIP_DISABLE_PIP_VERSION_CHECK on
+
+RUN mkdir -p /usr/src/zeus
+WORKDIR /usr/src/zeus
 
 RUN set -x \
-    && apt-get -qy update \
-    && apt-get -qy install -y --no-install-recommends \
-        gcc git python3-all python3-all-dev python3-pip \
-        libxml2-dev libxslt1-dev libpq-dev libffi-dev curl
+    && apt-get update && apt-get install -y --no-install-recommends \
+        curl \
+        gcc \
+        git \
+        libffi-dev \
+        libpq-dev \
+        libxml2-dev \
+        libxslt-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # grab gosu for easy step-down from root
 RUN set -x \
@@ -33,7 +41,7 @@ RUN set -x \
 
 # grab tini for signal processing and zombie killing
 RUN set -x \
-    && export TINI_VERSION=0.14.0 \
+    && export TINI_VERSION=0.15.0 \
     && apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/* \
     && wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini" \
     && wget -O /usr/local/bin/tini.asc "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini.asc" \
@@ -45,10 +53,11 @@ RUN set -x \
     && tini -h \
     && apt-get purge -y --auto-remove wget
 
+# gpg keys listed at https://github.com/nodejs/node
 RUN set -x \
     && export NODE_VERSION=8.1.4 \
+    && export YARN_VERSION=0.27.5 \
     && export GNUPGHOME="$(mktemp -d)" \
-    # gpg keys listed at https://github.com/nodejs/node
     && for key in \
       9554F04D7259F04124DE6B476D5A82AC7E37093B \
       94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
@@ -68,38 +77,38 @@ RUN set -x \
     && grep " node-v$NODE_VERSION-linux-x64.tar.gz\$" SHASUMS256.txt.asc | sha256sum -c - \
     && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
     && rm -r "$GNUPGHOME" "node-v$NODE_VERSION-linux-x64.tar.gz" SHASUMS256.txt.asc \
-    && apt-get purge -y --auto-remove wget
+    && apt-get purge -y --auto-remove wget \
+    && npm install -g yarn@$YARN_VERSION \
+    && npm cache clear --force
 
-RUN npm install -g yarn
+COPY package.json yarn.lock /usr/src/zeus/
+RUN yarn install --production --pure-lockfile --ignore-optional \
+    && yarn cache clean
 
-COPY yarn.lock /usr/src/app/
-COPY package.json /usr/src/app/
-RUN yarn install
-
-COPY requirements-base.txt /usr/src/app/
+COPY requirements-base.txt /usr/src/zeus/
 RUN pip install -r requirements-base.txt
 
-COPY requirements-dev.txt /usr/src/app/
+COPY requirements-dev.txt /usr/src/zeus/
 RUN pip install -r requirements-dev.txt
 
-COPY requirements-test.txt /usr/src/app/
+COPY requirements-test.txt /usr/src/zeus/
 RUN pip install -r requirements-test.txt
 
-COPY . /usr/src/app
-RUN pip install -e .
-RUN node_modules/.bin/webpack --config=config/webpack.config.dev.js
+COPY . /usr/src/zeus
+RUN pip install -e . \
+    && node_modules/.bin/webpack --config=config/webpack.config.dev.js
 
 ENV REPO_ROOT /workspace/repos
 RUN mkdir -p $REPO_ROOT
 
-ENV PATH /usr/src/app/bin:$PATH
+ENV PATH /usr/src/zeus/bin:$PATH
 
-# Make port 8080 available to the world outside this container
+# Make port 5000 available to the world outside this container
 EXPOSE 5000
 
 VOLUME /workspace
 
-ENTRYPOINT ["/usr/src/app/bin/docker-entrypoint"]
+ENTRYPOINT ["docker-entrypoint"]
 
 # Run Zeus
 CMD ["zeus", "run", "--host=0.0.0.0", "--port=5000"]
