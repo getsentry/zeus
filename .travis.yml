@@ -18,6 +18,6 @@ install:
   - make
 script:
   - git --version
-  - py.test tests --cov zeus --cov-report term-missing
+  - py.test tests -v --cov zeus --cov-report term-missing
 after_success:
   - codecov
