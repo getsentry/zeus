@@ -1,5 +1,8 @@
 language: python
 sudo: false
+services:
+  - redis-server
+  - postgresql
 python:
   - "3.6"
 cache:
