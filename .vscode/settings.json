@@ -44,8 +44,9 @@
 
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
-
     "python.formatting.provider": "yapf",
+    // https://github.com/DonJayamanne/pythonVSCode/issues/992
+    "python.formatting.yapfArgs": ["--style", "${workspaceRoot}/setup.cfg"],
     "python.pythonPath": "${env.WORKON_HOME}/zeus/bin/python",
     "python.unitTest.pyTestEnabled": false,
     "python.unitTest.unittestEnabled": false,
