@@ -13,6 +13,7 @@ import NotFound from './pages/NotFound';
 import OwnerDetails from './pages/OwnerDetails';
 import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
+import RepositoryHooks from './pages/RepositoryHooks';
 import RepositorySettings from './pages/RepositorySettings';
 import RepositoryTests from './pages/RepositoryTests';
 import RepositoryTestList from './pages/RepositoryTestList';
@@ -30,7 +31,9 @@ export default (
     <Route path="/:ownerName" component={requireAuth(OwnerDetails)} />
     <Route path="/:ownerName/:repoName" component={requireAuth(RepositoryDetails)}>
       <IndexRoute component={RepositoryBuildList} />
-      <Route path="settings" component={RepositorySettings} />
+      <Route path="settings" component={RepositorySettings}>
+        <Route path="settings/hooks" component={RepositoryHooks} />
+      </Route>
       <Route path="tests" component={RepositoryTests}>
         <IndexRoute component={RepositoryTestTree} />
         <Route path="all" component={RepositoryTestList} />
