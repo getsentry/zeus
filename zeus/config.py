@@ -49,7 +49,6 @@ def create_app(_read_config=True, **config):
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
     # if we're not running in debug mode, we require SSL
-    app.config['SESSION_COOKIE_SECURE'] = not app.debug
     app.config['PREFERRED_URL_SCHEME'] = ('https' if not not app.debug else 'http')
 
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
@@ -101,6 +100,8 @@ def create_app(_read_config=True, **config):
             app.config.from_pyfile(path, silent=True)
 
     app.config.update(config)
+
+    app.config['SESSION_COOKIE_SECURE'] = app.config['PREFERRED_URL_SCHEME'] == 'https'
 
     from zeus.testutils.client import ZeusTestClient
     app.test_client_class = ZeusTestClient
