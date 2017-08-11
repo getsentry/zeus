@@ -48,6 +48,8 @@ def create_app(_read_config=True, **config):
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
+    app.config['LOG_LEVEL'] = os.environ.get('LOG_LEVEL') or 'INFO'
+
     # if we're not running in debug mode, we require SSL
     app.config['PREFERRED_URL_SCHEME'] = 'https' if not app.debug else 'http'
 
@@ -113,6 +115,9 @@ def create_app(_read_config=True, **config):
 
     from zeus.testutils.client import ZeusTestClient
     app.test_client_class = ZeusTestClient
+
+    if app.config.get('LOG_LEVEL'):
+        app.logger.setLevel(getattr(logging, app.config['LOG_LEVEL'].upper()))
 
     # init sentry first
     sentry.init_app(app)
