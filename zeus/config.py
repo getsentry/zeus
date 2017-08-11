@@ -43,7 +43,8 @@ def create_app(_read_config=True, **config):
         REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
         SQLALCHEMY_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql:///zeus')
 
-    app.config['SERVER_NAME'] = os.environ.get('SERVER_NAME')
+    if os.environ.get('SERVER_NAME'):
+        app.config['SERVER_NAME'] = os.environ['SERVER_NAME']
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
