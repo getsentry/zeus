@@ -101,6 +101,14 @@ def create_app(_read_config=True, **config):
 
     app.config.update(config)
 
+    req_vars = (
+        'GITHUB_CLIENT_ID', 'GITHUB_CLIENT_SECRET', 'REDIS_URL', 'SECRET_KEY',
+        'SQLALCHEMY_DATABASE_URI'
+    )
+    for varname in req_vars:
+        if not app.config.get(varname):
+            raise SystemExit('Required configuration not present for {}'.format(varname))
+
     app.config['SESSION_COOKIE_SECURE'] = app.config['PREFERRED_URL_SCHEME'] == 'https'
 
     from zeus.testutils.client import ZeusTestClient
