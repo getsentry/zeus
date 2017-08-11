@@ -95,11 +95,11 @@ RUN mkdir -p $REPO_ROOT
 ENV PATH /usr/src/app/bin:$PATH
 
 # Make port 8080 available to the world outside this container
-EXPOSE 5000
+EXPOSE 8080
 
 VOLUME /workspace
 
 ENTRYPOINT ["/usr/src/app/bin/docker-entrypoint"]
 
 # Run Zeus
-CMD ["zeus", "run", "--host=0.0.0.0", "--port=5000"]
+CMD ["zeus", "run", "--host=0.0.0.0", "--port=8080"]
