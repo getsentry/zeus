@@ -50,7 +50,7 @@ def create_app(_read_config=True, **config):
 
     # if we're not running in debug mode, we require SSL
     app.config['SESSION_COOKIE_SECURE'] = not app.debug
-    app.config['PREFERRED_URL_SCHEME'] = not app.debug
+    app.config['PREFERRED_URL_SCHEME'] = ('https' if not not app.debug else 'http')
 
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_URI
