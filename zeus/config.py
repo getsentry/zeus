@@ -48,6 +48,10 @@ def create_app(_read_config=True, **config):
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
+    # if we're not running in debug mode, we require SSL
+    app.config['SESSION_COOKIE_SECURE'] = not app.debug
+    app.config['PREFERRED_URL_SCHEME'] = not app.debug
+
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_URI
     app.config['SQLALCHEMY_POOL_SIZE'] = 60
