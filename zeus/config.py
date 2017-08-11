@@ -51,7 +51,8 @@ def create_app(_read_config=True, **config):
     app.config['LOG_LEVEL'] = os.environ.get('LOG_LEVEL') or 'INFO'
 
     # if we're not running in debug mode, we require SSL
-    app.config['PREFERRED_URL_SCHEME'] = 'https' if not app.debug else 'http'
+    app.config['PREFERRED_URL_SCHEME'
+               ] = (os.environ.get('PREFERRED_URL_SCHEME') or 'https' if not app.debug else 'http')
 
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_URI
