@@ -10,7 +10,7 @@ from zeus.utils.redis import Redis
 
 import os
 
-ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
 alembic = Alembic()
 celery = Celery()
