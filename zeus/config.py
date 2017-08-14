@@ -19,6 +19,14 @@ redis = Redis()
 sentry = Sentry(logging=True, level=logging.WARN)
 
 
+def force_ssl(app):
+    def middleware(environ, start_response):
+        environ['wsgi.url_scheme'] = 'https'
+        return app(environ, start_response)
+
+    return middleware
+
+
 def create_app(_read_config=True, **config):
     app = Flask(
         __name__,
@@ -50,9 +58,7 @@ def create_app(_read_config=True, **config):
 
     app.config['LOG_LEVEL'] = os.environ.get('LOG_LEVEL') or 'INFO'
 
-    # if we're not running in debug mode, we require SSL
-    app.config['PREFERRED_URL_SCHEME'
-               ] = (os.environ.get('PREFERRED_URL_SCHEME') or 'https' if not app.debug else 'http')
+    app.config['SSL'] = os.environ.get('SSL') in ('1', 'true', 'on')
 
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_URI
@@ -112,7 +118,10 @@ def create_app(_read_config=True, **config):
         if not app.config.get(varname):
             raise SystemExit('Required configuration not present for {}'.format(varname))
 
-    app.config['SESSION_COOKIE_SECURE'] = app.config['PREFERRED_URL_SCHEME'] == 'https'
+    if app.config.get('SSL'):
+        app.wgsi_app = force_ssl(app)
+        app.config['PREFERRED_URL_SCHEME'] = 'https'
+        app.config['SESSION_COOKIE_SECURE'] = True
 
     from zeus.testutils.client import ZeusTestClient
     app.test_client_class = ZeusTestClient
