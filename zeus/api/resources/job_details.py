@@ -1,6 +1,8 @@
 from zeus.config import db
+from zeus.constants import Status
 from zeus.models import Job
 from zeus.tasks import aggregate_build_stats_for_job
+from zeus.utils import timezone
 
 from .base_job import BaseJobResource
 from ..schemas import JobSchema
@@ -22,10 +24,16 @@ class JobDetailsResource(BaseJobResource):
         result = self.schema_from_request(job_schema, partial=True)
         if result.errors:
             return self.respond(result.errors, 403)
+
+        was_unfinished = job.status != Status.finished
+
         for key, value in result.data.items():
             if getattr(job, key) != value:
                 setattr(job, key, value)
+
         if db.session.is_modified(job):
+            if job.status == Status.finished and was_unfinished and not job.date_finished:
+                job.date_finished = timezone.now()
             db.session.add(job)
             db.session.commit()
 
