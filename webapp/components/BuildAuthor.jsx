@@ -8,6 +8,7 @@ export default class BuildCoverage extends Component {
 
   render() {
     let {build} = this.props;
+    if (!build.source.author) return null;
     return (
       <span>
         {build.source.author.email || build.source.author.name}
