@@ -223,6 +223,7 @@ class RevisionResult(object):
         try_create(Source, {
             'revision_sha': self.id,
             'repository': repository,
+            'author': author,
         })
 
         return (revision, created)

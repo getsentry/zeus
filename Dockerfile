@@ -81,10 +81,6 @@ RUN set -x \
     && npm install -g yarn@$YARN_VERSION \
     && npm cache clear --force
 
-COPY package.json yarn.lock /usr/src/zeus/
-RUN yarn install --production --pure-lockfile --ignore-optional \
-    && yarn cache clean
-
 COPY requirements-base.txt /usr/src/zeus/
 RUN pip install -r requirements-base.txt
 
@@ -94,21 +90,26 @@ RUN pip install -r requirements-dev.txt
 COPY requirements-test.txt /usr/src/zeus/
 RUN pip install -r requirements-test.txt
 
-COPY . /usr/src/zeus
-RUN pip install -e . \
-    && node_modules/.bin/webpack --config=config/webpack.config.dev.js
+COPY yarn.lock /usr/src/zeus/
+COPY package.json /usr/src/zeus/
+RUN yarn install --production --pure-lockfile --ignore-optional \
+    && yarn cache clean
+
+COPY . /usr/src/app
+RUN pip install -e .
+RUN node_modules/.bin/webpack -p
 
 ENV REPO_ROOT /workspace/repos
 RUN mkdir -p $REPO_ROOT
 
 ENV PATH /usr/src/zeus/bin:$PATH
 
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
 
 VOLUME /workspace
 
 ENTRYPOINT ["docker-entrypoint"]
 
 # Run Zeus
-CMD ["zeus", "run", "--host=0.0.0.0", "--port=5000"]
+CMD ["zeus", "run", "--host=0.0.0.0", "--port=8080"]

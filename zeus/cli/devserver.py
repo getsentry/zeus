@@ -19,10 +19,7 @@ def devserver(environment, workers):
     # of relying on FLASK_DEBUG
     daemons = [
         ('web', ['zeus', 'run']),
-        (
-            'webpack',
-            ['node_modules/.bin/webpack', '--watch', '--config=config/webpack.config.dev.js']
-        ),
+        ('webpack', ['node_modules/.bin/webpack', '--watch', '--config=config/webpack.config.js']),
     ]
     if workers:
         daemons.append(('worker', ['zeus', 'worker', '--cron', '--log-level=INFO']))

@@ -5,3 +5,4 @@ pytest-cov==2.5.1
 pytest-mock==1.6.0
 pytest-responses==0.1.0
 pytest-xdist==1.18.0
+responses==0.7.0

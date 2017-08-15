@@ -3,6 +3,7 @@ from sqlalchemy.orm import subqueryload_all
 from zeus.config import db
 from zeus.models import Build, Job
 from zeus.tasks import aggregate_build_stats_for_job
+from zeus.utils import timezone
 
 from .base_build import BaseBuildResource
 from ..schemas import JobSchema
@@ -31,6 +32,8 @@ class BuildJobsResource(BaseBuildResource):
             return self.respond(result.errors, 403)
         data = result.data
         job = Job(build=build, repository_id=build.repository_id, **data)
+        if not job.date_started:
+            job.date_started = timezone.now()
         db.session.add(job)
         db.session.commit()
 

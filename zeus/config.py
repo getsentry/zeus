@@ -1,4 +1,5 @@
 import logging
+import raven
 
 from flask import Flask
 from flask_alembic import Alembic
@@ -10,13 +11,21 @@ from zeus.utils.redis import Redis
 
 import os
 
-ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
 alembic = Alembic()
 celery = Celery()
 db = SQLAlchemy()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.WARN)
+
+
+def force_ssl(app):
+    def middleware(environ, start_response):
+        environ['wsgi.url_scheme'] = 'https'
+        return app(environ, start_response)
+
+    return middleware
 
 
 def create_app(_read_config=True, **config):
@@ -43,7 +52,14 @@ def create_app(_read_config=True, **config):
         REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
         SQLALCHEMY_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql:///zeus')
 
+    if os.environ.get('SERVER_NAME'):
+        app.config['SERVER_NAME'] = os.environ['SERVER_NAME']
+
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+
+    app.config['LOG_LEVEL'] = os.environ.get('LOG_LEVEL') or 'INFO'
+
+    app.config['SSL'] = os.environ.get('SSL') in ('1', 'true', 'on')
 
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_URI
@@ -54,9 +70,15 @@ def create_app(_read_config=True, **config):
     app.config['REDIS_URL'] = REDIS_URL
 
     app.config['SENTRY_DSN'] = os.environ.get('SENTRY_DSN') or None
+    app.config['SENTRY_DSN_FRONTEND'] = os.environ.get('SENTRY_DSN_FRONTEND') or None
     app.config['SENTRY_INCLUDE_PATHS'] = [
-        'changes',
+        'zeus',
     ]
+    try:
+        app.config['SENTRY_RELEASE'] = raven.fetch_git_sha(ROOT)
+    except Exception:
+        app.logger.warn('unable to bind sentry.release context', exc_info=True)
+    app.config['SENTRY_ENVIRONMENT'] = os.environ.get('NODE_ENV', 'development')
 
     app.config['GITHUB_CLIENT_ID'] = os.environ.get('GITHUB_CLIENT_ID') or None
     app.config['GITHUB_CLIENT_SECRET'] = os.environ.get('GITHUB_CLIENT_SECRET') or None
@@ -95,8 +117,24 @@ def create_app(_read_config=True, **config):
 
     app.config.update(config)
 
+    req_vars = (
+        'GITHUB_CLIENT_ID', 'GITHUB_CLIENT_SECRET', 'REDIS_URL', 'SECRET_KEY',
+        'SQLALCHEMY_DATABASE_URI'
+    )
+    for varname in req_vars:
+        if not app.config.get(varname):
+            raise SystemExit('Required configuration not present for {}'.format(varname))
+
+    if app.config.get('SSL'):
+        app.wgsi_app = force_ssl(app)
+        app.config['PREFERRED_URL_SCHEME'] = 'https'
+        app.config['SESSION_COOKIE_SECURE'] = True
+
     from zeus.testutils.client import ZeusTestClient
     app.test_client_class = ZeusTestClient
+
+    if app.config.get('LOG_LEVEL'):
+        app.logger.setLevel(getattr(logging, app.config['LOG_LEVEL'].upper()))
 
     # init sentry first
     sentry.init_app(app)

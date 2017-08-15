@@ -1,5 +1,8 @@
 language: python
 sudo: false
+services:
+  - redis-server
+  - postgresql
 python:
   - "3.6"
 cache:
@@ -12,11 +15,18 @@ env:
     - NODE_ENV=production
     - PIP_DISABLE_PIP_VERSION_CHECK=on
     - TRAVIS_NODE_VERSION=8
+before_install:
+  - bin/update-zeus-job in_progress unknown
 install:
   - nvm install $TRAVIS_NODE_VERSION
   - npm install -g yarn@0.27.5
   - make
 script:
-  - py.test tests --cov zeus --cov-report term-missing
+  - git --version
+  - py.test tests -v --cov zeus --cov-report term-missing
 after_success:
   - codecov
+  - bin/update-zeus-job finished passed
+after_failure:
+  - codecov
+  - bin/update-zeus-job finished failed

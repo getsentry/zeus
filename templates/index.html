@@ -124,6 +124,17 @@
         </div>
       </div>
     </div>
+    <script src="https://cdn.ravenjs.com/3.17.0/raven.min.js"
+    crossorigin="anonymous"></script>
+    <script>window.SENTRY_DSN = '{{ SENTRY_DSN_FRONTEND }}';</script>
+    <script>
+    window.SENTRY_DSN && Raven.config(window.SENTRY_DSN, {
+      // TODO(dcramer): make this configurable/autobind?
+      whitelistUrls: [/zeus\.ci/],
+      environment: '{{ SENTRY_ENVIRONMENT }}',
+      release: '{{ SENTRY_RELEASE }}',
+    }).install();
+    </script>
     <script type="text/javascript" src="{{ url_for('static', filename='bundle.js') }}"></script>
   </body>
 </html>
