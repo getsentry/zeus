@@ -95,7 +95,7 @@ COPY package.json /usr/src/zeus/
 RUN yarn install --production --pure-lockfile --ignore-optional \
     && yarn cache clean
 
-COPY . /usr/src/app
+COPY . /usr/src/zeus
 RUN pip install -e .
 RUN node_modules/.bin/webpack -p
 
