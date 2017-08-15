@@ -72,10 +72,6 @@ RUN set -x \
 
 RUN npm install -g yarn
 
-COPY yarn.lock /usr/src/app/
-COPY package.json /usr/src/app/
-RUN yarn install
-
 COPY requirements-base.txt /usr/src/app/
 RUN pip install -r requirements-base.txt
 
@@ -84,6 +80,10 @@ RUN pip install -r requirements-dev.txt
 
 COPY requirements-test.txt /usr/src/app/
 RUN pip install -r requirements-test.txt
+
+COPY yarn.lock /usr/src/app/
+COPY package.json /usr/src/app/
+RUN yarn install
 
 COPY . /usr/src/app
 RUN pip install -e .
