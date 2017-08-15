@@ -47,10 +47,15 @@ class GitHubClient(object):
     def _dispatch(
         self, method: str, path: str, headers: dict=None, json: dict=None, params: dict=None
     ):
+        if path.startswith(('http:', 'https:')):
+            url = path
+        else:
+            url = '{}{}'.format(self.url, path)
+
         try:
             resp = requests.request(
                 method=method,
-                url='{}{}'.format(self.url, path),
+                url=url,
                 headers=headers,
                 json=json,
                 params=params,
