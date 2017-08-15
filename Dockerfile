@@ -87,7 +87,7 @@ RUN pip install -r requirements-test.txt
 
 COPY . /usr/src/app
 RUN pip install -e .
-RUN node_modules/.bin/webpack
+RUN node_modules/.bin/webpack -p
 
 ENV REPO_ROOT /workspace/repos
 RUN mkdir -p $REPO_ROOT

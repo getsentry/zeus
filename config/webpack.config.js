@@ -226,11 +226,24 @@ module.exports = {
         test: /\.(js|jsx)$/,
         enforce: 'pre',
         use: [
+          // TODO(dcramer): these dont seem executed in order, and its linting
+          // post-compilation
+          // {
+          //   options: {
+          //     formatter: eslintFormatter
+          //   },
+          //   loader: require.resolve('eslint-loader')
+          // },
+          // Process JS with Babel.
           {
+            loader: require.resolve('babel-loader'),
             options: {
-              formatter: eslintFormatter
-            },
-            loader: require.resolve('eslint-loader')
+              // This is a feature of `babel-loader` for webpack (not Babel itself).
+              // It enables caching results in ./node_modules/.cache/babel-loader/
+              // directory for faster rebuilds.
+              cacheDirectory: !isProd,
+              compact: isProd
+            }
           }
         ],
         include: paths.appSrc
@@ -269,19 +282,6 @@ module.exports = {
         options: {
           limit: 10000,
           name: 'media/[name].[ext]'
-        }
-      },
-      // Process JS with Babel.
-      {
-        test: /\.(js|jsx)$/,
-        include: paths.appSrc,
-        loader: require.resolve('babel-loader'),
-        options: {
-          // This is a feature of `babel-loader` for webpack (not Babel itself).
-          // It enables caching results in ./node_modules/.cache/babel-loader/
-          // directory for faster rebuilds.
-          cacheDirectory: !isProd,
-          compact: isProd
         }
       },
       // "postcss" loader applies autoprefixer to our CSS.
