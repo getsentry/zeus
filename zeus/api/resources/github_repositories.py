@@ -53,7 +53,9 @@ class GitHubCache(object):
                 has_results = bool(response)
                 if has_results:
                     endpoint = response.rel.get('next')
-            redis.setex(cache_key, json.dumps(result), ONE_DAY)
+            redis.setex(
+                cache_key, json.dumps(sorted(result, key=lambda x: x['full_name'])), ONE_DAY
+            )
         else:
             result = json.loads(result)
         return result
