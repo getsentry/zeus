@@ -1,4 +1,5 @@
 import logging
+import raven
 
 from flask import Flask
 from flask_alembic import Alembic
@@ -70,8 +71,12 @@ def create_app(_read_config=True, **config):
 
     app.config['SENTRY_DSN'] = os.environ.get('SENTRY_DSN') or None
     app.config['SENTRY_INCLUDE_PATHS'] = [
-        'changes',
+        'zeus',
     ]
+    try:
+        app.config['SENTRY_RELEASE'] = raven.fetch_git_sha(ROOT)
+    except Exception:
+        app.logger.warn('unable to bind sentry.release context', exc_info=True)
 
     app.config['GITHUB_CLIENT_ID'] = os.environ.get('GITHUB_CLIENT_ID') or None
     app.config['GITHUB_CLIENT_SECRET'] = os.environ.get('GITHUB_CLIENT_SECRET') or None
