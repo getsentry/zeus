@@ -1,0 +1,12 @@
+#!/bin/bash -eu
+
+# TODO(dcramer): pass URL
+curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER \
+    -X POST \
+    -H 'Content-Type: application/json' \
+    -d "{\"label\": \"$TRAVIS_BUILD_NUMBER\", \"revision_sha\": \"$TRAVIS_COMMIT\"}"
+
+curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER/jobs/$TRAVIS_JOB_NUMBER \
+    -X POST \
+    -H 'Content-Type: application/json' \
+    -d "{\"label\": \"$TRAVIS_JOB_NUMBER\", \"status\": \"$1\", \"result\": \"$2\"}"
