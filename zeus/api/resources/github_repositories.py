@@ -28,7 +28,7 @@ class GitHubCache(object):
         self.client = client
 
     def get_repos(self, owner, no_cache=False):
-        cache_key = 'gh:0:repos:{}'.format(md5(owner.encode('utf-8')).hexdigest() if owner else '')
+        cache_key = 'gh:1:repos:{}'.format(md5(owner.encode('utf-8')).hexdigest() if owner else '')
         if no_cache:
             result = None
         else:
@@ -37,14 +37,22 @@ class GitHubCache(object):
         if result is None:
             # TODO(dcramer): paginate
             if not owner:
-                response = self.client.get('/user/repos', params={'type': 'owner'})
+                endpoint = '/user/repos'
+                params = {'type': 'owner'}
             else:
-                response = self.client.get('/orgs/{}/repos'.format(owner))
-
-            result = [{
-                'id': r['id'],
-                'full_name': r['full_name'],
-            } for r in response]
+                endpoint = '/orgs/{}/repos'.format(owner)
+                params = {}
+            result = []
+            has_results = True
+            while has_results and endpoint:
+                response = self.client.get(endpoint, params=params)
+                result.extend([{
+                    'id': r['id'],
+                    'full_name': r['full_name'],
+                } for r in response])
+                has_results = bool(response)
+                if has_results:
+                    endpoint = response.rel.get('next')
             redis.setex(cache_key, json.dumps(result), ONE_DAY)
         else:
             result = json.loads(result)
