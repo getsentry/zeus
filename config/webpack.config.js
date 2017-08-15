@@ -5,6 +5,9 @@ const path = require('path');
 const webpack = require('webpack');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
@@ -20,26 +23,149 @@ const publicUrl = '';
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
 
+// Note: defined here because it will be used more than once.
+const cssFilename = 'css/[name].css';
+
+const isProd = env.stringified['process.env'].NODE_ENV === '"production"';
+
+function getPlugins() {
+  let plugins = [];
+
+  // Add module names to factory functions so they appear in browser profiler.
+  !isProd && plugins.push(new webpack.NamedModulesPlugin());
+
+  // Makes some environment variables available to the JS code, for example:
+  // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
+  plugins.push(new webpack.DefinePlugin(env.stringified));
+
+  // This is necessary to emit hot updates (currently CSS only):
+  !isProd && plugins.push(new webpack.HotModuleReplacementPlugin());
+
+  // Watcher doesn't work well if you mistype casing in a path so we use
+  // a plugin that prints an error when you attempt to do this.
+  // See https://github.com/facebookincubator/create-react-app/issues/240
+  !isProd && plugins.push(new CaseSensitivePathsPlugin());
+
+  // If you require a missing module and then `npm install` it, you still have
+  // to restart the development server for Webpack to discover it. This plugin
+  // makes the discovery automatic so you don't have to restart.
+  // See https://github.com/facebookincubator/create-react-app/issues/186
+  !isProd && plugins.push(new WatchMissingNodeModulesPlugin(paths.appNodeModules));
+
+  // optimize out highlight.js languages we dont need
+  plugins.push(
+    new webpack.ContextReplacementPlugin(
+      /highlight\.js\/lib\/languages$/,
+      new RegExp(`^./(${['diff'].join('|')})$`)
+    )
+  );
+
+  // Moment.js is an extremely popular library that bundles large locale files
+  // by default due to how Webpack interprets its code. This is a practical
+  // solution that requires the user to opt into importing specific locales.
+  // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
+  // You can remove this if you don't use Moment.js:
+  plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/));
+
+  // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
+  plugins.push(
+    new ExtractTextPlugin({
+      filename: cssFilename
+    })
+  );
+
+  // Generate a manifest file which contains a mapping of all asset filenames
+  // to their corresponding output file so that tools can pick it up without
+  // having to parse `index.html`.
+  isProd &&
+    plugins.push(
+      new ManifestPlugin({
+        fileName: 'asset-manifest.json'
+      })
+    );
+
+  // Generate a service worker script that will precache, and keep up to date,
+  // the HTML & assets that are part of the Webpack build.
+  isProd &&
+    plugins.push(
+      new SWPrecacheWebpackPlugin({
+        // By default, a cache-busting query parameter is appended to requests
+        // used to populate the caches, to ensure the responses are fresh.
+        // If a URL is already hashed by Webpack, then there is no concern
+        // about it being stale, and the cache-busting can be skipped.
+        dontCacheBustUrlsMatching: /\.\w{8}\./,
+        filename: 'service-worker.js',
+        logger(message) {
+          if (message.indexOf('Total precache size is') === 0) {
+            // This message occurs for every build and is a bit too noisy.
+            return;
+          }
+          if (message.indexOf('Skipping static resource') === 0) {
+            // This message obscures real errors so we ignore it.
+            // https://github.com/facebookincubator/create-react-app/issues/2612
+            return;
+          }
+          console.log(message);
+        },
+        minify: true,
+        // For unknown URLs, fallback to the index page
+        navigateFallback: publicUrl + '/index.html',
+        // Ignores URLs starting from /__ (useful for Firebase):
+        // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
+        navigateFallbackWhitelist: [/^(?!\/__).*/],
+        // Don't precache sourcemaps (they're large) and build asset manifest:
+        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/]
+      })
+    );
+
+  // Minify the code.
+  isProd &&
+    plugins.push(
+      new webpack.optimize.UglifyJsPlugin({
+        compress: {
+          warnings: false,
+          // Disabled because of an issue with Uglify breaking seemingly valid code:
+          // https://github.com/facebookincubator/create-react-app/issues/2376
+          // Pending further investigation:
+          // https://github.com/mishoo/UglifyJS2/issues/2011
+          comparisons: false
+        },
+        output: {
+          comments: false,
+          // Turned on because emoji and regex is not minified properly using default
+          // https://github.com/facebookincubator/create-react-app/issues/2488
+          ascii_only: true
+        },
+        sourceMap: true
+      })
+    );
+  return plugins;
+}
+
+function getEntry() {
+  let entry = [];
+  // We ship a few polyfills by default:
+  entry.push(require.resolve('./polyfills'));
+  // Errors should be considered fatal in development
+  !isProd && entry.push(require.resolve('react-error-overlay'));
+  // Finally, this is your app's code:
+  // We include the app code last so that if there is a runtime error during
+  // initialization
+  entry.push(paths.appIndexJs);
+  return entry;
+}
+
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
 module.exports = {
   // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
-  devtool: 'cheap-module-source-map',
+  devtool: isProd ? 'source-map' : 'cheap-module-source-map',
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
-  entry: [
-    // We ship a few polyfills by default:
-    require.resolve('./polyfills'),
-    // Errors should be considered fatal in development
-    require.resolve('react-error-overlay'),
-    // Finally, this is your app's code:
-    paths.appIndexJs
-    // We include the app code last so that if there is a runtime error during
-    // initialization
-  ],
+  entry: getEntry(),
   output: {
     // Next line is not used in dev but WebpackDevServer crashes without it:
     path: paths.appBuild,
@@ -131,7 +257,7 @@ module.exports = {
         ],
         loader: require.resolve('file-loader'),
         options: {
-          name: 'media/[name].[hash:8].[ext]'
+          name: 'media/[name].[ext]'
         }
       },
       // "url" loader works like "file" loader except that it embeds assets
@@ -142,7 +268,7 @@ module.exports = {
         loader: require.resolve('url-loader'),
         options: {
           limit: 10000,
-          name: 'media/[name].[hash:8].[ext]'
+          name: 'media/[name].[ext]'
         }
       },
       // Process JS with Babel.
@@ -154,7 +280,8 @@ module.exports = {
           // This is a feature of `babel-loader` for webpack (not Babel itself).
           // It enables caching results in ./node_modules/.cache/babel-loader/
           // directory for faster rebuilds.
-          cacheDirectory: true
+          cacheDirectory: !isProd,
+          compact: isProd
         }
       },
       // "postcss" loader applies autoprefixer to our CSS.
@@ -198,35 +325,7 @@ module.exports = {
       // Remember to add the new extension(s) to the "file" loader exclusion list.
     ]
   },
-  plugins: [
-    // Add module names to factory functions so they appear in browser profiler.
-    new webpack.NamedModulesPlugin(),
-    // Makes some environment variables available to the JS code, for example:
-    // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
-    new webpack.DefinePlugin(env.stringified),
-    // This is necessary to emit hot updates (currently CSS only):
-    new webpack.HotModuleReplacementPlugin(),
-    // Watcher doesn't work well if you mistype casing in a path so we use
-    // a plugin that prints an error when you attempt to do this.
-    // See https://github.com/facebookincubator/create-react-app/issues/240
-    new CaseSensitivePathsPlugin(),
-    // If you require a missing module and then `npm install` it, you still have
-    // to restart the development server for Webpack to discover it. This plugin
-    // makes the discovery automatic so you don't have to restart.
-    // See https://github.com/facebookincubator/create-react-app/issues/186
-    new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-    // Moment.js is an extremely popular library that bundles large locale files
-    // by default due to how Webpack interprets its code. This is a practical
-    // solution that requires the user to opt into importing specific locales.
-    // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
-    // You can remove this if you don't use Moment.js:
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    // optimize out highlight.js languages we dont need
-    new webpack.ContextReplacementPlugin(
-      /highlight\.js\/lib\/languages$/,
-      new RegExp(`^./(${['diff'].join('|')})$`)
-    )
-  ],
+  plugins: getPlugins(),
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
   node: {
@@ -239,6 +338,6 @@ module.exports = {
   // splitting or minification in interest of speed. These warnings become
   // cumbersome.
   performance: {
-    hints: false
+    hints: isProd
   }
 };
