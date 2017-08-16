@@ -28,7 +28,10 @@ class GitHubCache(object):
         self.client = client
 
     def get_repos(self, owner, no_cache=False):
-        cache_key = 'gh:1:repos:{}'.format(md5(owner.encode('utf-8')).hexdigest() if owner else '')
+        cache_key = 'gh:2:repos:{}:{}'.format(
+            md5(self.client.token.encode('utf')).hexdigest(),
+            md5(owner.encode('utf-8')).hexdigest() if owner else '',
+        )
         if no_cache:
             result = None
         else:
