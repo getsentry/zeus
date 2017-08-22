@@ -35,10 +35,10 @@ def identify_revision(repository, treeish):
         vcs.clone()
 
     try:
-        commit = vcs.log(parent=treeish, limit=1).next()
+        commit = next(vcs.log(parent=treeish, limit=1))
     except UnknownRevision as exc:
         vcs.update()
-        commit = vcs.log(parent=treeish, limit=1).next()
+        commit = next(vcs.log(parent=treeish, limit=1))
 
     revision, _ = commit.save(repository)
 
