@@ -32,7 +32,7 @@ export default (
     <Route path="/:ownerName/:repoName" component={requireAuth(RepositoryDetails)}>
       <IndexRoute component={RepositoryBuildList} />
       <Route path="settings" component={RepositorySettings}>
-        <Route path="settings/hooks" component={RepositoryHooks} />
+        <Route path="hooks" component={RepositoryHooks} />
       </Route>
       <Route path="tests" component={RepositoryTests}>
         <IndexRoute component={RepositoryTestTree} />
