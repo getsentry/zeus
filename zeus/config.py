@@ -18,7 +18,7 @@ alembic = Alembic()
 celery = Celery()
 db = SQLAlchemy()
 redis = Redis()
-sentry = Sentry(logging=True, level=logging.WARN)
+sentry = Sentry(logging=True, level=logging.WARN, wrap_wsgi=True)
 
 
 def force_ssl(app):
