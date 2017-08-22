@@ -33,10 +33,11 @@ def identify_revision(repository, treeish):
 
     try:
         commit = vcs.log(parent=treeish, limit=1).next()
-    except Exception:
+    except Exception as exc:
         # TODO(dcramer): it's possible to DoS the endpoint by passing invalid
         # commits so we should really cache the failed lookups
-        raise MissingRevision('Unable to find revision %s' % (treeish,))
+        raise MissingRevision('Unable to find revision %s' %
+                              (treeish,)) from exc
 
     revision, _ = commit.save(repository)
 
