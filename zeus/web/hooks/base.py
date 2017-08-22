@@ -3,7 +3,7 @@ from flask.views import View
 from sqlalchemy.orm import joinedload
 
 from zeus import auth
-from zeus.exceptions import APIError
+from zeus.exceptions import ApiError
 from zeus.models import Hook
 
 
@@ -32,7 +32,7 @@ class BaseHook(View):
 
         try:
             resp = method(hook, *args, **kwargs)
-        except APIError as exc:
+        except ApiError as exc:
             return self.respond(exc.json, exc.code)
         if isinstance(resp, Response):
             return resp
