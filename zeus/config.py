@@ -45,13 +45,13 @@ def create_app(_read_config=True, **config):
         )
         # Cloud SQL
         # https://cloud.google.com/sql/docs/postgres/connect-container-engine
-        SQLALCHEMY_URI = 'postgresql://{}:{}@127.0.0.1:5432/zeus'.format(
+        SQLALCHEMY_URI = 'postgresql+psycopg2://{}:{}@127.0.0.1:5432/zeus'.format(
             os.environ['DB_USER'],
             os.environ['DB_PASSWORD'],
         )
     else:
         REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
-        SQLALCHEMY_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql:///zeus')
+        SQLALCHEMY_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql+psycopg2:///zeus')
 
     if os.environ.get('SERVER_NAME'):
         app.config['SERVER_NAME'] = os.environ['SERVER_NAME']
