@@ -2,16 +2,9 @@ from json import dumps
 from flask import current_app, Response
 from functools import partialmethod
 from typing import Mapping, BinaryIO
+
 from zeus import auth
-
-
-class APIError(Exception):
-    @classmethod
-    def from_response(cls, response):
-        return cls(
-            'Request returned invalid status code: %d:\n%s' %
-            (response.status_code, response.data[:256].decode('utf-8'))
-        )
+from zeus.exceptions import ApiError
 
 
 class APIClient(object):
@@ -66,9 +59,9 @@ class APIClient(object):
                 }
             )
         if not (200 <= response.status_code < 300):
-            raise APIError.from_response(response)
+            raise ApiError.from_response(response)
         if response.headers['Content-Type'] != 'application/json':
-            raise APIError(
+            raise ApiError(
                 'Request returned invalid content type: %s' % (response.headers['Content-Type'], )
             )
         return response
