@@ -3,8 +3,8 @@ from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.exceptions import MissingRevision
 from zeus.models import Author, Build, Repository, Revision, Source
+from zeus.vcs.base import UnknownRevision
 
 from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema, BuildCreateSchema
@@ -31,20 +31,14 @@ def identify_revision(repository, treeish):
     if not vcs:
         return
 
+    if not vcs.exists():
+        vcs.clone()
+
     try:
         commit = vcs.log(parent=treeish, limit=1).next()
-    except Exception as exc:
-        if vcs.exists():
-            vcs.update()
-        else:
-            vcs.clone()
-        try:
-            commit = vcs.log(parent=treeish, limit=1).next()
-        except Exception as exc:
-            # TODO(dcramer): it's possible to DoS the endpoint by passing invalid
-            # commits so we should really cache the failed lookups
-            raise MissingRevision('Unable to find revision %s' %
-                                  (treeish,)) from exc
+    except UnknownRevision as exc:
+        vcs.update()
+        commit = vcs.log(parent=treeish, limit=1).next()
 
     revision, _ = commit.save(repository)
 
@@ -95,7 +89,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
 
         try:
             revision = identify_revision(repo, ref)
-        except MissingRevision:
+        except UnknownRevision:
             current_app.logger.warn('invalid ref received', exc_info=True)
             return self.error('unable to find a revision matching ref')
 
