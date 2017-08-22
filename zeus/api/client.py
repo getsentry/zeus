@@ -59,10 +59,15 @@ class APIClient(object):
                 }
             )
         if not (200 <= response.status_code < 300):
-            raise ApiError.from_response(response)
+            raise ApiError(
+                text=self.get_data(as_text=True),
+                code=response.status_code,
+            )
         if response.headers['Content-Type'] != 'application/json':
             raise ApiError(
-                'Request returned invalid content type: %s' % (response.headers['Content-Type'], )
+                text='Request returned invalid content type: {}'.format(
+                    response.headers['Content-Type']),
+                code=response.status_code,
             )
         return response
 
