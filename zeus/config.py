@@ -61,6 +61,9 @@ def create_app(_read_config=True, **config):
 
     app.config['SSL'] = os.environ.get('SSL') in ('1', 'true', 'on')
 
+    # limit sessions to one day so permissions are revalidated automatically
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
+
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_URI
     app.config['SQLALCHEMY_POOL_SIZE'] = 60

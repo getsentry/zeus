@@ -6,9 +6,11 @@ from flask.views import MethodView
 from oauth2client.client import FlowExchangeError, OAuth2WebServerFlow
 from sqlalchemy.exc import IntegrityError
 
+from zeus import auth
 from zeus.config import db
 from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI
 from zeus.models import Identity, User
+from zeus.utils import timezone
 
 
 def get_auth_flow(redirect_uri=None, scopes=('user:email', )):
@@ -98,6 +100,8 @@ class GitHubCompleteView(MethodView):
 
         db.session.commit()
 
-        session['uid'] = user_id
+        # forcefully expire a session after permanent_session_lifetime
+        # Note: this is enforced in zeus.auth
+        auth.login_user(user_id)
 
         return redirect(url_for(self.complete_url))

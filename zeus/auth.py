@@ -75,6 +75,11 @@ def get_user_from_request() -> Optional[User]:
     return User.query.get(uid)
 
 
+def login_user(user_id: str):
+    session['uid'] = user_id
+    session.permanent = True
+
+
 def get_current_user() -> Optional[User]:
     rv = getattr(g, 'current_user', None)
     if not rv:
