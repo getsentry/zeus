@@ -1,7 +1,7 @@
--   repo: git://github.com/pre-commit/mirrors-yapf
-    sha: v0.16.2
+-   repo: git://github.com/pre-commit/mirrors-autopep8
+    sha: v1.3.2
     hooks:
-    -   id: yapf
+    -   id: autopep8
 -   repo: git://github.com/pre-commit/pre-commit-hooks
     sha: v0.9.1
     hooks:
