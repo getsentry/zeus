@@ -3,6 +3,7 @@ from flask.views import View
 from sqlalchemy.orm import joinedload
 
 from zeus import auth
+from zeus.exceptions import APIError
 from zeus.models import Hook
 
 
@@ -29,7 +30,10 @@ class BaseHook(View):
         auth.set_current_tenant(auth.Tenant(
             repository_ids=[hook.repository_id]))
 
-        resp = method(hook, *args, **kwargs)
+        try:
+            resp = method(hook, *args, **kwargs)
+        except APIError as exc:
+            return self.respond(exc.json, exc.code)
         if isinstance(resp, Response):
             return resp
         return self.respond(resp)
