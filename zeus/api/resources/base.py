@@ -54,13 +54,12 @@ class Resource(View):
 
         try:
             resp = method(*args, **kwargs)
+            if isinstance(resp, Response):
+                return resp
+            return self.respond(resp)
         except Exception:
             current_app.logger.exception('failed to handle api request')
             return self.error('internal server error', 500)
-
-        if isinstance(resp, Response):
-            return resp
-        return self.respond(resp)
 
     def not_found(self, message: str='resource not found') -> Response:
         return self.error(message, 404)
