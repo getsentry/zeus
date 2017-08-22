@@ -52,7 +52,12 @@ class Resource(View):
         except AttributeError:
             return self.respond({'message': 'resource not found'}, 405)
 
-        resp = method(*args, **kwargs)
+        try:
+            resp = method(*args, **kwargs)
+        except Exception:
+            current_app.logger.exception('failed to handle api request')
+            return self.error('internal server error', 500)
+
         if isinstance(resp, Response):
             return resp
         return self.respond(resp)
