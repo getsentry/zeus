@@ -80,7 +80,8 @@ class GitVcs(Vcs):
         try:
             return super(GitVcs, self).run(cmd, **kwargs)
         except CommandError as e:
-            if 'unknown revision or path' in e.stderr.decode('utf-8'):
+            stderr = e.stderr.decode('utf-8')
+            if 'unknown revision or path' in stderr or 'fatal: bad object' in stderr:
                 raise UnknownRevision(
                     cmd=e.cmd,
                     retcode=e.retcode,
