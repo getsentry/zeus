@@ -16,6 +16,8 @@ def devserver(environment, workers, port):
     os.environ.setdefault('FLASK_DEBUG', '1')
     os.environ['NODE_ENV'] = environment
 
+    click.echo('Launching Zeus on http://localhost:{}'.format(port))
+
     # TODO(dcramer): pass required attributes to 'run' directly instead
     # of relying on FLASK_DEBUG
     daemons = [
