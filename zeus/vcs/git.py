@@ -86,7 +86,7 @@ class GitVcs(Vcs):
                     retcode=e.retcode,
                     stdout=e.stdout,
                     stderr=e.stderr,
-                )
+                ) from e
             raise
 
     def clone(self):
@@ -134,7 +134,8 @@ class GitVcs(Vcs):
                 import logging
                 msg = traceback.format_exception(CommandError, cmd_error, None)
                 logging.warning(msg)
-                raise ValueError('Unable to fetch commit log for branch "{0}".'.format(branch))
+                raise ValueError(
+                    'Unable to fetch commit log for branch "{0}".'.format(branch)) from cmd_error
             raise
 
         for chunk in BufferParser(result, '\x02'):
@@ -166,7 +167,8 @@ class GitVcs(Vcs):
         return result
 
     def is_child_parent(self, child_in_question, parent_in_question) -> bool:
-        cmd = ['merge-base', '--is-ancestor', parent_in_question, child_in_question]
+        cmd = ['merge-base', '--is-ancestor',
+               parent_in_question, child_in_question]
         try:
             self.run(cmd)
             return True
