@@ -142,6 +142,10 @@ def create_app(_read_config=True, **config):
 
     # init sentry first
     sentry.init_app(app)
+    # XXX(dcramer): Sentry + Flask + Logging integration is broken
+    # https://github.com/getsentry/raven-python/issues/1030
+    from raven.handlers.logging import SentryHandler
+    app.logger.addHandler(SentryHandler(client=sentry.client, level=logging.WARN))
 
     configure_db(app)
 
