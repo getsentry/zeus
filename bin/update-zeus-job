@@ -4,7 +4,7 @@
 curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER \
     -X POST \
     -H 'Content-Type: application/json' \
-    -d "{\"label\": \"$TRAVIS_BUILD_NUMBER\", \"revision_sha\": \"$TRAVIS_COMMIT\"}"
+    -d "{\"label\": \"$TRAVIS_BUILD_NUMBER\", \"ref\": \"$TRAVIS_COMMIT\"}"
 
 curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER/jobs/$TRAVIS_JOB_NUMBER \
     -X POST \

@@ -26,7 +26,7 @@ class BuildSchema(Schema):
 class BuildCreateSchema(Schema):
     # label is only required if they're specifying a source with a patch (which they cant do yet)
     label = fields.Str(required=False)
-    revision_sha = fields.Str()
+    ref = fields.Str()
     provider = fields.Str()
     external_id = fields.Str()
     url = fields.Str()

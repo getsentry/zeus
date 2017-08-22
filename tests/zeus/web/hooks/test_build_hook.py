@@ -5,11 +5,12 @@ from zeus.models import Build
 def test_new_build(client, default_source, default_repo, default_hook):
     build_xid = '2'
 
-    path = '/hooks/{}/{}/builds/{}'.format(default_hook.id, default_hook.get_signature(), build_xid)
+    path = '/hooks/{}/{}/builds/{}'.format(default_hook.id,
+                                           default_hook.get_signature(), build_xid)
 
     resp = client.post(
         path, json={
-            'revision_sha': default_source.revision_sha,
+            'ref': default_source.revision_sha,
             'label': 'test build',
         }
     )
@@ -35,7 +36,7 @@ def test_existing_build(client, default_source, default_repo, default_hook):
 
     resp = client.post(
         path, json={
-            'revision_sha': default_source.revision_sha,
+            'ref': default_source.revision_sha,
             'label': 'test build',
         }
     )

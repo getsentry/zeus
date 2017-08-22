@@ -3,7 +3,8 @@ from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Repository, Source
+from zeus.exceptions import MissingRevision
+from zeus.models import Author, Build, Repository, Revision, Source
 
 from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema, BuildCreateSchema
@@ -11,6 +12,35 @@ from ..schemas import BuildSchema, BuildCreateSchema
 build_create_schema = BuildCreateSchema(strict=True)
 build_schema = BuildSchema(strict=True)
 builds_schema = BuildSchema(many=True, strict=True)
+
+
+def identify_revision(repository, treeish):
+    """
+    Attempt to transform a a commit-like reference into a valid revision.
+    """
+    # try to find it from the database first
+    if len(treeish) == 40:
+        revision = Revision.query.filter(
+            Revision.repository_id == repository.id,
+            Revision.sha == treeish,
+        ).first()
+        if revision:
+            return revision
+
+    vcs = repository.get_vcs()
+    if not vcs:
+        return
+
+    try:
+        commit = vcs.log(parent=treeish, limit=1).next()
+    except Exception:
+        # TODO(dcramer): it's possible to DoS the endpoint by passing invalid
+        # commits so we should really cache the failed lookups
+        raise MissingRevision('Unable to find revision %s' % (treeish,))
+
+    revision, _ = commit.save(repository)
+
+    return revision
 
 
 class RepositoryBuildsResource(BaseRepositoryResource):
@@ -36,7 +66,8 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         if show == 'mine' or (not show and user):
             query = query.filter(
                 Source.author_id.
-                in_(db.session.query(Author.id).filter(Author.email == user.email)),
+                in_(db.session.query(Author.id).filter(
+                    Author.email == user.email)),
             )
 
         return self.paginate_with_schema(builds_schema, query)
@@ -50,13 +81,14 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             return self.respond(result.errors, 403)
         data = result.data
 
-        revision_sha = data.pop('revision_sha')
-        source = Source.query.filter(
-            Source.revision_sha == revision_sha,
-            Source.repository_id == repo.id,
-        ).first()
-        if not source:
-            return self.error('invalid source')
+        ref = data.pop('ref', None)
+        if ref is None:
+            return self.error('missing ref')
+
+        try:
+            revision = identify_revision(repo, ref)
+        except MissingRevision:
+            return self.error('unable to find a revision matching ref')
 
         # TODO(dcramer): only if we create a source via a patch will we need the author
         # author_data = data.pop('author')
@@ -71,14 +103,22 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         #     db.session.add(author)
         #     db.session.flush()
 
+        # TODO(dcramer): need to handle patch case yet
+        source = Source.query.options(
+            joinedload('author'),
+        ).filter(
+            Source.revision_sha == revision.sha,
+            Source.repository_id == repo.id,
+        ).first()
+
         build = Build(repository=repo, **data)
         # TODO(dcramer): we should convert source in the schema
         build.source = source
-        build.source_id = source.id
+        # build.source_id = source.id
+        build.author = source.author
         if not source.patch_id:
             if not build.label:
                 build.label = source.revision.message.split('\n')[0]
-        assert build.source_id
         db.session.add(build)
         db.session.commit()
 
