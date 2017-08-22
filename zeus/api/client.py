@@ -60,7 +60,7 @@ class APIClient(object):
             )
         if not (200 <= response.status_code < 300):
             raise ApiError(
-                text=self.get_data(as_text=True),
+                text=response.get_data(as_text=True),
                 code=response.status_code,
             )
         if response.headers['Content-Type'] != 'application/json':
