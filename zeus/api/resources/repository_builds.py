@@ -1,4 +1,4 @@
-from flask import request
+from flask import current_app, request
 from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
 
 from zeus import auth
@@ -88,6 +88,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         try:
             revision = identify_revision(repo, ref)
         except MissingRevision:
+            current_app.logger.warn('invalid ref received', exc_info=True)
             return self.error('unable to find a revision matching ref')
 
         # TODO(dcramer): only if we create a source via a patch will we need the author
