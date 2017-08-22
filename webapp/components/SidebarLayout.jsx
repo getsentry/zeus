@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import {Breadcrumbs, Crumb, CrumbLink} from './Breadcrumbs';
 import Content from './Content';
+import Header from './Header';
 import ScrollView from './ScrollView';
 import Sidebar from './Sidebar';
 
@@ -35,9 +36,11 @@ export default class SidebarLayout extends Component {
       <div>
         <Sidebar params={this.props.params} />
         <Content>
-          <Breadcrumbs>
-            {this.getCrumbs()}
-          </Breadcrumbs>
+          <Header>
+            <Breadcrumbs>
+              {this.getCrumbs()}
+            </Breadcrumbs>
+          </Header>
           <ScrollView>
             {this.props.children}
           </ScrollView>
