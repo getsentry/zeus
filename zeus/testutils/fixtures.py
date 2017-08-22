@@ -1,11 +1,13 @@
 import os
 import pytest
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 from zeus import factories, models
+from zeus.utils import timezone
 
-DATA_FIXTURES = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 'tests', 'fixtures')
+DATA_FIXTURES = os.path.join(os.path.dirname(
+    __file__), os.pardir, os.pardir, 'tests', 'fixtures')
 
 
 @pytest.fixture(scope='function')
@@ -26,7 +28,11 @@ def default_identity(default_user):
 @pytest.fixture(scope='function')
 def default_login(client, default_user):
     with client.session_transaction() as session:
-        session['uid'] = default_user.id.hex
+        # XXX(dcramer): could use auth.login_user here, but that makes most tests dependent
+        # on that one function
+        session['uid'] = default_user.id
+        session['expire'] = int(
+            (timezone.now() + timedelta(days=1)).strftime('%s'))
 
     yield default_user
 

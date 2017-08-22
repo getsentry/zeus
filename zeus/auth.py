@@ -1,9 +1,11 @@
 from cached_property import cached_property
+from datetime import datetime
 from flask import current_app, g, session
 from typing import List, Optional
 
 from zeus.config import db
 from zeus.models import ApiToken, ApiTokenRepositoryAccess, RepositoryAccess, User
+from zeus.utils import timezone
 
 
 class Tenant(object):
@@ -69,14 +71,36 @@ class UserTenant(Tenant):
 
 
 def get_user_from_request() -> Optional[User]:
-    uid = session.get('uid')
-    if not uid:
+    expire = session.get('expire')
+    if not expire:
         return None
+
+    try:
+        expire = datetime.utcfromtimestamp(expire).replace(tzinfo=timezone.utc)
+    except Exception:
+        current_app.logger.exception('invalid session expirey')
+        del session['expire']
+        return None
+
+    if expire <= timezone.now():
+        current_app.logger.info('session expired')
+        del session['expire']
+        return None
+
+    try:
+        uid = session['uid']
+    except KeyError:
+        current_app.logger.error('missing uid session key', exc_info=True)
+        del session['expire']
+        return None
+
     return User.query.get(uid)
 
 
-def login_user(user_id: str):
+def login_user(user_id: str, session=session, current_datetime=None):
     session['uid'] = user_id
+    session['expire'] = int((
+        (current_datetime or timezone.now()) + current_app.config['PERMANENT_SESSION_LIFETIME']).strftime('%s'))
     session.permanent = True
 
 
