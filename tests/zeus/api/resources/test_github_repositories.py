@@ -72,5 +72,38 @@ def test_list_github_repos(client, default_login, default_user, default_identity
     data = resp.json()
     assert len(data) == 1
     assert data[0]['name'] == 'getsentry/zeus'
-    # TODO(dcramer): we really should have an active test as its much more critical
+    assert not data[0]['active']
+
+
+def test_list_github_active_repo_within_scope(
+        client, default_login, default_user, default_identity, default_repo, default_repo_access):
+    responses.add(
+        'GET',
+        'https://api.github.com/user/repos?type=owner',
+        match_querystring=True,
+        body=REPO_LIST_RESPONSE
+    )
+
+    resp = client.get('/api/github/repos')
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 1
+    assert data[0]['name'] == 'getsentry/zeus'
+    assert data[0]['active']
+
+
+def test_list_github_active_repo_out_of_scope(
+        client, default_login, default_user, default_identity, default_repo):
+    responses.add(
+        'GET',
+        'https://api.github.com/user/repos?type=owner',
+        match_querystring=True,
+        body=REPO_LIST_RESPONSE
+    )
+
+    resp = client.get('/api/github/repos')
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 1
+    assert data[0]['name'] == 'getsentry/zeus'
     assert not data[0]['active']

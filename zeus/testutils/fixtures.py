@@ -45,7 +45,9 @@ def default_repo():
         url='https://github.com/getsentry/zeus.git',
         backend=models.RepositoryBackend.git,
         status=models.RepositoryStatus.active,
+        provider=models.RepositoryProvider.github,
         github=True,
+        external_id='1',
     )
 
 

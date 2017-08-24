@@ -101,8 +101,11 @@ class GitHubRepositoriesResource(Resource):
 
         active_repo_ids = frozenset(
             r[0]
-            for r in db.session.query(Repository.external_id).filter(
+            for r in db.session.query(Repository.external_id).join(
+                RepositoryAccess, RepositoryAccess.repository_id == Repository.id,
+            ).filter(
                 Repository.provider == RepositoryProvider.github,
+                RepositoryAccess.user_id == user.id,
             )
         )
 
