@@ -21,9 +21,11 @@ def test_login_complete(client, mocker):
         'zeus.web.views.auth_github.OAuth2WebServerFlow.step2_exchange'
     )
 
+    # TOOD(dcramer): ideally we could test the header easily, but responses
+    # doesnt make that highly accessible yet
     responses.add(
         'GET',
-        'https://api.github.com/user?access_token=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+        'https://api.github.com/user',
         match_querystring=True,
         body='{"id": 1, "login": "test", "email": "foo@example.com"}'
     )
@@ -70,3 +72,53 @@ def test_login_complete(client, mocker):
         'login': 'test',
         'scopes': ['user:email', 'read:org'],
     }
+
+
+def test_login_complete_no_visible_email(client, mocker):
+    mock_step2_exchange = mocker.patch(
+        'zeus.web.views.auth_github.OAuth2WebServerFlow.step2_exchange'
+    )
+
+    # TOOD(dcramer): ideally we could test the header easily, but responses
+    # doesnt make that highly accessible yet
+    responses.add(
+        'GET',
+        'https://api.github.com/user',
+        match_querystring=True,
+        body='{"id": 1, "login": "test", "email": null}'
+    )
+    responses.add(
+        'GET',
+        'https://api.github.com/user/emails',
+        match_querystring=True,
+        body='[{"email": "foo@example.com": "verified": true, "primary": true}'
+    )
+
+    access_token = 'b' * 40
+    refresh_token = 'c' * 40
+
+    mock_step2_exchange.return_value = OAuth2Credentials(
+        access_token,
+        current_app.config['GITHUB_CLIENT_ID'],
+        current_app.config['GITHUB_CLIENT_SECRET'],
+        refresh_token,
+        datetime(2013, 9, 19, 22, 15, 22),
+        GITHUB_TOKEN_URI,
+        'foo/1.0',
+        token_response={
+            'scope': 'user:email,read:org',
+        },
+    )
+
+    resp = client.get('/auth/github/complete?code=abc')
+
+    mock_step2_exchange.assert_called_once_with('abc')
+
+    assert resp.status_code == 302
+    assert resp.headers['Location'] == 'http://localhost/'
+
+    user = User.query.filter(
+        User.email == 'foo@example.com',
+    ).first()
+
+    assert user

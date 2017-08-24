@@ -1,5 +1,4 @@
 import zeus
-import requests
 
 from flask import current_app, redirect, request, url_for
 from flask.views import MethodView
@@ -10,6 +9,7 @@ from zeus import auth
 from zeus.config import db
 from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI
 from zeus.models import Identity, User
+from zeus.utils.github import GitHubClient
 
 
 def get_auth_flow(redirect_uri=None, scopes=('user:email', )):
@@ -61,11 +61,8 @@ class GitHubCompleteView(MethodView):
             raise NotImplementedError
 
         # fetch user details
-        response = requests.get(
-            'https://api.github.com/user', params={'access_token': oauth_response.access_token}
-        )
-        response.raise_for_status()
-        user_data = response.json()
+        github = GitHubClient(token=oauth_response.access_token)
+        user_data = github.get('/user')
 
         identity_config = {
             'access_token': oauth_response.access_token,
@@ -74,10 +71,19 @@ class GitHubCompleteView(MethodView):
             'login': user_data['login'],
         }
 
+        email = user_data.get('email')
+        # no primary/public email specified
+        if not email:
+            emails = github.get('/user/emails')
+            email = next([
+                e['email'] for e in emails
+                if e['verified'] and e['primary']
+            ])
+
         try:
             with db.session.begin_nested():
                 user = User(
-                    email=user_data['email'],
+                    email=email,
                 )
                 db.session.add(user)
                 identity = Identity(
