@@ -149,26 +149,29 @@ class GitHubRepositoriesResource(Resource):
         repo_data = github.get('/repos/{}'.format(repo_name))
         owner_name, repo_name = repo_data['full_name'].split('/', 1)
 
-        repo = Repository.query.filter(
-            Repository.provider == RepositoryProvider.github,
-            Repository.external_id == str(repo_data['id']),
-        ).first()
-        if repo is None:
-            # bind various github specific attributes
-            repo = Repository(
-                backend=RepositoryBackend.git,
-                provider=RepositoryProvider.github,
-                status=RepositoryStatus.active,
-                external_id=str(repo_data['id']),
-                owner_name=owner_name,
-                name=repo_name,
-                url=repo_data['clone_url'],
-                data={'github': {
-                    'full_name': repo_data['full_name']
-                }},
-            )
-            db.session.add(repo)
-
+        try:
+            with db.session.begin_nested():
+                # bind various github specific attributes
+                repo = Repository(
+                    backend=RepositoryBackend.git,
+                    provider=RepositoryProvider.github,
+                    status=RepositoryStatus.active,
+                    external_id=str(repo_data['id']),
+                    owner_name=owner_name,
+                    name=repo_name,
+                    url=repo_data['clone_url'],
+                    data={'github': {
+                        'full_name': repo_data['full_name']
+                    }},
+                )
+                db.session.add(repo)
+                db.session.flush()
+        except IntegrityError:
+            repo = Repository.query.filter(
+                Repository.provider == RepositoryProvider.github,
+                Repository.external_id == str(repo_data['id']),
+            ).first()
+        else:
             # generate a new private key for use on github
             key = ssh.generate_key()
             db.session.add(
@@ -188,6 +191,7 @@ class GitHubRepositoriesResource(Resource):
                     'read_only': True,
                 }
             )
+
             # we need to commit before firing off the task
             db.session.commit()
 
@@ -204,4 +208,5 @@ class GitHubRepositoriesResource(Resource):
             pass
 
         db.session.commit()
+
         return self.respond_with_schema(repo_schema, repo, 201)
