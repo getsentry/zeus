@@ -25,10 +25,12 @@ export default class RepositoryDetails extends AsyncPage {
   }
 
   getDefaultState(props, context) {
-    let {ownerName, repoName} = props.params;
+    let {provider, ownerName, repoName} = props.params;
     let {repoList} = context;
     let state = super.getDefaultState(props, context);
-    state.repo = repoList.find(r => r.owner_name === ownerName && r.name === repoName);
+    state.repo = repoList.find(
+      r => r.provider === provider && r.owner_name === ownerName && r.name === repoName
+    );
     return state;
   }
 

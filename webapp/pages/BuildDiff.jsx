@@ -8,12 +8,14 @@ import Section from '../components/Section';
 export default class BuildDiff extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
+    repo: PropTypes.object.isRequired,
     build: PropTypes.object.isRequired
   };
 
   getEndpoints() {
-    let {buildNumber, ownerName, repoName} = this.props.params;
-    return [['source', `/repos/${ownerName}/${repoName}/builds/${buildNumber}/source`]];
+    let {repo} = this.context;
+    let {buildNumber} = this.props.params;
+    return [['source', `/repos/${repo.full_name}/builds/${buildNumber}/source`]];
   }
 
   renderBody() {

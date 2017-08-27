@@ -28,8 +28,10 @@ export default (
     <Route path="/settings/github/repos" component={requireAuth(GitHubRepositoryList)} />
     <Route path="/builds" component={requireAuth(UserBuildList)} />
     <Route path="/login" component={Login} />
-    <Route path="/:ownerName" component={requireAuth(OwnerDetails)} />
-    <Route path="/:ownerName/:repoName" component={requireAuth(RepositoryDetails)}>
+    <Route path="/:provider/:ownerName" component={requireAuth(OwnerDetails)} />
+    <Route
+      path="/:provider/:ownerName/:repoName"
+      component={requireAuth(RepositoryDetails)}>
       <IndexRoute component={RepositoryBuildList} />
       <Route path="settings" component={RepositorySettings}>
         <Route path="hooks" component={RepositoryHooks} />

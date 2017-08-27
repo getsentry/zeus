@@ -34,8 +34,9 @@ export default class BuildDetails extends AsyncPage {
   }
 
   getEndpoints() {
-    let {buildNumber, ownerName, repoName} = this.props.params;
-    return [['build', `/repos/${ownerName}/${repoName}/builds/${buildNumber}`]];
+    let {repo} = this.context;
+    let {buildNumber} = this.props.params;
+    return [['build', `/repos/${repo.full_name}/builds/${buildNumber}`]];
   }
 
   getTitle() {
@@ -44,15 +45,16 @@ export default class BuildDetails extends AsyncPage {
 
   render() {
     // happens before loading is done
-    let {ownerName, repoName, buildNumber} = this.props.params;
+    let {repo} = this.context;
+    let {buildNumber} = this.props.params;
     return (
       <RepositoryHeader>
         <Breadcrumbs>
-          <CrumbLink to={`/${ownerName}`}>
-            {ownerName}
+          <CrumbLink to={`/${repo.provider}/${repo.owner_name}`}>
+            {repo.owner_name}
           </CrumbLink>
-          <CrumbLink to={`/${ownerName}/${repoName}`}>
-            {repoName}
+          <CrumbLink to={`/${repo.full_name}`}>
+            {repo.name}
           </CrumbLink>
           <Crumb>
             #{buildNumber}
@@ -67,7 +69,8 @@ export default class BuildDetails extends AsyncPage {
 
   renderBody() {
     let {build} = this.state;
-    let {buildNumber, ownerName, repoName} = this.props.params;
+    let {repo} = this.context;
+    let {buildNumber} = this.props.params;
     return (
       <div>
         <BuildSummary>
@@ -102,18 +105,17 @@ export default class BuildDetails extends AsyncPage {
           </Meta>
           <Tabs>
             <TabbedNavItem
-              to={`/${ownerName}/${repoName}/builds/${buildNumber}`}
+              to={`/${repo.full_name}/builds/${buildNumber}`}
               onlyActiveOnIndex={true}>
               Overview
             </TabbedNavItem>
-            <TabbedNavItem to={`/${ownerName}/${repoName}/builds/${buildNumber}/tests`}>
+            <TabbedNavItem to={`/${repo.full_name}/builds/${buildNumber}/tests`}>
               Tests
             </TabbedNavItem>
-            <TabbedNavItem
-              to={`/${ownerName}/${repoName}/builds/${buildNumber}/coverage`}>
+            <TabbedNavItem to={`/${repo.full_name}/builds/${buildNumber}/coverage`}>
               Code Coverage
             </TabbedNavItem>
-            <TabbedNavItem to={`/${ownerName}/${repoName}/builds/${buildNumber}/diff`}>
+            <TabbedNavItem to={`/${repo.full_name}/builds/${buildNumber}/diff`}>
               Diff
             </TabbedNavItem>
           </Tabs>

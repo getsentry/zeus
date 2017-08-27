@@ -11,9 +11,8 @@ def test_new_test(
     default_repo_access,
 ):
     resp = client.post(
-        '/api/repos/{}/{}/builds/{}/jobs/{}/tests'.format(
-            default_repo.owner_name,
-            default_repo.name,
+        '/api/repos/{}/builds/{}/jobs/{}/tests'.format(
+            default_repo.get_full_name(),
             default_build.number,
             default_job.number,
         ),
@@ -40,9 +39,8 @@ def test_upsert_existing_test(
     default_testcase,
 ):
     resp = client.post(
-        '/api/repos/{}/{}/builds/{}/jobs/{}/tests'.format(
-            default_repo.owner_name,
-            default_repo.name,
+        '/api/repos/{}/builds/{}/jobs/{}/tests'.format(
+            default_repo.get_full_name(),
             default_build.number,
             default_job.number,
         ),
@@ -69,9 +67,8 @@ def test_upsert_existing_test_no_changes(
     default_testcase,
 ):
     resp = client.post(
-        '/api/repos/{}/{}/builds/{}/jobs/{}/tests'.format(
-            default_repo.owner_name,
-            default_repo.name,
+        '/api/repos/{}/builds/{}/jobs/{}/tests'.format(
+            default_repo.get_full_name(),
             default_build.number,
             default_job.number,
         ),

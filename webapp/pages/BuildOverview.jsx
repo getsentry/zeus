@@ -11,20 +11,22 @@ import TestList from '../components/TestList';
 export default class BuildJobList extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
-    build: PropTypes.object.isRequired
+    build: PropTypes.object.isRequired,
+    repo: PropTypes.object.isRequired
   };
 
   getEndpoints() {
-    let {buildNumber, ownerName, repoName} = this.props.params;
+    let {repo} = this.context;
+    let {buildNumber} = this.props.params;
     return [
-      ['jobList', `/repos/${ownerName}/${repoName}/builds/${buildNumber}/jobs`],
+      ['jobList', `/repos/${repo.full_name}/builds/${buildNumber}/jobs`],
       [
         'testFailures',
-        `/repos/${ownerName}/${repoName}/builds/${buildNumber}/tests?result=failed`
+        `/repos/${repo.full_name}/builds/${buildNumber}/tests?result=failed`
       ],
       [
         'diffCoverage',
-        `/repos/${ownerName}/${repoName}/builds/${buildNumber}/file-coverage?diff_only=true`
+        `/repos/${repo.full_name}/builds/${buildNumber}/file-coverage?diff_only=true`
       ]
     ];
   }

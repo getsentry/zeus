@@ -25,7 +25,7 @@ class RepositoryBuildList extends AsyncPage {
   renderBody() {
     let props = this.props;
     let repo = this.context.repo;
-    let basePath = `/${repo.owner_name}/${repo.name}`;
+    let basePath = `/${repo.full_name}`;
     return (
       <div>
         <RepositoryHeader />
@@ -67,9 +67,14 @@ class BuildListBody extends AsyncComponent {
     buildList: PropTypes.array
   };
 
+  static contextTypes = {
+    ...AsyncPage.contextTypes,
+    repo: PropTypes.object.isRequired
+  };
+
   fetchData() {
-    let {ownerName, repoName} = this.props.params;
-    this.props.loadBuildsForRepository(ownerName, repoName, this.props.location.query);
+    let {repo} = this.context;
+    this.props.loadBuildsForRepository(repo.full_name, this.props.location.query);
   }
 
   renderBody() {

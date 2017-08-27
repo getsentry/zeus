@@ -8,14 +8,14 @@ import Section from '../components/Section';
 export default class BuildCoverage extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
-    build: PropTypes.object.isRequired
+    build: PropTypes.object.isRequired,
+    repo: PropTypes.object.isRequired
   };
 
   getEndpoints() {
-    let {buildNumber, ownerName, repoName} = this.props.params;
-    return [
-      ['coverage', `/repos/${ownerName}/${repoName}/builds/${buildNumber}/file-coverage`]
-    ];
+    let {repo} = this.context;
+    let {buildNumber} = this.props.params;
+    return [['coverage', `/repos/${repo.full_name}/builds/${buildNumber}/file-coverage`]];
   }
 
   renderBody() {

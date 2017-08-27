@@ -19,7 +19,7 @@ export default class RepositoryTests extends AsyncPage {
 
   renderBody() {
     let {repo} = this.context;
-    let basePath = `/${repo.owner_name}/${repo.name}`;
+    let basePath = `/${repo.full_name}`;
     return (
       <div>
         <RepositoryHeader />

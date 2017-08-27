@@ -1,12 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
 import TestList from '../components/TestList';
 
 export default class RepositoryTestList extends AsyncPage {
+  static contextTypes = {
+    ...AsyncPage.contextTypes,
+    repo: PropTypes.object.isRequired
+  };
+
   getEndpoints() {
-    let {ownerName, repoName} = this.props.params;
-    return [['testList', `/repos/${ownerName}/${repoName}/tests`]];
+    let {repo} = this.context;
+    return [['testList', `/repos/${repo.full_name}/tests`]];
   }
 
   renderBody() {

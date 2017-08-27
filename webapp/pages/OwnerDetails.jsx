@@ -20,10 +20,12 @@ export default class OwnerDetails extends AsyncPage {
   };
 
   getDefaultState(props, context) {
-    let {ownerName} = props.params;
+    let {ownerName, provider} = props.params;
     let {repoList} = context;
     let state = super.getDefaultState(props, context);
-    state.repoList = repoList.filter(r => r.owner_name === ownerName);
+    state.repoList = repoList.filter(
+      r => r.owner_name === ownerName && r.provider == provider
+    );
     return state;
   }
 
@@ -33,14 +35,14 @@ export default class OwnerDetails extends AsyncPage {
   }
 
   renderBody() {
-    let {ownerName} = this.props.params;
+    let {provider, ownerName} = this.props.params;
     return (
       <div>
         <Sidebar params={this.props.params} />
         <Content>
           <Header>
             <Breadcrumbs>
-              <CrumbLink to={`/${ownerName}`}>
+              <CrumbLink to={`/${provider}/${ownerName}`}>
                 {ownerName}
               </CrumbLink>
             </Breadcrumbs>
@@ -49,7 +51,7 @@ export default class OwnerDetails extends AsyncPage {
             {this.state.repoList.map(repo => {
               return (
                 <li key={repo.name}>
-                  <Link to={`/${repo.owner_name}/${repo.name}`}>
+                  <Link to={`/${repo.full_name}`}>
                     {repo.name}
                   </Link>
                 </li>

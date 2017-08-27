@@ -12,13 +12,13 @@ export default (state = initialState, action = {}) => {
     case ADD_REPO:
       return {
         ...state,
-        items: sortBy([...state.items, action.payload], ['ownerName', 'name'])
+        items: sortBy([...state.items, action.payload], ['full_name'])
       };
     // this should arguably dedupe to ensure correctness
     case LOAD_REPO_LIST:
       return {
         ...state,
-        items: sortBy([...action.items], ['ownerName', 'name']),
+        items: sortBy([...action.items], ['full_name']),
         loaded: true
       };
     case REMOVE_REPO:

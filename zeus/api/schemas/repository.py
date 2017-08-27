@@ -16,8 +16,7 @@ class RepositorySchema(Schema):
         attribute='date_created',
         dump_only=True,
     )
+    full_name = fields.Method('get_full_name')
 
-
-class GitHubRepositorySchema(Schema):
-    id = fields.UUID(dump_only=True)
-    github_name = fields.Str(load_from='github.name')
+    def get_full_name(self, obj):
+        return '{}/{}/{}'.format(obj.provider, obj.owner_name, obj.name)

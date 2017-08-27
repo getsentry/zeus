@@ -13,12 +13,12 @@ export default class RepositorySettings extends AsyncPage {
 
   getEndpoints() {
     let repo = this.context.repo;
-    return [['hookList', `/repos/${repo.owner_name}/${repo.name}/hooks`]];
+    return [['hookList', `/repos/${repo.full_name}/hooks`]];
   }
 
   renderBody() {
     // let repo = this.context.repo;
-    // let basePath = `/${repo.owner_name}/${repo.name}`;
+    // let basePath = `/${repo.full_name}`;
     return (
       <div>
         <RepositoryHeader />

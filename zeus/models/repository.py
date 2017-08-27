@@ -19,10 +19,10 @@ class RepositoryBackend(enum.Enum):
 
 
 class RepositoryProvider(enum.Enum):
-    github = 'github'
+    github = 'gh'
 
     def __str__(self):
-        return self.name
+        return self.value
 
 
 class RepositoryStatus(enum.Enum):
@@ -83,8 +83,10 @@ class Repository(StandardAttributes, db.Model):
     owner_name = db.Column(db.String(200), nullable=False)
     name = db.Column(db.String(200), nullable=False)
     url = db.Column(db.String(200), nullable=False)
-    backend = db.Column(Enum(RepositoryBackend), default=RepositoryBackend.unknown, nullable=False)
-    status = db.Column(Enum(RepositoryStatus), default=RepositoryStatus.inactive, nullable=False)
+    backend = db.Column(Enum(RepositoryBackend),
+                        default=RepositoryBackend.unknown, nullable=False)
+    status = db.Column(Enum(RepositoryStatus),
+                       default=RepositoryStatus.inactive, nullable=False)
     provider = db.Column(StrEnum(RepositoryProvider), nullable=False)
     external_id = db.Column(db.String(64))
     data = db.Column(JSONEncodedDict, nullable=True)
@@ -104,8 +106,10 @@ class Repository(StandardAttributes, db.Model):
 
     __tablename__ = 'repository'
     __table_args__ = (
-        db.UniqueConstraint('provider', 'external_id', name='unq_repo_external_id'),
-        db.UniqueConstraint('owner_name', 'name', name='unq_repo_name'),
+        db.UniqueConstraint('provider', 'external_id',
+                            name='unq_repo_external_id'),
+        db.UniqueConstraint('provider', 'owner_name',
+                            'name', name='unq_repo_name'),
     )
     __repr__ = model_repr('name', 'url', 'provider')
 
@@ -129,4 +133,8 @@ class Repository(StandardAttributes, db.Model):
         if self.backend == RepositoryBackend.git:
             return GitVcs(**kwargs)
         else:
-            raise NotImplementedError('Invalid backend: {}'.format(self.backend))
+            raise NotImplementedError(
+                'Invalid backend: {}'.format(self.backend))
+
+    def get_full_name(self):
+        return '{}/{}/{}'.format(self.provider, self.owner_name, self.name)

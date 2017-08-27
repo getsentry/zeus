@@ -21,7 +21,9 @@ def mock_single_repository(builds=10, user_ids=()):
             db.session.add(repo)
     except IntegrityError:
         repo = models.Repository.query.unrestricted_unsafe().filter(
-            models.Repository.owner_name == repo.owner_name, models.Repository.name == repo.name
+            models.Repository.provider == repo.provider,
+            models.Repository.owner_name == repo.owner_name,
+            models.Repository.name == repo.name
         ).first()
     else:
         click.echo('Created {!r}'.format(repo))

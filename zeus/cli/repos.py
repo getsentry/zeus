@@ -1,7 +1,8 @@
 import click
 
 from zeus.config import db
-from zeus.models import Repository, RepositoryAccess, RepositoryBackend, RepositoryStatus, User
+from zeus.models import (Repository, RepositoryAccess,
+                         RepositoryBackend, RepositoryProvider, RepositoryStatus, User)
 from zeus.tasks import import_repo, sync_repo
 from zeus.utils.text import slugify
 
@@ -20,10 +21,11 @@ def repos():
 @click.option('--active/--inactive', default=True)
 def add(repository_full_name, url, backend, active):
     raise NotImplementedError
-    owner_name, repo_name = repository_full_name.split('/', 1)
+    provider, owner_name, repo_name = repository_full_name.split('/', 2)
     repo = Repository(
         url=url,
         owner_name=slugify(owner_name),
+        provider=RepositoryProvider(provider),
         name=slugify(repo_name),
         backend=getattr(RepositoryBackend, backend),
         status=RepositoryStatus.active if active else RepositoryStatus.inactive,
@@ -39,8 +41,9 @@ def add(repository_full_name, url, backend, active):
 @repos.command()
 @click.argument('repository_full_name', required=True)
 def sync(repository_full_name):
-    owner_name, repo_name = repository_full_name.split('/', 1)
+    provider, owner_name, repo_name = repository_full_name.split('/', 2)
     repo = Repository.query.unrestricted_unsafe().filter(
+        Repository.provider == RepositoryProvider(provider),
         Repository.owner_name == owner_name,
         Repository.name == repo_name,
     ).first()
@@ -56,8 +59,9 @@ def access():
 @click.argument('repository_full_name', required=True)
 @click.argument('email', required=True)
 def access_add(repository_full_name, email):
-    owner_name, repo_name = repository_full_name.split('/', 1)
+    provider, owner_name, repo_name = repository_full_name.split('/', 2)
     repo = Repository.query.unrestricted_unsafe().filter(
+        Repository.provider == RepositoryProvider(provider),
         Repository.owner_name == owner_name,
         Repository.name == repo_name,
     ).first()

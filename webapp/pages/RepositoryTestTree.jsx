@@ -29,13 +29,9 @@ const Leaf = styled(Link)`
 
 export default class RepositoryTestTree extends AsyncPage {
   getEndpoints() {
-    let {ownerName, repoName} = this.props.params;
+    let {repo} = this.context;
     return [
-      [
-        'tree',
-        `/repos/${ownerName}/${repoName}/test-tree`,
-        {query: this.props.location.query}
-      ]
+      ['tree', `/repos/${repo.full_name}/test-tree`, {query: this.props.location.query}]
     ];
   }
 

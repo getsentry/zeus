@@ -38,7 +38,7 @@ export default class RepositoryHeader extends Component {
 
   render() {
     let {repo} = this.context;
-    let basePath = `/${repo.owner_name}/${repo.name}`;
+    let basePath = `/${repo.full_name}`;
 
     let children =
       this.props.children ||
