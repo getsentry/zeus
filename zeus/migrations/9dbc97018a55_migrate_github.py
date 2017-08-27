@@ -17,8 +17,12 @@ depends_on = None
 
 
 def upgrade():
-    op.execute("update repository set provider = 'gh' where provider = 'github'")
+    conn = op.get_bind()
+    conn.execute(
+        "update repository set provider = 'gh' where provider = 'github'")
 
 
 def downgrade():
-    op.execute("update repository set provider = 'github' where provider = 'gh'")
+    conn = op.get_bind()
+    conn.execute(
+        "update repository set provider = 'github' where provider = 'gh'")
