@@ -167,7 +167,7 @@ class GitHubRepositoriesResource(Resource):
                 db.session.add(repo)
                 db.session.flush()
         except IntegrityError:
-            repo = Repository.query.filter(
+            repo = Repository.query.unrestricted_unsafe().filter(
                 Repository.provider == RepositoryProvider.github,
                 Repository.external_id == str(repo_data['id']),
             ).first()
