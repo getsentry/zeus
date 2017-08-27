@@ -171,6 +171,8 @@ class GitHubRepositoriesResource(Resource):
                 Repository.provider == RepositoryProvider.github,
                 Repository.external_id == str(repo_data['id']),
             ).first()
+            # it's possible to get here if the "full name" already exists
+            assert repo
         else:
             # generate a new private key for use on github
             key = ssh.generate_key()
