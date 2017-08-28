@@ -25,6 +25,14 @@ export default class TimeSince extends Component {
     this.setRelativeDateTicker();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.date !== this.props.date) {
+      this.setState({
+        relative: this.getRelativeDate()
+      });
+    }
+  }
+
   componentWillUnmount() {
     if (this.ticker) {
       clearTimeout(this.ticker);
@@ -33,24 +41,33 @@ export default class TimeSince extends Component {
   }
 
   setRelativeDateTicker() {
-    const ONE_MINUTE_IN_MS = 60000;
-
+    let {date} = this.props;
+    let ticker;
+    let timeSinceInSeconds = (new Date().getTime() - new Date(date).getTime()) / 1000;
+    if (timeSinceInSeconds < 300) {
+      // update every second
+      ticker = 1000;
+    } else {
+      // update once a minute
+      ticker = 60000;
+    }
     this.ticker = setTimeout(() => {
       this.setState({
         relative: this.getRelativeDate()
       });
       this.setRelativeDateTicker();
-    }, ONE_MINUTE_IN_MS);
+    }, ticker);
   }
 
   getRelativeDate() {
-    let date = new Date(this.props.date);
+    let {date} = this.props;
+    let mDate = moment(new Date(date));
     if (!this.props.suffix) {
-      return moment(date).fromNow(true);
+      return mDate.fromNow(true);
     } else if (this.props.suffix === 'ago') {
-      return moment(date).fromNow();
+      return mDate.fromNow();
     } else if (this.props.suffix == 'old') {
-      return `${moment(date).fromNow(true)} old`;
+      return `${date.fromNow(true)} old`;
     } else {
       throw new Error('Unsupported time format suffix');
     }
