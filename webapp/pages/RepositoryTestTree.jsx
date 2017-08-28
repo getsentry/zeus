@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import {Flex, Box} from 'grid-styled';
 import styled from 'styled-components';
@@ -28,6 +29,11 @@ const Leaf = styled(Link)`
 `;
 
 export default class RepositoryTestTree extends AsyncPage {
+  static contextTypes = {
+    ...AsyncPage.contextTypes,
+    repo: PropTypes.object.isRequired
+  };
+
   getEndpoints() {
     let {repo} = this.context;
     return [
