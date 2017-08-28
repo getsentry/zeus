@@ -21,6 +21,7 @@ def test_new_build(client, default_source, default_repo, default_hook):
     assert build.repository_id == default_repo.id
     assert build.provider == default_hook.provider
     assert build.external_id == build_xid
+    assert build.label == 'test build'
 
 
 def test_existing_build(client, default_source, default_repo, default_hook):
@@ -41,3 +42,6 @@ def test_existing_build(client, default_source, default_repo, default_hook):
         }
     )
     assert resp.status_code == 200, repr(resp.data)
+
+    build = Build.query.unrestricted_unsafe().get(build.id)
+    assert build.label == 'test build'
