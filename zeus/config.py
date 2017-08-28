@@ -49,9 +49,20 @@ def create_app(_read_config=True, **config):
             os.environ['DB_USER'],
             os.environ['DB_PASSWORD'],
         )
+        if 'GCS_BUCKET' in os.environ:
+            app.config['FILE_STORAGE'] = {
+                'backend': 'zeus.storage.gcs.GoogleCloudStorage',
+                'options': {
+                    'bucket': os.environ['GCS_BUCKET'],
+                },
+            }
     else:
         REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
         SQLALCHEMY_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql+psycopg2:///zeus')
+        app.config['FILE_STORAGE'] = {
+            'backend': 'zeus.storage.base.FileStorage',
+            'options': {},
+        }
 
     if os.environ.get('SERVER_NAME'):
         app.config['SERVER_NAME'] = os.environ['SERVER_NAME']
@@ -104,8 +115,6 @@ def create_app(_read_config=True, **config):
     app.config['CELERYD_MAX_TASKS_PER_CHILD'] = 10000
 
     app.config['REPO_ROOT'] = os.environ.get('REPO_ROOT', '/usr/local/cache/zeus-repos')
-
-    # app.config['DEFAULT_FILE_STORAGE'] = ''
 
     if _read_config:
         if os.environ.get('ZEUS_CONF'):

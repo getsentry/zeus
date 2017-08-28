@@ -20,7 +20,9 @@ def app(request, session_config):
     app = config.create_app(
         _read_config=False,
         SQLALCHEMY_DATABASE_URI='postgresql:///' + session_config['db_name'],
-        DEFAULT_FILE_STORAGE='zeus.storage.mock.FileStorageCache',
+        FILE_STORAGE={
+            'backend': 'zeus.storage.mock.FileStorageCache',
+        },
         SECRET_KEY=os.urandom(24),
         GITHUB_CLIENT_ID='github.client-id',
         GITHUB_CLIENT_SECRET='github.client-secret',

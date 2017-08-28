@@ -10,19 +10,12 @@ from zeus.utils.imports import import_string
 
 
 class FileData(Mutable):
-    def __init__(self, data=None, storage_options=None):
+    def __init__(self, data=None):
         if data is None:
             data = {}
-        if storage_options is None:
-            storage_options = {}
 
         self.filename = data.get('filename')
-        self.storage = data.get('storage', storage_options.pop('storage', None))
-        self.storage_options = storage_options
-
-        # XXX(dcramer): this is a fairly hacky way to specify the file storage
-        if self.storage is None:
-            self.storage = current_app.config['DEFAULT_FILE_STORAGE']
+        self.storage = current_app.config['FILE_STORAGE']
 
     def __repr__(self):
         return '<%s: filename=%s>' % (type(self).__name__, self.filename)
@@ -31,8 +24,8 @@ class FileData(Mutable):
         return bool(self.filename)
 
     def get_storage(self):
-        storage = import_string(self.storage)
-        return storage(**self.storage_options)
+        storage = import_string(self.storage['backend'])
+        return storage(**self.storage.get('options', {}))
 
     def url_for(self):
         if self.filename is None:

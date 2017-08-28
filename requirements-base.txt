@@ -5,11 +5,12 @@ cryptography==1.9
 flask==0.12.2
 flask-alembic==2.0.1
 flask-sqlalchemy==2.2
+google-cloud-storage>=1.4.0,<1.5.0
 honcho==1.0.1
 idna>=2.5,<2.6
 lxml==3.8.0
 marshmallow==2.13.5
-oauth2client==4.1.2
+oauth2client==3.0.0
 psycopg2==2.7.1
 raven==6.1.0
 redis==2.10.5
