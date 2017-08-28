@@ -75,11 +75,10 @@ class GitHubCompleteView(MethodView):
         # no primary/public email specified
         if not email:
             emails = github.get('/user/emails')
-            email = next([
+            email = next((
                 e['email'] for e in emails
                 if e['verified'] and e['primary']
-            ])
-
+            ))
         try:
             with db.session.begin_nested():
                 user = User(
