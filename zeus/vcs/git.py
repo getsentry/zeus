@@ -127,6 +127,7 @@ class GitVcs(Vcs):
             cmd.append(parent)
 
         try:
+            self.ensure()
             result = self.run(cmd)
         except CommandError as cmd_error:
             err_msg = cmd_error.stderr
@@ -164,12 +165,14 @@ class GitVcs(Vcs):
 
     def export(self, id) -> str:
         cmd = ['diff', '%s^..%s' % (id, id)]
+        self.ensure()
         result = self.run(cmd)
         return result
 
     def is_child_parent(self, child_in_question, parent_in_question) -> bool:
         cmd = ['merge-base', '--is-ancestor',
                parent_in_question, child_in_question]
+        self.ensure()
         try:
             self.run(cmd)
             return True

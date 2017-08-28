@@ -61,6 +61,7 @@ class Vcs(object):
         self.username = username
 
         self._path_exists = None
+        self._updated = False
 
     def get_default_env(self):
         return {}
@@ -97,6 +98,16 @@ class Vcs(object):
 
     def update(self):
         raise NotImplementedError
+
+    def ensure(self, update_if_exists=False):
+        if self._updated:
+            return
+
+        if not self.exists():
+            self.clone()
+        elif update_if_exists:
+            self.update()
+        self._updated = True
 
     def log(self, parent=None, branch=None, author=None, offset=0, limit=100):
         """ Gets the commit log for the repository.
