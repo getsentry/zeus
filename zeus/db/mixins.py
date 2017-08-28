@@ -11,6 +11,7 @@ from zeus.utils import timezone
 class StandardAttributes(object):
     @declared_attr
     def id(cls):
+        print('example change')
         return db.Column(GUID, primary_key=True, default=GUID.default_value)
 
     @declared_attr
