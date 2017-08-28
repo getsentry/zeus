@@ -17,6 +17,7 @@
 
 # misc
 .coverage*
+coverage.xml
 .cache/
 .mypy_cache/
 .DS_Store
