@@ -2,9 +2,9 @@ from flask import current_app
 
 from zeus import auth
 from zeus.artifacts import manager as default_manager
-from zeus.config import celery
+from zeus.config import celery, db
 from zeus.constants import Result
-from zeus.models import Artifact
+from zeus.models import Artifact, Status
 
 
 @celery.task
@@ -12,6 +12,10 @@ def process_artifact(artifact_id, manager=None, **kwargs):
     artifact = Artifact.query.unrestricted_unsafe().get(artifact_id)
     if artifact is None:
         return
+
+    artifact.status = Status.in_progress
+    db.session.add(artifact)
+    db.session.flush()
 
     auth.set_current_tenant(auth.Tenant(repository_ids=[artifact.repository_id]))
 
@@ -32,3 +36,7 @@ def process_artifact(artifact_id, manager=None, **kwargs):
         current_app.logger.exception(
             'Unrecoverable exception processing artifact %s: %s', artifact.job_id, artifact
         )
+
+    artifact.status = Status.finished
+    db.session.add(artifact)
+    db.session.commit()

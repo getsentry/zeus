@@ -4,6 +4,7 @@ from base64 import b64decode
 from io import BytesIO
 
 from zeus.config import db
+from zeus.constants import Status
 from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
 from zeus.db.types import Enum, File, FileData, GUID
 
@@ -34,7 +35,7 @@ class Artifact(RepositoryBoundMixin, StandardAttributes, db.Model):
         # do it with SQLAlchemy
         default=lambda: FileData({}, default_path='artifacts')
     )
-
+    status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
     job = db.relationship('Job', innerjoin=True, uselist=False)
     testcase = db.relationship('TestCase', uselist=False)
 

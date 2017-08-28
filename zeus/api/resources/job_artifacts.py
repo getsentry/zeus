@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.datastructures import FileStorage
 
 from zeus.config import db
-from zeus.constants import Result
+from zeus.constants import Result, Status
 from zeus.models import Artifact, Job
 from zeus.tasks import process_artifact
 
@@ -58,6 +58,7 @@ class JobArtifactsResource(BaseJobResource):
         artifact = result.data
         artifact.job_id = job.id
         artifact.repository_id = job.repository_id
+        artifact.status = Status.queued
 
         if not artifact.name:
             artifact.name = file.filename
