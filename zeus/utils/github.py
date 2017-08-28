@@ -1,6 +1,5 @@
 import requests
 
-from collections import Mapping, Sequence
 from cached_property import cached_property
 from functools import partialmethod
 from requests.exceptions import HTTPError
@@ -25,37 +24,16 @@ class BaseResponse(object):
             return SequenceResponse(data, resp.headers)
 
 
-class MappingResponse(Mapping, BaseResponse):
+class MappingResponse(dict, BaseResponse):
     def __init__(self, data, headers):
-        self._data = data
+        dict.__init__(self, data)
         self.headers = headers
 
-    def __getitem__(self, key):
-        return self._data[key]
 
-    def __len__(self):
-        return len(self._data)
-
-    def __iter__(self):
-        return iter(self._data)
-
-    def __contains__(self, key):
-        return key in self._data
-
-
-class SequenceResponse(Sequence, BaseResponse):
+class SequenceResponse(list, BaseResponse):
     def __init__(self, data, headers):
-        self._data = data
+        list.__init__(self, data)
         self.headers = headers
-
-    def __getitem__(self, key):
-        return self._data[key]
-
-    def __len__(self):
-        return len(self._data)
-
-    def __iter__(self):
-        return iter(self._data)
 
 
 class GitHubClient(object):
