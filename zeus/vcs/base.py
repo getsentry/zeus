@@ -99,7 +99,7 @@ class Vcs(object):
     def update(self):
         raise NotImplementedError
 
-    def ensure(self, update_if_exists=False):
+    def ensure(self, update_if_exists=True):
         if self._updated:
             return
 
