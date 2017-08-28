@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Duration from './Duration';
 
-const ONE_MINUTE_IN_MS = 60000;
+const ONE_SECOND_IN_MS = 1000;
 
 export default class dataDuration extends Component {
   static propTypes = {
@@ -34,14 +34,13 @@ export default class dataDuration extends Component {
 
   setDurationTicker() {
     let {data} = this.props;
-
     if (!data.finished_at) {
       this.ticker = setTimeout(() => {
         this.setState({
           duration: this.getDuration()
         });
         this.setDurationTicker();
-      }, ONE_MINUTE_IN_MS);
+      }, ONE_SECOND_IN_MS);
     }
   }
 

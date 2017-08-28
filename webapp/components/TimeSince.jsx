@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 
+const ONE_MINUTE_IN_MS = 60000;
+
 export default class TimeSince extends Component {
   static propTypes = {
     date: PropTypes.any.isRequired,
@@ -41,33 +43,22 @@ export default class TimeSince extends Component {
   }
 
   setRelativeDateTicker() {
-    let {date} = this.props;
-    let ticker;
-    let timeSinceInSeconds = (new Date().getTime() - new Date(date).getTime()) / 1000;
-    if (timeSinceInSeconds < 300) {
-      // update every second
-      ticker = 1000;
-    } else {
-      // update once a minute
-      ticker = 60000;
-    }
     this.ticker = setTimeout(() => {
       this.setState({
         relative: this.getRelativeDate()
       });
       this.setRelativeDateTicker();
-    }, ticker);
+    }, ONE_MINUTE_IN_MS);
   }
 
   getRelativeDate() {
-    let {date} = this.props;
-    let mDate = moment(new Date(date));
+    let mDate = moment(new Date(this.props.date));
     if (!this.props.suffix) {
       return mDate.fromNow(true);
     } else if (this.props.suffix === 'ago') {
       return mDate.fromNow();
     } else if (this.props.suffix == 'old') {
-      return `${date.fromNow(true)} old`;
+      return `${mDate.fromNow(true)} old`;
     } else {
       throw new Error('Unsupported time format suffix');
     }
