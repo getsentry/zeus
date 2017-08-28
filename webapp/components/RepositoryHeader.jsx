@@ -43,7 +43,7 @@ export default class RepositoryHeader extends Component {
     let children =
       this.props.children ||
       <Breadcrumbs>
-        <CrumbLink to={`/${repo.owner_name}`}>
+        <CrumbLink to={`/${repo.provider}/${repo.owner_name}`}>
           {repo.owner_name}
         </CrumbLink>
         <CrumbLink to={basePath}>
