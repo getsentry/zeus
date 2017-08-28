@@ -10,12 +10,14 @@ from zeus.utils.imports import import_string
 
 
 class FileData(Mutable):
-    def __init__(self, data=None):
+    def __init__(self, data=None, storage=None):
         if data is None:
             data = {}
 
         self.filename = data.get('filename')
-        self.storage = current_app.config['FILE_STORAGE']
+        self.storage = (
+            data.get('storage', storage) or current_app.config['FILE_STORAGE']
+        )
 
     def __repr__(self):
         return '<%s: filename=%s>' % (type(self).__name__, self.filename)
@@ -56,13 +58,12 @@ class File(TypeDecorator):
 
     python_type = FileData
 
-    def __init__(self, storage=None, path='', *args, **kwargs):
+    def __init__(self, storage=None, *args, **kwargs):
 
         super(File, self).__init__(*args, **kwargs)
 
-        self.storage_options = {
+        self.storage = {
             'storage': storage,
-            'path': path,
         }
 
     def process_bind_param(self, value, dialect):
@@ -78,9 +79,9 @@ class File(TypeDecorator):
 
     def process_result_value(self, value, dialect):
         if value:
-            return FileData(json.loads(value), self.storage_options)
+            return FileData(json.loads(value), self.storage)
 
-        return FileData({}, self.storage_options)
+        return FileData({}, self.storage)
 
 
 FileData.associate_with(File)
