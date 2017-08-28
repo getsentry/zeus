@@ -184,13 +184,13 @@ const Meta = styled.div`
 export const DurationWrapper = styled.div`
   ${props => {
     switch (props.result) {
-      case 'pass':
+      case 'passed':
         return css`
           svg {
             color: #76D392;
           }
         `;
-      case 'fail':
+      case 'failed':
         return css`
           color: #F06E5B;
           svg {

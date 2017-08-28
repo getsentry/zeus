@@ -16,15 +16,15 @@ export default class ObjectResult extends Component {
   render() {
     let {result, status} = this.props.data;
     return (
-      <StatusIcon status={status} result={result}>
+      <ResultIcon status={status} result={result}>
         {result == 'passed' && <IconCircleCheck size="15" />}
         {result == 'failed' && <IconCircleCross size="15" />}
-      </StatusIcon>
+      </ResultIcon>
     );
   }
 }
 
-export const StatusIcon = styled.div`
+export const ResultIcon = styled.div`
   display: inline-block;
   margin-right: 10px;
 
