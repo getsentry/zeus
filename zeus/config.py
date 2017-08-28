@@ -54,6 +54,7 @@ def create_app(_read_config=True, **config):
                 'backend': 'zeus.storage.gcs.GoogleCloudStorage',
                 'options': {
                     'bucket': os.environ['GCS_BUCKET'],
+                    'project': os.environ.get('GC_PROJECT'),
                 },
             }
     else:

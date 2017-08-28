@@ -28,11 +28,11 @@ class Artifact(RepositoryBoundMixin, StandardAttributes, db.Model):
         Enum(ArtifactType), default=ArtifactType.UNKNOWN, nullable=False, server_default='0'
     )
     file = db.Column(
-        File(),
+        File(path='artifacts'),
         nullable=False,
         # TODO(dcramer): this is super hacky but not sure a better way to
         # do it with SQLAlchemy
-        default=lambda: FileData({})
+        default=lambda: FileData({}, default_path='artifacts')
     )
 
     job = db.relationship('Job', innerjoin=True, uselist=False)

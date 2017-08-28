@@ -10,14 +10,15 @@ from zeus.utils.imports import import_string
 
 
 class FileData(Mutable):
-    def __init__(self, data=None, storage=None):
+    def __init__(self, data=None, default_storage=None, default_path=None):
         if data is None:
             data = {}
 
         self.filename = data.get('filename')
         self.storage = (
-            data.get('storage', storage) or current_app.config['FILE_STORAGE']
+            data.get('storage', default_storage or current_app.config['FILE_STORAGE'])
         )
+        self.path = data.get('path', default_path)
 
     def __repr__(self):
         return '<%s: filename=%s>' % (type(self).__name__, self.filename)
@@ -27,7 +28,10 @@ class FileData(Mutable):
 
     def get_storage(self):
         storage = import_string(self.storage['backend'])
-        return storage(**self.storage.get('options', {}))
+        options = self.storage.get('options', {})
+        if self.path is not None:
+            options['path'] = self.path
+        return storage(**options)
 
     def url_for(self):
         if self.filename is None:
@@ -58,10 +62,11 @@ class File(TypeDecorator):
 
     python_type = FileData
 
-    def __init__(self, storage=None, *args, **kwargs):
+    def __init__(self, path='', storage=None, *args, **kwargs):
 
         super(File, self).__init__(*args, **kwargs)
 
+        self.path = path
         self.storage = {
             'storage': storage,
         }
@@ -72,6 +77,7 @@ class File(TypeDecorator):
                 value = {
                     'filename': value.filename,
                     'storage': value.storage,
+                    'path': value.path,
                 }
             return str(json.dumps(value))
 
@@ -79,9 +85,9 @@ class File(TypeDecorator):
 
     def process_result_value(self, value, dialect):
         if value:
-            return FileData(json.loads(value), self.storage)
+            return FileData(json.loads(value), self.storage, self.path)
 
-        return FileData({}, self.storage)
+        return FileData({}, self.storage, self.path)
 
 
 FileData.associate_with(File)
