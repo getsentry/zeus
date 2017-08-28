@@ -40,19 +40,21 @@ class APIClient(object):
         if json:
             assert not data
             data = dumps(json)
+            content_type = 'application/json'
         elif files:
             if not data:
                 data = {}
             for key, value in files.items():
                 data[key] = value
+            content_type = 'multipart/form-data'
+        else:
+            content_type = None
 
         with current_app.test_client() as client:
             response = client.open(
                 path='/api/{}'.format(path.lstrip('/')),
                 method=method,
-                content_type=(
-                    request.content_type if request else ('application/json' if json else None)
-                ),
+                content_type=content_type,
                 data=data,
                 environ_overrides={
                     'zeus.tenant': tenant,
