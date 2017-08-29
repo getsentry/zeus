@@ -33,15 +33,16 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
         'ItemStat',
         foreign_keys='[ItemStat.item_id]',
         primaryjoin='ItemStat.item_id == Build.id',
-        lazy='subquery',
         viewonly=True,
         uselist=True
     )
 
     __tablename__ = 'build'
     __table_args__ = (
-        db.UniqueConstraint('repository_id', 'number', name='unq_build_number'),
-        db.UniqueConstraint('repository_id', 'provider', 'external_id', name='unq_build_provider')
+        db.UniqueConstraint('repository_id', 'number',
+                            name='unq_build_number'),
+        db.UniqueConstraint('repository_id', 'provider',
+                            'external_id', name='unq_build_provider')
     )
     __repr__ = model_repr('number', 'status', 'result')
 

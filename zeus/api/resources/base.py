@@ -21,6 +21,14 @@ class Resource(View):
 
     auth_required = True
 
+    def is_mutation(self) -> bool:
+        return request.method in ('DELETE', 'PATCH', 'POST', 'PUT')
+
+    def select_resurce_for_update(self) -> bool:
+        # should the base resource treat it's query operations as locking
+        # and utilize SELECT_FOR_UPDATE?
+        return self.is_mutation()
+
     def dispatch_request(self, *args, **kwargs) -> Response:
         delay = current_app.config.get('API_DELAY', 0)
         if delay:

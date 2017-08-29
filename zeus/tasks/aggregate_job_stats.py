@@ -14,6 +14,7 @@ STATS = (
 )
 
 
+# TODO(dcramer): put a lock around this
 @celery.task
 def aggregate_build_stats_for_job(job_id: UUID):
     """
@@ -22,7 +23,7 @@ def aggregate_build_stats_for_job(job_id: UUID):
     This should generally be fired upon a job's completion, or
     alternatively it can be used to repair aggregate data.
     """
-    job = Job.query.unrestricted_unsafe().filter(
+    job = Job.query.unrestricted_unsafe().with_for_update().filter(
         Job.id == job_id,
     ).first()
     if not job:
@@ -131,7 +132,7 @@ def aggregate_build_stats(build_id: UUID):
     the status and result.
     """
     # now we pull in the entirety of the build's data to aggregate state upward
-    build = Build.query.get(build_id)
+    build = Build.query.with_for_update().get(build_id)
     if not build:
         raise ValueError
 

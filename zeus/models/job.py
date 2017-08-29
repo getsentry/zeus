@@ -34,7 +34,6 @@ class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
         'ItemStat',
         foreign_keys='[ItemStat.item_id]',
         primaryjoin='ItemStat.item_id == Job.id',
-        lazy='subquery',
         viewonly=True,
         uselist=True
     )
@@ -42,7 +41,6 @@ class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
         'FailureReason',
         foreign_keys='[FailureReason.job_id]',
         primaryjoin='FailureReason.job_id == Job.id',
-        lazy='subquery',
         viewonly=True,
         uselist=True,
     )
@@ -50,7 +48,8 @@ class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
     __tablename__ = 'job'
     __table_args__ = (
         db.UniqueConstraint('build_id', 'number', name='unq_job_number'),
-        db.UniqueConstraint('build_id', 'provider', 'external_id', name='unq_job_provider')
+        db.UniqueConstraint('build_id', 'provider',
+                            'external_id', name='unq_job_provider')
     )
     __repr__ = model_repr('build_id', 'number', 'status', 'result')
 

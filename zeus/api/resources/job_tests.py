@@ -13,6 +13,9 @@ testcases_schema = TestCaseSummarySchema(many=True, strict=True)
 
 
 class JobTestsResource(BaseJobResource):
+    def select_resurce_for_update(self):
+        return False
+
     def get(self, job: Job):
         """
         Return a list of test cases for a given job.

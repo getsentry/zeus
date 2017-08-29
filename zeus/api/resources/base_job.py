@@ -9,7 +9,7 @@ class BaseJobResource(Resource):
     def dispatch_request(
         self, provider: str, owner_name: str, repo_name: str, build_number: int, job_number: int, *args, **kwargs
     ) -> Response:
-        job = Job.query.join(Build, Build.id == Job.build_id).join(
+        queryset = Job.query.join(Build, Build.id == Job.build_id).join(
             Repository, Repository.id == Build.repository_id
         ).filter(
             Repository.provider == RepositoryProvider(provider),
@@ -17,7 +17,10 @@ class BaseJobResource(Resource):
             Repository.name == repo_name,
             Build.number == build_number,
             Job.number == job_number,
-        ).first()
+        )
+        if self.select_resurce_for_update():
+            queryset = queryset.with_for_update()
+        job = queryset.first()
         if not job:
             return self.not_found()
 

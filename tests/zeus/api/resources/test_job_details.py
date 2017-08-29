@@ -1,3 +1,4 @@
+from zeus.config import db
 from zeus.constants import Result, Status
 
 
@@ -60,5 +61,36 @@ def test_update_job_to_in_progress(
     assert data['id'] == str(default_job.id)
 
     assert default_job.status == Status.in_progress
+
+    mock_delay.assert_called_once_with(job_id=default_job.id)
+
+
+def test_update_job_to_finished_with_pending_artifacts(
+    client, mocker, default_login, default_repo, default_build, default_job, default_repo_access,
+    default_artifact,
+):
+    assert default_job.result != Result.failed
+
+    mock_delay = mocker.patch('zeus.tasks.aggregate_build_stats_for_job.delay')
+
+    resp = client.put(
+        '/api/repos/{}/builds/{}/jobs/{}'.format(
+            default_repo.get_full_name(), default_build.number, default_job.number
+        ),
+        json={
+            'result': 'failed',
+            'status': 'finished',
+        }
+    )
+    default_artifact.status = Status.in_progress
+    db.session.add(default_artifact)
+    db.session.flush()
+
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data['id'] == str(default_job.id)
+
+    assert default_job.status == Status.collecting_results
+    assert default_job.result == Result.failed
 
     mock_delay.assert_called_once_with(job_id=default_job.id)

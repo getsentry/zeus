@@ -4,12 +4,14 @@ from zeus import auth
 from zeus.artifacts import manager as default_manager
 from zeus.config import celery, db
 from zeus.constants import Result
-from zeus.models import Artifact, Status
+from zeus.models import Artifact, Job, Status
+
+from .aggregate_job_stats import aggregate_build_stats_for_job
 
 
 @celery.task
 def process_artifact(artifact_id, manager=None, **kwargs):
-    artifact = Artifact.query.unrestricted_unsafe().get(artifact_id)
+    artifact = Artifact.query.unrestricted_unsafe().with_for_update().get(artifact_id)
     if artifact is None:
         return
 
@@ -17,12 +19,13 @@ def process_artifact(artifact_id, manager=None, **kwargs):
     db.session.add(artifact)
     db.session.flush()
 
-    auth.set_current_tenant(auth.Tenant(repository_ids=[artifact.repository_id]))
+    auth.set_current_tenant(auth.Tenant(
+        repository_ids=[artifact.repository_id]))
 
     if not artifact.file:
         return
 
-    job = artifact.job
+    job = Job.query.with_for_update().get(artifact.job_id)
 
     if job.result == Result.aborted:
         return
@@ -40,3 +43,15 @@ def process_artifact(artifact_id, manager=None, **kwargs):
     artifact.status = Status.finished
     db.session.add(artifact)
     db.session.commit()
+
+    # test if we're done processing artifacts
+    has_pending = db.session.query(
+        Artifact.query.filter(
+            Artifact.status != Status.finished,
+            Artifact.job_id == job.id,
+        ).exists()
+    ).scalar()
+    if has_pending:
+        return
+    if job.status in (Status.finished, Status.collecting_results):
+        aggregate_build_stats_for_job.delay(job_id=job.id)

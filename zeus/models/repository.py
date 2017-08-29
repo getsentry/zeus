@@ -97,7 +97,6 @@ class Repository(StandardAttributes, db.Model):
         'ItemOption',
         foreign_keys='[ItemOption.item_id]',
         primaryjoin='ItemOption.item_id == Repository.id',
-        lazy='subquery',
         viewonly=True,
         uselist=True
     )

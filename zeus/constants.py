@@ -6,6 +6,7 @@ class Status(Enum):
     queued = 1
     in_progress = 2
     finished = 3
+    collecting_results = 4
 
     def __str__(self):
         return self.name
@@ -22,9 +23,20 @@ class Result(Enum):
         return self.name
 
 
-STATUS_PRIORITY = (Status.in_progress, Status.queued, Status.finished, )
+STATUS_PRIORITY = (
+    Status.in_progress,
+    Status.queued,
+    Status.collecting_results,
+    Status.finished,
+)
 
-RESULT_PRIORITY = (Result.aborted, Result.failed, Result.unknown, Result.passed, Result.skipped, )
+RESULT_PRIORITY = (
+    Result.aborted,
+    Result.failed,
+    Result.unknown,
+    Result.passed,
+    Result.skipped,
+)
 
 GITHUB_AUTH_URI = 'https://github.com/login/oauth/authorize'
 GITHUB_TOKEN_URI = 'https://github.com/login/oauth/access_token'
