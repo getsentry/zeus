@@ -1,6 +1,7 @@
 from cached_property import cached_property
 from datetime import datetime
 from flask import current_app, g, session
+from itsdangerous import JSONWebSignatureSerializer
 from typing import List, Optional
 
 from zeus.config import db
@@ -129,3 +130,15 @@ def get_current_tenant() -> Tenant:
         rv = get_tenant_from_request()
         set_current_tenant(rv)
     return rv
+
+
+def generate_token(tenant: Tenant) -> str:
+    s = JSONWebSignatureSerializer(current_app.secret_key, salt='auth')
+    return s.dumps({
+        'repo_ids': [str(o) for o in tenant.repository_ids],
+    })
+
+
+def parse_token(token: str) -> str:
+    s = JSONWebSignatureSerializer(current_app.secret_key, salt='auth')
+    return s.loads(token)

@@ -62,9 +62,11 @@ class Resource(View):
 
         try:
             resp = method(*args, **kwargs)
-            if isinstance(resp, Response):
-                return resp
-            return self.respond(resp)
+            if not isinstance(resp, Response):
+                resp = self.respond(resp)
+            if tenant:
+                resp.headers['X-Stream-Token'] = auth.generate_token(tenant)
+            return resp
         except Exception:
             current_app.logger.exception('failed to handle api request')
             return self.error('internal server error', 500)

@@ -6,3 +6,11 @@ def test_login_user(client, default_user):
         auth.login_user(default_user.id, session=session)
         assert session['uid'] == default_user.id
         assert session['expire']
+
+
+def test_token_generation(default_user, default_repo, default_repo_access):
+    tenant = auth.Tenant.from_user(default_user)
+    token = auth.generate_token(tenant)
+    assert isinstance(token, bytes)
+    result = auth.parse_token(token)
+    assert result['repo_ids'] == [str(default_repo.id)]
