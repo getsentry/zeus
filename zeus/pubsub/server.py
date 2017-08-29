@@ -110,7 +110,6 @@ async def stream(request):
             queue.task_done()
             # Yield to the scheduler so other processes do stuff.
             await resp.drain()
-            await asyncio.sleep(0.1, loop=request.app.loop)
 
         await resp.write_eof()
         return resp
