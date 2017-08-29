@@ -1,4 +1,4 @@
-import {ADD_REPO, LOAD_REPO_LIST, REMOVE_REPO, UPDATE_REPO} from '../actions/types';
+import {ADD_REPO, LOAD_REPO_LIST, REMOVE_REPO, UPDATE_REPO} from '../types';
 
 import {sortBy} from 'lodash';
 

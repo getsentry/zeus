@@ -1,4 +1,4 @@
-import {ADD_INDICATOR, REMOVE_INDICATOR} from './types';
+import {ADD_INDICATOR, REMOVE_INDICATOR} from '../types';
 
 let _lastId = 1;
 

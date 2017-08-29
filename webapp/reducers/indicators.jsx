@@ -1,4 +1,4 @@
-import {ADD_INDICATOR, REMOVE_INDICATOR} from '../actions/types';
+import {ADD_INDICATOR, REMOVE_INDICATOR} from '../types';
 
 const initialState = {
   items: []
