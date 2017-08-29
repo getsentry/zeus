@@ -1,5 +1,5 @@
 import api from '../api';
-import {SET_CURRENT_AUTH, SET_STREAM_TOKEN} from '../types';
+import {SET_CURRENT_AUTH, STREAM_CONNECT} from '../types';
 
 export function setAuth(payload) {
   return {
@@ -28,7 +28,7 @@ export function authSession() {
         }
         dispatch(setAuth(data));
         dispatch({
-          type: SET_STREAM_TOKEN,
+          type: STREAM_CONNECT,
           payload: {
             timestamp: new Date(),
             token: data.getResponseHeader('X-Stream-Token')

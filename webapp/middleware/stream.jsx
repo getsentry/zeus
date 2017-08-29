@@ -2,7 +2,7 @@ import {compose} from 'redux';
 import partial from 'lodash/fp/partial';
 
 import {open, error, message} from '../actions/stream';
-import {SET_STREAM_TOKEN, STREAM_CONNECT, STREAM_DISCONNECT} from '../types';
+import {STREAM_CONNECT, STREAM_DISCONNECT} from '../types';
 
 const createMiddleware = () => {
   // Hold a reference to the EventSource instance in use.
@@ -51,12 +51,6 @@ const createMiddleware = () => {
       // User request to disconnect
       case STREAM_DISCONNECT:
         close();
-        next(action);
-        break;
-
-      case SET_STREAM_TOKEN:
-        close();
-        initialize(store, action.payload);
         next(action);
         break;
 

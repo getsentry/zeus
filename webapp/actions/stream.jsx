@@ -1,14 +1,12 @@
-import {SET_STREAM_TOKEN, STREAM_OPEN, STREAM_ERROR, STREAM_MESSAGE} from '../types';
+import {STREAM_CONNECT, STREAM_OPEN, STREAM_ERROR, STREAM_MESSAGE} from '../types';
 
-export function setStreamToken(token) {
-  return {
-    type: SET_STREAM_TOKEN,
-    payload: {
-      timestmap: new Date(),
-      token
-    }
-  };
-}
+export const connect = token => ({
+  type: STREAM_CONNECT,
+  payload: {
+    timestamp: new Date(),
+    token
+  }
+});
 
 export const open = event => ({
   type: STREAM_OPEN,

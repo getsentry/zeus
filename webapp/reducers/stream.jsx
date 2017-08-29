@@ -1,4 +1,4 @@
-import {SET_STREAM_TOKEN} from '../types';
+import {STREAM_CONNECT} from '../types';
 
 const initialState = {
   token: null
@@ -6,7 +6,7 @@ const initialState = {
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
-    case SET_STREAM_TOKEN:
+    case STREAM_CONNECT:
       return {...state, token: action.payload.token};
     default:
       return state;
