@@ -69,15 +69,13 @@ async def stream(request):
 
     parts = urlparse(current_app.config['REDIS_URL'])
 
-    conn = None
+    conn = await aioredis.create_redis(
+        address=(parts.hostname or 'localhost', parts.port or '6379'),
+        db=parts.path.split('1', 1)[:-1] or 0,
+        password=parts.password,
+        loop=loop,
+    )
     try:
-        conn = await aioredis.create_redis(
-            address=(parts.hostname or 'localhost', parts.port or '6379'),
-            db=parts.path.split('1', 1)[:-1] or 0,
-            password=parts.password,
-            loop=loop,
-        )
-
         queue = asyncio.Queue(loop=loop)
 
         res = await conn.subscribe('builds')
@@ -120,8 +118,7 @@ async def stream(request):
         await resp.write_eof()
         return resp
     finally:
-        if conn:
-            await conn.wait_closed()
+        await conn.wait_closed()
         print('client.disconnected guid={}'.format(client_guid))
 
 
