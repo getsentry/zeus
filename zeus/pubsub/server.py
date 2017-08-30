@@ -88,6 +88,12 @@ async def stream(request):
         resp.headers['Content-Type'] = 'text/event-stream; charset=UTF-8'
         resp.headers['Cache-Control'] = 'no-cache'
         resp.headers['Connection'] = 'keep-alive'
+        domain_parts = urlparse(request.url)
+        if domain_parts.hostname == current_app.config.get(
+                'DOMAIN', current_app.config.get('SERVER_NAME', '')):
+            resp.headers['Access-Control-Allow-Origin'] = request.headers.get(
+                'Origin')
+            resp.headers['Access-Control-Expose-Headers'] = '*'
         resp.enable_chunked_encoding()
         # The StreamResponse is a FSM. Enter it with a call to prepare.
         await resp.prepare(request)
