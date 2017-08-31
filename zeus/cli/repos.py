@@ -15,7 +15,7 @@ def repos():
 
 
 @repos.command()
-@click.argument('repository_full_name', required=True)
+@click.argument('repository', required=True)
 @click.option('--backend', default='git', type=click.Choice(['git']))
 @click.option('--url')
 @click.option('--active/--inactive', default=True)
@@ -39,7 +39,7 @@ def add(repository_full_name, url, backend, active):
 
 
 @repos.command()
-@click.argument('repository_full_name', required=True)
+@click.argument('repository', required=True)
 def sync(repository_full_name):
     provider, owner_name, repo_name = repository_full_name.split('/', 2)
     repo = Repository.query.unrestricted_unsafe().filter(
@@ -56,7 +56,7 @@ def access():
 
 
 @access.command('add')
-@click.argument('repository_full_name', required=True)
+@click.argument('repository', required=True)
 @click.argument('email', required=True)
 def access_add(repository_full_name, email):
     provider, owner_name, repo_name = repository_full_name.split('/', 2)
