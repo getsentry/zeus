@@ -4,7 +4,7 @@ import sys
 from base64 import urlsafe_b64encode
 
 from zeus.config import db
-from zeus.models import Repository, Hook
+from zeus.models import Repository, RepositoryProvider, Hook
 
 from .base import cli
 
@@ -15,11 +15,15 @@ def hooks():
 
 
 @hooks.command()
-@click.argument('repository_url', required=True)
+@click.argument('repository', required=True)
 @click.argument('provider', required=True)
-def add(repository_url, provider):
+def add(repository, provider):
+    repo_bits = repository.split('/', 2)
+    assert len(repo_bits) == 3, 'repository not in valid format: {provider}/{owner}/{name}'
     repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.url == repository_url,
+        Repository.provider == RepositoryProvider(repo_bits[0]),
+        Repository.owner_name == repo_bits[1],
+        Repository.name == repo_bits[2],
     ).first()
     assert repo
 
