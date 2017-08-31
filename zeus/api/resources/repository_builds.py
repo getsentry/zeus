@@ -31,7 +31,13 @@ def identify_revision(repository, treeish):
     if not vcs:
         return
 
-    commit = next(vcs.log(parent=treeish, limit=1))
+    vcs.ensure(update_if_exists=False)
+
+    try:
+        commit = next(vcs.log(parent=treeish, limit=1))
+    except UnknownRevision:
+        vcs.update()
+        commit = next(vcs.log(parent=treeish, limit=1))
 
     revision, _ = commit.save(repository)
 
