@@ -15,14 +15,22 @@ from zeus import auth
 Event = namedtuple('Event', ['id', 'event', 'data'])
 
 
+def is_valid_origin(request):
+    domain_parts = urlparse(request.url)
+    allowed_origins = current_app.config.get('ALLOWED_ORIGINS')
+    if allowed_origins is None:
+        allowed_origins = set(current_app.config.get(
+            'DOMAIN', current_app.config.get('SERVER_NAME', '')))
+    return domain_parts.hostname in allowed_origins
+
+
 def log_errors(func):
     @wraps(func)
     async def wrapped(*a, **k):
         try:
             return await func(*a, **k)
         except Exception as e:
-            import traceback
-            traceback.print_exc()
+            current_app.logger.exception(str(e))
             raise
     return wrapped
 
@@ -63,7 +71,11 @@ async def stream(request):
     repo_ids = frozenset(request.query.get('repo') or [])
 
     token = auth.parse_token(token)
-    print('client.connected guid={} tenant={}'.format(client_guid, token))
+    if not token:
+        return Response(status=401)
+
+    current_app.logger.debug(
+        'client.connected guid=%s tenant=%s', client_guid, token)
 
     loop = request.app.loop
 
@@ -75,6 +87,7 @@ async def stream(request):
         password=parts.password,
         loop=loop,
     )
+    current_app.logger.debug('pubsub.redis.connected')
     try:
         queue = asyncio.Queue(loop=loop)
 
@@ -82,13 +95,12 @@ async def stream(request):
         asyncio.ensure_future(
             worker(res[0], queue, token, repo_ids, build_ids))
 
+        current_app.logger.debug('pubsub.response-initiated')
         resp = StreamResponse()
         resp.headers['Content-Type'] = 'text/event-stream; charset=UTF-8'
         resp.headers['Cache-Control'] = 'no-cache'
         resp.headers['Connection'] = 'keep-alive'
-        domain_parts = urlparse(request.url)
-        if domain_parts.hostname == current_app.config.get(
-                'DOMAIN', current_app.config.get('SERVER_NAME', '')):
+        if 'Origin' in request.headers and is_valid_origin(request):
             resp.headers['Access-Control-Allow-Origin'] = request.headers.get(
                 'Origin')
             resp.headers['Access-Control-Expose-Headers'] = '*'
@@ -96,10 +108,12 @@ async def stream(request):
         # The StreamResponse is a FSM. Enter it with a call to prepare.
         await resp.prepare(request)
 
+        current_app.logger.debug('pubsub.looping')
         while True:
             event = await queue.get()
             if event is None:
                 break
+            current_app.logger.debug('pubsub.event', extra={'event': event})
             buffer = io.BytesIO()
             if event.id:
                 buffer.write(b"id: %s\r\n" % (event.id.encode('utf-8'),))
@@ -119,7 +133,7 @@ async def stream(request):
         return resp
     finally:
         await conn.wait_closed()
-        print('client.disconnected guid={}'.format(client_guid))
+        current_app.logger.debug('client.disconnected guid=%s', client_guid)
 
 
 async def debug(request):

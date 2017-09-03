@@ -1,7 +1,7 @@
 from cached_property import cached_property
 from datetime import datetime
 from flask import current_app, g, session
-from itsdangerous import JSONWebSignatureSerializer
+from itsdangerous import BadSignature, JSONWebSignatureSerializer
 from typing import List, Optional
 
 from zeus.config import db
@@ -141,4 +141,7 @@ def generate_token(tenant: Tenant) -> str:
 
 def parse_token(token: str) -> str:
     s = JSONWebSignatureSerializer(current_app.secret_key, salt='auth')
-    return s.loads(token)
+    try:
+        return s.loads(token)
+    except BadSignature:
+        return None
