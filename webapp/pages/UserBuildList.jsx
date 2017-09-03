@@ -33,7 +33,10 @@ class BuildListBody extends AsyncComponent {
   };
 
   fetchData() {
-    this.props.loadBuildsForUser();
+    return new Promise((resolve, reject) => {
+      this.props.loadBuildsForUser();
+      return resolve();
+    });
   }
 
   renderBody() {
