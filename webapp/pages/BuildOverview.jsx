@@ -31,6 +31,10 @@ export default class BuildJobList extends AsyncPage {
     ];
   }
 
+  shouldFetchUpdates() {
+    return this.context.build.status !== 'finished';
+  }
+
   renderBody() {
     return (
       <Section>

@@ -24,8 +24,15 @@ class RepositoryContext extends AsyncComponent {
     return {repoList: this.props.repoList};
   }
 
+  shouldFetchUpdates() {
+    return false;
+  }
+
   fetchData() {
-    this.props.loadRepos();
+    return new Promise((resolve, reject) => {
+      this.props.loadRepos();
+      return resolve();
+    });
   }
 }
 

@@ -36,15 +36,17 @@ export default class AsyncComponent extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.fetchData = AsyncComponent.errorHandler(this, this.fetchData.bind(this));
+    this.refreshData = AsyncComponent.errorHandler(this, this.refreshData.bind(this));
     this.render = AsyncComponent.errorHandler(this, this.render.bind(this));
 
     this.state = this.getDefaultState(props, context);
+
+    this.timers = {};
   }
 
   componentWillMount() {
     this.api = new Client();
-    this.fetchData();
+    this.refreshData();
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -58,9 +60,38 @@ export default class AsyncComponent extends Component {
 
   componentWillUnmount() {
     this.api && this.api.clear();
+    Object.keys(this.timers).forEach(key => {
+      window.clearTimeout(this.timers[key]);
+    });
   }
 
-  fetchData() {}
+  refreshData(refresh = false) {
+    this.fetchData(refresh).then(() => {
+      if (this.shouldFetchUpdates()) {
+        if (this.timers.refreshData) window.clearTimeout(this.timers.refreshData);
+        this.timers.refreshData = window.setTimeout(() => this.refreshData(true), 5000);
+      }
+    });
+  }
+
+  /**
+   * Method to asynchronously fetch data.
+   *
+   * Must return a Promise.
+   */
+  fetchData() {
+    return new Promise((resolve, reject) => {
+      return resolve();
+    });
+  }
+
+  /**
+   * Return a boolean indicating whether this endpoint should attempt to
+   * automatically fetch updates (using polling).
+   */
+  shouldFetchUpdates() {
+    return true;
+  }
 
   // XXX: cant call this getInitialState as React whines
   getDefaultState(props, context) {
@@ -68,7 +99,9 @@ export default class AsyncComponent extends Component {
   }
 
   remountComponent(props, context) {
-    this.setState(this.getDefaultState(props, context), this.fetchData);
+    /// XXX(dcramer): why is this happening?
+    if (props === undefined) return;
+    this.setState(this.getDefaultState(props, context), this.refreshData);
   }
 
   renderLoading() {

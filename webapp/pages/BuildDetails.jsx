@@ -23,7 +23,7 @@ export default class BuildDetails extends AsyncPage {
   static childContextTypes = {
     ...AsyncPage.childContextTypes,
     ...BuildDetails.contextTypes,
-    build: PropTypes.object.isRequired
+    build: PropTypes.object
   };
 
   getChildContext() {
@@ -41,6 +41,10 @@ export default class BuildDetails extends AsyncPage {
 
   getTitle() {
     return 'Build Details';
+  }
+
+  shouldFetchUpdates() {
+    return (this.state.build || {}).status !== 'finished';
   }
 
   render() {
