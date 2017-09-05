@@ -8,10 +8,12 @@ import ResultGridHeader from '../components/ResultGridHeader';
 
 export default class BuildList extends Component {
   static propTypes = {
-    buildList: PropTypes.arrayOf(PropTypes.object).isRequired
+    buildList: PropTypes.arrayOf(PropTypes.object).isRequired,
+    initialLoad: PropTypes.bool
   };
 
   render() {
+    let {buildList, initialLoad} = this.props;
     return (
       <Panel>
         <ResultGridHeader>
@@ -31,9 +33,14 @@ export default class BuildList extends Component {
           </Flex>
         </ResultGridHeader>
         <div>
-          {this.props.buildList.map(build => {
+          {buildList.map(build => {
             return (
-              <BuildListItem key={build.id} build={build} params={this.props.params} />
+              <BuildListItem
+                key={build.id}
+                build={build}
+                params={this.props.params}
+                initialLoad={initialLoad}
+              />
             );
           })}
         </div>

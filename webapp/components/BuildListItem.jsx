@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import styled from 'styled-components';
 import {Flex, Box} from 'grid-styled';
+import Transition from 'react-transition-group/Transition';
 
 import BuildAuthor from './BuildAuthor';
 import BuildCoverage from './BuildCoverage';
@@ -11,12 +12,43 @@ import ObjectResult from './ObjectResult';
 import ResultGridRow from './ResultGridRow';
 import TimeSince from './TimeSince';
 
+const duration = 300;
+
+const defaultStyle = {
+  transition: `opacity ${duration}ms ease-in-out`,
+  opacity: 0
+};
+
+const transitionStyles = {
+  entering: {opacity: 1},
+  entered: {opacity: 1}
+};
+
+const Fade = ({children, in: inProp}) => {
+  return (
+    <Transition in={inProp} timeout={duration}>
+      {state => {
+        return (
+          <div
+            style={{
+              ...defaultStyle,
+              ...transitionStyles[state]
+            }}>
+            {children}
+          </div>
+        );
+      }}
+    </Transition>
+  );
+};
+
 export default class BuildListItem extends Component {
   static propTypes = {
-    build: PropTypes.object.isRequired
+    build: PropTypes.object.isRequired,
+    initialLoad: PropTypes.bool
   };
 
-  render() {
+  renderItem() {
     let {build} = this.props;
     let repo = build.repository;
     return (
@@ -56,6 +88,23 @@ export default class BuildListItem extends Component {
         </ResultGridRow>
       </BuildListItemLink>
     );
+  }
+
+  render() {
+    let {initialLoad} = this.props;
+    if (!initialLoad) {
+      return (
+        <Fade in={true}>
+          {this.renderItem()}
+        </Fade>
+      );
+    }
+    return (
+      <Fade in={true}>
+        {this.renderItem()}
+      </Fade>
+    );
+    // return this.renderItem();
   }
 }
 
