@@ -48,7 +48,23 @@ def test_failing_tests(mocker, db_session, default_source):
     aggregate_build_stats_for_job(job.id)
 
     assert job.result == Result.failed
+    assert build.result == Result.failed
 
     reasons = list(FailureReason.query.filter(FailureReason.job_id == job.id))
     assert len(reasons) == 1
     assert reasons[0].reason == FailureReason.Code.failing_tests
+
+
+def test_failure_with_allow_failure(mocker, db_session, default_source):
+    auth.set_current_tenant(auth.Tenant(repository_ids=[default_source.repository_id]))
+
+    build = factories.BuildFactory(source=default_source, in_progress=True)
+    db_session.add(build)
+
+    job = factories.JobFactory(build=build, failed=True, allow_failure=True)
+    db_session.add(job)
+
+    aggregate_build_stats_for_job(job.id)
+
+    assert job.result == Result.failed
+    assert build.result == Result.passed

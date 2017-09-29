@@ -20,3 +20,4 @@ class JobSchema(Schema):
     external_id = fields.Str()
     url = fields.Str()
     failures = fields.List(fields.Nested(FailureReasonSchema), dump_only=True)
+    allow_failure = fields.Bool(default=False)
