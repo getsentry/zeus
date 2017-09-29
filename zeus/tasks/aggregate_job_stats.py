@@ -149,11 +149,18 @@ def aggregate_build_stats(build_id: UUID):
         build.date_finished = None
 
     # if theres any failure, the build failed
-    if any(j.result is Result.failed for j in job_list):
+    if any(j.result is Result.failed for j in job_list if not j.allow_failure):
         build.result = Result.failed
     # else, if we're finished, we can aggregate from results
     elif is_finished:
-        build.result = aggregate_result((j.result for j in job_list))
+        build.result = aggregate_result((j.result for j in job_list if not j.allow_failure))
+        # special case when there were only 'allowed failures'
+        if build.result == Result.unknown:
+            if not job_list:
+                # if no jobs were run we should fail
+                build.result = Result.failed
+            else:
+                build.result = Result.passed
     # we should never get here as long we've got jobs and correct data
     else:
         build.result = Result.unknown
