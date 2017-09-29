@@ -5,7 +5,7 @@ cryptography==1.9
 flask==0.12.2
 flask-alembic==2.0.1
 flask-sqlalchemy==2.2
-flask-ssqlify==0.1.5
+flask-sslify==0.1.5
 google-cloud-storage>=1.4.0,<1.5.0
 honcho==1.0.1
 idna>=2.5,<2.6
