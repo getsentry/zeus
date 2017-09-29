@@ -5,11 +5,11 @@ from datetime import timedelta
 from flask import Flask
 from flask_alembic import Alembic
 from flask_sqlalchemy import SQLAlchemy
-from flask_sslify import SSLify
 from raven.contrib.flask import Sentry
 
 from zeus.utils.celery import Celery
 from zeus.utils.redis import Redis
+from zeus.utils.ssl import SSL
 
 import os
 
@@ -20,7 +20,7 @@ celery = Celery()
 db = SQLAlchemy()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.WARN, wrap_wsgi=True)
-sslify = SSLify()
+ssl = SSL()
 
 
 def create_app(_read_config=True, **config):
@@ -144,9 +144,7 @@ def create_app(_read_config=True, **config):
     app.logger.addHandler(SentryHandler(client=sentry.client, level=logging.WARN))
 
     if app.config.get('SSL'):
-        sslify.init_app(app)
-        app.config['PREFERRED_URL_SCHEME'] = 'https'
-        app.config['SESSION_COOKIE_SECURE'] = True
+        ssl.init_app(app)
 
     configure_db(app)
 
