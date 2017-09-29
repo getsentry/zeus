@@ -5,6 +5,7 @@ from datetime import timedelta
 from flask import Flask
 from flask_alembic import Alembic
 from flask_sqlalchemy import SQLAlchemy
+from flask_sslify import SSLify
 from raven.contrib.flask import Sentry
 
 from zeus.utils.celery import Celery
@@ -19,14 +20,7 @@ celery = Celery()
 db = SQLAlchemy()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.WARN, wrap_wsgi=True)
-
-
-def force_ssl(app):
-    def middleware(environ, start_response):
-        environ['wsgi.url_scheme'] = 'https'
-        return app(environ, start_response)
-
-    return middleware
+sslify = SSLify()
 
 
 def create_app(_read_config=True, **config):
@@ -136,11 +130,6 @@ def create_app(_read_config=True, **config):
         if not app.config.get(varname):
             raise SystemExit('Required configuration not present for {}'.format(varname))
 
-    if app.config.get('SSL'):
-        app.wgsi_app = force_ssl(app)
-        app.config['PREFERRED_URL_SCHEME'] = 'https'
-        app.config['SESSION_COOKIE_SECURE'] = True
-
     from zeus.testutils.client import ZeusTestClient
     app.test_client_class = ZeusTestClient
 
@@ -153,6 +142,11 @@ def create_app(_read_config=True, **config):
     # https://github.com/getsentry/raven-python/issues/1030
     from raven.handlers.logging import SentryHandler
     app.logger.addHandler(SentryHandler(client=sentry.client, level=logging.WARN))
+
+    if app.config.get('SSL'):
+        sslify.init_app(app)
+        app.config['PREFERRED_URL_SCHEME'] = 'https'
+        app.config['SESSION_COOKIE_SECURE'] = True
 
     configure_db(app)
 
