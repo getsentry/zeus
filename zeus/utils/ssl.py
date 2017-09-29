@@ -8,11 +8,9 @@ YEAR_IN_SECS = 31536000
 
 class SSL(object):
     def __init__(self, app=None, age=YEAR_IN_SECS, subdomains=False):
-        self.app = app
         self.hsts_age = age
         self.hsts_include_subdomains = subdomains
-
-        if app is not None:
+        if app:
             self.init_app(app)
 
     def init_app(self, app):
