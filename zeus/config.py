@@ -6,6 +6,8 @@ from flask import Flask
 from flask_alembic import Alembic
 from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
+from werkzeug.utils import redirect
+from werkzeug.wsgi import get_current_url
 
 from zeus.utils.celery import Celery
 from zeus.utils.redis import Redis
@@ -23,10 +25,13 @@ sentry = Sentry(logging=True, level=logging.WARN, wrap_wsgi=True)
 
 def force_ssl(app):
     def middleware(environ, start_response):
-        environ['wsgi.url_scheme'] = 'https'
+        proto = environ.get('HTTP_X_FORWARDED_PROTO')
+        if proto == 'http':
+            return redirect(get_current_url(environ).replace('http://', 'https://'))
+        elif proto:
+            environ['wsgi.url_scheme'] = proto
         return app(environ, start_response)
-
-    return middleware
+    return middleware(app)
 
 
 def create_app(_read_config=True, **config):
