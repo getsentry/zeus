@@ -143,7 +143,7 @@ def create_app(_read_config=True, **config):
     from raven.handlers.logging import SentryHandler
     app.logger.addHandler(SentryHandler(client=sentry.client, level=logging.WARN))
 
-    if app.config.get('SSL'):
+    if app.config['SSL']:
         ssl.init_app(app)
 
     configure_db(app)

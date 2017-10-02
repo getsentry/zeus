@@ -18,6 +18,7 @@ class SSL(object):
         app.config['SESSION_COOKIE_SECURE'] = True
         app.before_request(self.redirect_to_ssl)
         app.after_request(self.set_hsts_header)
+        app.wsgi_app = self.fix_protocol(app.wsgi_app)
 
     @property
     def hsts_header(self):
@@ -28,6 +29,14 @@ class SSL(object):
         if self.hsts_include_subdomains:
             hsts_policy += '; includeSubDomains'
         return hsts_policy
+
+    def fix_protocol(self, app):
+        def middleware(environ, start_response):
+            proto = environ.get('HTTP_X_FORWARDED_PROTO')
+            if proto:
+                environ['wsgi.url_scheme'] = proto
+            return app(environ, start_response)
+        return middleware
 
     def redirect_to_ssl(self):
         """
