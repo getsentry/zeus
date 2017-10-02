@@ -24,6 +24,7 @@ def devserver(environment, workers, port, ngrok, ngrok_domain):
     if ngrok:
         root_url = 'https://{}.ngrok.io'.format(ngrok_domain)
         os.environ['SSL'] = '1'
+        os.environ['SERVER_NAME'] = '{}.ngrok.io'.format(ngrok_domain)
     else:
         root_url = 'http://localhost:{}'.format(port)
 
