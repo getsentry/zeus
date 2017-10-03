@@ -1,3 +1,4 @@
+import json
 import logging
 import raven
 
@@ -21,6 +22,15 @@ db = SQLAlchemy()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.WARN, wrap_wsgi=True)
 ssl = SSL()
+
+
+def with_health_check(app):
+    def middleware(environ, start_response):
+        if environ.get('PATH_INFO', '') == '/_health':
+            start_response('200 OK', [('Content-Type', 'application/json')])
+            return [json.dumps({'ok': True})]
+        return app(environ, start_response)
+    return middleware
 
 
 def create_app(_read_config=True, **config):
@@ -119,6 +129,8 @@ def create_app(_read_config=True, **config):
             # Look for ~/.zeus/zeus.conf.py
             path = os.path.normpath(os.path.expanduser('~/.zeus/zeus.config.py'))
             app.config.from_pyfile(path, silent=True)
+
+    app.wsgi_app = with_health_check(app.wsgi_app)
 
     app.config.update(config)
 
