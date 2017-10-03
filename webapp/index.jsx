@@ -15,10 +15,10 @@ if (localStorage.auth) {
   store.dispatch(setAuth(localStorage.auth));
 }
 
-import hljs from 'highlight.js/lib/highlight';
-import diff from 'highlight.js/lib/languages/diff';
+import {registerLanguage} from 'react-syntax-highlighter/dist/light';
+import diff from 'react-syntax-highlighter/dist/languages/diff';
 
-hljs.registerLanguage('diff', diff);
+registerLanguage('diff', diff);
 
 render(
   <Provider store={store}>

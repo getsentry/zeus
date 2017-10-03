@@ -8,6 +8,7 @@ import TestList from '../components/TestList';
 export default class BuildTestList extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
+    build: PropTypes.object.isRequired,
     repo: PropTypes.object.isRequired
   };
 

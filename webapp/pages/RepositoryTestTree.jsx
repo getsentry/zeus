@@ -48,7 +48,7 @@ export default class RepositoryTestTree extends AsyncPage {
         <Tree>
           {this.state.tree.trail.map(crumb => {
             return (
-              <Leaf to={path} query={{parent: crumb.path}} key={crumb.path}>
+              <Leaf to={{pathname: path, query: {parent: crumb.path}}} key={crumb.path}>
                 {crumb.name}
               </Leaf>
             );
@@ -74,7 +74,7 @@ export default class RepositoryTestTree extends AsyncPage {
                     ? <span>
                         {entry.name}
                       </span>
-                    : <Link to={path} query={{parent: entry.path}}>
+                    : <Link to={{pathname: path, query: {parent: entry.path}}}>
                         {entry.name}
                       </Link>}
                 </Box>

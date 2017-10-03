@@ -32,27 +32,19 @@ class RepositoryBuildList extends AsyncPage {
         <RepositoryContent {...this.props}>
           <TabbedNav>
             <TabbedNavItem
-              to={basePath}
-              query={{}}
+              to={{pathname: basePath, query: {}}}
               activeClassName=""
               className={
                 props.location.pathname === basePath && !(props.location.query || {}).show
                   ? 'active'
                   : ''
               }>
-              My builds
+              My Builds
             </TabbedNavItem>
             <TabbedNavItem
-              to={basePath}
-              query={{show: 'all'}}
-              activeClassName=""
-              className={
-                props.location.pathname === basePath &&
-                (props.location.query || {}).show === 'all'
-                  ? 'active'
-                  : ''
-              }>
-              All builds
+              to={{pathname: basePath, query: {show: 'all'}}}
+              activeClassName="active">
+              All Builds
             </TabbedNavItem>
           </TabbedNav>
           <BuildListBody {...this.props} />

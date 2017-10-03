@@ -9,7 +9,7 @@ export default class ObjectResult extends Component {
   static propTypes = {
     data: PropTypes.shape({
       result: PropTypes.string.isRequired,
-      status: PropTypes.string.isRequired
+      status: PropTypes.string
     }).isRequired
   };
 
