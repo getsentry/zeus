@@ -8,6 +8,7 @@ YEAR_IN_SECS = 31536000
 # a list of user agents which HTTPS should not be enforced upon
 EXCLUDE_USER_AGENTS = (
     'kube-probe',
+    'go-http-client',
 )
 
 
@@ -16,7 +17,7 @@ class SSL(object):
                  exclude_user_agents=EXCLUDE_USER_AGENTS):
         self.hsts_age = age
         self.hsts_include_subdomains = subdomains
-        self.exclude_user_agents = exclude_user_agents
+        self.exclude_user_agents = tuple(x.lower() for x in exclude_user_agents)
         if app:
             self.init_app(app)
 
@@ -56,7 +57,7 @@ class SSL(object):
             request.headers.get('X-Forwarded-Proto', 'http') == 'https'
         ]
 
-        if request.headers.get('User-Agent', '').startswith(self.exclude_user_agents):
+        if request.headers.get('User-Agent', '').lower().startswith(self.exclude_user_agents):
             return
 
         if not any(criteria):
