@@ -49,7 +49,7 @@ export default class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     this.setState({error});
-    if (window.Raven) {
+    if (error.constructor !== Error404 && window.Raven) {
       window.Raven.captureException(error, {extra: errorInfo});
       window.Raven.lastEventId() && window.Raven.showReportDialog();
     }
@@ -58,7 +58,6 @@ export default class ErrorBoundary extends Component {
   render() {
     let {error} = this.state;
     if (error) {
-      console.log(error.constructor);
       switch (error.constructor) {
         case Error404:
           return (
