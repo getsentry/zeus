@@ -5,11 +5,18 @@ from flask import request, redirect, current_app
 
 YEAR_IN_SECS = 31536000
 
+# a list of user agents which HTTPS should not be enforced upon
+EXCLUDE_USER_AGENTS = frozenset((
+    'kube-probe',
+))
+
 
 class SSL(object):
-    def __init__(self, app=None, age=YEAR_IN_SECS, subdomains=False):
+    def __init__(self, app=None, age=YEAR_IN_SECS, subdomains=False,
+                 exclude_user_agents=EXCLUDE_USER_AGENTS):
         self.hsts_age = age
         self.hsts_include_subdomains = subdomains
+        self.exclude_user_agents = exclude_user_agents
         if app:
             self.init_app(app)
 
@@ -48,6 +55,9 @@ class SSL(object):
             current_app.testing,
             request.headers.get('X-Forwarded-Proto', 'http') == 'https'
         ]
+
+        if request.headers.get('User-Agent', '').startswith(self.exclude_user_agents):
+            return
 
         if not any(criteria):
             if request.url.startswith('http://'):
