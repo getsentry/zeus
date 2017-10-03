@@ -11,13 +11,43 @@ body {
 a {
   text-decoration: none;
   transition: .1s linear color;
-  color: #7B6BE6;
+  color: #7b6be6;
 }
 
 * {
   box-sizing: border-box;
 }
 
-strong, h1, h2, h3, h4, h5, h6 {
+strong,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 500;
+}
+
+ul,
+ol,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+table,
+form,
+blockquote {
+  margin: 0 0 20px 0;
+}
+
+ul,
+ol {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 5px;
 }

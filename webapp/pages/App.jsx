@@ -6,6 +6,7 @@ import {loadRepos} from '../actions/repos';
 import styled from 'styled-components';
 
 import AsyncComponent from '../components/AsyncComponent';
+import ErrorBoundary from '../components/ErrorBoundary';
 import Indicators from '../components/Indicators';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
 
@@ -66,11 +67,13 @@ class App extends Component {
     return (
       <div className="App">
         <Indicators />
-        {this.props.isAuthenticated === null
-          ? <PageLoadingIndicator />
-          : <AuthedContext>
-              {this.props.children}
-            </AuthedContext>}
+        <ErrorBoundary>
+          {this.props.isAuthenticated === null
+            ? <PageLoadingIndicator />
+            : <AuthedContext>
+                {this.props.children}
+              </AuthedContext>}
+        </ErrorBoundary>
         <Auth>
           {this.props.user
             ? <span>
