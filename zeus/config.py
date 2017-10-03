@@ -16,6 +16,8 @@ import os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
+WORKSPACE_ROOT = os.environ.get('WORKSPACE_ROOT', '/usr/local/cache')
+
 alembic = Alembic()
 celery = Celery()
 db = SQLAlchemy()
@@ -63,7 +65,8 @@ def create_app(_read_config=True, **config):
             }
     else:
         REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
-        SQLALCHEMY_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql+psycopg2:///zeus')
+        SQLALCHEMY_URI = os.environ.get(
+            'SQLALCHEMY_DATABASE_URI', 'postgresql+psycopg2:///zeus')
         app.config['FILE_STORAGE'] = {
             'backend': 'zeus.storage.base.FileStorage',
             'options': {},
@@ -87,7 +90,8 @@ def create_app(_read_config=True, **config):
     app.config['REDIS_URL'] = REDIS_URL
 
     app.config['SENTRY_DSN'] = os.environ.get('SENTRY_DSN') or None
-    app.config['SENTRY_DSN_FRONTEND'] = os.environ.get('SENTRY_DSN_FRONTEND') or None
+    app.config['SENTRY_DSN_FRONTEND'] = os.environ.get(
+        'SENTRY_DSN_FRONTEND') or None
     app.config['SENTRY_INCLUDE_PATHS'] = [
         'zeus',
     ]
@@ -95,10 +99,12 @@ def create_app(_read_config=True, **config):
         app.config['SENTRY_RELEASE'] = raven.fetch_git_sha(ROOT)
     except Exception:
         app.logger.warn('unable to bind sentry.release context', exc_info=True)
-    app.config['SENTRY_ENVIRONMENT'] = os.environ.get('NODE_ENV', 'development')
+    app.config['SENTRY_ENVIRONMENT'] = os.environ.get(
+        'NODE_ENV', 'development')
 
     app.config['GITHUB_CLIENT_ID'] = os.environ.get('GITHUB_CLIENT_ID') or None
-    app.config['GITHUB_CLIENT_SECRET'] = os.environ.get('GITHUB_CLIENT_SECRET') or None
+    app.config['GITHUB_CLIENT_SECRET'] = os.environ.get(
+        'GITHUB_CLIENT_SECRET') or None
 
     app.config['CELERY_ACCEPT_CONTENT'] = ['zeus_json', 'json']
     app.config['CELERY_ACKS_LATE'] = True
@@ -118,8 +124,12 @@ def create_app(_read_config=True, **config):
     app.config['CELERY_TASK_SERIALIZER'] = 'zeus_json'
     app.config['CELERYD_PREFETCH_MULTIPLIER'] = 1
     app.config['CELERYD_MAX_TASKS_PER_CHILD'] = 10000
+    app.config['CELERYBEAT_SCHEDULE_FILE'] = os.path.join(
+        WORKSPACE_ROOT, 'celerybeat-schedule')
 
-    app.config['REPO_ROOT'] = os.environ.get('REPO_ROOT', '/usr/local/cache/zeus-repos')
+    app.config['WORKSPACE_ROOT'] = WORKSPACE_ROOT
+    app.config['REPO_ROOT'] = os.environ.get(
+        'REPO_ROOT', os.path.join(WORKSPACE_ROOT, 'zeus-repos'))
 
     if _read_config:
         if os.environ.get('ZEUS_CONF'):
@@ -127,7 +137,8 @@ def create_app(_read_config=True, **config):
             app.config.from_envvar('ZEUS_CONF')
         else:
             # Look for ~/.zeus/zeus.conf.py
-            path = os.path.normpath(os.path.expanduser('~/.zeus/zeus.config.py'))
+            path = os.path.normpath(
+                os.path.expanduser('~/.zeus/zeus.config.py'))
             app.config.from_pyfile(path, silent=True)
 
     app.wsgi_app = with_health_check(app.wsgi_app)
@@ -140,7 +151,8 @@ def create_app(_read_config=True, **config):
     )
     for varname in req_vars:
         if not app.config.get(varname):
-            raise SystemExit('Required configuration not present for {}'.format(varname))
+            raise SystemExit(
+                'Required configuration not present for {}'.format(varname))
 
     from zeus.testutils.client import ZeusTestClient
     app.test_client_class = ZeusTestClient
@@ -153,7 +165,8 @@ def create_app(_read_config=True, **config):
     # XXX(dcramer): Sentry + Flask + Logging integration is broken
     # https://github.com/getsentry/raven-python/issues/1030
     from raven.handlers.logging import SentryHandler
-    app.logger.addHandler(SentryHandler(client=sentry.client, level=logging.WARN))
+    app.logger.addHandler(SentryHandler(
+        client=sentry.client, level=logging.WARN))
 
     if app.config['SSL']:
         ssl.init_app(app)
