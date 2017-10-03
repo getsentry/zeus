@@ -6,9 +6,9 @@ from flask import request, redirect, current_app
 YEAR_IN_SECS = 31536000
 
 # a list of user agents which HTTPS should not be enforced upon
-EXCLUDE_USER_AGENTS = frozenset((
+EXCLUDE_USER_AGENTS = (
     'kube-probe',
-))
+)
 
 
 class SSL(object):
