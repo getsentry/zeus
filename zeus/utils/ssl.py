@@ -14,17 +14,19 @@ EXCLUDE_USER_AGENTS = (
 
 class SSL(object):
     def __init__(self, app=None, age=YEAR_IN_SECS, subdomains=False,
-                 exclude_user_agents=EXCLUDE_USER_AGENTS):
+                 exclude_user_agents=EXCLUDE_USER_AGENTS, redirect=False):
         self.hsts_age = age
         self.hsts_include_subdomains = subdomains
         self.exclude_user_agents = tuple(x.lower() for x in exclude_user_agents)
+        self.redirect = redirect
         if app:
             self.init_app(app)
 
     def init_app(self, app):
         app.config['PREFERRED_URL_SCHEME'] = 'https'
         app.config['SESSION_COOKIE_SECURE'] = True
-        app.before_request(self.redirect_to_ssl)
+        if self.redirect:
+            app.before_request(self.redirect_to_ssl)
         app.after_request(self.set_hsts_header)
         app.wsgi_app = self.fix_protocol(app.wsgi_app)
 
