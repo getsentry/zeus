@@ -16,7 +16,7 @@ env:
     - PIP_DISABLE_PIP_VERSION_CHECK=on
     - TRAVIS_NODE_VERSION=8
 before_install:
-  - bin/update-zeus-job in_progress unknown
+  - bin/update-zeus-job in_progress unknown || echo "failed to report build to Zeus; continuing"
 install:
   - nvm install $TRAVIS_NODE_VERSION
   - npm install -g yarn@0.27.5
