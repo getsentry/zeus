@@ -3,15 +3,15 @@ from marshmallow import Schema, fields, pre_dump
 
 
 class CoverageStatsSchema(Schema):
-    lines_covered = fields.Number()
-    lines_uncovered = fields.Number()
-    diff_lines_covered = fields.Number()
-    diff_lines_uncovered = fields.Number()
+    lines_covered = fields.Integer()
+    lines_uncovered = fields.Integer()
+    diff_lines_covered = fields.Integer()
+    diff_lines_uncovered = fields.Integer()
 
 
 class TestStatsSchema(Schema):
-    count = fields.Number()
-    failures = fields.Number()
+    count = fields.Integer()
+    failures = fields.Integer()
     duration = fields.Number()
 
 
