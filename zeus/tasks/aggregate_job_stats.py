@@ -34,7 +34,7 @@ def aggregate_build_stats_for_job(job_id: UUID):
 
     # we need to handle the race between when the mutations were made to <Job> and
     # when the only remaining artifact may have finished processing
-    if job.status == Status.collecting_results and not has_unprocessed_artifacts(job):
+    if job.status == Status.collecting_results and not has_unprocessed_artifacts(job.id):
         job.status = Status.finished
         if not job.date_finished:
             job.date_finished = timezone.now()
