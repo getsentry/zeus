@@ -186,9 +186,8 @@ def aggregate_build_stats(build_id: UUID):
         if build.status != new_status:
             build.status = new_status
 
-    if db.session.is_modified(build):
-        db.session.add(build)
-        db.session.commit()
+    db.session.add(build)
+    db.session.commit()
 
     # we dont bother aggregating stats unless we're finished
     if is_finished:
