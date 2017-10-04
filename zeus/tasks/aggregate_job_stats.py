@@ -5,8 +5,9 @@ from zeus import auth
 from zeus.config import celery, db, redis
 from zeus.constants import Result, Status
 from zeus.db.utils import create_or_update
-from zeus.models import (Build, FailureReason,
+from zeus.models import (Artifact, Build, FailureReason,
                          FileCoverage, ItemStat, Job, TestCase)
+from zeus.utils import timezone
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 
 AGGREGATED_BUILD_STATS = (
@@ -30,6 +31,15 @@ def aggregate_build_stats_for_job(job_id: UUID):
         raise ValueError
 
     auth.set_current_tenant(auth.Tenant(repository_ids=[job.repository_id]))
+
+    # we need to handle the race between when the mutations were made to <Job> and
+    # when the only remaining artifact may have finished processing
+    if job.status == Status.collecting_results and not has_unprocessed_artifacts(job):
+        job.status = Status.finished
+        if not job.date_finished:
+            job.date_finished = timezone.now()
+        db.session.add(job)
+        db.session.commit()
 
     # record any job-specific stats that might not have been taken care elsewhere
     # (we might want to move TestResult's stats here as well)
@@ -64,6 +74,15 @@ def aggregate_stat_for_build(build: Build, name: str, func_=func.sum):
         },
         values={'value': value},
     )
+
+
+def has_unprocessed_artifacts(job_id: UUID):
+    return db.session.query(
+        Artifact.query.filter(
+            Artifact.status != Status.finished,
+            Artifact.job_id == job_id,
+        ).exists()
+    ).scalar()
 
 
 def record_failure_reasons(job: Job):
