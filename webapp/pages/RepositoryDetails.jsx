@@ -35,7 +35,6 @@ export default class RepositoryDetails extends AsyncPage {
     if (!state.repo) {
       throw new Error404('Repository not found or you do not have access');
     }
-    console.log(state.repo);
     return state;
   }
 
