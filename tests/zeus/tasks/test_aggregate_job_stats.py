@@ -101,14 +101,14 @@ def test_coverage_stats(mocker, db_session, default_source):
     db_session.add(job)
 
     db_session.add(factories.FileCoverageFactory(
-        job=job,
+        build=build,
         lines_covered=20,
         lines_uncovered=50,
         diff_lines_covered=5,
         diff_lines_uncovered=2,
     ))
     db_session.add(factories.FileCoverageFactory(
-        job=job,
+        build=build,
         lines_covered=10,
         lines_uncovered=10,
         diff_lines_covered=5,
@@ -116,10 +116,11 @@ def test_coverage_stats(mocker, db_session, default_source):
     ))
 
     aggregate_build_stats_for_job(job.id)
+
     stats = {
         i.name: i.value
         for i in ItemStat.query.filter(
-            ItemStat.item_id == job.id,
+            ItemStat.item_id == build.id,
             ItemStat.name.in_([
                 'coverage.lines_covered',
                 'coverage.lines_uncovered',
@@ -128,6 +129,7 @@ def test_coverage_stats(mocker, db_session, default_source):
             ])
         )
     }
+    print(stats)
     assert stats['coverage.lines_covered'] == 30
     assert stats['coverage.lines_uncovered'] == 60
     assert stats['coverage.diff_lines_covered'] == 10

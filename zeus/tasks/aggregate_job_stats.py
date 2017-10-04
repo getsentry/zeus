@@ -9,9 +9,8 @@ from zeus.models import (Build, FailureReason,
                          FileCoverage, ItemStat, Job, TestCase)
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 
-STATS = (
-    'tests.count', 'tests.duration', 'tests.failures', 'coverage.lines_covered',
-    'coverage.lines_uncovered', 'coverage.diff_lines_covered', 'coverage.diff_lines_uncovered',
+AGGREGATED_BUILD_STATS = (
+    'tests.count', 'tests.duration', 'tests.failures',
 )
 
 
@@ -33,16 +32,14 @@ def aggregate_build_stats_for_job(job_id: UUID):
     auth.set_current_tenant(auth.Tenant(repository_ids=[job.repository_id]))
 
     # record any job-specific stats that might not have been taken care elsewhere
-    # (we might want to move TestResult's stats here as well, or move coverage's
-    # stats elsewhere)
-    record_coverage_stats(job)
-
+    # (we might want to move TestResult's stats here as well)
     record_failure_reasons(job)
 
     lock_key = 'aggstatsbuild:{build_id}'.format(
         build_id=job.build_id.hex,
     )
     with redis.lock(lock_key):
+        record_coverage_stats(job.build_id)
         aggregate_build_stats(job.build_id)
 
 
@@ -95,9 +92,9 @@ def record_failure_reasons(job: Job):
     db.session.flush()
 
 
-def record_coverage_stats(job: Job):
+def record_coverage_stats(build_id: UUID):
     """
-    Aggregates all FileCoverage stats for the given job.
+    Aggregates all FileCoverage stats for the given build.
     """
     coverage_stats = db.session.query(
         func.sum(FileCoverage.lines_covered).label('coverage.lines_covered'),
@@ -108,9 +105,9 @@ def record_coverage_stats(job: Job):
         func.sum(FileCoverage.diff_lines_uncovered).label(
             'coverage.diff_lines_uncovered'),
     ).filter(
-        FileCoverage.job_id == job.id,
+        FileCoverage.build_id == build_id,
     ).group_by(
-        FileCoverage.job_id,
+        FileCoverage.build_id,
     ).first()
 
     # TODO(dcramer): it'd be safer if we did this query within SQL
@@ -118,9 +115,9 @@ def record_coverage_stats(job: Job):
         'coverage.lines_covered', 'coverage.lines_uncovered', 'coverage.diff_lines_covered',
         'coverage.diff_lines_uncovered',
     )
-    if not any(getattr(coverage_stats, n, None) for n in stat_list):
+    if not any(getattr(coverage_stats, n, None) is not None for n in stat_list):
         ItemStat.query.filter(
-            ItemStat.item_id == job.id,
+            ItemStat.item_id == build_id,
             ItemStat.name.in_(stat_list)
         ).delete(synchronize_session=False)
     else:
@@ -128,10 +125,12 @@ def record_coverage_stats(job: Job):
             create_or_update(
                 model=ItemStat,
                 where={
-                    'item_id': job.id,
+                    'item_id': build_id,
                     'name': name,
                 },
-                values={'value': getattr(coverage_stats, name, 0) or 0},
+                values={
+                    'value': getattr(coverage_stats, name, 0) or 0,
+                },
             )
 
 
@@ -191,5 +190,5 @@ def aggregate_build_stats(build_id: UUID):
 
     # we dont bother aggregating stats unless we're finished
     if is_finished:
-        for stat in STATS:
+        for stat in AGGREGATED_BUILD_STATS:
             aggregate_stat_for_build(build, stat)

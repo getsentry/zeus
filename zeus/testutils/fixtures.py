@@ -131,9 +131,9 @@ def default_testcase(default_job):
 
 
 @pytest.fixture(scope='function')
-def default_filecoverage(default_job):
+def default_filecoverage(default_build):
     return factories.FileCoverageFactory(
-        job=default_job,
+        build=default_build,
         lines_covered=30,
         lines_uncovered=60,
         diff_lines_covered=0,

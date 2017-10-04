@@ -1,8 +1,7 @@
 from flask import request
 from operator import or_
-from sqlalchemy.orm import contains_eager
 
-from zeus.models import Build, FileCoverage, Job
+from zeus.models import Build, FileCoverage
 
 from .base_build import BaseBuildResource
 from ..schemas import FileCoverageSchema
@@ -15,21 +14,20 @@ class BuildFileCoverageResource(BaseBuildResource):
         """
         Return a list of file coverage objects for a given build.
         """
-        query = FileCoverage.query.options(contains_eager('job')).join(
-            Job,
-            FileCoverage.job_id == Job.id,
-        ).filter(
-            Job.build_id == build.id,
+        query = FileCoverage.query.filter(
+            FileCoverage.build_id == build.id,
         )
 
         diff_only = request.args.get('diff_only') in ('1', 'yes', 'true')
         if diff_only:
             query = query.filter(
-                or_(FileCoverage.diff_lines_covered > 0, FileCoverage.diff_lines_uncovered > 0)
+                or_(FileCoverage.diff_lines_covered > 0,
+                    FileCoverage.diff_lines_uncovered > 0)
             )
 
         query = query.order_by(
-            (FileCoverage.diff_lines_covered + FileCoverage.diff_lines_uncovered > 0).desc(),
+            (FileCoverage.diff_lines_covered +
+             FileCoverage.diff_lines_uncovered > 0).desc(),
             FileCoverage.filename.asc()
         )
 
