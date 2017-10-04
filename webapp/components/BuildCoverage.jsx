@@ -9,6 +9,7 @@ export default class BuildCoverage extends Component {
   getCoverage() {
     let {build} = this.props;
     if (build.status !== 'finished') return '';
+    if (!build.stats.coverage) return '';
     if (build.stats.coverage.diff_lines_covered === 0) return '0%';
     let totalDiffLines =
       build.stats.coverage.diff_lines_uncovered +

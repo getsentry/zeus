@@ -5,7 +5,8 @@ from zeus import auth
 from zeus.config import celery, db, redis
 from zeus.constants import Result, Status
 from zeus.db.utils import create_or_update
-from zeus.models import (Build, FailureReason, FileCoverage, ItemStat, Job, TestCase)
+from zeus.models import (Build, FailureReason,
+                         FileCoverage, ItemStat, Job, TestCase)
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 
 STATS = (
@@ -100,9 +101,12 @@ def record_coverage_stats(job: Job):
     """
     coverage_stats = db.session.query(
         func.sum(FileCoverage.lines_covered).label('coverage.lines_covered'),
-        func.sum(FileCoverage.lines_uncovered).label('coverage.lines_uncovered'),
-        func.sum(FileCoverage.diff_lines_covered).label('coverage.diff_lines_covered'),
-        func.sum(FileCoverage.diff_lines_uncovered).label('coverage.diff_lines_uncovered'),
+        func.sum(FileCoverage.lines_uncovered).label(
+            'coverage.lines_uncovered'),
+        func.sum(FileCoverage.diff_lines_covered).label(
+            'coverage.diff_lines_covered'),
+        func.sum(FileCoverage.diff_lines_uncovered).label(
+            'coverage.diff_lines_uncovered'),
     ).filter(
         FileCoverage.job_id == job.id,
     ).group_by(
@@ -114,15 +118,21 @@ def record_coverage_stats(job: Job):
         'coverage.lines_covered', 'coverage.lines_uncovered', 'coverage.diff_lines_covered',
         'coverage.diff_lines_uncovered',
     )
-    for name in stat_list:
-        create_or_update(
-            model=ItemStat,
-            where={
-                'item_id': job.id,
-                'name': name,
-            },
-            values={'value': getattr(coverage_stats, name, 0) or 0},
-        )
+    if not any(getattr(coverage_stats, n, None) for n in stat_list):
+        ItemStat.query.filter(
+            ItemStat.item_id == job.id,
+            ItemStat.name.in_(stat_list)
+        ).delete(synchronize_session=False)
+    else:
+        for name in stat_list:
+            create_or_update(
+                model=ItemStat,
+                where={
+                    'item_id': job.id,
+                    'name': name,
+                },
+                values={'value': getattr(coverage_stats, name, 0) or 0},
+            )
 
 
 def aggregate_build_stats(build_id: UUID):
@@ -141,10 +151,12 @@ def aggregate_build_stats(build_id: UUID):
     is_finished = any(p.status == Status.finished for p in job_list)
 
     # ensure build's dates are reflective of jobs
-    build.date_started = safe_agg(min, (j.date_started for j in job_list if j.date_started))
+    build.date_started = safe_agg(
+        min, (j.date_started for j in job_list if j.date_started))
 
     if is_finished:
-        build.date_finished = safe_agg(max, (j.date_finished for j in job_list if j.date_finished))
+        build.date_finished = safe_agg(
+            max, (j.date_finished for j in job_list if j.date_finished))
     else:
         build.date_finished = None
 
@@ -153,7 +165,8 @@ def aggregate_build_stats(build_id: UUID):
         build.result = Result.failed
     # else, if we're finished, we can aggregate from results
     elif is_finished:
-        build.result = aggregate_result((j.result for j in job_list if not j.allow_failure))
+        build.result = aggregate_result(
+            (j.result for j in job_list if not j.allow_failure))
         # special case when there were only 'allowed failures'
         if build.result == Result.unknown:
             if not job_list:

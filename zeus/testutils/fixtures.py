@@ -134,6 +134,10 @@ def default_testcase(default_job):
 def default_filecoverage(default_job):
     return factories.FileCoverageFactory(
         job=default_job,
+        lines_covered=30,
+        lines_uncovered=60,
+        diff_lines_covered=0,
+        diff_lines_uncovered=0,
     )
 
 
