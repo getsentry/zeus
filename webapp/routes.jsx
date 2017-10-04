@@ -9,7 +9,6 @@ import BuildOverview from './pages/BuildOverview';
 import BuildTestList from './pages/BuildTestList';
 import Login from './pages/Login';
 import GitHubRepositoryList from './pages/GitHubRepositoryList';
-import NotFound from './pages/NotFound';
 import OwnerDetails from './pages/OwnerDetails';
 import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
@@ -19,6 +18,8 @@ import RepositoryTests from './pages/RepositoryTests';
 import RepositoryTestList from './pages/RepositoryTestList';
 import RepositoryTestTree from './pages/RepositoryTestTree';
 import UserBuildList from './pages/UserBuildList';
+
+import NotFoundError from './components/NotFoundError';
 
 import requireAuth from './utils/requireAuth';
 
@@ -47,6 +48,6 @@ export default (
         <Route path="tests" component={BuildTestList} />
       </Route>
     </Route>
-    <Route path="*" component={NotFound} />
+    <Route path="*" component={NotFoundError} />
   </Route>
 );
