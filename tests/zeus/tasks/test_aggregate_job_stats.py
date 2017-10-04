@@ -68,3 +68,18 @@ def test_failure_with_allow_failure(mocker, db_session, default_source):
 
     assert job.result == Result.failed
     assert build.result == Result.passed
+
+
+def test_newly_unfinished_job(mocker, db_session, default_source):
+    auth.set_current_tenant(auth.Tenant(repository_ids=[default_source.repository_id]))
+
+    build = factories.BuildFactory(source=default_source, finished=True)
+    db_session.add(build)
+
+    job = factories.JobFactory(build=build, in_progress=True)
+    db_session.add(job)
+
+    aggregate_build_stats_for_job(job.id)
+
+    assert build.status == Status.in_progress
+    assert build.result == Result.unknown

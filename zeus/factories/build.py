@@ -24,11 +24,14 @@ class BuildFactory(ModelFactory):
     repository = factory.SelfAttribute('source.repository')
     repository_id = factory.SelfAttribute('repository.id')
     result = factory.Iterator([Result.failed, Result.passed])
-    status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
-    date_created = factory.LazyAttribute(lambda o: timezone.now() - timedelta(minutes=30))
+    status = factory.Iterator(
+        [Status.queued, Status.in_progress, Status.finished])
+    date_created = factory.LazyAttribute(
+        lambda o: timezone.now() - timedelta(minutes=30))
     date_started = factory.LazyAttribute(
         lambda o: (
-            faker.date_time_between(o.date_created, o.date_created + timedelta(minutes=1))
+            faker.date_time_between(
+                o.date_created, o.date_created + timedelta(minutes=1))
             if o.status in [Status.finished, Status.in_progress] else None
         )
     )
@@ -44,15 +47,25 @@ class BuildFactory(ModelFactory):
         model = models.Build
 
     class Params:
-        queued = factory.Trait(result=Result.unknown, status=Status.queued)
-        in_progress = factory.Trait(result=Result.unknown, status=Status.in_progress)
+        queued = factory.Trait(
+            result=Result.unknown,
+            status=Status.queued,
+            date_started=None,
+            date_finished=None)
+        in_progress = factory.Trait(
+            result=Result.unknown,
+            status=Status.in_progress,
+            date_finished=None)
+        finished = factory.Trait(
+            status=Status.finished)
         failed = factory.Trait(result=Result.failed, status=Status.finished)
         passed = factory.Trait(result=Result.passed, status=Status.finished)
         aborted = factory.Trait(result=Result.aborted, status=Status.finished)
         anonymous = factory.Trait(author=None, author_id=None)
         travis = factory.Trait(
             provider='travis-ci',
-            external_id=factory.LazyAttribute(lambda o: randint(10000, 999999)),
+            external_id=factory.LazyAttribute(
+                lambda o: randint(10000, 999999)),
             url=factory.LazyAttribute(lambda o: 'https://travis-ci.org/{}/{}/builds/{}'.format(
                 o.repository.owner_name,
                 o.repository.name,
