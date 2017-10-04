@@ -148,7 +148,7 @@ def aggregate_build_stats(build_id: UUID):
 
     job_list = Job.query.filter(Job.build_id == build.id)
 
-    is_finished = any(p.status == Status.finished for p in job_list)
+    is_finished = all(p.status == Status.finished for p in job_list)
 
     # ensure build's dates are reflective of jobs
     build.date_started = safe_agg(
