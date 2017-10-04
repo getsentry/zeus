@@ -101,9 +101,9 @@ zeus
 |   ├── Build
 |   |   ├── ItemStat
 |   |   ├── Source
+|   |   ├── FileCoverage
 |   |   └── Job
 |   |       ├── Artifact
-|   |       ├── FileCoverage
 |   |       ├── ItemStat
 |   |       └── TestCase
 |   |           ├── Artifact
