@@ -31,7 +31,7 @@ class RepositoryFactory(ModelFactory):
             provider=models.RepositoryProvider.github,
             external_id=factory.LazyAttribute(
                 lambda o: '{}/{}'.format(o.owner_name, o.name)),
-            data=factory.LazyAttribute(lambda o: (
-                {'github': {'full_name': '{}/{}'.format(o.owner_name, o.name)}}
-            ))
+            data=factory.LazyAttribute(lambda o: {
+                'full_name': '{}/{}'.format(o.owner_name, o.name),
+            })
         )
