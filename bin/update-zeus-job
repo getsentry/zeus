@@ -4,9 +4,9 @@
 curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER \
     -X POST \
     -H 'Content-Type: application/json' \
-    -d "{\"label\": \"$TRAVIS_BUILD_NUMBER\", \"ref\": \"$TRAVIS_COMMIT\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/builds/${TRAVIS_BUILD_ID}\"}"
+    -d "{\"ref\": \"$TRAVIS_COMMIT\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/builds/${TRAVIS_BUILD_ID}\"}"
 
 curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER/jobs/$TRAVIS_JOB_NUMBER \
     -X POST \
     -H 'Content-Type: application/json' \
-    -d "{\"label\": \"$TRAVIS_JOB_NUMBER\", \"status\": \"$1\", \"result\": \"$2\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/jobs/${TRAVIS_JOB_ID}\", \"allow_failure\": ${TRAVIS_ALLOW_FAILURE}}"
+    -d "{\"status\": \"$1\", \"result\": \"$2\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/jobs/${TRAVIS_JOB_ID}\", \"allow_failure\": ${TRAVIS_ALLOW_FAILURE}}"
