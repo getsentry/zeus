@@ -8,8 +8,11 @@ from sqlalchemy.exc import IntegrityError
 from zeus import auth
 from zeus.config import db
 from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI
-from zeus.models import Identity, User
+from zeus.models import (
+    Identity, Repository, RepositoryAccess, RepositoryProvider, User
+)
 from zeus.utils.github import GitHubClient
+from zeus.vcs.providers.github import GitHubRepositoryProvider
 
 
 def get_auth_flow(redirect_uri=None, scopes=('user:email', )):
@@ -108,4 +111,36 @@ class GitHubCompleteView(MethodView):
         # Note: this is enforced in zeus.auth
         auth.login_user(user_id)
 
+        # now lets try to update the repos they have access to based on whats
+        # enabled
+        user = auth.get_current_user()
+        grant_access_to_existing_repos(user)
+
         return redirect(url_for(self.complete_url))
+
+
+def grant_access_to_existing_repos(user):
+    provider = GitHubRepositoryProvider(cache=True)
+    owner_list = [o['name'] for o in provider.get_owners(user)]
+    if owner_list:
+        matching_repos = Repository.query.unrestricted_unsafe().filter(
+            Repository.provider == RepositoryProvider.github,
+            Repository.owner_name.in_(owner_list),
+            ~Repository.id.in_(db.session.query(
+                RepositoryAccess.repository_id,
+            ).filter(
+                RepositoryAccess.user_id == user.id,
+            ))
+        )
+        for repo in matching_repos:
+            if provider.has_access(auth.get_current_user(), repo):
+                try:
+                    with db.session.begin_nested():
+                        db.session.add(RepositoryAccess(
+                            repository_id=repo.id,
+                            user_id=user.id,
+                        ))
+                        db.session.flush()
+                except IntegrityError:
+                    pass
+            db.session.commit()

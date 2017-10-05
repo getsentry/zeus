@@ -90,9 +90,9 @@ class GitHubRepositoryProvider(RepositoryProvider):
             }
         )
 
-    def has_access(self, repository: Repository, user: User) -> bool:
+    def has_access(self, user: User, repo: Repository) -> bool:
         try:
-            self.get_repo(repository.data['full_name'])
+            self.get_repo(user, *repo.data['full_name'].split('/', 1))
         except ApiError as exc:
             if exc.code == 404:
                 return False
