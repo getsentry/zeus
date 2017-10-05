@@ -71,8 +71,17 @@ def db_session(request, req_ctx, db):
     # db.session.remove()
 
 
-def pytest_runtest_setup(item):
+@pytest.fixture(scope='function', autouse=True)
+def filestorage(app):
     FileStorageCache.clear()
+
+    yield FileStorageCache
+
+
+@pytest.fixture(scope='function', autouse=True)
+def redis(app):
+    config.redis.flushdb()
+    yield config.redis
 
 
 @pytest.fixture(scope='function')
