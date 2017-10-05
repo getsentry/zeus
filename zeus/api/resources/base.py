@@ -52,7 +52,6 @@ class Resource(View):
         elif self.auth_required:
             return self.respond({
                 'error': 'auth_required',
-                'url': '/auth/github',
             }, 401)
 
         try:

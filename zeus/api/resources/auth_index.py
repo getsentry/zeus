@@ -1,4 +1,6 @@
 from flask import session
+
+from zeus import auth
 from zeus.models import User
 
 from .base import Resource
@@ -40,7 +42,7 @@ class AuthIndexResource(Resource):
         if not session.get('uid'):
             return
 
-        del session['uid']
+        auth.logout()
 
         return {
             'isAuthenticated': False,

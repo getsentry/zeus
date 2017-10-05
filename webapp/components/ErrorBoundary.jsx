@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 // This is being pulled form the CDN currently
 // import Raven from 'raven-js';
 
-import ErrorBox from './ErrorBox';
+import Modal from './Modal';
 import NotFoundError from './NotFoundError';
 import {Error404} from '../errors';
 
@@ -28,7 +28,7 @@ export default class ErrorBoundary extends Component {
           return <NotFoundError />;
         default:
           return (
-            <ErrorBox title="Unhandled Error" subtext="500">
+            <Modal title="Unhandled Error" subtext="500">
               <p>We hit an unexpected error while loading the page.</p>
               <p>The following may provide you some recourse:</p>
               <ul>
@@ -58,7 +58,7 @@ export default class ErrorBoundary extends Component {
                   {error.toString()}
                 </pre>
               </div>
-            </ErrorBox>
+            </Modal>
           );
       }
     } else {

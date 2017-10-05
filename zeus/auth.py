@@ -104,6 +104,11 @@ def login_user(user_id: str, session=session, current_datetime=None):
     session.permanent = True
 
 
+def logout():
+    del session['uid']
+    del session['expire']
+
+
 def get_current_user() -> Optional[User]:
     rv = getattr(g, 'current_user', None)
     if not rv:

@@ -21,7 +21,7 @@ export default function(ComposedComponent) {
     componentWillUpdate(nextProps) {
       // logged out
       if (this.props.isAuthenticated && !nextProps.isAuthenticated) {
-        this.context.router.push('/');
+        this.context.router.push('/login');
       }
     }
 

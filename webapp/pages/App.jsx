@@ -68,7 +68,7 @@ class App extends Component {
       <div className="App">
         <Indicators />
         <ErrorBoundary>
-          {this.props.isAuthenticated === null
+          {!this.props.isAuthenticated === null
             ? <PageLoadingIndicator />
             : <AuthedContext>
                 {this.props.children}

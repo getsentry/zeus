@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 
-import ErrorBox from './ErrorBox';
+import Modal from './Modal';
 
 export default class NotFoundError extends Component {
   render() {
     return (
-      <ErrorBox title="Not Found" subtext="404">
+      <Modal title="Not Found" subtext="404">
         <p>
           The resource you were trying to access was not found, or you do not have
           permission to view it.
@@ -31,7 +31,7 @@ export default class NotFoundError extends Component {
             Return to the <a href="/">dashboard</a>
           </li>
         </ul>
-      </ErrorBox>
+      </Modal>
     );
   }
 }
