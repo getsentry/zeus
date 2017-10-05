@@ -12,8 +12,7 @@ export default class BuildCoverage extends Component {
     if (!build.stats.coverage) return '';
     if (build.stats.coverage.diff_lines_covered === 0) return '0%';
     let totalDiffLines =
-      build.stats.coverage.diff_lines_uncovered +
-      build.stats.coverage.diff_lines_uncovered;
+      build.stats.coverage.diff_lines_uncovered + build.stats.coverage.diff_lines_covered;
     if (!totalDiffLines) return '';
     return `${parseInt(
       build.stats.coverage.diff_lines_covered / totalDiffLines * 100,
