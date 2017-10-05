@@ -22,12 +22,23 @@ export default class JobList extends Component {
             <ResultGridRow key={job.id}>
               <Flex align="center">
                 <Box flex="1" width={11 / 12} pr={15}>
-                  <ObjectResult data={job} />
-                  #{build.number}.{job.number}
-                  {job.url &&
-                    <span>
-                      {' '}&mdash; <a href={job.url}>{job.url}</a>
-                    </span>}
+                  <div style={{position: 'absolute'}}>
+                    <ObjectResult data={job} />
+                  </div>
+                  <div style={{display: 'inline-block', marginLeft: 25}}>
+                    <div>
+                      #{build.number}.{job.number}
+                      {job.label && ` - ${job.label}`}
+                    </div>
+                    {job.url &&
+                      <div>
+                        {' '}<small>
+                          <a href={job.url}>
+                            {job.url}
+                          </a>
+                        </small>
+                      </div>}
+                  </div>
                 </Box>
                 <Box width={1 / 12} style={{textAlign: 'right'}}>
                   <ObjectDuration data={job} short={true} />
