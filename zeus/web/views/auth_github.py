@@ -9,7 +9,7 @@ from zeus import auth
 from zeus.config import db
 from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI
 from zeus.models import (
-    Identity, Repository, RepositoryAccess, RepositoryProvider, User
+    Email, Identity, Repository, RepositoryAccess, RepositoryProvider, User
 )
 from zeus.utils.github import GitHubClient
 from zeus.vcs.providers.github import GitHubRepositoryProvider
@@ -74,18 +74,24 @@ class GitHubCompleteView(MethodView):
             'login': user_data['login'],
         }
 
-        email = user_data.get('email')
-        # no primary/public email specified
-        if not email:
-            emails = github.get('/user/emails')
-            email = next((
-                e['email'] for e in emails
+        email_list = github.get('/user/emails')
+        email_list.append({
+            'email': '{}@users.noreply.github.com'.format(user_data['login']),
+            'verified': True,
+        })
+
+        primary_email = user_data.get('email')
+        # HACK(dcramer): capture github's anonymous email addresses when they're not listed
+        # (we haven't actually confirmed they're not listed)
+        if not primary_email:
+            primary_email = next((
+                e['email'] for e in email_list
                 if e['verified'] and e['primary']
             ))
         try:
             with db.session.begin_nested():
                 user = User(
-                    email=email,
+                    email=primary_email,
                 )
                 db.session.add(user)
                 identity = Identity(
@@ -104,6 +110,17 @@ class GitHubCompleteView(MethodView):
             identity.config = identity_config
             db.session.add(identity)
             user_id = identity.user_id
+
+        for email in email_list:
+            try:
+                with db.session.begin_nested():
+                    db.session.add(Email(
+                        user_id=user.id,
+                        email=email['email'],
+                        verified=email['verified'],
+                    ))
+            except IntegrityError:
+                pass
 
         db.session.commit()
 

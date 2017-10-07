@@ -2,7 +2,7 @@ from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Source, User
+from zeus.models import Author, Build, Email, Source, User
 
 from .base import Resource
 from ..schemas import BuildSchema
@@ -33,6 +33,10 @@ class UserBuildsResource(Resource):
             Source,
             Build.source_id == Source.id,
         ).filter(
-            Source.author_id.in_(db.session.query(Author.id).filter(Author.email == user.email))
+            Source.author_id.in_(db.session.query(Author.id).filter(Author.email.in_(
+                db.session.query(Email.email).filter(
+                    Email.user_id == user.id
+                )
+            )))
         ).order_by(Build.number.desc())
         return self.paginate_with_schema(builds_schema, query)

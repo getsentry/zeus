@@ -114,6 +114,7 @@ zeus
 |       └── Revision
 |           └── Author
 └── User
+    ├── Email
     └── Identity
 ```
 

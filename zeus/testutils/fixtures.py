@@ -12,9 +12,15 @@ DATA_FIXTURES = os.path.join(os.path.dirname(
 
 @pytest.fixture(scope='function')
 def default_user():
-    return factories.UserFactory(
+    user = factories.UserFactory(
         email='foo@example.com',
     )
+    factories.EmailFactory(
+        user=user,
+        email=user.email,
+        verified=True,
+    )
+    return user
 
 
 @pytest.fixture(scope='function')
