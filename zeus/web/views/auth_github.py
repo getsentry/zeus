@@ -111,11 +111,13 @@ class GitHubCompleteView(MethodView):
             db.session.add(identity)
             user_id = identity.user_id
 
+        db.session.flush()
+
         for email in email_list:
             try:
                 with db.session.begin_nested():
                     db.session.add(Email(
-                        user_id=user.id,
+                        user_id=user_id,
                         email=email['email'],
                         verified=email['verified'],
                     ))

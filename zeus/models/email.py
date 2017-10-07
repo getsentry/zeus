@@ -12,7 +12,7 @@ class Email(StandardAttributes, db.Model):
         GUID, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False, index=True
     )
     email = db.Column(db.String(128), nullable=False)
-    verified = db.Column(db.Boolean, default=False)
+    verified = db.Column(db.Boolean, default=False, nullable=False)
 
     user = db.relationship('User')
 
