@@ -3,7 +3,7 @@ from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Repository, Revision, Source
+from zeus.models import Author, Build, Email, Repository, Revision, Source
 from zeus.vcs.base import UnknownRevision
 
 from .base_repository import BaseRepositoryResource
@@ -66,9 +66,13 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         show = request.args.get('show')
         if show == 'mine' or (not show and user):
             query = query.filter(
-                Source.author_id.
-                in_(db.session.query(Author.id).filter(
-                    Author.email == user.email)),
+                Source.author_id.in_(
+                    db.session.query(Author.id).filter(Author.email.in_(
+                        db.session.query(Email.email).filter(
+                            Email.user_id == user.id
+                        )
+                    ))
+                )
             )
 
         return self.paginate_with_schema(builds_schema, query)

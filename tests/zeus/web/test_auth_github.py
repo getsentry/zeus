@@ -3,7 +3,7 @@ from flask import current_app
 from oauth2client.client import OAuth2Credentials
 
 from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI
-from zeus.models import Identity, RepositoryAccess, User
+from zeus.models import Email, Identity, RepositoryAccess, User
 
 
 def test_login(client):
@@ -14,7 +14,7 @@ def test_login(client):
             GITHUB_AUTH_URI)
 
 
-def test_login_complete(client, mocker, responses):
+def test_login_complete(client, db_session, mocker, responses):
     mock_step2_exchange = mocker.patch(
         'zeus.web.views.auth_github.OAuth2WebServerFlow.step2_exchange'
     )
@@ -28,6 +28,15 @@ def test_login_complete(client, mocker, responses):
         json={"id": 1, "login": "test", "email": "foo@example.com"}
     )
     responses.add(responses.GET, 'https://api.github.com/user/orgs', json=[])
+    responses.add(
+        'GET',
+        'https://api.github.com/user/emails',
+        match_querystring=True,
+        json=[
+            {"email": "foo@example.com", "verified": True, "primary": True},
+            {"email": "foo.bar@example.com", "verified": False, "primary": False},
+        ]
+    )
 
     access_token = 'b' * 40
     refresh_token = 'c' * 40
@@ -71,6 +80,16 @@ def test_login_complete(client, mocker, responses):
         'login': 'test',
         'scopes': ['user:email', 'read:org'],
     }
+
+    emails = {
+        r[0]: r[1]
+        for r in db_session.query(Email.email, Email.verified).filter(
+            Email.user_id == user.id,
+        )
+    }
+    assert emails.get('foo@example.com') is True
+    assert emails.get('foo.bar@example.com') is False
+    assert emails.get('test@users.noreply.github.com') is True
 
 
 def test_login_complete_no_visible_email(client, mocker, responses):
@@ -137,6 +156,12 @@ def test_login_complete_automatic_repo_access(client, mocker, db_session, respon
         'https://api.github.com/user',
         match_querystring=True,
         json={"id": 1, "login": "test", "email": "foo@example.com"}
+    )
+    responses.add(
+        'GET',
+        'https://api.github.com/user/emails',
+        match_querystring=True,
+        json=[{"email": "foo@example.com", "verified": True, "primary": True}]
     )
     responses.add(
         responses.GET,
