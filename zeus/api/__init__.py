@@ -46,4 +46,5 @@ app.add_resource(
 )
 app.add_resource('/tests/<test_id>', r.TestDetailsResource)
 app.add_resource('/users/<user_id>/builds', r.UserBuildsResource)
+app.add_resource('/users/<user_id>/emails', r.UserEmailsResource)
 app.add_resource('/<path:path>', r.CatchallResource)
