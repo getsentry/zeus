@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import Logo from '../assets/Logo';
 import NavHeading from './NavHeading';
+import SidebarAuth from './SidebarAuth';
 import SidebarLink from './SidebarLink';
 import SidebarRepoItem from './SidebarRepoItem';
 
@@ -38,6 +39,7 @@ export default class Sidebar extends Component {
           Repositories <AddRepoLink to="/settings/github/repos">Add</AddRepoLink>
         </SidebarNavHeading>
         <RepositoryList />
+        <SidebarAuth />
       </SidebarWrapper>
     );
   }
