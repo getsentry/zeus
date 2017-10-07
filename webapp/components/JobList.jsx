@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Flex, Box} from 'grid-styled';
 
+import Badge from './Badge';
 import ObjectDuration from './ObjectDuration';
 import ObjectResult from './ObjectResult';
 import Panel from './Panel';
@@ -30,14 +31,16 @@ export default class JobList extends Component {
                       #{build.number}.{job.number}
                       {job.label && ` - ${job.label}`}
                     </div>
-                    {job.url &&
-                      <div>
-                        {' '}<small>
+                    <div>
+                      <small>
+                        {job.url &&
                           <a href={job.url}>
                             {job.url}
-                          </a>
-                        </small>
-                      </div>}
+                          </a>}
+                        {job.allow_failure &&
+                          <Badge type="warning">allowed to fail</Badge>}
+                      </small>
+                    </div>
                   </div>
                 </Box>
                 <Box width={1 / 12} style={{textAlign: 'right'}}>
