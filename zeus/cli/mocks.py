@@ -65,6 +65,7 @@ def mock_build(repo: models.Repository, parent_revision: models.Revision=None):
             failed=has_failure,
             passed=not has_failure,
             travis=True,
+            allow_failure=n == 3,
         )
 
         for n in range(randint(0, 50)):

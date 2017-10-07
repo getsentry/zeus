@@ -24,6 +24,7 @@ class JobFactory(ModelFactory):
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator(
         [Status.queued, Status.in_progress, Status.finished])
+    allow_failure = False
     date_created = factory.LazyAttribute(
         lambda o: timezone.now() - timedelta(minutes=30))
     date_started = factory.LazyAttribute(
