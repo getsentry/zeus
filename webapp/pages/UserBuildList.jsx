@@ -40,7 +40,14 @@ class BuildListBody extends AsyncComponent {
   }
 
   renderBody() {
-    return <BuildList params={this.props.params} buildList={this.props.buildList} />;
+    return (
+      <BuildList
+        params={this.props.params}
+        buildList={this.props.buildList}
+        includeAuthor={false}
+        includeRepo={true}
+      />
+    );
   }
 }
 

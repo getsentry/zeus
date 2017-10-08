@@ -13,11 +13,17 @@ import TimeSince from './TimeSince';
 
 export default class BuildListItem extends Component {
   static propTypes = {
-    build: PropTypes.object.isRequired
+    build: PropTypes.object.isRequired,
+    includeAuthor: PropTypes.bool,
+    includeRepo: PropTypes.bool
+  };
+
+  static defaultProps = {
+    includeAuthor: true
   };
 
   render() {
-    let {build} = this.props;
+    let {build, includeAuthor, includeRepo} = this.props;
     let repo = build.repository;
     return (
       <BuildListItemLink to={`/${repo.full_name}/builds/${build.number}`}>
@@ -33,12 +39,19 @@ export default class BuildListItem extends Component {
                     #{build.number} {build.source.revision.message.split('\n')[0]}
                   </Message>
                   <Meta>
+                    {includeRepo
+                      ? <RepoLink to={`/${repo.full_name}`}>
+                          {build.repository.owner_name}/{build.repository.name}
+                        </RepoLink>
+                      : null}
                     <Commit>
                       {build.source.revision.sha.substr(0, 7)}
                     </Commit>
-                    <Author>
-                      <BuildAuthor build={build} />
-                    </Author>
+                    {includeAuthor
+                      ? <Author>
+                          <BuildAuthor build={build} />
+                        </Author>
+                      : null}
                   </Meta>
                 </Box>
               </Flex>
@@ -102,6 +115,15 @@ const Author = styled.div`
 
 const Commit = styled(Author)`
   font-weight: 400;
+`;
+
+const RepoLink = styled(Link)`
+  display: block;
+  margin-right: 12px;
+  font-weight: 400;
+  font-family: "Monaco", monospace;
+  font-size: 12px;
+  color: inherit;
 `;
 
 const Meta = styled.div`
