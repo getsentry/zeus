@@ -12,28 +12,11 @@ export default class AsyncPage extends Component {
     router: PropTypes.object.isRequired
   };
 
-  static errorHandler = (component, fn) => {
-    return function(...args) {
-      try {
-        return fn(...args);
-      } catch (err) {
-        /*eslint no-console:0*/
-        setTimeout(() => {
-          throw err;
-        });
-        // component.setState({
-        //   error: err
-        // });
-        return null;
-      }
-    };
-  };
-
   constructor(props, context) {
     super(props, context);
 
-    this.refreshData = AsyncPage.errorHandler(this, this.refreshData.bind(this));
-    this.render = AsyncPage.errorHandler(this, this.render.bind(this));
+    this.refreshData = this.refreshData.bind(this);
+    this.render = this.render.bind(this);
 
     this.state = this.getDefaultState(props, context);
 
