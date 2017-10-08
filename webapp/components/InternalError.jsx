@@ -31,12 +31,12 @@ export default class InternalError extends Component {
             more details.
           </li>
         </ul>
-        <div style={{fontSize: 0.8}}>
+        <div style={{fontSize: '0.8em', borderTop: '1px solid #eee', paddingTop: 20}}>
           <p>
-            {"For the curious, here's what Zeus reported:"}
+            {'The exception Zeus reported was:'}
           </p>
           <pre>
-            {error.toString()}
+            {error.stack}
           </pre>
         </div>
       </Modal>

@@ -117,13 +117,8 @@ const Commit = styled(Author)`
   font-weight: 400;
 `;
 
-const RepoLink = styled(Link)`
-  display: block;
-  margin-right: 12px;
+const RepoLink = styled(Author)`
   font-weight: 400;
-  font-family: "Monaco", monospace;
-  font-size: 12px;
-  color: inherit;
 `;
 
 const Meta = styled.div`
