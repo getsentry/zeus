@@ -15,9 +15,14 @@ export default class ErrorBoundary extends Component {
     this.state = {error: null};
   }
 
+  unstable_handleError(...params) {
+    // This method is a fallback for react <= 16.0.0-alpha.13
+    this.componentDidError(...params);
+  }
+
   componentDidCatch(error, errorInfo) {
     this.setState({error});
-    if (error.constructor !== Error404 && window.Raven) {
+    if (error.constructor === Error && window.Raven) {
       window.Raven.captureException(error, {extra: errorInfo});
       window.Raven.lastEventId() && window.Raven.showReportDialog();
     }
