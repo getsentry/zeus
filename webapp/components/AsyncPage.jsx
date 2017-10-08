@@ -155,7 +155,7 @@ export default class AsyncPage extends Component {
   }
 
   renderError(error) {
-    throw Object.keys(this.state.errors).find(_ => true) || error;
+    throw this.state.errors[Object.keys(this.state.errors).find(_ => true)] || error;
   }
 
   renderContent() {
