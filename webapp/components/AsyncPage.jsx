@@ -43,6 +43,7 @@ export default class AsyncPage extends Component {
   componentWillMount() {
     this.api = new Client();
     this.refreshData();
+    super.componentWillMount && super.componentWillMount();
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -52,6 +53,8 @@ export default class AsyncPage extends Component {
     ) {
       this.remountComponent(nextProps, nextContext);
     }
+    super.componentWillReceiveProps &&
+      super.componentWillReceiveProps(nextProps, nextContext);
   }
 
   componentWillUnmount() {
@@ -59,6 +62,7 @@ export default class AsyncPage extends Component {
     Object.keys(this.timers).forEach(key => {
       window.clearTimeout(this.timers[key]);
     });
+    super.componentWillUnmount && super.componentWillUnmount();
   }
 
   // XXX: cant call this getInitialState as React whines
