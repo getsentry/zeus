@@ -38,3 +38,6 @@ drop-db:
 
 create-db:
 	createdb -E utf-8 zeus
+
+build-docker-iamge:
+	docker build -t zeus .
