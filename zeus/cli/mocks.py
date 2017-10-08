@@ -1,6 +1,6 @@
 import click
 
-from random import randint, random
+from random import choice, randint, random
 from sqlalchemy.exc import IntegrityError
 
 from zeus import factories, models
@@ -39,10 +39,35 @@ def mock_single_repository(user_ids=()):
     return repo
 
 
-def mock_build(repo: models.Repository, parent_revision: models.Revision=None):
+def mock_author(repo: models.Repository, user_id) -> models.Author:
+    author = models.Author.query.unrestricted_unsafe().filter(
+        models.Author.email.in_(
+            db.session.query(models.Email.email).filter(
+                models.Email.user_id == user_id
+            )
+        )
+    ).first()
+    if author:
+        return author
+
+    user = models.User.query.get(user_id)
+    return factories.AuthorFactory(
+        repository=repo,
+        email=user.email,
+    )
+
+
+def mock_build(repo: models.Repository, parent_revision: models.Revision=None, user_ids=()):
+    if user_ids and randint(0, 1) == 0:
+        chosen_user_id = choice(user_ids)
+        author = mock_author(repo, chosen_user_id)
+    else:
+        author = None
+
     revision = factories.RevisionFactory.create(
         repository=repo,
         parents=[parent_revision.sha] if parent_revision else None,
+        **{'author': author} if author else {}
     )
     source = factories.SourceFactory.create(
         revision=revision,
@@ -51,6 +76,7 @@ def mock_build(repo: models.Repository, parent_revision: models.Revision=None):
         ) if parent_revision and random() > 0.8 else None,
     )
     parent_revision = revision
+
     build = factories.BuildFactory.create(source=source, travis=True)
     click.echo('Created {!r}'.format(build))
 
@@ -94,7 +120,7 @@ def load_all():
         repo = mock_single_repository(user_ids=user_ids)
         parent_revision = None
         for n in range(10):
-            build = mock_build(repo, parent_revision)
+            build = mock_build(repo, parent_revision, user_ids=user_ids)
             parent_revision = build.source.revision
 
 
@@ -104,5 +130,5 @@ def stream():
     repo = mock_single_repository(user_ids=user_ids)
     parent_revision = None
     while True:
-        build = mock_build(repo, parent_revision)
+        build = mock_build(repo, parent_revision, user_ids=user_ids)
         parent_revision = build.source.revision
