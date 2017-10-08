@@ -4,7 +4,7 @@ export default styled.span`
   font-size: 75%;
   display: inline-block;
   padding: .25em .5em;
-  margin: 0 5px;
+  margin-left: 5px;
   text-transform: uppercase;
   color: #111;
   font-weight: 700;
@@ -23,10 +23,12 @@ export default styled.span`
         `;
       case 'dark':
         return css`
+          color: #fff;
           background: #343a40;
         `;
       default:
         return css`
+          color: #fff;
           background: #868e96;
         `;
     }

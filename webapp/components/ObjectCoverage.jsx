@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-export default class BuildCoverage extends Component {
+export default class ObjectCoverage extends Component {
   static propTypes = {
     data: PropTypes.object.isRequired
   };

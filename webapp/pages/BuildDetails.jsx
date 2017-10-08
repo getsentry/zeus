@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import styled, {css} from 'styled-components';
 
 import AsyncPage from '../components/AsyncPage';
+import Badge from '../components/Badge';
 import BuildAuthor from '../components/BuildAuthor';
 import {Breadcrumbs, Crumb, CrumbLink} from '../components/Breadcrumbs';
+import ObjectCoverage from '../components/ObjectCoverage';
 import ObjectDuration from '../components/ObjectDuration';
 import ObjectResult from '../components/ObjectResult';
 import RepositoryHeader from '../components/RepositoryHeader';
@@ -75,6 +77,9 @@ export default class BuildDetails extends AsyncPage {
     let {build} = this.state;
     let {repo} = this.context;
     let {buildNumber} = this.props.params;
+    let hasCoverage =
+      build.stats.coverage.lines_covered > 0 || build.stats.coverage.lines_uncovered > 0;
+    let hasTests = build.stats.tests.count > 0;
     return (
       <div>
         <BuildSummary>
@@ -113,11 +118,25 @@ export default class BuildDetails extends AsyncPage {
               onlyActiveOnIndex={true}>
               Overview
             </TabbedNavItem>
-            <TabbedNavItem to={`/${repo.full_name}/builds/${buildNumber}/tests`}>
+            <TabbedNavItem
+              to={`/${repo.full_name}/builds/${buildNumber}/tests`}
+              disabled={!hasTests}>
               Tests
+              {hasTests
+                ? <Badge>
+                    {build.stats.tests.count.toLocaleString()}
+                  </Badge>
+                : null}
             </TabbedNavItem>
-            <TabbedNavItem to={`/${repo.full_name}/builds/${buildNumber}/coverage`}>
+            <TabbedNavItem
+              to={`/${repo.full_name}/builds/${buildNumber}/coverage`}
+              disabled={!hasCoverage}>
               Code Coverage
+              {hasCoverage
+                ? <Badge>
+                    <ObjectCoverage data={build} />
+                  </Badge>
+                : null}
             </TabbedNavItem>
             <TabbedNavItem to={`/${repo.full_name}/builds/${buildNumber}/diff`}>
               Diff
