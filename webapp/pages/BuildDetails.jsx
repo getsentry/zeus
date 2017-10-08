@@ -79,6 +79,9 @@ export default class BuildDetails extends AsyncPage {
     let {buildNumber} = this.props.params;
     let hasCoverage =
       build.stats.coverage.lines_covered > 0 || build.stats.coverage.lines_uncovered > 0;
+    let hasDiffCoverage =
+      build.stats.coverage.diff_lines_covered > 0 ||
+      build.stats.coverage.diff_lines_uncovered > 0;
     let hasTests = build.stats.tests.count > 0;
     return (
       <div>
@@ -132,7 +135,7 @@ export default class BuildDetails extends AsyncPage {
               to={`/${repo.full_name}/builds/${buildNumber}/coverage`}
               disabled={!hasCoverage}>
               Code Coverage
-              {hasCoverage
+              {hasDiffCoverage
                 ? <Badge>
                     <ObjectCoverage data={build} />
                   </Badge>
