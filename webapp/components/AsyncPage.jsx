@@ -111,19 +111,18 @@ export default class AsyncPage extends Component {
         }
       },
       error => {
-        throw error;
-        // this.setState(prevState => {
-        //   return {
-        //     [stateKey]: null,
-        //     errors: {
-        //       ...prevState.errors,
-        //       [stateKey]: error
-        //     },
-        //     remainingRequests: Math.max(prevState.remainingRequests - 1, 0),
-        //     loading: prevState.remainingRequests > 1,
-        //     error: true
-        //   };
-        // });
+        this.setState(prevState => {
+          return {
+            [stateKey]: null,
+            errors: {
+              ...prevState.errors,
+              [stateKey]: error
+            },
+            remainingRequests: Math.max(prevState.remainingRequests - 1, 0),
+            loading: prevState.remainingRequests > 1,
+            error: true
+          };
+        });
       }
     );
   }
@@ -156,7 +155,8 @@ export default class AsyncPage extends Component {
   }
 
   renderError(error) {
-    throw error;
+    throw Object.keys(this.state.errors).find();
+    // throw error;
   }
 
   renderContent() {
