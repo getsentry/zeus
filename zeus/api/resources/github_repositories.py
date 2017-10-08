@@ -36,6 +36,7 @@ class GitHubRepositoriesResource(Resource):
         except IdentityNeedsUpgrade as exc:
             return self.respond(
                 {
+                    'provider': 'github',
                     'error': 'identity_needs_upgrade',
                     'url': exc.get_upgrade_url(),
                 }, 401
@@ -88,6 +89,7 @@ class GitHubRepositoriesResource(Resource):
         except IdentityNeedsUpgrade as exc:
             return self.respond(
                 {
+                    'provider': 'github',
                     'error': 'identity_needs_upgrade',
                     'url': exc.get_upgrade_url(),
                 }, 401

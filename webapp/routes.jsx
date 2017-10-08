@@ -7,7 +7,6 @@ import BuildDetails from './pages/BuildDetails';
 import BuildDiff from './pages/BuildDiff';
 import BuildOverview from './pages/BuildOverview';
 import BuildTestList from './pages/BuildTestList';
-import Login from './pages/Login';
 import GitHubRepositoryList from './pages/GitHubRepositoryList';
 import OwnerDetails from './pages/OwnerDetails';
 import RepositoryDetails from './pages/RepositoryDetails';
@@ -19,6 +18,7 @@ import RepositoryTestList from './pages/RepositoryTestList';
 import RepositoryTestTree from './pages/RepositoryTestTree';
 import UserBuildList from './pages/UserBuildList';
 
+import Login from './components/Login';
 import NotFoundError from './components/NotFoundError';
 
 import requireAuth from './utils/requireAuth';

@@ -50,6 +50,8 @@ class GitHubCompleteView(MethodView):
         self.complete_url = complete_url
         super(GitHubCompleteView, self).__init__()
 
+    # TODO(dcramer): we dont handle the case where the User row has been deleted,
+    # but the identity still exists. It shouldn't happen.
     def get(self):
         redirect_uri = request.url
         flow = get_auth_flow(redirect_uri=redirect_uri)
@@ -88,7 +90,9 @@ class GitHubCompleteView(MethodView):
                 e['email'] for e in email_list
                 if e['verified'] and e['primary']
             ))
+
         try:
+            # we first attempt to create a new user + identity
             with db.session.begin_nested():
                 user = User(
                     email=primary_email,
@@ -103,13 +107,31 @@ class GitHubCompleteView(MethodView):
                 db.session.add(identity)
             user_id = user.id
         except IntegrityError:
+            # if that fails, assume the identity exists
             identity = Identity.query.filter(
                 Identity.external_id == str(user_data['id']),
                 Identity.provider == 'github',
             ).first()
-            identity.config = identity_config
-            db.session.add(identity)
-            user_id = identity.user_id
+
+            # and if it doesnt, attempt to find a matching user,
+            # as it means the failure above was due to that
+            if not identity:
+                user = User.query.filter(
+                    User.email == primary_email
+                ).first()
+                assert user  # this should not be possible unless we've got a race condition
+                identity = Identity(
+                    user=user,
+                    external_id=str(user_data['id']),
+                    provider='github',
+                    config=identity_config,
+                )
+                db.session.add(identity)
+                user_id = user.id
+            else:
+                identity.config = identity_config
+                db.session.add(identity)
+                user_id = identity.user_id
 
         db.session.flush()
 

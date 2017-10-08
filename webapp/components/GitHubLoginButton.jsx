@@ -1,17 +1,23 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import Modal from '../components/Modal';
+export default class GitHubLoginButton extends Component {
+  static propTypes = {
+    url: PropTypes.string,
+    text: PropTypes.string
+  };
 
-export default class Login extends Component {
+  static defaultProps = {
+    url: '/auth/github',
+    text: 'Login with GitHub'
+  };
   render() {
+    let {url, text} = this.props;
     return (
-      <Modal title="Login">
-        <p>To continue you will need to first authenticate using your GitHub account.</p>
-        <p style={{textAlign: 'center', marginBottom: 0}}>
-          <GitHubLogin href="/auth/github">Login with GitHub</GitHubLogin>
-        </p>
-      </Modal>
+      <GitHubLogin href={url}>
+        {text}
+      </GitHubLogin>
     );
   }
 }

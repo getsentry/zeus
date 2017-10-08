@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
+import idx from 'idx';
 // This is being pulled form the CDN currently
 // import Raven from 'raven-js';
 
-import Modal from './Modal';
+import IdentityNeedsUpgradeError from './IdentityNeedsUpgradeError';
+import InternalError from './InternalError';
+import Login from './Login';
 import NotFoundError from './NotFoundError';
-import {Error404} from '../errors';
+import {Error401, Error404} from '../errors';
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -26,40 +29,15 @@ export default class ErrorBoundary extends Component {
       switch (error.constructor) {
         case Error404:
           return <NotFoundError />;
+        case Error401:
+          if (idx(error, _ => _.data.error) === 'identity_needs_upgrade') {
+            return <IdentityNeedsUpgradeError url={error.data.url} />;
+          }
+          // XXX(dcramer): this works around the issue where an identity has
+          // been removed
+          return <Login />;
         default:
-          return (
-            <Modal title="Unhandled Error" subtext="500">
-              <p>We hit an unexpected error while loading the page.</p>
-              <p>The following may provide you some recourse:</p>
-              <ul>
-                <li>
-                  Wait a few seconds and{' '}
-                  <a
-                    onClick={() => {
-                      window.location.href = window.location.href;
-                    }}
-                    style={{cursor: 'pointer'}}>
-                    reload the page
-                  </a>.
-                </li>
-                <li>
-                  If you think this is a bug,{' '}
-                  <a href="http://github.com/getsentry/zeus/issues">
-                    create an issue
-                  </a>{' '}
-                  with more details.
-                </li>
-              </ul>
-              <div style={{fontSize: 0.8}}>
-                <p>
-                  {"For the curious, here's what Zeus reported:"}
-                </p>
-                <pre>
-                  {error.toString()}
-                </pre>
-              </div>
-            </Modal>
-          );
+          return <InternalError error={error} />;
       }
     } else {
       return this.props.children;

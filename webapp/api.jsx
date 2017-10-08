@@ -1,3 +1,5 @@
+import {ApiError} from './errors';
+
 export class Request {
   static UNSET = 0;
   static OPENED = 1;
@@ -35,7 +37,7 @@ export class Request {
           // responseData.xhr = xhr;
           resolve(responseData);
         } else {
-          let error = new Error(xhr.responseText);
+          let error = new ApiError(xhr.responseText, xhr.status);
           error.data = responseData;
           error.xhr = xhr;
           reject(error);

@@ -4,7 +4,7 @@ from hashlib import md5
 from typing import List
 
 from zeus.config import redis
-from zeus.exceptions import ApiError, IdentityNeedsUpgrade
+from zeus.exceptions import ApiError, ApiUnauthorized, IdentityNeedsUpgrade
 from zeus.models import Identity, Repository, User
 from zeus.utils.github import GitHubClient
 from zeus.utils.ssh import KeyPair
@@ -20,7 +20,8 @@ def get_github_client(user: User, scopes=()) -> GitHubClient:
         Identity.user_id == user.id
     ).first()
 
-    assert identity
+    if not identity:
+        raise ApiUnauthorized
 
     for scope in scopes:
         if scope not in identity.config['scopes']:

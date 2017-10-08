@@ -128,9 +128,31 @@ class GitHubRepositoryList extends AsyncPage {
   }
 
   renderBody() {
+    let {location} = this.props;
+    let query = location.query || {};
     return (
       <Flex>
         <Box flex="1" width={2 / 12} pr={15}>
+          <div style={{marginBottom: 10, fontSize: '0.8em'}}>
+            <label>
+              <input
+                type="checkbox"
+                name="private"
+                value="1"
+                checked={query.private === '1'}
+                onChange={e => {
+                  this.context.router.push({
+                    ...location,
+                    query: {
+                      ...query,
+                      private: e.target.checked ? '1' : undefined
+                    }
+                  });
+                }}
+              />{' '}
+              Include private repos
+            </label>
+          </div>
           <ul>
             <li key="_">
               <Link

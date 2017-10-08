@@ -109,9 +109,7 @@ export default class AsyncComponent extends Component {
   }
 
   renderError(error) {
-    // TODO
-    return <p style={{color: 'red'}}>Something went wrong!</p>;
-    // return <RouteError error={error} component={this} onRetry={this.remountComponent} />;
+    throw error;
   }
 
   renderContent() {

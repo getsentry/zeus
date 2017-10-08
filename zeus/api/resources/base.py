@@ -4,6 +4,7 @@ from flask.views import View
 from time import sleep
 
 from zeus import auth
+from zeus.exceptions import ApiUnauthorized
 
 from ..authentication import ApiTokenAuthentication, SessionAuthentication
 
@@ -64,6 +65,10 @@ class Resource(View):
             if isinstance(resp, Response):
                 return resp
             return self.respond(resp)
+        except ApiUnauthorized:
+            return self.respond({
+                'error': 'auth_required',
+            }, 401)
         except Exception:
             current_app.logger.exception('failed to handle api request')
             return self.error('internal server error', 500)
