@@ -161,3 +161,55 @@ def test_coverage_stats(mocker, db_session, default_source):
     assert stats['coverage.lines_uncovered'] == 60
     assert stats['coverage.diff_lines_covered'] == 10
     assert stats['coverage.diff_lines_uncovered'] == 2
+
+
+def test_test_stats(mocker, db_session, default_source):
+    auth.set_current_tenant(auth.Tenant(
+        repository_ids=[default_source.repository_id]))
+
+    build = factories.BuildFactory(source=default_source)
+    db_session.add(build)
+
+    job = factories.JobFactory(build=build, passed=True)
+    db_session.add(job)
+
+    db_session.add(factories.TestCaseFactory(
+        job=job,
+        failed=True,
+        duration=8,
+    ))
+    db_session.add(factories.TestCaseFactory(
+        job=job,
+        passed=True,
+        duration=2,
+    ))
+
+    aggregate_build_stats_for_job(job.id)
+
+    build_stats = {
+        i.name: i.value
+        for i in ItemStat.query.filter(
+            ItemStat.item_id == build.id,
+            ItemStat.name.in_([
+                'tests.count',
+                'tests.duration',
+                'tests.failures',
+            ])
+        )
+    }
+    assert build_stats['tests.count'] == 2
+    assert build_stats['tests.failures'] == 1
+    assert build_stats['tests.duration'] == 10
+
+    job_stats = {
+        i.name: i.value
+        for i in ItemStat.query.filter(
+            ItemStat.item_id == job.id,
+            ItemStat.name.in_([
+                'tests.count',
+                'tests.duration',
+                'tests.failures',
+            ])
+        )
+    }
+    assert job_stats == build_stats
