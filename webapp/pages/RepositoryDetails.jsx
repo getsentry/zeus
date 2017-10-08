@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Error404} from '../errors';
+import {ResourceNotFound} from '../errors';
 import AsyncPage from '../components/AsyncPage';
 import Content from '../components/Content';
 import Sidebar from '../components/Sidebar';
@@ -33,7 +33,7 @@ export default class RepositoryDetails extends AsyncPage {
       r => r.provider === provider && r.owner_name === ownerName && r.name === repoName
     );
     if (!state.repo) {
-      throw new Error404('Repository not found or you do not have access');
+      throw new ResourceNotFound('Repository not found or you do not have access');
     }
     return state;
   }

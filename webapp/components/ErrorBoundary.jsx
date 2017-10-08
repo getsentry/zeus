@@ -7,7 +7,7 @@ import IdentityNeedsUpgradeError from './IdentityNeedsUpgradeError';
 import InternalError from './InternalError';
 import Login from './Login';
 import NotFoundError from './NotFoundError';
-import {Error401, Error404} from '../errors';
+import {ApiError, ResourceNotFound} from '../errors';
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -32,10 +32,13 @@ export default class ErrorBoundary extends Component {
     let {error} = this.state;
     if (error) {
       switch (error.constructor) {
-        case Error404:
+        case ResourceNotFound:
           return <NotFoundError />;
-        case Error401:
-          if (idx(error, _ => _.data.error) === 'identity_needs_upgrade') {
+        case ApiError:
+          if (
+            error.code === 401 &&
+            idx(error, _ => _.data.error) === 'identity_needs_upgrade'
+          ) {
             return <IdentityNeedsUpgradeError url={error.data.url} />;
           }
           // XXX(dcramer): this works around the issue where an identity has
