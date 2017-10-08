@@ -111,19 +111,19 @@ export default class AsyncPage extends Component {
         }
       },
       error => {
-        this.setState(prevState => {
-          console.error(error);
-          return {
-            [stateKey]: null,
-            errors: {
-              ...prevState.errors,
-              [stateKey]: error
-            },
-            remainingRequests: Math.max(prevState.remainingRequests - 1, 0),
-            loading: prevState.remainingRequests > 1,
-            error: true
-          };
-        });
+        throw error;
+        // this.setState(prevState => {
+        //   return {
+        //     [stateKey]: null,
+        //     errors: {
+        //       ...prevState.errors,
+        //       [stateKey]: error
+        //     },
+        //     remainingRequests: Math.max(prevState.remainingRequests - 1, 0),
+        //     loading: prevState.remainingRequests > 1,
+        //     error: true
+        //   };
+        // });
       }
     );
   }
