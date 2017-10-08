@@ -146,8 +146,6 @@ function getEntry() {
   let entry = [];
   // We ship a few polyfills by default:
   entry.push(require.resolve('./polyfills'));
-  // Errors should be considered fatal in development
-  !isProd && entry.push(require.resolve('react-error-overlay'));
   // Finally, this is your app's code:
   // We include the app code last so that if there is a runtime error during
   // initialization
@@ -161,7 +159,7 @@ function getEntry() {
 module.exports = {
   // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
-  devtool: isProd ? 'source-map' : 'cheap-module-source-map',
+  devtool: isProd ? '#source-map' : '#cheap-module-source-map',
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
