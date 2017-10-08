@@ -42,6 +42,8 @@ def aggregate_build_stats_for_job(job_id: UUID):
         db.session.add(job)
         db.session.commit()
 
+    record_test_stats(job.id)
+
     # record any job-specific stats that might not have been taken care elsewhere
     # (we might want to move TestResult's stats here as well)
     record_failure_reasons(job)
@@ -114,6 +116,50 @@ def record_failure_reasons(job: Job):
         db.session.add(job)
 
     db.session.flush()
+
+
+def record_test_stats(job_id: UUID):
+    create_or_update(
+        ItemStat,
+        where={
+            'item_id': job_id,
+            'name': 'tests.count',
+        },
+        values={
+            'value':
+            db.session.query(func.count(TestCase.id)).filter(
+                TestCase.job_id == job_id,
+            ).as_scalar(),
+        }
+    )
+    create_or_update(
+        ItemStat,
+        where={
+            'item_id': job_id,
+            'name': 'tests.failures',
+        },
+        values={
+            'value':
+            db.session.query(func.count(TestCase.id)).filter(
+                TestCase.job_id == job_id,
+                TestCase.result == Result.failed,
+            ).as_scalar(),
+        }
+    )
+    create_or_update(
+        ItemStat,
+        where={
+            'item_id': job_id,
+            'name': 'tests.duration',
+        },
+        values={
+            'value':
+            db.session.query(func.coalesce(func.sum(TestCase.duration), 0)).filter(
+                TestCase.job_id == job_id,
+            ).as_scalar(),
+        }
+    )
+    db.session.commit()
 
 
 def record_coverage_stats(build_id: UUID):

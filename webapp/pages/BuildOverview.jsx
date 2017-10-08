@@ -6,6 +6,7 @@ import CoverageSummary from '../components/CoverageSummary';
 import JobList from '../components/JobList';
 import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
+import SectionSubheading from '../components/SectionSubheading';
 import TestList from '../components/TestList';
 
 export default class BuildJobList extends AsyncPage {
@@ -36,6 +37,14 @@ export default class BuildJobList extends AsyncPage {
   }
 
   renderBody() {
+    let failingJobs = this.state.jobList.filter(
+      job => job.result == 'failed' && !job.allow_failure
+    );
+
+    let allowedFailures = this.state.jobList.filter(
+      job => job.result == 'failed' && job.allow_failure
+    );
+    let unallowedFailures = this.state.jobList.filter(job => !job.allow_failure);
     return (
       <Section>
         {this.state.testFailures.length !== 0 &&
@@ -52,8 +61,25 @@ export default class BuildJobList extends AsyncPage {
           <CoverageSummary coverage={this.state.diffCoverage} collapsable={true} />
         </div>
         <div>
-          <SectionHeading>Jobs</SectionHeading>
-          <JobList build={this.context.build} jobList={this.state.jobList} />
+          <SectionHeading>
+            Jobs
+            {failingJobs.length
+              ? <small>
+                  {' '}&mdash; {failingJobs.length} failed
+                </small>
+              : null}
+          </SectionHeading>
+          {unallowedFailures.length
+            ? <div>
+                <JobList build={this.context.build} jobList={unallowedFailures} />
+              </div>
+            : null}
+          {allowedFailures.length
+            ? <div>
+                <SectionSubheading>Allowed Failures</SectionSubheading>
+                <JobList build={this.context.build} jobList={allowedFailures} />
+              </div>
+            : null}
         </div>
       </Section>
     );

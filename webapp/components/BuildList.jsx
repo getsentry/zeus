@@ -23,10 +23,10 @@ export default class BuildList extends Component {
               Build
             </Box>
             <Box width={1 / 12} style={{textAlign: 'center'}}>
-              Duration
+              Coverage
             </Box>
             <Box width={1 / 12} style={{textAlign: 'center'}}>
-              Coverage
+              Duration
             </Box>
             <Box width={2 / 12} style={{textAlign: 'right'}}>
               When

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import {Flex, Box} from 'grid-styled';
 
 import BuildAuthor from './BuildAuthor';
-import BuildCoverage from './BuildCoverage';
+import ObjectCoverage from './ObjectCoverage';
 import ObjectDuration from './ObjectDuration';
 import ObjectResult from './ObjectResult';
 import ResultGridRow from './ResultGridRow';
@@ -57,10 +57,10 @@ export default class BuildListItem extends Component {
               </Flex>
             </Box>
             <Box width={1 / 12} style={{textAlign: 'center'}}>
-              <ObjectDuration data={build} short={true} />
+              <ObjectCoverage data={build} />
             </Box>
             <Box width={1 / 12} style={{textAlign: 'center'}}>
-              <BuildCoverage build={build} />
+              <ObjectDuration data={build} short={true} />
             </Box>
             <Box width={2 / 12} style={{textAlign: 'right'}}>
               <TimeSince date={build.created_at} />
