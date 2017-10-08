@@ -55,7 +55,35 @@ def test_failing_tests(mocker, db_session, default_source):
 
     reasons = list(FailureReason.query.filter(FailureReason.job_id == job.id))
     assert len(reasons) == 1
-    assert reasons[0].reason == FailureReason.Code.failing_tests
+    assert reasons[0].reason == FailureReason.Reason.failing_tests
+
+
+def test_failing_tests_duplicate_reason(mocker, db_session, default_source):
+    auth.set_current_tenant(auth.Tenant(
+        repository_ids=[default_source.repository_id]))
+
+    build = factories.BuildFactory(source=default_source, in_progress=True)
+    db_session.add(build)
+
+    job = factories.JobFactory(build=build, passed=True)
+    db_session.add(job)
+
+    factories.TestCaseFactory(job=job, failed=True)
+
+    db_session.add(FailureReason(
+        reason=FailureReason.Reason.failing_tests,
+        job_id=job.id,
+        repository_id=job.repository_id,
+    ))
+
+    aggregate_build_stats_for_job(job.id)
+
+    assert job.result == Result.failed
+    assert build.result == Result.failed
+
+    reasons = list(FailureReason.query.filter(FailureReason.job_id == job.id))
+    assert len(reasons) == 1
+    assert reasons[0].reason == FailureReason.Reason.failing_tests
 
 
 def test_failure_with_allow_failure(mocker, db_session, default_source):
@@ -129,7 +157,6 @@ def test_coverage_stats(mocker, db_session, default_source):
             ])
         )
     }
-    print(stats)
     assert stats['coverage.lines_covered'] == 30
     assert stats['coverage.lines_uncovered'] == 60
     assert stats['coverage.diff_lines_covered'] == 10

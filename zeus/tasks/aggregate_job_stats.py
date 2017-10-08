@@ -1,3 +1,4 @@
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 from uuid import UUID
 
@@ -96,13 +97,17 @@ def record_failure_reasons(job: Job):
 
     if has_failures:
         any_failures = True
-        db.session.add(
-            FailureReason(
-                job_id=job.id,
-                repository_id=job.repository_id,
-                reason=FailureReason.Code.failing_tests,
-            )
-        )
+        try:
+            with db.session.begin_nested():
+                db.session.add(
+                    FailureReason(
+                        job_id=job.id,
+                        repository_id=job.repository_id,
+                        reason=FailureReason.Reason.failing_tests,
+                    )
+                )
+        except IntegrityError:
+            pass
 
     if any_failures and job.result == Result.passed:
         job.result = Result.failed
