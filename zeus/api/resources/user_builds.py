@@ -38,5 +38,5 @@ class UserBuildsResource(Resource):
                     Email.user_id == user.id
                 )
             )))
-        ).order_by(Build.number.desc())
+        ).order_by(Build.number.date_created())
         return self.paginate_with_schema(builds_schema, query)
