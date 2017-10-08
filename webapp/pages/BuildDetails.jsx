@@ -137,7 +137,7 @@ export default class BuildDetails extends AsyncPage {
               Code Coverage
               {hasDiffCoverage
                 ? <Badge>
-                    <ObjectCoverage data={build} />
+                    <ObjectCoverage data={build} diff={false} />
                   </Badge>
                 : null}
             </TabbedNavItem>
