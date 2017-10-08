@@ -16,7 +16,8 @@ import os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
-WORKSPACE_ROOT = os.environ.get('WORKSPACE_ROOT', '/usr/local/cache')
+WORKSPACE_ROOT = os.path.expanduser(os.environ.get(
+    'WORKSPACE_ROOT', '~/.zeus/'))
 
 alembic = Alembic()
 celery = Celery()
@@ -136,10 +137,9 @@ def create_app(_read_config=True, **config):
             # ZEUS_CONF=/etc/zeus.conf.py
             app.config.from_envvar('ZEUS_CONF')
         else:
-            # Look for ~/.zeus/zeus.conf.py
-            path = os.path.normpath(
-                os.path.expanduser('~/.zeus/zeus.config.py'))
-            app.config.from_pyfile(path, silent=True)
+            # Look for $WORKSPACE_ROOT/zeus.conf.py
+            app.config.from_pyfile(os.path.join(
+                WORKSPACE_ROOT, 'zeus.config.py'), silent=True)
 
     app.wsgi_app = with_health_check(app.wsgi_app)
 
