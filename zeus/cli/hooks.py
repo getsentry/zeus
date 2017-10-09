@@ -58,6 +58,7 @@ def list(provider):
 def get(hook_id):
     hook = Hook.query.unrestricted_unsafe().get(hook_id)
     click.echo('-> id           = {}'.format(str(hook.id)))
+    click.echo('-> repository   = {}'.format(hook.repository.get_full_name()))
     click.echo('-> token        = {}'.format(urlsafe_b64encode(hook.token).decode('utf-8')))
     click.echo('-> provider     = {}'.format(hook.provider))
     click.echo('-> base_path    = /hooks/{}/{}'.format(str(hook.id), hook.get_signature()))
