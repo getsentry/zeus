@@ -55,6 +55,16 @@ def list(provider):
 
 @hooks.command()
 @click.argument('hook_id', required=True)
+def get(hook_id):
+    hook = Hook.query.unrestricted_unsafe().get(hook_id)
+    click.echo('-> id           = {}'.format(str(hook.id)))
+    click.echo('-> token        = {}'.format(urlsafe_b64encode(hook.token).decode('utf-8')))
+    click.echo('-> provider     = {}'.format(hook.provider))
+    click.echo('-> base_path    = /hooks/{}/{}'.format(str(hook.id), hook.get_signature()))
+
+
+@hooks.command()
+@click.argument('hook_id', required=True)
 @click.option(
     '--yes', prompt='Are you sure you wish to remove this hook?', is_flag=True, required=True
 )
