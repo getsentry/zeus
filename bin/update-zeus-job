@@ -8,7 +8,6 @@ else
     BUILD_NAME=""
 fi
 
-# TODO(dcramer): pass URL
 curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER \
     -X POST \
     -H 'Content-Type: application/json' \
@@ -17,4 +16,4 @@ curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER \
 curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER/jobs/$TRAVIS_JOB_NUMBER \
     -X POST \
     -H 'Content-Type: application/json' \
-    -d "{\"status\": \"$1\", \"result\": \"$2\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/jobs/${TRAVIS_JOB_ID}\", \"allow_failure\": ${TRAVIS_ALLOW_FAILURE}}"
+    -d "{\"label\": \"${TEST_SUITE}\", \"status\": \"$1\", \"result\": \"$2\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/jobs/${TRAVIS_JOB_ID}\", \"allow_failure\": ${TRAVIS_ALLOW_FAILURE}}"
