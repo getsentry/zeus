@@ -1,7 +1,4 @@
 #!/bin/bash -eu
-
-COMMIT_SUBJECT=`echo "${TRAVIS_COMMIT_MESSAGE}" | head -1`
-
 if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
     BUILD_NAME="PR #${TRAVIS_PULL_REQUEST}"
 else
