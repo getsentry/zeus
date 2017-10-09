@@ -42,11 +42,11 @@ def aggregate_build_stats_for_job(job_id: UUID):
         db.session.add(job)
         db.session.commit()
 
-    record_test_stats(job.id)
-
     # record any job-specific stats that might not have been taken care elsewhere
     # (we might want to move TestResult's stats here as well)
-    record_failure_reasons(job)
+    if job.status == Status.finished:
+        record_test_stats(job.id)
+        record_failure_reasons(job)
 
     lock_key = 'aggstatsbuild:{build_id}'.format(
         build_id=job.build_id.hex,
@@ -159,7 +159,7 @@ def record_test_stats(job_id: UUID):
             ).as_scalar(),
         }
     )
-    db.session.commit()
+    db.session.flush()
 
 
 def record_coverage_stats(build_id: UUID):

@@ -44,14 +44,5 @@ def process_artifact(artifact_id, manager=None, **kwargs):
     db.session.add(artifact)
     db.session.commit()
 
-    # test if we're done processing artifacts
-    has_pending = db.session.query(
-        Artifact.query.filter(
-            Artifact.status != Status.finished,
-            Artifact.job_id == job.id,
-        ).exists()
-    ).scalar()
-    if has_pending:
-        return
-    if job.status in (Status.finished, Status.collecting_results):
-        aggregate_build_stats_for_job.delay(job_id=job.id)
+    # we always aggregate results to avoid locking here
+    aggregate_build_stats_for_job.delay(job_id=job.id)
