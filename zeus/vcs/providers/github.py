@@ -44,11 +44,11 @@ class GitHubRepositoryProvider(RepositoryProvider):
     def get_repos_for_owner(self, user: User, owner_name: str,
                             include_private_repos=False) -> List[dict]:
         if include_private_repos:
-            github, _ = get_github_client(user, scopes=['repo'])
+            github, identity = get_github_client(user, scopes=['repo'])
         else:
-            github, _ = get_github_client(user)
+            github, identity = get_github_client(user)
 
-        cache = GitHubCache(user=user, client=github)
+        cache = GitHubCache(user=user, client=github, scopes=identity.scopes)
         return [
             {
                 'id': r['id'],
@@ -101,16 +101,18 @@ class GitHubRepositoryProvider(RepositoryProvider):
 
 
 class GitHubCache(object):
-    def __init__(self, user: User, client: GitHubClient=None):
+    def __init__(self, user: User, client: GitHubClient=None, scopes=()):
         self.user = user
+        self.scopes = scopes
         if client is None:
             self.client = self.get_github_client(user)
         else:
             self.client = client
 
     def get_repos(self, owner, no_cache=False):
-        cache_key = 'gh:2:repos:{}:{}'.format(
+        cache_key = 'gh:2:repos:{}:{}:{}'.format(
             md5(self.client.token.encode('utf')).hexdigest(),
+            md5(b','.join(s.encode('utf') for s in self.scopes)).hexdigest(),
             md5(owner.encode('utf-8')).hexdigest() if owner else '',
         )
         if no_cache:
