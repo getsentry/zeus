@@ -63,7 +63,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
             repo_data = github.get(
                 '/repos/{}/{}'.format(owner_name, repo_name))
         except ApiError as exc:
-            if exc.code == 404 and 'repo' not in identity:
+            if exc.code == 404 and 'repo' not in identity.config['scopes']:
                 raise IdentityNeedsUpgrade(
                     scope='repo',
                     identity=identity,
