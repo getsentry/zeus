@@ -5,6 +5,7 @@ import sys
 
 from tempfile import NamedTemporaryFile
 
+from zeus import auth
 from zeus.config import db
 from zeus.models import ItemOption, Repository
 
@@ -15,10 +16,14 @@ from .base import cli
 @click.argument('repository-url', envvar='SSH_REPO', required=True)
 @click.argument('args', nargs=-1, type=click.UNPROCESSED)
 def ssh_connect(repository_url, args):
-    repo = Repository.query.filter_by(url=repository_url).first()
+    repo = Repository.query.unrestricted_unsafe().filter(
+        Repository.url == repository_url,
+    ).first()
     if not repo:
         click.echo('Unable to find repository', err=True)
         sys.exit(1)
+
+    auth.set_current_tenant(auth.Tenant(repository_ids=[repo.id]))
 
     options = dict(
         db.session.query(ItemOption.name, ItemOption.value).filter(
