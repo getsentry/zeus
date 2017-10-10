@@ -56,15 +56,11 @@ def ssh_connect(repository_url, args):
 
     command.extend(args)
 
-    try:
-        exit_code = subprocess.call(
-            command,
-            cwd=os.getcwd(),
-            env=os.environ,
-            stdout=sys.stdout,
-            stderr=sys.stderr,
-        )
-    finally:
-        if tmp_file:
-            os.unlink(tmp_file.name)
+    exit_code = subprocess.call(
+        command,
+        cwd=os.getcwd(),
+        env=os.environ,
+        stdout=sys.stdout,
+        stderr=sys.stderr,
+    )
     sys.exit(exit_code)
