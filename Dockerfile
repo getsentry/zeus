@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.6-slim
+FROM python:3.6
 
 # add our user and group first to make sure their IDs get assigned consistently
 RUN groupadd -r zeus && useradd -r -m -g zeus zeus
