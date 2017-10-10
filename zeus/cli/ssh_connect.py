@@ -39,18 +39,18 @@ def ssh_connect(repository_url, args):
         'ssh',
         # Not supported in all ssh client versions
         # '-o UserAuthorizedKeysFile=/dev/null',
-        '-o LogLevel=ERROR',
-        '-o StrictHostKeyChecking=no',
-        '-o UserKnownHostsFile=/dev/null',
+        '-oLogLevel=ERROR',
+        '-oStrictHostKeyChecking=no',
+        '-oUserKnownHostsFile=/dev/null',
     ]
     tmp_file = None
     if options.get('auth.private-key'):
         tmp_file = NamedTemporaryFile(delete=False)
         tmp_file.write(options['auth.private-key'].encode('utf-8'))
         tmp_file.close()
-        command.append('-i {0}'.format(tmp_file.name))
+        command.append('-i{0}'.format(tmp_file.name))
     elif options.get('auth.private-key-file'):
-        command.append('-i {0}'.format(options['auth.private-key-file']))
+        command.append('-i{0}'.format(options['auth.private-key-file']))
 
     command.append('--')
 
