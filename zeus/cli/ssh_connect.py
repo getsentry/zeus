@@ -43,11 +43,11 @@ def ssh_connect(repository_url, args):
         '-o StrictHostKeyChecking=no',
         '-o UserKnownHostsFile=/dev/null',
     ]
+    tmp_file = None
     if options.get('auth.private-key'):
-        f = NamedTemporaryFile()
-        f.write(options['auth.private-key'].encode('utf-8'))
-        f.close()
-        command.append('-i {0}'.format(f.name))
+        tmp_file = NamedTemporaryFile()
+        tmp_file.write(options['auth.private-key'].encode('utf-8'))
+        command.append('-i {0}'.format(tmp_file.name))
     elif options.get('auth.private-key-file'):
         command.append('-i {0}'.format(options['auth.private-key-file']))
 
@@ -55,12 +55,15 @@ def ssh_connect(repository_url, args):
 
     command.extend(args)
 
-    sys.exit(
-        subprocess.call(
+    try:
+        exit_code = subprocess.call(
             command,
             cwd=os.getcwd(),
             env=os.environ,
             stdout=sys.stdout,
             stderr=sys.stderr,
         )
-    )
+    finally:
+        if tmp_file:
+            tmp_file.close()
+    sys.exit(exit_code)
