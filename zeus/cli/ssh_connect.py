@@ -45,8 +45,9 @@ def ssh_connect(repository_url, args):
     ]
     tmp_file = None
     if options.get('auth.private-key'):
-        tmp_file = NamedTemporaryFile()
+        tmp_file = NamedTemporaryFile(delete=False)
         tmp_file.write(options['auth.private-key'].encode('utf-8'))
+        tmp_file.close()
         command.append('-i {0}'.format(tmp_file.name))
     elif options.get('auth.private-key-file'):
         command.append('-i {0}'.format(options['auth.private-key-file']))
@@ -65,5 +66,5 @@ def ssh_connect(repository_url, args):
         )
     finally:
         if tmp_file:
-            tmp_file.close()
+            os.unlink(tmp_file.name)
     sys.exit(exit_code)
