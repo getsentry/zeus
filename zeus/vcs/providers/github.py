@@ -48,7 +48,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
         else:
             github, identity = get_github_client(user)
 
-        cache = GitHubCache(user=user, client=github, scopes=identity.scopes)
+        cache = GitHubCache(user=user, client=github, scopes=identity.config['scopes'])
         return [
             {
                 'id': r['id'],
