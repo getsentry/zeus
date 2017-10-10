@@ -37,8 +37,9 @@ class BuildJobsResource(BaseBuildResource):
         if job.status != Status.queued and not job.date_started:
             job.date_started = timezone.now()
 
+        db.session.add(job)
+
         try:
-            db.session.add(job)
             db.session.commit()
         except IntegrityError:
             db.session.rollback()

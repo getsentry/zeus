@@ -126,8 +126,10 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         if not source.patch_id:
             if not build.label:
                 build.label = source.revision.message.split('\n')[0]
+
+        db.session.add(build)
+
         try:
-            db.session.add(build)
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
