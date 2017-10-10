@@ -16,7 +16,7 @@ export default class ObjectCoverage extends Component {
     if (data.status !== 'finished') return '';
     if (!data.stats.coverage) return '';
     let covStats = data.stats.coverage;
-    let linesCovered = diff ? covStats.diff_lines_covered : covStats.lines_uncovered,
+    let linesCovered = diff ? covStats.diff_lines_covered : covStats.lines_covered,
       linesUncovered = diff ? covStats.diff_lines_uncovered : covStats.lines_uncovered;
     let totalLines = linesCovered + linesUncovered;
     if (totalLines === 0) return '';
