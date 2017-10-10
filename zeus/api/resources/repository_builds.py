@@ -1,4 +1,5 @@
 from flask import current_app, request
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
 
 from zeus import auth
@@ -125,7 +126,11 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         if not source.patch_id:
             if not build.label:
                 build.label = source.revision.message.split('\n')[0]
-        db.session.add(build)
-        db.session.commit()
+        try:
+            db.session.add(build)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            return self.respond(status=422)
 
         return self.respond_with_schema(build_schema, build)

@@ -65,7 +65,7 @@ class BuildFactory(ModelFactory):
         travis = factory.Trait(
             provider='travis-ci',
             external_id=factory.LazyAttribute(
-                lambda o: randint(10000, 999999)),
+                lambda o: str(randint(10000, 999999))),
             url=factory.LazyAttribute(lambda o: 'https://travis-ci.org/{}/{}/builds/{}'.format(
                 o.repository.owner_name,
                 o.repository.name,
