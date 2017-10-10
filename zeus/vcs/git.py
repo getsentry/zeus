@@ -35,10 +35,15 @@ class GitVcs(Vcs):
 
     @property
     def remote_url(self) -> str:
-        if self.url.startswith(('ssh:', 'http:', 'https:')):
+        if self.url.startswith('ssh:') and not self.username:
+            username = 'git'
+        else:
+            username = self.username
+        if username and self.url.startswith(('ssh:', 'http:', 'https:')):
             parsed = urlparse(self.url)
             url = '%s://%s@%s/%s' % (
-                parsed.scheme, parsed.username or self.username or 'git',
+                parsed.scheme,
+                parsed.username or username,
                 parsed.hostname + (':%s' % (parsed.port, )
                                    if parsed.port else ''), parsed.path.lstrip('/'),
             )
