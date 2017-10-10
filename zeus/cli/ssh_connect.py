@@ -14,8 +14,8 @@ from .base import cli
 
 @cli.command('ssh-connect')
 @click.argument('args', nargs=-1, type=click.UNPROCESSED)
-@click.argument('--repository', envvar='ZEUS_SSH_REPO', required=True)
-def ssh_connect(repository, args):
+@click.option('--repository', envvar='ZEUS_SSH_REPO', required=True)
+def ssh_connect(args, repository):
     if '/' in repository:
         r_provider, r_owner, r_name = repository.split('/', 2)
         repo = Repository.query.unrestricted_unsafe().filter(
