@@ -19,9 +19,9 @@ def repos():
 @click.option('--backend', default='git', type=click.Choice(['git']))
 @click.option('--url')
 @click.option('--active/--inactive', default=True)
-def add(repository_full_name, url, backend, active):
+def add(repository, url, backend, active):
     raise NotImplementedError
-    provider, owner_name, repo_name = repository_full_name.split('/', 2)
+    provider, owner_name, repo_name = repository.split('/', 2)
     repo = Repository(
         url=url,
         owner_name=slugify(owner_name),
@@ -40,8 +40,8 @@ def add(repository_full_name, url, backend, active):
 
 @repos.command()
 @click.argument('repository', required=True)
-def sync(repository_full_name):
-    provider, owner_name, repo_name = repository_full_name.split('/', 2)
+def sync(repository):
+    provider, owner_name, repo_name = repository.split('/', 2)
     repo = Repository.query.unrestricted_unsafe().filter(
         Repository.provider == RepositoryProvider(provider),
         Repository.owner_name == owner_name,
@@ -58,8 +58,8 @@ def access():
 @access.command('add')
 @click.argument('repository', required=True)
 @click.argument('email', required=True)
-def access_add(repository_full_name, email):
-    provider, owner_name, repo_name = repository_full_name.split('/', 2)
+def access_add(repository, email):
+    provider, owner_name, repo_name = repository.split('/', 2)
     repo = Repository.query.unrestricted_unsafe().filter(
         Repository.provider == RepositoryProvider(provider),
         Repository.owner_name == owner_name,
