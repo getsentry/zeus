@@ -95,6 +95,8 @@ class GitHubRepositoriesResource(Resource):
                 }, 401
             )
 
+        # TODO(dcramer): we should lock on enabling a repo to avoid generating
+        # duplicate keys
         try:
             with db.session.begin_nested():
                 # bind various github specific attributes
