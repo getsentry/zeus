@@ -5,7 +5,8 @@ from zeus.models import Repository, RepositoryAccess, RepositoryBackend, Reposit
 REPO_DETAILS_RESPONSE = """{
     "id": 1,
     "full_name": "getsentry/zeus",
-    "clone_url": "https://github.com/getsentry/zeus.git"
+    "clone_url": "https://github.com/getsentry/zeus.git",
+    "ssh_url": "git@github.com:getsentry/zeus.git"
 }"""
 
 REPO_LIST_RESPONSE = """[{
@@ -47,7 +48,7 @@ def test_new_repository_github(client, mocker, default_login, default_user, defa
     assert data['id']
 
     repo = Repository.query.unrestricted_unsafe().get(data['id'])
-    assert repo.url == 'https://github.com/getsentry/zeus.git'
+    assert repo.url == 'git@github.com:getsentry/zeus.git'
     assert repo.backend == RepositoryBackend.git
     assert repo.provider == RepositoryProvider.github
     assert repo.external_id == '1'

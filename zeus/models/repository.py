@@ -125,6 +125,7 @@ class Repository(StandardAttributes, db.Model):
 
         kwargs = {
             'path': os.path.join(current_app.config['REPO_ROOT'], self.id.hex),
+            'id': self.id.hex,
             'url': self.url,
             'username': options.get('auth.username'),
         }

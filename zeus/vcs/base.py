@@ -57,7 +57,8 @@ class Vcs(object):
                      os.pardir, 'bin', 'ssh-connect')
     )
 
-    def __init__(self, path, url, username=None):
+    def __init__(self, id: str, path: str, url: str, username: str=None):
+        self.id = id
         self.path = path
         self.url = url
         self.username = username
@@ -65,10 +66,10 @@ class Vcs(object):
         self._path_exists = None
         self._updated = False
 
-    def get_default_env(self):
+    def get_default_env(self) -> dict:
         return {}
 
-    def run(self, *args, **kwargs):
+    def run(self, *args, **kwargs) -> str:
         if self.exists():
             kwargs.setdefault('cwd', self.path)
 
@@ -92,7 +93,7 @@ class Vcs(object):
             raise CommandError(args[0], proc.returncode, stdout, stderr)
         return stdout.decode('utf-8')
 
-    def exists(self):
+    def exists(self) -> bool:
         return os.path.exists(self.path)
 
     def clone(self):
@@ -111,7 +112,7 @@ class Vcs(object):
             self.update()
         self._updated = True
 
-    def log(self, parent=None, branch=None, author=None, offset=0, limit=100):
+    def log(self, parent: str=None, branch: str=None, author: str=None, offset=0, limit=100):
         """ Gets the commit log for the repository.
 
         Only one of parent or branch can be specified for restricting searches.
@@ -133,13 +134,13 @@ class Vcs(object):
         """
         raise NotImplementedError
 
-    def export(self, id):
+    def export(self, id: str):
         raise NotImplementedError
 
-    def get_default_revision(self):
+    def get_default_revision(self) -> str:
         raise NotImplementedError
 
-    def is_child_parent(self, child_in_question, parent_in_question):
+    def is_child_parent(self, child_in_question, parent_in_question) -> bool:
         raise NotImplementedError
 
     def get_known_branches(self):
