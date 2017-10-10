@@ -33,20 +33,24 @@ def aggregate_build_stats_for_job(job_id: UUID):
 
     auth.set_current_tenant(auth.Tenant(repository_ids=[job.repository_id]))
 
-    # we need to handle the race between when the mutations were made to <Job> and
-    # when the only remaining artifact may have finished processing
-    if job.status == Status.collecting_results and not has_unprocessed_artifacts(job.id):
-        job.status = Status.finished
-        if not job.date_finished:
-            job.date_finished = timezone.now()
-        db.session.add(job)
-        db.session.commit()
+    lock_key = 'job:{job_id}'.format(
+        job_id=job.id.hex,
+    )
+    with redis.lock(lock_key):
+        # we need to handle the race between when the mutations were made to <Job> and
+        # when the only remaining artifact may have finished processing
+        if job.status == Status.collecting_results and not has_unprocessed_artifacts(job.id):
+            job.status = Status.finished
+            if not job.date_finished:
+                job.date_finished = timezone.now()
+            db.session.add(job)
+            db.session.commit()
 
-    # record any job-specific stats that might not have been taken care elsewhere
-    # (we might want to move TestResult's stats here as well)
-    if job.status == Status.finished:
-        record_test_stats(job.id)
-        record_failure_reasons(job)
+        # record any job-specific stats that might not have been taken care elsewhere
+        # (we might want to move TestResult's stats here as well)
+        if job.status == Status.finished:
+            record_test_stats(job.id)
+            record_failure_reasons(job)
 
     lock_key = 'aggstatsbuild:{build_id}'.format(
         build_id=job.build_id.hex,
