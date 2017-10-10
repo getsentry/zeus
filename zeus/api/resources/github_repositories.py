@@ -2,7 +2,7 @@ from flask import request
 from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
-from zeus.config import db
+from zeus.config import db, redis
 from zeus.exceptions import IdentityNeedsUpgrade
 from zeus.models import (
     ItemOption, Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider,
@@ -95,53 +95,57 @@ class GitHubRepositoriesResource(Resource):
                 }, 401
             )
 
-        # TODO(dcramer): we should lock on enabling a repo to avoid generating
-        # duplicate keys
-        try:
-            with db.session.begin_nested():
-                # bind various github specific attributes
-                repo = Repository(
-                    backend=RepositoryBackend.git,
-                    provider=RepositoryProvider.github,
-                    status=RepositoryStatus.active,
-                    external_id=str(repo_data['id']),
+        lock_key = 'repo:{provider}/{owner_name}/{repo_name}'.format(
+            provider='github',
+            owner_name=owner_name,
+            repo_name=repo_name,
+        )
+        with redis.lock(lock_key):
+            try:
+                with db.session.begin_nested():
+                    # bind various github specific attributes
+                    repo = Repository(
+                        backend=RepositoryBackend.git,
+                        provider=RepositoryProvider.github,
+                        status=RepositoryStatus.active,
+                        external_id=str(repo_data['id']),
+                        owner_name=owner_name,
+                        name=repo_name,
+                        url=repo_data['url'],
+                        data=repo_data['config'],
+                    )
+                    db.session.add(repo)
+                    db.session.flush()
+            except IntegrityError:
+                repo = Repository.query.unrestricted_unsafe().filter(
+                    Repository.provider == RepositoryProvider.github,
+                    Repository.external_id == str(repo['id']),
+                ).first()
+                # it's possible to get here if the "full name" already exists
+                assert repo
+            else:
+                # generate a new private key for use on github
+                key = ssh.generate_key()
+                db.session.add(
+                    ItemOption(
+                        item_id=repo.id,
+                        name='auth.private-key',
+                        value=key.private_key,
+                    )
+                )
+
+                # register key with github
+                provider.add_key(
+                    user=user,
+                    repo_name=repo_name,
                     owner_name=owner_name,
-                    name=repo_name,
-                    url=repo_data['url'],
-                    data=repo_data['config'],
+                    key=key,
                 )
-                db.session.add(repo)
-                db.session.flush()
-        except IntegrityError:
-            repo = Repository.query.unrestricted_unsafe().filter(
-                Repository.provider == RepositoryProvider.github,
-                Repository.external_id == str(repo['id']),
-            ).first()
-            # it's possible to get here if the "full name" already exists
-            assert repo
-        else:
-            # generate a new private key for use on github
-            key = ssh.generate_key()
-            db.session.add(
-                ItemOption(
-                    item_id=repo.id,
-                    name='auth.private-key',
-                    value=key.private_key,
-                )
-            )
 
-            # register key with github
-            provider.add_key(
-                user=user,
-                repo_name=repo_name,
-                owner_name=owner_name,
-                key=key,
-            )
+                # we need to commit before firing off the task
+                db.session.commit()
 
-            # we need to commit before firing off the task
-            db.session.commit()
-
-            import_repo.delay(repo_id=repo.id)
+                import_repo.delay(repo_id=repo.id)
 
         try:
             with db.session.begin_nested():
