@@ -25,18 +25,19 @@ def aggregate_build_stats_for_job(job_id: UUID):
     This should generally be fired upon a job's completion, or
     alternatively it can be used to repair aggregate data.
     """
-    job = Job.query.unrestricted_unsafe().with_for_update().filter(
-        Job.id == job_id,
-    ).first()
-    if not job:
-        raise ValueError
-
-    auth.set_current_tenant(auth.Tenant(repository_ids=[job.repository_id]))
-
     lock_key = 'job:{job_id}'.format(
-        job_id=job.id.hex,
+        job_id=job_id,
     )
     with redis.lock(lock_key):
+        job = Job.query.unrestricted_unsafe().with_for_update().filter(
+            Job.id == job_id,
+        ).first()
+        if not job:
+            raise ValueError
+
+        auth.set_current_tenant(auth.Tenant(
+            repository_ids=[job.repository_id]))
+
         # we need to handle the race between when the mutations were made to <Job> and
         # when the only remaining artifact may have finished processing
         if job.status == Status.collecting_results and not has_unprocessed_artifacts(job.id):
