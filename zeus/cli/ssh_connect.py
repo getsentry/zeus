@@ -7,18 +7,24 @@ from tempfile import NamedTemporaryFile
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import ItemOption, Repository
+from zeus.models import ItemOption, Repository, RepositoryProvider
 
 from .base import cli
 
 
 @cli.command('ssh-connect')
-@click.argument('repository-url', envvar='SSH_REPO', required=True)
 @click.argument('args', nargs=-1, type=click.UNPROCESSED)
-def ssh_connect(repository_url, args):
-    repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.url == repository_url,
-    ).first()
+@click.argument('--repository', envvar='ZEUS_SSH_REPO', required=True)
+def ssh_connect(repository, args):
+    if '/' in repository:
+        r_provider, r_owner, r_name = repository.split('/', 2)
+        repo = Repository.query.unrestricted_unsafe().filter(
+            Repository.provider == RepositoryProvider(r_provider),
+            Repository.owner_name == r_owner,
+            Repository.name == r_name,
+        ).first()
+    else:
+        repo = Repository.query.unrestricted_unsafe().get(repository)
     if not repo:
         click.echo('Unable to find repository', err=True)
         sys.exit(1)
@@ -38,7 +44,7 @@ def ssh_connect(repository_url, args):
     command = [
         'ssh',
         # Not supported in all ssh client versions
-        # '-o UserAuthorizedKeysFile=/dev/null',
+        # '-oUserAuthorizedKeysFile=/dev/null',
         '-oLogLevel=ERROR',
         '-oStrictHostKeyChecking=no',
         '-oUserKnownHostsFile=/dev/null',

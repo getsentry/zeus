@@ -17,7 +17,8 @@ class CommandError(Exception):
 
     def __str__(self):
         return '%s returned %d:\nSTDOUT: %r\nSTDERR: %r' % (
-            self.cmd, self.retcode, self.stdout.decode('utf-8'), self.stderr.decode('utf-8')
+            self.cmd, self.retcode, self.stdout.decode(
+                'utf-8'), self.stderr.decode('utf-8')
         )
 
 
@@ -52,7 +53,8 @@ class BufferParser(object):
 
 class Vcs(object):
     ssh_connect_path = os.path.realpath(
-        os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 'bin', 'ssh-connect')
+        os.path.join(os.path.dirname(__file__), os.pardir,
+                     os.pardir, 'bin', 'ssh-connect')
     )
 
     def __init__(self, path, url, username=None):
@@ -75,7 +77,7 @@ class Vcs(object):
         for key, value in self.get_default_env().items():
             env.setdefault(key, value)
 
-        env.setdefault('ZEUS_SSH_REPO', self.url)
+        env.setdefault('ZEUS_SSH_REPO', self.id)
 
         for key, value in kwargs.pop('env', {}):
             env[key] = value
