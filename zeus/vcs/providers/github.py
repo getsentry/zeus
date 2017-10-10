@@ -48,7 +48,8 @@ class GitHubRepositoryProvider(RepositoryProvider):
         else:
             github, identity = get_github_client(user)
 
-        cache = GitHubCache(user=user, client=github, scopes=identity.config['scopes'])
+        cache = GitHubCache(user=user, client=github,
+                            scopes=identity.config['scopes'])
         return [
             {
                 'id': r['id'],
@@ -74,7 +75,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
             'id': repo_data['id'],
             'owner_name': owner_name,
             'name': repo_name,
-            'url': repo_data['clone_url'],
+            'url': repo_data['ssh_url'],
             'config': {
                 'full_name': repo_data['full_name']
             }
