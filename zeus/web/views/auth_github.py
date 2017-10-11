@@ -72,7 +72,6 @@ class GitHubCompleteView(MethodView):
         identity_config = {
             'access_token': oauth_response.access_token,
             'refresh_token': oauth_response.refresh_token,
-            'scopes': scopes,
             'login': user_data['login'],
         }
 
@@ -102,6 +101,7 @@ class GitHubCompleteView(MethodView):
                     user=user,
                     external_id=str(user_data['id']),
                     provider='github',
+                    scopes=scopes,
                     config=identity_config,
                 )
                 db.session.add(identity)
@@ -124,12 +124,14 @@ class GitHubCompleteView(MethodView):
                     user=user,
                     external_id=str(user_data['id']),
                     provider='github',
+                    scopes=scopes,
                     config=identity_config,
                 )
                 db.session.add(identity)
                 user_id = user.id
             else:
                 identity.config = identity_config
+                identity.scopes = scopes
                 db.session.add(identity)
                 user_id = identity.user_id
 
