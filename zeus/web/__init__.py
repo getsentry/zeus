@@ -20,7 +20,7 @@ app.add_url_rule(
 )
 app.add_url_rule(
     '/auth/github/complete',
-    view_func=v.GitHubCompleteView.as_view('github-complete', complete_url='web.index')
+    view_func=v.GitHubCompleteView.as_view('github-complete')
 )
 app.add_url_rule(
     '/hooks/<hook_id>/<signature>/builds/<build_xid>', view_func=h.BuildHook.as_view('build-hook')
