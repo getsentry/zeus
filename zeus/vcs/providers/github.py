@@ -24,7 +24,7 @@ def get_github_client(user: User, scopes=()) -> GitHubClient:
         raise ApiUnauthorized
 
     for scope in scopes:
-        if scope not in identity.config['scopes']:
+        if scope not in identity.scopes:
             raise IdentityNeedsUpgrade(
                 scope=scope,
                 identity=identity,
@@ -49,7 +49,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
             github, identity = get_github_client(user)
 
         cache = GitHubCache(user=user, client=github,
-                            scopes=identity.config['scopes'])
+                            scopes=identity.scopes)
         return [
             {
                 'id': r['id'],
@@ -63,7 +63,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
             repo_data = github.get(
                 '/repos/{}/{}'.format(owner_name, repo_name))
         except ApiError as exc:
-            if exc.code == 404 and 'repo' not in identity.config['scopes']:
+            if exc.code == 404 and 'repo' not in identity.scopes:
                 raise IdentityNeedsUpgrade(
                     scope='repo',
                     identity=identity,

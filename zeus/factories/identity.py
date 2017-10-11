@@ -18,19 +18,19 @@ class IdentityFactory(ModelFactory):
     class Params:
         github = factory.Trait(
             provider='github',
+            scopes=['user:email', 'read:org', 'repo'],
             config={
                 'access_token': 'access-token',
                 'refresh_token': 'refresh-token',
-                'scopes': ['user:email', 'read:org', 'repo'],
                 'login': 'test',
             }
         )
         github_barebones = factory.Trait(
             provider='github',
+            scopes=['user:email', 'read:org'],
             config={
                 'access_token': 'access-token',
                 'refresh_token': 'refresh-token',
-                'scopes': ['user:email', 'read:org'],
                 'login': 'test',
             }
         )
