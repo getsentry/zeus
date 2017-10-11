@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import current_app
 from oauth2client.client import OAuth2Credentials
+from urllib.parse import parse_qs
 
 from zeus import factories
 from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI
@@ -10,9 +11,14 @@ from zeus.models import Email, Identity, RepositoryAccess, User
 def test_login(client):
     resp = client.get('/auth/github')
     assert resp.status_code == 302
-    assert resp.headers['Location'] == \
-        '{}?client_id=github.client-id&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2Fgithub%2Fcomplete&scope=user%3Aemail%2Cread%3Aorg&access_type=offline&response_type=code'.format(
-            GITHUB_AUTH_URI)
+    location, querystring = resp.headers['Location'].split('?', 1)
+    assert location == GITHUB_AUTH_URI
+    qs = parse_qs(querystring)
+    assert qs['client_id'] == ['github.client-id']
+    assert qs['redirect_uri'] == ['http://localhost/auth/github/complete']
+    assert qs['access_type'] == ['offline']
+    assert qs['response_type'] == ['code']
+    assert sorted(qs['scope'][0].split(',')) == ['read:org', 'user:email']
 
 
 def test_login_complete(client, db_session, mocker, responses):
@@ -75,11 +81,11 @@ def test_login_complete(client, db_session, mocker, responses):
     assert identity
     assert identity.provider == 'github'
     assert identity.external_id == '1'
+    assert identity.scopes == ['user:email', 'read:org']
     assert identity.config == {
         'access_token': access_token,
         'refresh_token': refresh_token,
         'login': 'test',
-        'scopes': ['user:email', 'read:org'],
     }
 
     emails = {
@@ -224,8 +230,8 @@ def test_login_complete_automatic_repo_access(client, mocker, db_session, respon
         'access_token': access_token,
         'refresh_token': refresh_token,
         'login': 'test',
-        'scopes': ['user:email', 'read:org'],
     }
+    assert identity.scopes == ['user:email', 'read:org']
 
     assert db_session.query(
         RepositoryAccess.query.filter(
@@ -297,8 +303,8 @@ def test_login_complete_existing_user_no_identity(client, db_session, mocker, re
         'access_token': access_token,
         'refresh_token': refresh_token,
         'login': 'test',
-        'scopes': ['user:email', 'read:org'],
     }
+    assert identity.scopes == ['user:email', 'read:org']
 
     emails = {
         r[0]: r[1]
@@ -378,8 +384,8 @@ def test_login_complete_existing_identity(client, db_session, mocker, responses)
         'access_token': access_token,
         'refresh_token': refresh_token,
         'login': 'test',
-        'scopes': ['user:email', 'read:org'],
     }
+    assert identity.scopes == ['user:email', 'read:org']
 
     emails = {
         r[0]: r[1]
