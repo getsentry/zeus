@@ -1,7 +1,8 @@
 from cached_property import cached_property
 from datetime import datetime
-from flask import current_app, g, session
+from flask import current_app, g, request, session
 from typing import List, Optional
+from urllib.parse import urlparse, urljoin
 
 from zeus.config import db
 from zeus.models import ApiToken, ApiTokenRepositoryAccess, RepositoryAccess, User
@@ -135,3 +136,32 @@ def get_current_tenant() -> Tenant:
         rv = get_tenant_from_request()
         set_current_tenant(rv)
     return rv
+
+
+def is_safe_url(target: str) -> bool:
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return (
+        test_url.scheme in ('http', 'https') and
+        ref_url.netloc == test_url.netloc
+    )
+
+
+def get_redirect_target(clear=True) -> str:
+    if clear:
+        session_target = session.pop('next', None)
+    else:
+        session_target = session.get('next')
+
+    for target in request.values.get('next'), session_target:
+        if not target:
+            continue
+        if is_safe_url(target):
+            return target
+
+
+def bind_redirect_target(target: str=None):
+    if not target:
+        target = request.values.get('next') or request.referrer
+    if target and is_safe_url(target):
+        session['next'] = target

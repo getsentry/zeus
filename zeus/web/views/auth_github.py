@@ -39,6 +39,7 @@ class GitHubAuthView(MethodView):
         super(GitHubAuthView, self).__init__()
 
     def get(self):
+        auth.bind_redirect_target()
         redirect_uri = url_for(self.authorized_url, _external=True)
         flow = get_auth_flow(redirect_uri=redirect_uri, scopes=self.scopes)
         auth_uri = flow.step1_get_authorize_url()
@@ -46,10 +47,6 @@ class GitHubAuthView(MethodView):
 
 
 class GitHubCompleteView(MethodView):
-    def __init__(self, complete_url):
-        self.complete_url = complete_url
-        super(GitHubCompleteView, self).__init__()
-
     # TODO(dcramer): we dont handle the case where the User row has been deleted,
     # but the identity still exists. It shouldn't happen.
     def get(self):
@@ -159,7 +156,7 @@ class GitHubCompleteView(MethodView):
         user = auth.get_current_user()
         grant_access_to_existing_repos(user)
 
-        return redirect(url_for(self.complete_url))
+        return redirect(auth.get_redirect_target(clear=True) or '/')
 
 
 def grant_access_to_existing_repos(user):
