@@ -105,8 +105,9 @@ def login_user(user_id: str, session=session, current_datetime=None):
 
 
 def logout():
-    del session['uid']
-    del session['expire']
+    session.clear()
+    g.current_user = None
+    g.current_tenant = None
 
 
 def get_current_user() -> Optional[User]:
