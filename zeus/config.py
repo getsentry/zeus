@@ -1,6 +1,7 @@
 import json
 import logging
 import raven
+import sys
 import tempfile
 
 from datetime import timedelta
@@ -126,7 +127,8 @@ def create_app(_read_config=True, **config):
     app.config['CELERY_TASK_SERIALIZER'] = 'zeus_json'
     app.config['CELERYD_PREFETCH_MULTIPLIER'] = 1
     app.config['CELERYD_MAX_TASKS_PER_CHILD'] = 10000
-    app.config['CELERYBEAT_SCHEDULE_FILE'] = os.path.join(tempfile.gettempdir(), 'zeus-celerybeat')
+    app.config['CELERYBEAT_SCHEDULE_FILE'] = os.path.join(
+        tempfile.gettempdir(), 'zeus-celerybeat')
 
     app.config['WORKSPACE_ROOT'] = WORKSPACE_ROOT
     app.config['REPO_ROOT'] = os.environ.get(
@@ -145,14 +147,16 @@ def create_app(_read_config=True, **config):
 
     app.config.update(config)
 
-    req_vars = (
-        'GITHUB_CLIENT_ID', 'GITHUB_CLIENT_SECRET', 'REDIS_URL', 'SECRET_KEY',
-        'SQLALCHEMY_DATABASE_URI'
-    )
-    for varname in req_vars:
-        if not app.config.get(varname):
-            raise SystemExit(
-                'Required configuration not present for {}'.format(varname))
+    # HACK(dcramer): the CLI causes validation to happen on init, which it shouldn't
+    if 'init' not in sys.argv:
+        req_vars = (
+            'GITHUB_CLIENT_ID', 'GITHUB_CLIENT_SECRET', 'REDIS_URL', 'SECRET_KEY',
+            'SQLALCHEMY_DATABASE_URI'
+        )
+        for varname in req_vars:
+            if not app.config.get(varname):
+                raise SystemExit(
+                    'Required configuration not present for {}'.format(varname))
 
     from zeus.testutils.client import ZeusTestClient
     app.test_client_class = ZeusTestClient
