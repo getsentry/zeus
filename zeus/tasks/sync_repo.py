@@ -50,7 +50,7 @@ def sync_repo(repo_id, max_log_passes=10):
 
             current_app.logger.info('Created revision {}'.format(repo.id))
             might_have_more = True
-            parent = commit.id
+            parent = commit.sha
         max_log_passes -= 1
 
     Repository.query.filter(

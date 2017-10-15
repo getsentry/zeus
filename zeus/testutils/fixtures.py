@@ -1,13 +1,17 @@
 import os
 import pytest
 
+from collections import namedtuple
 from datetime import datetime, timedelta
+from subprocess import check_call
 
 from zeus import factories, models
 from zeus.utils import timezone
 
 DATA_FIXTURES = os.path.join(os.path.dirname(
     __file__), os.pardir, os.pardir, 'tests', 'fixtures')
+
+RepoConfig = namedtuple('RepoConfig', ['url', 'path', 'remote_path'])
 
 
 @pytest.fixture(scope='function')
@@ -187,3 +191,39 @@ def sample_jacoco():
 def sample_diff():
     with open(os.path.join(DATA_FIXTURES, 'sample.diff')) as fp:
         return fp.read()
+
+
+@pytest.fixture(scope='function')
+def git_repo_config():
+    root = '/tmp/zeus-git-test'
+    path = '%s/clone' % (root, )
+    remote_path = '%s/remote' % (root, )
+    url = 'file://%s' % (remote_path, )
+
+    check_call('rm -rf %s' % (root, ), shell=True)
+    check_call('mkdir -p %s %s' % (path, remote_path), shell=True)
+    check_call('git init %s' % (remote_path, ), shell=True)
+    check_call(
+        'cd {0} && git config --replace-all "user.name" "{1}"'.format(
+            remote_path, 'Foo Bar'),
+        shell=True
+    )
+    check_call(
+        'cd {0} && git config --replace-all "user.email" "{1}"'.format(
+            remote_path, 'foo@example.com'),
+        shell=True
+    )
+    check_call(
+        'cd %s && touch FOO && git add FOO && git commit -m "test\nlol\n"' % (
+            remote_path, ),
+        shell=True
+    )
+    check_call(
+        'cd %s && touch BAR && git add BAR && git commit -m "biz\nbaz\n"' % (
+            remote_path, ),
+        shell=True
+    )
+
+    yield RepoConfig(url, path, remote_path)
+
+    check_call('rm -rf %s' % (root, ), shell=True)

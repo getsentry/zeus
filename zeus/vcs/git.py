@@ -17,7 +17,7 @@ class LazyGitRevisionResult(RevisionResult):
 
     @memoize
     def branches(self):
-        return self.vcs.branches_for_commit(self.id)
+        return self.vcs.branches_for_commit(self.sha)
 
 
 class GitVcs(Vcs):
@@ -28,9 +28,10 @@ class GitVcs(Vcs):
             'GIT_SSH': self.ssh_connect_path,
         }
 
-    # This is static so that the repository serializer can easily use it
-    @staticmethod
-    def get_default_revision() -> str:
+    def get_default_branch(self) -> str:
+        return 'master'
+
+    def get_default_revision(self) -> str:
         return 'master'
 
     @property
@@ -159,7 +160,7 @@ class GitVcs(Vcs):
 
             yield LazyGitRevisionResult(
                 vcs=self,
-                id=sha,
+                sha=sha,
                 author=author,
                 committer=committer,
                 author_date=author_date,
@@ -168,8 +169,8 @@ class GitVcs(Vcs):
                 message=message,
             )
 
-    def export(self, id) -> str:
-        cmd = ['diff', '%s^..%s' % (id, id)]
+    def export(self, sha) -> str:
+        cmd = ['diff', '%s^..%s' % (sha, sha)]
         self.ensure()
         result = self.run(cmd)
         return result

@@ -40,9 +40,9 @@ def import_repo(repo_id, parent=None):
     for commit in vcs.log(parent=parent):
         revision, created = commit.save(repo)
         db.session.commit()
-        if parent == commit.id:
+        if parent == commit.sha:
             break
-        parent = commit.id
+        parent = commit.sha
         has_more = True
 
     Repository.query.filter(

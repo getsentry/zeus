@@ -1,16 +1,9 @@
 import pytest
 
 from subprocess import check_call
-from uuid import uuid4
 
 from zeus.vcs.asserts import assert_revision
 from zeus.vcs.git import GitVcs
-
-root = '/tmp/zeus-git-test'
-path = '%s/clone' % (root, )
-remote_path = '%s/remote' % (root, )
-url = 'file://%s' % (remote_path, )
-id = uuid4().hex
 
 
 def _get_last_two_revisions(marker, revisions):
@@ -20,7 +13,7 @@ def _get_last_two_revisions(marker, revisions):
         return revisions[1], revisions[0]
 
 
-def _set_author(name, email):
+def _set_author(remote_path, name, email):
     check_call(
         'cd {0} && git config --replace-all "user.name" "{1}"'.format(
             remote_path, name),
@@ -33,43 +26,21 @@ def _set_author(name, email):
     )
 
 
-@pytest.fixture(scope='function', autouse=True)
-def repo_config():
-    check_call('rm -rf %s' % (root, ), shell=True)
-    check_call('mkdir -p %s %s' % (path, remote_path), shell=True)
-    check_call('git init %s' % (remote_path, ), shell=True)
-    _set_author('Foo Bar', 'foo@example.com')
-    check_call(
-        'cd %s && touch FOO && git add FOO && git commit -m "test\nlol\n"' % (
-            remote_path, ),
-        shell=True
-    )
-    check_call(
-        'cd %s && touch BAR && git add BAR && git commit -m "biz\nbaz\n"' % (
-            remote_path, ),
-        shell=True
-    )
-
-    yield (url, path)
-
-    check_call('rm -rf %s' % (root, ), shell=True)
-
-
 @pytest.fixture
-def vcs(repo_config, default_repo):
-    url, path = repo_config
-    return GitVcs(url=url, path=path, id=default_repo.id.hex)
+def vcs(git_repo_config, default_repo):
+    return GitVcs(url=git_repo_config.url, path=git_repo_config.path, id=default_repo.id.hex)
 
 
-def test_get_default_revision(vcs):
+def test_get_default_revision(git_repo_config, vcs):
     assert vcs.get_default_revision() == 'master'
 
 
-def test_log_with_authors(vcs):
+def test_log_with_authors(git_repo_config, vcs):
     # Create a commit with a new author
-    _set_author('Another Committer', 'ac@d.not.zm.exist')
+    _set_author(git_repo_config.remote_path,
+                'Another Committer', 'ac@d.not.zm.exist')
     check_call(
-        'cd %s && touch BAZ && git add BAZ && git commit -m "bazzy"' % remote_path, shell=True
+        'cd %s && touch BAZ && git add BAZ && git commit -m "bazzy"' % git_repo_config.remote_path, shell=True
     )
     vcs.clone()
     vcs.update()
@@ -98,8 +69,9 @@ def test_log_throws_errors_when_needed(vcs):
         pass
 
 
-def test_log_with_branches(vcs):
+def test_log_with_branches(git_repo_config, vcs):
     # Create another branch and move it ahead of the master branch
+    remote_path = git_repo_config.remote_path
     check_call('cd %s && git checkout -b B2' % remote_path, shell=True)
     check_call(
         'cd %s && touch BAZ && git add BAZ && git commit -m "second branch commit"' %
@@ -156,7 +128,7 @@ def test_simple(vcs):
     vcs.clone()
     vcs.update()
     revision = next(vcs.log(parent='HEAD', limit=1))
-    assert len(revision.id) == 40
+    assert len(revision.sha) == 40
     assert_revision(
         revision, author='Foo Bar <foo@example.com>', message='biz\nbaz\n', subject='biz'
     )
@@ -166,7 +138,7 @@ def test_simple(vcs):
     assert revisions[0].message == 'biz\nbaz\n'
     assert revisions[0].author == 'Foo Bar <foo@example.com>'
     assert revisions[0].committer == 'Foo Bar <foo@example.com>'
-    assert revisions[0].parents == [revisions[1].id]
+    assert revisions[0].parents == [revisions[1].sha]
     assert revisions[0].author_date == revisions[0].committer_date is not None
     assert revisions[0].branches == ['master']
     assert revisions[1].subject == 'test'
@@ -176,7 +148,7 @@ def test_simple(vcs):
     assert revisions[1].parents == []
     assert revisions[1].author_date == revisions[1].committer_date is not None
     assert revisions[1].branches == ['master']
-    diff = vcs.export(revisions[0].id)
+    diff = vcs.export(revisions[0].sha)
     assert diff == """diff --git a/BAR b/BAR
 new file mode 100644
 index 0000000..e69de29
@@ -195,14 +167,14 @@ def test_is_child_parent(vcs):
     vcs.update()
     revisions = list(vcs.log())
     assert vcs.is_child_parent(
-        child_in_question=revisions[0].id, parent_in_question=revisions[1].id
+        child_in_question=revisions[0].sha, parent_in_question=revisions[1].sha
     )
     assert vcs.is_child_parent(
-        child_in_question=revisions[1].id, parent_in_question=revisions[0].id
+        child_in_question=revisions[1].sha, parent_in_question=revisions[0].sha
     ) is False
 
 
-def test_get_known_branches(vcs):
+def test_get_known_branches(git_repo_config, vcs):
     vcs.clone()
     vcs.update()
 
@@ -211,7 +183,7 @@ def test_get_known_branches(vcs):
     assert 'master' in branches
 
     check_call('cd %s && git checkout -B test_branch' %
-               remote_path, shell=True)
+               git_repo_config.remote_path, shell=True)
     vcs.update()
     branches = vcs.get_known_branches()
     assert len(branches) == 2
