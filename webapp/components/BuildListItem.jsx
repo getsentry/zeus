@@ -36,7 +36,8 @@ export default class BuildListItem extends Component {
                 </Box>
                 <Box flex="1" style={{minWidth: 0}}>
                   <Message>
-                    #{build.number} {build.source.revision.message.split('\n')[0]}
+                    #{build.number}{' '}
+                    {build.label || build.source.revision.message.split('\n')[0]}
                   </Message>
                   <Meta>
                     {includeRepo
