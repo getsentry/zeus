@@ -85,7 +85,7 @@ export default class BuildDetails extends AsyncPage {
         <BuildSummary>
           <Header>
             <Message>
-              {build.source.revision.message}
+              {build.label || build.source.revision.message}
             </Message>
           </Header>
           <Meta>
