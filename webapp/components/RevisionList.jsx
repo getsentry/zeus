@@ -21,8 +21,14 @@ export default class RevisionList extends Component {
             <Box flex="1" width={6 / 12} pr={15}>
               Revision
             </Box>
+            <Box width={1 / 12} style={{textAlign: 'center'}}>
+              Coverage
+            </Box>
+            <Box width={1 / 12} style={{textAlign: 'center'}}>
+              Duration
+            </Box>
             <Box width={2 / 12} style={{textAlign: 'right'}}>
-              When
+              Commit Date
             </Box>
           </Flex>
         </ResultGridHeader>

@@ -9,3 +9,4 @@ class RevisionSchema(Schema):
     message = fields.Str()
     author = fields.Nested(AuthorSchema(), dump_only=True)
     created_at = fields.DateTime(attribute="date_created", dump_only=True)
+    committed_at = fields.DateTime(attribute="date_committed", dump_only=True)

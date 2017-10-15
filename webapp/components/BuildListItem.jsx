@@ -14,6 +14,8 @@ import TimeSince from './TimeSince';
 export default class BuildListItem extends Component {
   static propTypes = {
     build: PropTypes.object.isRequired,
+    repo: PropTypes.object,
+    date: PropTypes.object,
     includeAuthor: PropTypes.bool,
     includeRepo: PropTypes.bool
   };
@@ -24,7 +26,7 @@ export default class BuildListItem extends Component {
 
   render() {
     let {build, includeAuthor, includeRepo} = this.props;
-    let repo = build.repository;
+    let repo = this.props.repo || build.repository;
     return (
       <ListItemLink to={`/${repo.full_name}/builds/${build.number}`}>
         <ResultGridRow>
@@ -36,7 +38,6 @@ export default class BuildListItem extends Component {
                 </Box>
                 <Box flex="1" style={{minWidth: 0}}>
                   <Message>
-                    #{build.number}{' '}
                     {build.label || build.source.revision.message.split('\n')[0]}
                   </Message>
                   <Meta>
@@ -64,7 +65,7 @@ export default class BuildListItem extends Component {
               <ObjectDuration data={build} short={true} />
             </Box>
             <Box width={2 / 12} style={{textAlign: 'right'}}>
-              <TimeSince date={build.created_at} />
+              <TimeSince date={this.props.date || build.created_at} />
             </Box>
           </Flex>
         </ResultGridRow>

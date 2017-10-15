@@ -3,20 +3,36 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {Flex, Box} from 'grid-styled';
 
+import BuildListItem from './BuildListItem';
 import ListItemLink from './ListItemLink';
 import ObjectAuthor from './ObjectAuthor';
-import ObjectResult from './ObjectResult';
 import ResultGridRow from './ResultGridRow';
+import TimeSince from './TimeSince';
 
 export default class RevisionListItem extends Component {
   static propTypes = {
+    repo: PropTypes.object,
     revision: PropTypes.object.isRequired,
-    repo: PropTypes.object
+    includeAuthor: PropTypes.bool,
+    includeRepo: PropTypes.bool
+  };
+
+  static defaultProps = {
+    includeAuthor: true
   };
 
   render() {
-    let {revision} = this.props;
+    let {includeAuthor, includeRepo, revision} = this.props;
     let repo = revision.repository || this.props.repo;
+    if (revision.latest_build)
+      return (
+        <BuildListItem
+          build={revision.latest_build}
+          repo={repo}
+          date={revision.committed_at || revision.created_at}
+        />
+      );
+
     return (
       <ListItemLink
         to={
@@ -27,31 +43,34 @@ export default class RevisionListItem extends Component {
         <ResultGridRow>
           <Flex align="center">
             <Box flex="1" width={8 / 12} pr={15}>
-              <div>
-                <Message>
-                  {revision.sha.substr(0, 7)} {revision.message.split('\n')[0]}
-                </Message>
-              </div>
-              {revision.latest_build
-                ? <Meta>
-                    <Flex>
-                      <Box width={15} mr={8}>
-                        <ObjectResult data={revision.latest_build} />
-                      </Box>
-                      <Box flex="1" style={{minWidth: 0}}>
-                        <Message>
-                          #{revision.latest_build.number}{' '}
-                          {revision.latest_build.label || ''}
-                        </Message>
-                        <Meta>
-                          <Author>
-                            <ObjectAuthor data={revision.latest_build} />
-                          </Author>
-                        </Meta>
-                      </Box>
-                    </Flex>
+              <Flex>
+                <Box width={15} mr={8} />
+                <Box flex="1" style={{minWidth: 0}}>
+                  <Message>
+                    {revision.message.split('\n')[0]}
+                  </Message>
+                  <Meta>
+                    {includeRepo
+                      ? <RepoLink to={`/${repo.full_name}`}>
+                          {repo.owner_name}/{repo.name}
+                        </RepoLink>
+                      : null}
+                    <Commit>
+                      {revision.sha.substr(0, 7)}
+                    </Commit>
+                    {includeAuthor
+                      ? <Author>
+                          <ObjectAuthor data={revision} />
+                        </Author>
+                      : null}
                   </Meta>
-                : null}
+                </Box>
+              </Flex>
+            </Box>
+            <Box width={1 / 12} style={{textAlign: 'center'}} />
+            <Box width={1 / 12} style={{textAlign: 'center'}} />
+            <Box width={2 / 12} style={{textAlign: 'right'}}>
+              <TimeSince date={revision.committed_at || revision.created_at} />
             </Box>
           </Flex>
         </ResultGridRow>
@@ -73,6 +92,14 @@ const Author = styled.div`
   font-family: "Monaco", monospace;
   font-size: 12px;
   font-weight: 600;
+`;
+
+const Commit = styled(Author)`
+font-weight: 400;
+`;
+
+const RepoLink = styled(Author)`
+font-weight: 400;
 `;
 
 const Meta = styled.div`

@@ -64,6 +64,14 @@ class RevisionResult(object):
         return author
 
     @property
+    def date_created(self):
+        return self.author_date
+
+    @property
+    def date_committed(self):
+        return self.committer_date
+
+    @property
     def subject(self) -> str:
         return self.message.splitlines()[0]
 
