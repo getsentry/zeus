@@ -20,8 +20,8 @@ export default class RevisionListItem extends Component {
     return (
       <ListItemLink
         to={
-          revision.last_build
-            ? `/${repo.full_name}/builds/${revision.last_build.id}`
+          revision.latest_build
+            ? `/${repo.full_name}/builds/${revision.latest_build.id}`
             : null
         }>
         <ResultGridRow>
