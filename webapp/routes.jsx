@@ -12,6 +12,7 @@ import OwnerDetails from './pages/OwnerDetails';
 import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
 import RepositoryHooks from './pages/RepositoryHooks';
+import RepositoryRevisionList from './pages/RepositoryRevisionList';
 import RepositorySettings from './pages/RepositorySettings';
 import RepositoryTests from './pages/RepositoryTests';
 import RepositoryTestList from './pages/RepositoryTestList';
@@ -33,7 +34,8 @@ export default (
     <Route
       path="/:provider/:ownerName/:repoName"
       component={requireAuth(RepositoryDetails)}>
-      <IndexRoute component={RepositoryBuildList} />
+      <IndexRoute component={requireAuth(RepositoryRevisionList)} />
+      <Route path="builds" component={RepositoryBuildList} />
       <Route path="settings" component={RepositorySettings}>
         <Route path="hooks" component={RepositoryHooks} />
       </Route>

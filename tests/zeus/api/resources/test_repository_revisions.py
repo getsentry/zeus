@@ -1,5 +1,8 @@
+from datetime import timedelta
+
 from zeus import factories
 from zeus.models import RepositoryAccess, RepositoryBackend, RepositoryProvider
+from zeus.utils import timezone
 
 
 def test_repo_revision_list(client, db_session, default_login,
@@ -12,6 +15,22 @@ def test_repo_revision_list(client, db_session, default_login,
     db_session.add(RepositoryAccess(user=default_user, repository=repo))
     db_session.flush()
 
+    revision = factories.RevisionFactory.create(
+        sha=git_repo_config.commits[0],
+        repository=repo,
+    )
+    source = factories.SourceFactory.create(
+        revision=revision,
+    )
+    factories.BuildFactory.create(
+        source=source,
+        date_created=timezone.now() - timedelta(minutes=1),
+    )
+    build = factories.BuildFactory.create(
+        source=source,
+        date_created=timezone.now(),
+    )
+
     resp = client.get(
         '/api/repos/{}/revisions'.format(
             repo.get_full_name())
@@ -20,3 +39,7 @@ def test_repo_revision_list(client, db_session, default_login,
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 2
+    assert data[0]['sha'] == git_repo_config.commits[0]
+    assert data[0]['latest_build']['id'] == str(build.id)
+    assert data[1]['sha'] == git_repo_config.commits[1]
+    assert data[1]['latest_build'] is None

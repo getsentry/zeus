@@ -4,7 +4,7 @@ import styled, {css} from 'styled-components';
 
 import AsyncPage from '../components/AsyncPage';
 import Badge from '../components/Badge';
-import BuildAuthor from '../components/BuildAuthor';
+import ObjectAuthor from '../components/ObjectAuthor';
 import {Breadcrumbs, Crumb, CrumbLink} from '../components/Breadcrumbs';
 import ObjectCoverage from '../components/ObjectCoverage';
 import ObjectDuration from '../components/ObjectDuration';
@@ -106,7 +106,7 @@ export default class BuildDetails extends AsyncPage {
                   </span>}
             </Time>
             <Author>
-              <BuildAuthor build={build} />
+              <ObjectAuthor data={build} />
             </Author>
             <Commit>
               {build.source.revision.sha.substr(0, 7)}

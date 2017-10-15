@@ -6,9 +6,9 @@ from zeus import models
 from .base import ModelFactory
 from .types import GUIDFactory
 
-orgs = ('getsentry', 'sentry')
+orgs = ('getsentry',)
 
-names = ('sentry', 'zeus', 'python', 'php', 'ruby', 'javascript')
+names = ('sentry', 'zeus', 'raven-python', 'raven-php', 'raven-ruby', 'raven-js')
 
 
 class RepositoryFactory(ModelFactory):
@@ -16,7 +16,7 @@ class RepositoryFactory(ModelFactory):
     owner_name = factory.Iterator(orgs)
     name = factory.Iterator(names)
     url = factory.LazyAttribute(
-        lambda o: 'https://github.com/%s/%s.git' % (o.owner_name, o.name, ))
+        lambda o: 'git@github.com:%s/%s.git' % (o.owner_name, o.name, ))
     backend = models.RepositoryBackend.git
     status = models.RepositoryStatus.active
     provider = models.RepositoryProvider.github

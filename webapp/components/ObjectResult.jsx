@@ -10,10 +10,13 @@ export default class ObjectResult extends Component {
     data: PropTypes.shape({
       result: PropTypes.string.isRequired,
       status: PropTypes.string
-    }).isRequired
+    })
   };
 
   render() {
+    if (!this.props.data) {
+      return null;
+    }
     let {result, status} = this.props.data;
     return (
       <ResultIcon status={status} result={result}>

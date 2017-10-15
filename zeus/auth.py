@@ -142,8 +142,12 @@ def is_safe_url(target: str) -> bool:
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
     return (
+        # same scheme
         test_url.scheme in ('http', 'https') and
-        ref_url.netloc == test_url.netloc
+        # same host and port
+        ref_url.netloc == test_url.netloc and
+        # and different endoint
+        ref_url.path != test_url.path
     )
 
 
@@ -163,8 +167,6 @@ def get_redirect_target(clear=True) -> str:
 def bind_redirect_target(target: str=None):
     if not target:
         target = request.values.get('next') or request.referrer
-    if target.split('?', 1) == request.url:
-        target = None
     if target and is_safe_url(target):
         session['next'] = target
     else:

@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router';
 import styled from 'styled-components';
 import {Flex, Box} from 'grid-styled';
 
-import BuildAuthor from './BuildAuthor';
+import ListItemLink from './ListItemLink';
+import ObjectAuthor from './ObjectAuthor';
 import ObjectCoverage from './ObjectCoverage';
 import ObjectDuration from './ObjectDuration';
 import ObjectResult from './ObjectResult';
@@ -26,7 +26,7 @@ export default class BuildListItem extends Component {
     let {build, includeAuthor, includeRepo} = this.props;
     let repo = build.repository;
     return (
-      <BuildListItemLink to={`/${repo.full_name}/builds/${build.number}`}>
+      <ListItemLink to={`/${repo.full_name}/builds/${build.number}`}>
         <ResultGridRow>
           <Flex align="center">
             <Box flex="1" width={8 / 12} pr={15}>
@@ -50,7 +50,7 @@ export default class BuildListItem extends Component {
                     </Commit>
                     {includeAuthor
                       ? <Author>
-                          <BuildAuthor build={build} />
+                          <ObjectAuthor data={build} />
                         </Author>
                       : null}
                   </Meta>
@@ -68,36 +68,10 @@ export default class BuildListItem extends Component {
             </Box>
           </Flex>
         </ResultGridRow>
-      </BuildListItemLink>
+      </ListItemLink>
     );
   }
 }
-
-const BuildListItemLink = styled(Link)`
-  display: block;
-
-  &:hover {
-    background-color: #F0EFF5;
-  }
-
-  &.${props => props.activeClassName} {
-    color: #fff;
-    background: #7B6BE6;
-
-    > div {
-      color: #fff !important;
-
-      svg {
-        color: #fff;
-        opacity: .5;
-      }
-    }
-  }
-`;
-
-BuildListItemLink.defaultProps = {
-  activeClassName: 'active'
-};
 
 const Message = styled.div`
   font-size: 15px;

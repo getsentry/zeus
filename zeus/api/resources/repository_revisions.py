@@ -1,12 +1,18 @@
 from flask import request
-from sqlalchemy.orm import joinedload
+from marshmallow import fields
+from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
 
-from zeus.models import Repository, Revision
+from zeus.models import Build, Repository, Revision, Source
 
 from .base_repository import BaseRepositoryResource
-from ..schemas import RevisionSchema
+from ..schemas import BuildSchema, RevisionSchema
 
-revisions_schema = RevisionSchema(many=True, strict=True)
+
+class RevisionWithBuildSchema(RevisionSchema):
+    latest_build = fields.Nested(BuildSchema(), dump_only=True, required=False)
+
+
+revisions_schema = RevisionWithBuildSchema(many=True, strict=True)
 
 
 class RepositoryRevisionsResource(BaseRepositoryResource):
@@ -48,5 +54,30 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
                 revisions.append(result)
         else:
             revisions = []
+
+        if revisions:
+            # we query extra builds here, but its a lot easier than trying to get
+            # sqlalchemy to do a ``select (subquery)`` clause and maintain tenant
+            # constraints
+            builds = {
+                b.source.revision_sha: b
+                for b in Build.query.options(
+                    contains_eager('source'),
+                    joinedload('source').joinedload('author'),
+                    joinedload('source').joinedload('revision'),
+                    joinedload('source').joinedload('patch'),
+                    subqueryload_all('stats'),
+                ).join(
+                    Source,
+                    Build.source_id == Source.id,
+                ).filter(
+                    Build.repository_id == repo.id,
+                    Source.repository_id == repo.id,
+                    Source.revision_sha.in_([r.sha for r in revisions]),
+                    Source.patch_id == None,  # NOQA
+                ).order_by(Build.number.asc())
+            }
+            for revision in revisions:
+                revision.latest_build = builds.get(revision.sha)
 
         return self.respond_with_schema(revisions_schema, revisions)

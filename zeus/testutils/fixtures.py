@@ -3,7 +3,7 @@ import pytest
 
 from collections import namedtuple
 from datetime import datetime, timedelta
-from subprocess import check_call
+from subprocess import check_call, check_output
 
 from zeus import factories, models
 from zeus.utils import timezone
@@ -11,7 +11,8 @@ from zeus.utils import timezone
 DATA_FIXTURES = os.path.join(os.path.dirname(
     __file__), os.pardir, os.pardir, 'tests', 'fixtures')
 
-RepoConfig = namedtuple('RepoConfig', ['url', 'path', 'remote_path'])
+RepoConfig = namedtuple(
+    'RepoConfig', ['url', 'path', 'remote_path', 'commits'])
 
 
 @pytest.fixture(scope='function')
@@ -223,7 +224,11 @@ def git_repo_config():
             remote_path, ),
         shell=True
     )
+    commits = check_output(
+        'cd %s && git log --format=%%H --max-count=2' % (remote_path, ),
+        shell=True
+    ).decode('utf-8').split('\n')
 
-    yield RepoConfig(url, path, remote_path)
+    yield RepoConfig(url, path, remote_path, commits)
 
     check_call('rm -rf %s' % (root, ), shell=True)
