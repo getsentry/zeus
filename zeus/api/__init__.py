@@ -12,6 +12,8 @@ app.add_resource('/repos', r.RepositoryIndexResource)
 app.add_resource('/repos/<provider>/<owner_name>/<repo_name>',
                  r.RepositoryDetailsResource)
 app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/branches', r.RepositoryBranchesResource)
+app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/builds', r.RepositoryBuildsResource)
 app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/hooks', r.RepositoryHooksResource)
