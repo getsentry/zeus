@@ -24,7 +24,7 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
         if not vcs:
             return self.respond([])
 
-        vcs.ensure()
+        vcs.ensure(update_if_exists=False)
 
         branch = request.args.get('branch', vcs.get_default_branch())
         parent = request.args.get('parent')
