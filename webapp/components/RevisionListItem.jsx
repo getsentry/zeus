@@ -19,7 +19,11 @@ export default class RevisionListItem extends Component {
     let repo = revision.repository || this.props.repo;
     return (
       <ListItemLink
-        to={repo.last_build ? `/${repo.full_name}/builds/${repo.last_build.id}` : null}>
+        to={
+          revision.last_build
+            ? `/${repo.full_name}/builds/${revision.last_build.id}`
+            : null
+        }>
         <ResultGridRow>
           <Flex align="center">
             <Box flex="1" width={8 / 12} pr={15}>
