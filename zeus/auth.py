@@ -163,5 +163,9 @@ def get_redirect_target(clear=True) -> str:
 def bind_redirect_target(target: str=None):
     if not target:
         target = request.values.get('next') or request.referrer
+    if target.split('?', 1) == request.url:
+        target = None
     if target and is_safe_url(target):
         session['next'] = target
+    else:
+        session.pop('next', None)
