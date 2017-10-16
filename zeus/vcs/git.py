@@ -137,7 +137,7 @@ class GitVcs(Vcs):
             result = self.run(cmd)
         except CommandError as cmd_error:
             err_msg = cmd_error.stderr
-            if branch and branch in err_msg:
+            if branch and branch in err_msg.decode('utf-8'):
                 import traceback
                 import logging
                 msg = traceback.format_exception(CommandError, cmd_error, None)
