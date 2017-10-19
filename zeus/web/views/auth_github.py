@@ -1,5 +1,3 @@
-import zeus
-
 from flask import current_app, redirect, request, url_for
 from flask.views import MethodView
 from oauth2client.client import FlowExchangeError, OAuth2WebServerFlow
@@ -7,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
 from zeus.config import db
-from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI
+from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI, USER_AGENT
 from zeus.models import (
     Email, Identity, Repository, RepositoryAccess, RepositoryProvider, User
 )
@@ -24,9 +22,7 @@ def get_auth_flow(redirect_uri=None, scopes=('user:email', )):
         client_secret=current_app.config['GITHUB_CLIENT_SECRET'],
         scope=','.join(scopes),
         redirect_uri=redirect_uri,
-        user_agent='zeus/{0}'.format(
-            zeus.VERSION,
-        ),
+        user_agent=USER_AGENT,
         auth_uri=GITHUB_AUTH_URI,
         token_uri=GITHUB_TOKEN_URI,
     )

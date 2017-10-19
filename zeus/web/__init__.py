@@ -3,6 +3,8 @@ from flask import Blueprint
 from . import hooks as h
 from . import views as v
 
+from ..providers.travis.webhook import TravisWebhookView
+
 app = Blueprint('web', __name__)
 app.add_url_rule(
     '/auth/github',
@@ -32,6 +34,10 @@ app.add_url_rule(
 app.add_url_rule(
     '/hooks/<hook_id>/<signature>/builds/<build_xid>/jobs/<job_xid>/artifacts',
     view_func=h.JobArtifactsHook.as_view('job-artifacts-hook')
+)
+app.add_url_rule(
+    '/hooks/<hook_id>/<signature>/provider/travis/webhook/',
+    view_func=TravisWebhookView.as_view('travis-webhook')
 )
 app.add_url_rule('/<path:path>', view_func=v.index)
 app.add_url_rule('/', 'index', view_func=v.index)

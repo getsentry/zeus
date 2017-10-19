@@ -127,6 +127,9 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             if not build.label:
                 build.label = source.revision.message.split('\n')[0]
 
+        if not build.label:
+            return self.error('missing build label')
+
         db.session.add(build)
 
         try:
