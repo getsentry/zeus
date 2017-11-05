@@ -13,7 +13,7 @@
         ".mypy_cache": true
     },
     "files.trimTrailingWhitespace": true,
-    "files.ensureSingleFinalNewline": true,
+    "files.trimFinalNewlines": true,
 
     "prettier.bracketSpacing": false,
     "prettier.singleQuote": true,
