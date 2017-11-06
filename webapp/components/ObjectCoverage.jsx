@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export default class ObjectCoverage extends Component {
   static propTypes = {
     data: PropTypes.object.isRequired,
-    diff: PropTypes.object
+    diff: PropTypes.bool
   };
 
   static defaultProps = {
@@ -25,10 +25,6 @@ export default class ObjectCoverage extends Component {
   }
 
   render() {
-    return (
-      <span>
-        {this.getCoverage()}
-      </span>
-    );
+    return <span>{this.getCoverage()}</span>;
   }
 }
