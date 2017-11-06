@@ -2,6 +2,7 @@ import React from 'react';
 import {IndexRoute, Route, IndexRedirect} from 'react-router';
 
 import App from './pages/App';
+import BuildArtifacts from './pages/BuildArtifacts';
 import BuildCoverage from './pages/BuildCoverage';
 import BuildDetails from './pages/BuildDetails';
 import BuildDiff from './pages/BuildDiff';
@@ -52,6 +53,7 @@ export default (
         <Route path="coverage" component={BuildCoverage} />
         <Route path="diff" component={BuildDiff} />
         <Route path="tests" component={BuildTestList} />
+        <Route path="artifacts" component={BuildArtifacts} />
       </Route>
     </Route>
     <Route path="*" component={NotFoundError} />

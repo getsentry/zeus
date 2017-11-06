@@ -59,16 +59,10 @@ export default class BuildDetails extends AsyncPage {
           <CrumbLink to={`/${repo.provider}/${repo.owner_name}`}>
             {repo.owner_name}
           </CrumbLink>
-          <CrumbLink to={`/${repo.full_name}`}>
-            {repo.name}
-          </CrumbLink>
-          <Crumb>
-            #{buildNumber}
-          </Crumb>
+          <CrumbLink to={`/${repo.full_name}`}>{repo.name}</CrumbLink>
+          <Crumb>#{buildNumber}</Crumb>
         </Breadcrumbs>
-        <ScrollView>
-          {this.renderContent()}
-        </ScrollView>
+        <ScrollView>{this.renderContent()}</ScrollView>
       </RepositoryHeader>
     );
   }
@@ -84,33 +78,32 @@ export default class BuildDetails extends AsyncPage {
       <div>
         <BuildSummary>
           <Header>
-            <Message>
-              {build.label || build.source.revision.message}
-            </Message>
+            <Message>{build.label || build.source.revision.message}</Message>
           </Header>
           <Meta>
-            {build.status === 'finished' &&
+            {build.status === 'finished' && (
               <DurationWrapper result={build.result}>
                 <ObjectResult data={build} />
                 {build.result} <TimeSince date={build.finished_at} /> in{' '}
                 <ObjectDuration data={build} short={true} />
-              </DurationWrapper>}
+              </DurationWrapper>
+            )}
             <Time>
               <IconClock size="15" />
-              {build.status === 'queued'
-                ? <span>
-                    created <TimeSince date={build.created_at} />
-                  </span>
-                : <span>
-                    started <TimeSince date={build.started_at} />
-                  </span>}
+              {build.status === 'queued' ? (
+                <span>
+                  created <TimeSince date={build.created_at} />
+                </span>
+              ) : (
+                <span>
+                  started <TimeSince date={build.started_at} />
+                </span>
+              )}
             </Time>
             <Author>
               <ObjectAuthor data={build} />
             </Author>
-            <Commit>
-              {build.source.revision.sha.substr(0, 7)}
-            </Commit>
+            <Commit>{build.source.revision.sha.substr(0, 7)}</Commit>
           </Meta>
           <Tabs>
             <TabbedNavItem
@@ -122,24 +115,25 @@ export default class BuildDetails extends AsyncPage {
               to={`/${repo.full_name}/builds/${buildNumber}/tests`}
               disabled={!hasTests}>
               Tests
-              {hasTests
-                ? <Badge>
-                    {build.stats.tests.count.toLocaleString()}
-                  </Badge>
-                : null}
+              {hasTests ? (
+                <Badge>{build.stats.tests.count.toLocaleString()}</Badge>
+              ) : null}
             </TabbedNavItem>
             <TabbedNavItem
               to={`/${repo.full_name}/builds/${buildNumber}/coverage`}
               disabled={!hasCoverage}>
               Code Coverage
-              {hasCoverage
-                ? <Badge>
-                    <ObjectCoverage data={build} diff={false} />
-                  </Badge>
-                : null}
+              {hasCoverage ? (
+                <Badge>
+                  <ObjectCoverage data={build} diff={false} />
+                </Badge>
+              ) : null}
             </TabbedNavItem>
             <TabbedNavItem to={`/${repo.full_name}/builds/${buildNumber}/diff`}>
               Diff
+            </TabbedNavItem>
+            <TabbedNavItem to={`/${repo.full_name}/builds/${buildNumber}/artifacts`}>
+              Artifacts
             </TabbedNavItem>
           </Tabs>
         </BuildSummary>
@@ -149,12 +143,14 @@ export default class BuildDetails extends AsyncPage {
   }
 }
 
-const Section = styled.div`padding: 20px;`;
+const Section = styled.div`
+  padding: 20px;
+`;
 
 const BuildSummary = styled(Section)`
   padding-bottom: 0;
   padding-top: 0;
-  box-shadow: inset 0 -1px 0 #E0E4E8;
+  box-shadow: inset 0 -1px 0 #e0e4e8;
 `;
 
 const Tabs = styled.div`
@@ -178,7 +174,9 @@ const Message = styled.div`
   overflow: hidden;
 `;
 
-const Branch = styled.div`font-family: "Monaco", monospace;`;
+const Branch = styled.div`
+  font-family: 'Monaco', monospace;
+`;
 
 const Meta = styled.div`
   display: flex;
@@ -210,20 +208,20 @@ export const DurationWrapper = styled.div`
       case 'passed':
         return css`
           svg {
-            color: #76D392;
+            color: #76d392;
           }
         `;
       case 'failed':
         return css`
-          color: #F06E5B;
+          color: #f06e5b;
           svg {
-            color: #F06E5B;
+            color: #f06e5b;
           }
         `;
       default:
         return css`
           svg {
-            color: #BFBFCB;
+            color: #bfbfcb;
           }
         `;
     }
