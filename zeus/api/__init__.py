@@ -30,6 +30,10 @@ app.add_resource(
     r.BuildFileCoverageResource
 )
 app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/artifacts',
+    r.BuildArtifactsResource
+)
+app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/jobs', r.BuildJobsResource)
 app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/source', r.BuildSourceResource
