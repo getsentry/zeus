@@ -1,11 +1,10 @@
 import React from 'react';
+import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
-import RepositoryContent from '../components/RepositoryContent';
-import RepositoryHeader from '../components/RepositoryHeader';
 
-export default class RepositorySettings extends AsyncPage {
+export default class RepositoryHooks extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
     repo: PropTypes.object.isRequired
@@ -17,23 +16,21 @@ export default class RepositorySettings extends AsyncPage {
   }
 
   renderBody() {
-    // let repo = this.context.repo;
-    // let basePath = `/${repo.full_name}`;
+    let repo = this.context.repo;
     return (
       <div>
-        <RepositoryHeader />
-        <RepositoryContent {...this.props}>
-          <h2>Hooks</h2>
-          <ul>
-            {this.state.hookList.map(hook => {
-              return (
-                <li key={hook.id}>
+        <h2>Hooks</h2>
+        <ul>
+          {this.state.hookList.map(hook => {
+            return (
+              <li key={hook.id}>
+                <Link to={`/${repo.full_name}/settings/hooks/${hook.id}`}>
                   {hook.id}
-                </li>
-              );
-            })}
-          </ul>
-        </RepositoryContent>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     );
   }
