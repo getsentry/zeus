@@ -1,5 +1,5 @@
 -   repo: git://github.com/pre-commit/mirrors-autopep8
-    sha: v1.3.2
+    sha: v1.3.3
     hooks:
     -   id: autopep8
 -   repo: git://github.com/pre-commit/pre-commit-hooks
