@@ -6,6 +6,7 @@ from zeus.artifacts.manager import Manager
 
 def test_process_behavior(mocker, default_job):
     handler = mocker.Mock()
+    handler.__name__ = 'CoverageHandler'
 
     manager = Manager()
     manager.register(handler, ['coverage.xml'])

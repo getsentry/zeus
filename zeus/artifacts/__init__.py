@@ -5,5 +5,7 @@ from .coverage import CoverageHandler
 from .xunit import XunitHandler
 
 manager = Manager()
-manager.register(CoverageHandler, ['coverage.xml', '*.coverage.xml'])
-manager.register(XunitHandler, ['xunit.xml', 'junit.xml', '*.xunit.xml', '*.junit.xml'])
+manager.register(CoverageHandler, [
+                 'coverage.xml', '*.coverage.xml'])
+manager.register(XunitHandler, [
+                 'xunit.xml', 'junit.xml', '*.xunit.xml', '*.junit.xml'])
