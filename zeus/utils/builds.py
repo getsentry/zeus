@@ -9,7 +9,7 @@ from zeus.models import Build, Source
 def merge_builds(target, build):
     # Store the original build so we can retrieve its ID or number later, or
     # show a list of all builds in the UI
-    build.original.append(build)
+    target.original.append(build)
 
     # These properties should theoretically always be the same within a build
     # group, so merging is not necessary.  We assign here so the initial build
