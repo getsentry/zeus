@@ -167,7 +167,7 @@ def test_test_stats(mocker, db_session, default_source):
     auth.set_current_tenant(auth.Tenant(
         repository_ids=[default_source.repository_id]))
 
-    build = factories.BuildFactory(source=default_source)
+    build = factories.BuildFactory(source=default_source, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, passed=True)
