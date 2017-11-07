@@ -16,6 +16,8 @@ def test_result_generation(sample_xunit):
 
     assert len(results) == 2
 
+    assert False, 'testing failures'
+
     r1 = results[0]
     assert type(r1) == ZeusTestResult
     assert r1.job == job
