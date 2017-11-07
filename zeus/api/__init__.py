@@ -49,6 +49,10 @@ app.add_resource(
     r.JobArtifactsResource
 )
 app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/jobs/<job_number>/artifacts/<artifact_name>/download',
+    r.ArtifactDownloadResource
+)
+app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/jobs/<job_number>/tests',
     r.JobTestsResource
 )

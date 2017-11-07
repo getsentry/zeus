@@ -2,6 +2,7 @@ from base64 import b64decode
 from io import BytesIO
 from flask import request
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import joinedload
 from werkzeug.datastructures import FileStorage
 
 from zeus.config import db
@@ -21,7 +22,13 @@ class JobArtifactsResource(BaseJobResource):
         """
         Return a list of artifacts for a given job.
         """
-        query = Artifact.query.filter(
+        query = Artifact.query.options(
+            joinedload('job'),
+            joinedload('job').joinedload('build'),
+            joinedload('job').joinedload('build').joinedload('source'),
+            joinedload('job').joinedload('build').joinedload(
+                'source').joinedload('repository'),
+        ).filter(
             Artifact.job_id == job.id,
         ).order_by(Artifact.name.asc())
 
@@ -47,7 +54,8 @@ class JobArtifactsResource(BaseJobResource):
             file_data = request.json.get('file')
             if not file_data:
                 return self.respond({'file': 'Missing file content.'}, status=403)
-            file = FileStorage(BytesIO(b64decode(file_data)), request.json.get('name'))
+            file = FileStorage(BytesIO(b64decode(file_data)),
+                               request.json.get('name'))
         else:
             try:
                 file = request.files['file']

@@ -16,6 +16,17 @@ class ArtifactSchema(Schema):
     file = FileField(required=False)
     status = StatusField(dump_only=True)
     created_at = fields.DateTime(attribute="date_created", dump_only=True)
+    download_url = fields.Method("get_download_url")
+
+    def get_download_url(self, obj):
+        return '/api/repos/%s/%s/%s/builds/%s/jobs/%s/artifacts/%s/download' % (
+            obj.job.build.source.repository.provider,
+            obj.job.build.source.repository.owner_name,
+            obj.job.build.source.repository.name,
+            obj.job.build.number,
+            obj.job.number,
+            obj.name
+        )
 
     @post_load
     def build_instance(self, data):

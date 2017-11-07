@@ -1,3 +1,5 @@
+from sqlalchemy.orm import joinedload
+
 from zeus.models import Artifact, Build, Job
 
 from .base_build import BaseBuildResource
@@ -12,7 +14,13 @@ class BuildArtifactsResource(BaseBuildResource):
         """
         Return a list of artifacts for a given build.
         """
-        query = Artifact.query.join(Job, Job.id == Artifact.job_id).filter(
+        query = Artifact.query.options(
+            joinedload('job'),
+            joinedload('job').joinedload('build'),
+            joinedload('job').joinedload('build').joinedload('source'),
+            joinedload('job').joinedload('build').joinedload(
+                'source').joinedload('repository'),
+        ).join(Job, Job.id == Artifact.job_id).filter(
             Job.build_id == build.id,
         ).order_by(Artifact.name.asc())
 

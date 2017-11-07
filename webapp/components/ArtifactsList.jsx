@@ -52,7 +52,9 @@ export default class ArtifactsList extends Component {
               <ResultGridRow key={artifact.id}>
                 <Flex align="center">
                   <Box flex="1" width={1} pr={15}>
-                    <div>{artifact.name}</div>
+                    <div>
+                      <a href={artifact.download_url}>{artifact.name}</a>
+                    </div>
                     <div>
                       <small>{this.getTypeName(artifact.type)}</small>
                     </div>
