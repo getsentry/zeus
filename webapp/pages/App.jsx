@@ -75,11 +75,10 @@ class App extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    user: state.auth.user,
-    isAuthenticated: state.auth.isAuthenticated
-  };
-}
-
-export default connect(mapStateToProps, {authSession})(App);
+export default connect(
+  ({auth}) => ({
+    user: auth.user,
+    isAuthenticated: auth.isAuthenticated
+  }),
+  {authSession}
+)(App);

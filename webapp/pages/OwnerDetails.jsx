@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 
+import {ResourceNotFound} from '../errors';
 import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, CrumbLink} from '../components/Breadcrumbs';
 import Content from '../components/Content';
@@ -26,6 +27,9 @@ export default class OwnerDetails extends AsyncPage {
     state.repoList = repoList.filter(
       r => r.owner_name === ownerName && r.provider == provider
     );
+    if (!state.repoList.length) {
+      throw new ResourceNotFound('No repositories found or you do not have access');
+    }
     return state;
   }
 
