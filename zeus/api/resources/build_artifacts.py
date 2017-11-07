@@ -1,12 +1,17 @@
 from sqlalchemy.orm import joinedload
+from marshmallow import fields
 
 from zeus.models import Artifact, Build, Job
 
 from .base_build import BaseBuildResource
-from ..schemas import ArtifactSchema
+from ..schemas import ArtifactSchema, JobSchema
 
-artifact_schema = ArtifactSchema(strict=True)
-artifacts_schema = ArtifactSchema(strict=True, many=True)
+
+class ArtifactWithJobSchema(ArtifactSchema):
+    job = fields.Nested(JobSchema(), dump_only=True, required=False)
+
+
+artifacts_schema = ArtifactWithJobSchema(strict=True, many=True)
 
 
 class BuildArtifactsResource(BaseBuildResource):
