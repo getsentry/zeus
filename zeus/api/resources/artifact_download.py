@@ -1,4 +1,4 @@
-from flask import Response
+from flask import send_file
 
 from zeus.models import Artifact
 
@@ -10,4 +10,8 @@ class ArtifactDownloadResource(BaseArtifactResource):
         """
         Streams an artifact file to the client.
         """
-        return Response(artifact.file.get_file())
+        return send_file(
+            artifact.file.get_file(),
+            attachment_filename=artifact.file.filename,
+            as_attachment=True,
+        )
