@@ -62,9 +62,7 @@ export default class RepositoryHookDetails extends AsyncPage {
         </pre>
         <h4>Webhooks</h4>
         <pre>
-          {
-            'notifications:\n  webhooks:\n    urls:\n      - $ZEUS_HOOK_BASE/provider/travis/webhook\n    on_start: always'
-          }
+          {`notifications:\n  webhooks:\n    urls:\n      - ${hookBase}/provider/travis/webhook\n    on_start: always`}
         </pre>
       </div>
     );
