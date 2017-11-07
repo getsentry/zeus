@@ -31,7 +31,7 @@ after_failure:
 notifications:
   webhooks:
     urls:
-      - https://zeus.ci/hooks/c8e250c8-81ee-11e7-bf7a-0a580a280480/provider/travis/webhook
+      - https://zeus.ci/hooks/c8e250c8-81ee-11e7-bf7a-0a580a280480/public/provider/travis/webhook
     on_success: always
     on_failure: always
     on_start: always
