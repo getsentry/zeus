@@ -47,8 +47,7 @@ def verify_signature(public_key, signature, payload):
     return public_key.verify(
         signature,
         payload,
-        padding.PSS(mgf=padding.MGF1(hashes.SHA1()),
-                    salt_length=padding.PSS.MAX_LENGTH),
+        padding.PKCS1v15(),
         hashes.SHA1(),
     )
 

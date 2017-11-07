@@ -206,10 +206,7 @@ def make_signature(payload, private_key) -> bytes:
 
     return private_key.sign(
         payload,
-        padding.PSS(
-            mgf=padding.MGF1(hashes.SHA1()),
-            salt_length=padding.PSS.MAX_LENGTH
-        ),
+        padding.PKCS1v15(),
         hashes.SHA1()
     )
 
