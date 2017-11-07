@@ -8,7 +8,7 @@ from .base import Resource
 class BaseRevisionResource(Resource):
     def dispatch_request(self, provider, owner_name: str, repo_name: str,
                          revision_sha: str, *args, **kwargs) -> Response:
-        queryset = Revision.query.join(Repository, Repository.id == Repository.repository_id).filter(
+        queryset = Revision.query.join(Repository, Repository.id == Revision.repository_id).filter(
             Repository.provider == RepositoryProvider(provider),
             Repository.owner_name == owner_name,
             Repository.name == repo_name,

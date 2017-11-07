@@ -15,7 +15,10 @@ class RevisionSourceResource(BaseRevisionResource):
         source = Source.query.options(
             joinedload('patch'),
             undefer('patch.diff'),
-        ).filter(Source.revision == revision).one_or_none()
+        ).filter(
+            Source.revision == revision,
+            Source.patch == None,  # NoQA
+        ).one_or_none()
         if source is None:
             return self.not_found()
         return self.respond_with_schema(source_schema, source)

@@ -16,4 +16,4 @@ class RevisionDetailsResource(BaseRevisionResource):
         Return the joined build status of a revision.
         """
         build = fetch_build_for_revision(revision.repository, revision)
-        return self.respond_with_schema(build, build)
+        return self.respond_with_schema(build_schema, build)
