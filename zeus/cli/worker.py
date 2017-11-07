@@ -10,9 +10,10 @@ from .base import cli
 @click.option('--log-level', '-l', default='INFO')
 @click.option('--cron/--no-cron', default=True)
 def worker(cron, log_level):
-    command = ['celery', '--app=zeus.app:celery', 'worker', '--loglevel={}'.format(log_level)]
+    command = ['celery', '--app=zeus.app:celery',
+               'worker', '--loglevel={}'.format(log_level)]
     if cron:
-        command.append('--beat')
+        command.extend(['--beat', '--scheduler=redbeat.RedBeatScheduler'])
 
     sys.exit(
         subprocess.call(
