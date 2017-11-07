@@ -37,7 +37,7 @@ def send_email_notification(build: Build):
             ])
         )
     )
-    if not options.get('mail.notify-author'):
+    if options.get('mail.notify-author') != '1':
         return
 
     if not has_linked_account(build):
