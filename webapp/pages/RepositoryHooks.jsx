@@ -2,9 +2,15 @@ import React from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import {Flex, Box} from 'grid-styled';
 
 import AsyncPage from '../components/AsyncPage';
 import Button from '../components/Button';
+import Panel from '../components/Panel';
+import ResultGridHeader from '../components/ResultGridHeader';
+import ResultGridRow from '../components/ResultGridRow';
+import SectionHeading from '../components/SectionHeading';
+import TimeSince from '../components/TimeSince';
 
 import {addIndicator, removeIndicator} from '../actions/indicators';
 
@@ -45,28 +51,53 @@ class RepositoryHooks extends AsyncPage {
     return (
       <div>
         <div>
-          <div style={{float: 'right'}}>
-            <Button onClick={this.createHook} type="primary">
+          <div style={{float: 'right', marginTop: -5}}>
+            <Button onClick={this.createHook} type="primary" size="small">
               Create Hook
             </Button>
           </div>
-          <h2>Hooks</h2>
+          <SectionHeading>Hooks</SectionHeading>
         </div>
-        {hookList.length
-          ? <ul>
-              {hookList.map(hook => {
-                return (
-                  <li key={hook.id}>
-                    <Link to={`/${repo.full_name}/settings/hooks/${hook.id}`}>
-                      {hook.id}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          : <p>
-              {"You haven't registered any hooks for this repository yet."}
-            </p>}
+        <Panel>
+          {hookList.length
+            ? <div>
+                <ResultGridHeader>
+                  <Flex>
+                    <Box flex="1" width={9 / 12} pr={15}>
+                      ID
+                    </Box>
+                    <Box width={1 / 12} style={{textAlign: 'center'}}>
+                      Provider
+                    </Box>
+                    <Box width={2 / 12} style={{textAlign: 'right'}}>
+                      Created
+                    </Box>
+                  </Flex>
+                </ResultGridHeader>
+                {hookList.map(hook => {
+                  return (
+                    <ResultGridRow key={hook.id}>
+                      <Flex>
+                        <Box flex="1" width={9 / 12} pr={15}>
+                          <Link to={`/${repo.full_name}/settings/hooks/${hook.id}`}>
+                            {hook.id}
+                          </Link>
+                        </Box>
+                        <Box width={1 / 12} style={{textAlign: 'center'}}>
+                          {hook.provider}
+                        </Box>
+                        <Box width={2 / 12} style={{textAlign: 'right'}}>
+                          <TimeSince date={hook.created_at} />
+                        </Box>
+                      </Flex>
+                    </ResultGridRow>
+                  );
+                })}
+              </div>
+            : <ResultGridRow>
+                {"You haven't registered any hooks for this repository yet."}
+              </ResultGridRow>}
+        </Panel>
       </div>
     );
   }
