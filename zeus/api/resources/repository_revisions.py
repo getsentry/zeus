@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, current_app
 from marshmallow import fields
 from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
 
@@ -17,6 +17,11 @@ revisions_schema = RevisionWithBuildSchema(many=True, strict=True)
 
 class RepositoryRevisionsResource(BaseRepositoryResource):
     def fetch_revisions(self, repo: Repository):
+        if current_app.config.get('MOCK_REVISIONS'):
+            return Revision.query \
+                .filter(Revision.repository_id == repo.id) \
+                .order_by(Revision.date_created.desc())
+
         vcs = repo.get_vcs()
         if not vcs:
             return []
