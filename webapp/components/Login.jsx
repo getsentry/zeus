@@ -21,8 +21,7 @@ class Login extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    // logged out
-    if (this.props.isAuthenticated) {
+    if (nextProps.isAuthenticated) {
       this.context.router.push('/');
     }
   }
