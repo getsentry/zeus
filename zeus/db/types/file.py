@@ -16,7 +16,8 @@ class FileData(Mutable):
 
         self.filename = data.get('filename')
         self.storage = (
-            data.get('storage', default_storage or current_app.config['FILE_STORAGE'])
+            data.get(
+                'storage', default_storage or current_app.config['FILE_STORAGE'])
         )
         self.path = data.get('path', default_path)
 
@@ -33,10 +34,10 @@ class FileData(Mutable):
             options['path'] = self.path
         return storage(**options)
 
-    def url_for(self):
+    def url_for(self, expire=300):
         if self.filename is None:
             return
-        return self.get_storage().url_for(self.filename)
+        return self.get_storage().url_for(self.filename, expire=expire)
 
     def save(self, fp, filename=None):
         if filename:
