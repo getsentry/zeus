@@ -26,6 +26,7 @@ export default class RepositoryHookDetails extends AsyncPage {
 
   renderBody() {
     let {hook} = this.state;
+    let hookBase = this.getHookBase();
     // let repo = this.context.repo;
     // let basePath = `/${repo.full_name}`;
     return (
@@ -49,15 +50,18 @@ export default class RepositoryHookDetails extends AsyncPage {
           <dt>Base Path:</dt>
           <dd>
             <code>
-              {hook.base_uri}
+              {hookBase}
             </code>
           </dd>
         </dl>
 
         <h3>Travis Config</h3>
+        <h4>Environment</h4>
         <pre>
-          ZEUS_HOOK_BASE={this.getHookBase()}
+          ZEUS_HOOK_BASE={hookBase}
         </pre>
+        <h4>Webhooks</h4>
+        <pre>{`notifications:\n  webhooks:\n    urls:\n      - ${hookBase}/provider/travis/webhook/`}</pre>
       </div>
     );
   }
