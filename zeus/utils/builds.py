@@ -7,6 +7,10 @@ from zeus.models import Build, Source
 
 
 def merge_builds(target, build):
+    # Store the original build so we can retrieve its ID or number later, or
+    # show a list of all builds in the UI
+    build.original.append(build)
+
     # These properties should theoretically always be the same within a build
     # group, so merging is not necessary.  We assign here so the initial build
     # gets populated.
@@ -51,7 +55,9 @@ def merge_build_group(build_group):
     # if len(latest_builds) == 1:
     #     return latest_builds[0]
 
-    return reduce(merge_builds, latest_builds, Build())
+    build = Build()
+    build.original = []
+    return reduce(merge_builds, latest_builds, build)
 
 
 def fetch_builds_for_revisions(repo, revisions):
@@ -76,3 +82,7 @@ def fetch_builds_for_revisions(repo, revisions):
 
     groups = groupby(builds, lambda build: build.source.revision_sha)
     return [(sha, merge_build_group(list(group))) for sha, group in groups]
+
+
+def fetch_build_for_revision(repo, revision):
+    return fetch_builds_for_revisions(revision.repository, [revision])[1]

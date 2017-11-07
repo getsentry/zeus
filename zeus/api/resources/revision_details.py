@@ -1,5 +1,5 @@
 from zeus.models import Revision
-from zeus.utils.builds import fetch_builds_for_revisions
+from zeus.utils.builds import fetch_build_for_revision
 
 from .base_revision import BaseRevisionResource
 from ..schemas import BuildSchema
@@ -15,6 +15,5 @@ class RevisionDetailsResource(BaseRevisionResource):
         """
         Return the joined build status of a revision.
         """
-        (_, build) = fetch_builds_for_revisions(
-            revision.repository, [revision.sha])
-        return self.respond_with_schema(build_schema, build)
+        build = fetch_build_for_revision(revision.repository, revision)
+        return self.respond_with_schema(build, build)
