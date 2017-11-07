@@ -31,7 +31,7 @@ after_failure:
 notifications:
   webhooks:
     urls:
-      - secure: "HAM3zeUWmjMgECKCJIWddmSdl+jBYcHHFmAu+ncJhHTrgGDvH5oId7GfYgvkN38u6VGl7k4oEpRUemRvR6I3py13jnKltasl7p1mjqTUNvgYr55QFzLxK4icX7e5Fn44X1zgjW+3B5Y0zthVz6jfQaq7ibXSILEkGCCk1h+fFphZgIY1X7xGkEwjJyz4VNqjioGp7qdul3awNC94tRAVdR6MjLqlFAmJS5XfEyj0RDQwigsBqgv25Hbjhw2yI5Wbzf6dtksLaLaBF/UGWAIIkul31w+jIcnd/SG5J+WLDd1lUKku2AnTT/4DdXKFE0xDAtvPMJD1zCJFs1OZRyRiba5dklZ1OnmkEFzMQmzsMEAGvz5l3yWKCdJu6v+55RMDiIBpfjugzbYxZWbRkID+t2JoKE+BXBklYWIvRFnimnzg9UkPZJyVlbAka8+szxeNKEtK11DpNuHpp+vYbwXl6cEK4xcZ/e9Q4INB5be28TARc2kVz4B24tryGINvott9cPZSePQVdCpFO3XeUJIw0mrxvqDsLIzyBwqN7tXwMYaoX7/DwAV6mjPsHOqr9mDpbij/CFSwnWdIKFivwbTaFKp0dfwVV8mTSuytOVwtfGaE4TpL8kTDEGWjEixpwymMM7LTjR94hctzhmTc1c4GTJWjsMPsgv+mJa20ixIvN/M="
+      - https://zeus.ci/hooks/c8e250c8-81ee-11e7-bf7a-0a580a280480/provider/travis/webhook
     on_success: always
     on_failure: always
     on_start: always

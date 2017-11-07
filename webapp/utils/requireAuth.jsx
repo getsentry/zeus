@@ -30,11 +30,10 @@ export default function(ComposedComponent) {
     }
   }
 
-  function mapStateToProps(state) {
-    return {
+  return connect(
+    state => ({
       isAuthenticated: state.auth.isAuthenticated
-    };
-  }
-
-  return connect(mapStateToProps, {})(Authenticate);
+    }),
+    {}
+  )(Authenticate);
 }

@@ -1,9 +1,32 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 
 import GitHubLoginButton from './GitHubLoginButton';
 import Modal from './Modal';
 
-export default class Login extends Component {
+class Login extends Component {
+  static propTypes = {
+    isAuthenticated: PropTypes.bool
+  };
+
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
+  componentWillMount() {
+    if (this.props.isAuthenticated) {
+      this.context.router.push('/');
+    }
+  }
+
+  componentWillUpdate(nextProps) {
+    // logged out
+    if (this.props.isAuthenticated) {
+      this.context.router.push('/');
+    }
+  }
+
   render() {
     return (
       <Modal title="Login">
@@ -15,3 +38,10 @@ export default class Login extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    isAuthenticated: state.auth.isAuthenticated
+  }),
+  {}
+)(Login);

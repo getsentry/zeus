@@ -25,7 +25,7 @@ class HookSchema(Schema):
         return None
 
     def get_public_uri(self, obj):
-        return '/hooks/{}'.format(str(obj.id), obj.get_signature())
+        return '/hooks/{}'.format(str(obj.id))
 
     def get_secret_uri(self, obj):
         return '/hooks/{}/{}'.format(str(obj.id), obj.get_signature())
