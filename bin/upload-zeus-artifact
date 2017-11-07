@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 if [[ -e $1 ]]; then
-    curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER/jobs/$TRAVIS_JOB_NUMBER/artifacts \
+    curl -i $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER/jobs/$TRAVIS_JOB_NUMBER/artifacts \
         -X POST \
         -F "file=@$1" \
         -F "type=$2"
