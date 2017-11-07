@@ -46,9 +46,6 @@ class AuthIndexResource(Resource):
         """
         Logout.
         """
-        if not session.get('uid'):
-            return
-
         auth.logout()
 
         return {
