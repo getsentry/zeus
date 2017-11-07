@@ -14,13 +14,13 @@ def has_linked_account(build: Build) -> bool:
         ).join(
             RepositoryAccess, RepositoryAccess.user_id == User.id
         ).join(
-            Source, Build.source_id == Source.id
+            Source, Source.id == build.source_id
         ).join(
             Author, Source.author_id == Author.id
         ).filter(
             Email.email == Author.email,
             Email.verified == True,  # NOQA
-            RepositoryAccess.repository_id == Build.repository_id,
+            RepositoryAccess.repository_id == build.repository_id,
         ).exists()
     ).scalar()
 
