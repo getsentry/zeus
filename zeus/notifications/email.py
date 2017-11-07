@@ -126,6 +126,7 @@ def build_message(build: Build) -> Message:
             'url': job.url,
             'label': job.label,
         } for job in job_list],
+        'job_failure_count': sum((1 for job in job_list if job.result == Result.failed)),
         'date_created': build.date_created,
         'failing_tests': [{
             'name': test.name

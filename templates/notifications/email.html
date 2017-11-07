@@ -162,7 +162,8 @@
       {% endif %}
     </table>
     {% endif %} {% if job_list %}
-    <h2>Jobs</h2>
+    <h2>Jobs{% if job_failure_count %}
+      <small> &mdash; {{ job_failure_count }}</small>{% endif %}</h2>
     <table class="table">
       {% for job in job_list %}
       <tr>

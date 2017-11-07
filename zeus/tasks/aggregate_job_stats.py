@@ -266,7 +266,7 @@ def aggregate_build_stats(build_id: UUID):
     db.session.commit()
 
     # we dont bother aggregating stats unless we're finished
-    if is_finished and not was_finished:
+    if build.status == Status.finished and not was_finished:
         for stat in AGGREGATED_BUILD_STATS:
             aggregate_stat_for_build(build, stat)
         send_email_notification(build)
