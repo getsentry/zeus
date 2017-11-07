@@ -21,13 +21,13 @@ class Manager(object):
                 if fnmatch(artifact_name, pattern):
                     return id
 
-        return 'UNKNOWN'
+        return None
 
     def process(self, artifact):
         job = artifact.job
         artifact_name = artifact.name
 
-        if artifact.type == 'UNKNOWN':
+        if artifact.type is None:
             inferred_type = self.infer_type(artifact_name)
             if inferred_type != artifact.type:
                 artifact.type = inferred_type
