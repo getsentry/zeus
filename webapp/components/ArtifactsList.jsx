@@ -57,7 +57,11 @@ export default class ArtifactsList extends Component {
                 <Flex align="center">
                   <Box flex="1" width={9 / 12} pr={15}>
                     <div>
-                      <a href={artifact.download_url}>{artifact.name}</a>
+                      {this.props.collapsable ? (
+                        artifact.name
+                      ) : (
+                        <a href={artifact.download_url}>{artifact.name}</a>
+                      )}
                     </div>
                   </Box>
                   <Box width={2 / 12}>{this.getTypeName(artifact.type)}</Box>
