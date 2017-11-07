@@ -40,6 +40,8 @@ def get_travis_public_key(domain) -> str:
         public_key = resp.json()[
             'config']['notifications']['webhook']['public_key']
         redis.setex(cache_key, public_key, 300)
+    else:
+        public_key = public_key.encode('utf-8')
     return serialization.load_pem_public_key(public_key.encode('utf-8'), backend=default_backend())
 
 
@@ -55,6 +57,9 @@ def verify_signature(public_key, signature, payload):
 
 class TravisWebhookView(BaseHook):
     public = True
+
+    def get(self, hook):
+        return Response(status=405)
 
     def post(self, hook):
         payload = request.form.get('payload')
