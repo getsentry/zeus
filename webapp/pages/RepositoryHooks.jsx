@@ -2,13 +2,10 @@ import React from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {Flex, Box} from 'grid-styled';
 
 import AsyncPage from '../components/AsyncPage';
 import Button from '../components/Button';
-import Panel from '../components/Panel';
-import ResultGridHeader from '../components/ResultGridHeader';
-import ResultGridRow from '../components/ResultGridRow';
+import {ResultGrid, Column, Header, Row} from '../components/ResultGrid';
 import SectionHeading from '../components/SectionHeading';
 import TimeSince from '../components/TimeSince';
 
@@ -58,46 +55,38 @@ class RepositoryHooks extends AsyncPage {
           </div>
           <SectionHeading>Hooks</SectionHeading>
         </div>
-        <Panel>
+        <ResultGrid>
           {hookList.length
             ? <div>
-                <ResultGridHeader>
-                  <Flex>
-                    <Box flex="1" width={9 / 12} pr={15}>
-                      ID
-                    </Box>
-                    <Box width={1 / 12} style={{textAlign: 'center'}}>
-                      Provider
-                    </Box>
-                    <Box width={2 / 12} style={{textAlign: 'right'}}>
-                      Created
-                    </Box>
-                  </Flex>
-                </ResultGridHeader>
+                <Header>
+                  <Column>ID</Column>
+                  <Column width={120}>Provider</Column>
+                  <Column width={150}>Created</Column>
+                </Header>
                 {hookList.map(hook => {
                   return (
-                    <ResultGridRow key={hook.id}>
-                      <Flex>
-                        <Box flex="1" width={9 / 12} pr={15}>
-                          <Link to={`/${repo.full_name}/settings/hooks/${hook.id}`}>
-                            {hook.id}
-                          </Link>
-                        </Box>
-                        <Box width={1 / 12} style={{textAlign: 'center'}}>
-                          {hook.provider}
-                        </Box>
-                        <Box width={2 / 12} style={{textAlign: 'right'}}>
-                          <TimeSince date={hook.created_at} />
-                        </Box>
-                      </Flex>
-                    </ResultGridRow>
+                    <Row key={hook.id}>
+                      <Column>
+                        <Link to={`/${repo.full_name}/settings/hooks/${hook.id}`}>
+                          {hook.id}
+                        </Link>
+                      </Column>
+                      <Column width={120}>
+                        {hook.provider}
+                      </Column>
+                      <Column width={150}>
+                        <TimeSince date={hook.created_at} />
+                      </Column>
+                    </Row>
                   );
                 })}
               </div>
-            : <ResultGridRow>
-                {"You haven't registered any hooks for this repository yet."}
-              </ResultGridRow>}
-        </Panel>
+            : <Row>
+                <Column>
+                  {"You haven't registered any hooks for this repository yet."}
+                </Column>
+              </Row>}
+        </ResultGrid>
       </div>
     );
   }

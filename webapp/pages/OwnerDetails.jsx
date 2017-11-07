@@ -7,9 +7,7 @@ import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, CrumbLink} from '../components/Breadcrumbs';
 import Content from '../components/Content';
 import Header from '../components/Header';
-import Panel from '../components/Panel';
-import ResultGridHeader from '../components/ResultGridHeader';
-import ResultGridRow from '../components/ResultGridRow';
+import ResultGrid from '../components/ResultGrid';
 import Section from '../components/Section';
 import ScrollView from '../components/ScrollView';
 import Sidebar from '../components/Sidebar';
@@ -58,23 +56,27 @@ export default class OwnerDetails extends AsyncPage {
           </Header>
           <ScrollView>
             <Section>
-              <Panel>
-                <ResultGridHeader>Repository</ResultGridHeader>
+              <ResultGrid.ResultGrid>
+                <ResultGrid.Header>
+                  <ResultGrid.Column>Repository</ResultGrid.Column>
+                </ResultGrid.Header>
                 {this.state.repoList.map(repo => {
                   return (
-                    <ResultGridRow key={repo.name}>
-                      <Link to={`/${repo.full_name}`}>
-                        {repo.name}
-                      </Link>
-                      <br />
-                      {!!repo.url &&
-                        <small>
-                          {repo.url}
-                        </small>}
-                    </ResultGridRow>
+                    <ResultGrid.Row key={repo.name}>
+                      <ResultGrid.Column>
+                        <Link to={`/${repo.full_name}`}>
+                          {repo.name}
+                        </Link>
+                        <br />
+                        {!!repo.url &&
+                          <small>
+                            {repo.url}
+                          </small>}
+                      </ResultGrid.Column>
+                    </ResultGrid.Row>
                   );
                 })}
-              </Panel>
+              </ResultGrid.ResultGrid>
             </Section>
           </ScrollView>
         </Content>

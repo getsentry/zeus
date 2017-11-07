@@ -6,7 +6,7 @@ import {Flex, Box} from 'grid-styled';
 import BuildListItem from './BuildListItem';
 import ListItemLink from './ListItemLink';
 import ObjectAuthor from './ObjectAuthor';
-import ResultGridRow from './ResultGridRow';
+import {Column, Row} from './ResultGrid';
 import TimeSince from './TimeSince';
 
 export default class RevisionListItem extends Component {
@@ -40,40 +40,38 @@ export default class RevisionListItem extends Component {
             ? `/${repo.full_name}/builds/${revision.latest_build.number}`
             : null
         }>
-        <ResultGridRow>
-          <Flex align="center">
-            <Box flex="1" width={8 / 12} pr={15}>
-              <Flex>
-                <Box width={15} mr={8} />
-                <Box flex="1" style={{minWidth: 0}}>
-                  <Message>
-                    {revision.message.split('\n')[0]}
-                  </Message>
-                  <Meta>
-                    {includeRepo
-                      ? <RepoLink to={`/${repo.full_name}`}>
-                          {repo.owner_name}/{repo.name}
-                        </RepoLink>
-                      : null}
-                    <Commit>
-                      {revision.sha.substr(0, 7)}
-                    </Commit>
-                    {includeAuthor
-                      ? <Author>
-                          <ObjectAuthor data={revision} />
-                        </Author>
-                      : null}
-                  </Meta>
-                </Box>
-              </Flex>
-            </Box>
-            <Box width={1 / 12} style={{textAlign: 'center'}} />
-            <Box width={1 / 12} style={{textAlign: 'center'}} />
-            <Box width={2 / 12} style={{textAlign: 'right'}}>
-              <TimeSince date={revision.committed_at || revision.created_at} />
-            </Box>
-          </Flex>
-        </ResultGridRow>
+        <Row>
+          <Column>
+            <Flex>
+              <Box width={15} mr={8} />
+              <Box flex="1" style={{minWidth: 0}}>
+                <Message>
+                  {revision.message.split('\n')[0]}
+                </Message>
+                <Meta>
+                  {includeRepo
+                    ? <RepoLink to={`/${repo.full_name}`}>
+                        {repo.owner_name}/{repo.name}
+                      </RepoLink>
+                    : null}
+                  <Commit>
+                    {revision.sha.substr(0, 7)}
+                  </Commit>
+                  {includeAuthor
+                    ? <Author>
+                        <ObjectAuthor data={revision} />
+                      </Author>
+                    : null}
+                </Meta>
+              </Box>
+            </Flex>
+          </Column>
+          <Column width={90} textAlign="center" />
+          <Column width={90} textAlign="center" />
+          <Column width={150} textAlign="right">
+            <TimeSince date={revision.committed_at || revision.created_at} />
+          </Column>
+        </Row>
       </ListItemLink>
     );
   }
