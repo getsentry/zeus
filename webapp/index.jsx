@@ -8,6 +8,8 @@ import {setAuth} from './actions/auth';
 import routes from './routes';
 import store from './store';
 
+import './index.css';
+
 // we cache the user details in localStorage, but its still fetched on
 // the initial load to update/validate
 if (localStorage.auth) {

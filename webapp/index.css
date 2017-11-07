@@ -1,5 +1,59 @@
+@import url('https://fonts.googleapis.com/css?family=Rubik:400,500');
+
 body {
-  margin: 0;
+  font-size: 16px;
+  font-family: 'Rubik', sans-serif;
+  -webkit-font-smoothing: antialiased;
   padding: 0;
-  font-family: sans-serif;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  transition: .1s linear color;
+  color: #7b6be6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+strong,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+}
+
+ul,
+ol,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+table,
+form,
+blockquote {
+  margin: 0 0 20px 0;
+}
+
+ul,
+ol {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }

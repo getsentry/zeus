@@ -9,8 +9,6 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import Indicators from '../components/Indicators';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
 
-import './App.css';
-
 class RepositoryContext extends AsyncComponent {
   static propTypes = {
     repoList: PropTypes.arrayOf(PropTypes.object)
