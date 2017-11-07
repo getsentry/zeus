@@ -13,7 +13,7 @@ class Artifact(RepositoryBoundMixin, StandardAttributes, db.Model):
     testcase_id = db.Column(GUID, db.ForeignKey(
         'testcase.id', ondelete='CASCADE'), nullable=True)
     name = db.Column(db.String(length=256), nullable=False)
-    type = db.Column(db.String(length=64), default="UNKNOWN", nullable=False)
+    type = db.Column(db.String(length=64), nullable=True)
     file = db.Column(
         File(path='artifacts'),
         nullable=False,
