@@ -10,7 +10,7 @@ import SectionHeading from '../components/SectionHeading';
 import SectionSubheading from '../components/SectionSubheading';
 import TestList from '../components/TestList';
 
-export default class BuildJobList extends AsyncPage {
+export default class BuildOverview extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
     build: PropTypes.object.isRequired,
