@@ -8,8 +8,8 @@ import {Client} from '../api';
 import Collapsable from './Collapsable';
 import ObjectDuration from './ObjectDuration';
 import ObjectResult from './ObjectResult';
-import Panel from './Panel';
 import ResultGridRow from './ResultGridRow';
+import {ResultGrid, Column, Header} from './ResultGrid';
 
 class TestDetails extends Component {
   static propTypes = {
@@ -65,11 +65,11 @@ class TestListItem extends Component {
       <TestListItemLink onClick={() => this.setState({expanded: !this.state.expanded})}>
         <ResultGridRow>
           <Flex align="center">
-            <Box flex="1" width={11 / 12} pr={15}>
+            <Box flex="1">
               <ObjectResult data={test} />
               {test.name}
             </Box>
-            <Box width={1 / 12} style={{textAlign: 'right'}}>
+            <Box width={90} style={{textAlign: 'right'}}>
               <ObjectDuration data={test} short={true} />
             </Box>
           </Flex>
@@ -93,7 +93,13 @@ export default class TestList extends Component {
 
   render() {
     return (
-      <Panel>
+      <ResultGrid>
+        <Header>
+          <Column>Test Case</Column>
+          <Column width={90} textAlign="right">
+            Duration
+          </Column>
+        </Header>
         <Collapsable
           collapsable={this.props.collapsable}
           maxVisible={this.props.maxVisible}>
@@ -103,7 +109,7 @@ export default class TestList extends Component {
             );
           })}
         </Collapsable>
-      </Panel>
+      </ResultGrid>
     );
   }
 }

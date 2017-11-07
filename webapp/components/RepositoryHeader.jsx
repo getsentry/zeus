@@ -3,23 +3,26 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import styled from 'styled-components';
 
-import {Breadcrumbs, CrumbLink} from '../components/Breadcrumbs';
 import Header from '../components/Header';
 
-const Nav = styled.div`float: right;`;
+const Nav = styled.div`display: inline-block;`;
 
 const NavItem = styled(Link)`
   cursor: pointer;
   float: left;
   font-size: 15px;
-  color: #AAA7BB;
+  color: #333;
   margin-left: 10px;
   padding: 5px 10px;
-  border: 2px solid #fff;
+  border: 3px solid #fff;
+  border-radius: 4px;
+
+  &:hover {
+    color: #333;
+  }
 
   &.active, .${props => props.activeClassName} {
-    border: 2px solid #7B6BE6;
-    border-radius: 4px;
+    border-color: #7B6BE6;
     color: #7B6BE6;
   }
 `;
@@ -37,21 +40,8 @@ export default class RepositoryHeader extends Component {
     let {repo} = this.context;
     let basePath = `/${repo.full_name}`;
 
-    let children =
-      this.props.children ||
-      <Breadcrumbs>
-        <CrumbLink to={`/${repo.provider}/${repo.owner_name}`}>
-          {repo.owner_name}
-        </CrumbLink>
-        <CrumbLink to={basePath}>
-          {repo.name}
-        </CrumbLink>
-      </Breadcrumbs>;
     return (
       <Header>
-        <div style={{float: 'left'}}>
-          {children}
-        </div>
         <Nav>
           <NavItem to={basePath} onlyActiveOnIndex={true}>
             Commits

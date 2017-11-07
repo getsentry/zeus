@@ -7,8 +7,8 @@ import {loadBuildsForUser} from '../actions/builds';
 import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
 import BuildList from '../components/BuildList';
+import Layout from '../components/Layout';
 import Section from '../components/Section';
-import SidebarLayout from '../components/SidebarLayout';
 
 class UserBuildList extends AsyncPage {
   getTitle() {
@@ -18,11 +18,11 @@ class UserBuildList extends AsyncPage {
 
   renderBody() {
     return (
-      <SidebarLayout title={this.getTitle()}>
+      <Layout title={this.getTitle()}>
         <Section>
           <BuildListBody {...this.props} />
         </Section>
-      </SidebarLayout>
+      </Layout>
     );
   }
 }

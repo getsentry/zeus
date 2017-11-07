@@ -42,13 +42,12 @@ export default class BuildOverviewBase extends AsyncPage {
     let unallowedFailures = this.state.jobList.filter(job => !job.allow_failure);
     return (
       <Section>
-        {!!this.state.artifacts.length && (
+        {!!this.state.artifacts.length &&
           <div>
             <SectionHeading>Artifacts</SectionHeading>
             <ArtifactsList artifacts={this.state.artifacts} collapsable={true} />
-          </div>
-        )}
-        {!!this.state.testFailures.length && (
+          </div>}
+        {!!this.state.testFailures.length &&
           <div>
             <SectionHeading>Failing Tests</SectionHeading>
             <TestList
@@ -56,30 +55,29 @@ export default class BuildOverviewBase extends AsyncPage {
               params={this.props.params}
               collapsable={true}
             />
-          </div>
-        )}
-        {!!this.state.diffCoverage.length && (
+          </div>}
+        {!!this.state.diffCoverage.length &&
           <div>
             <SectionHeading>Coverage</SectionHeading>
             <CoverageSummary coverage={this.state.diffCoverage} collapsable={true} />
-          </div>
-        )}
+          </div>}
         <div>
           <SectionHeading>
             Jobs
-            {!!failingJobs && <small> &mdash; {failingJobs.length} failed</small>}
+            {!!failingJobs &&
+              <small>
+                {' '}&mdash; {failingJobs.length} failed
+              </small>}
           </SectionHeading>
-          {!!unallowedFailures.length && (
+          {!!unallowedFailures.length &&
             <div>
               <JobList build={this.context.build} jobList={unallowedFailures} />
-            </div>
-          )}
-          {!!allowedFailures.length && (
+            </div>}
+          {!!allowedFailures.length &&
             <div>
               <SectionSubheading>Allowed Failures</SectionSubheading>
               <JobList build={this.context.build} jobList={allowedFailures} />
-            </div>
-          )}
+            </div>}
         </div>
       </Section>
     );

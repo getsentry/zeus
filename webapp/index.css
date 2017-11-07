@@ -3,6 +3,8 @@
 body {
   font-size: 16px;
   font-family: 'Rubik', sans-serif;
+  font-weight: 400;
+  color: #333;
   -webkit-font-smoothing: antialiased;
   padding: 0;
   margin: 0;
@@ -14,8 +16,8 @@ a {
   color: #7b6be6;
 }
 
-* {
-  box-sizing: border-box;
+a:hover {
+  color: #7b6be6;
 }
 
 strong,

@@ -1,7 +1,7 @@
 import styled, {css} from 'styled-components';
 
 export default styled.span`
-  font-size: 75%;
+  font-size: 65%;
   display: inline-block;
   padding: .25em .5em;
   margin-left: 5px;

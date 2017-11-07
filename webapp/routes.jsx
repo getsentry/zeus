@@ -26,6 +26,7 @@ import RevisionDetails from './pages/RevisionDetails';
 import RevisionDiff from './pages/RevisionDiff';
 import RevisionOverview from './pages/RevisionOverview';
 import RevisionTestList from './pages/RevisionTestList';
+import Settings from './pages/Settings';
 import UserBuildList from './pages/UserBuildList';
 
 import Login from './components/Login';
@@ -36,7 +37,10 @@ import requireAuth from './utils/requireAuth';
 export default (
   <Route path="/" component={App}>
     <IndexRedirect to="/builds" />
-    <Route path="/settings/github/repos" component={requireAuth(GitHubRepositoryList)} />
+    <Route path="/settings">
+      <IndexRoute component={requireAuth(Settings)} />
+      <Route path="github/repos" component={requireAuth(GitHubRepositoryList)} />
+    </Route>
     <Route path="/builds" component={requireAuth(UserBuildList)} />
     <Route path="/login" component={Login} />
     <Route path="/:provider/:ownerName" component={requireAuth(OwnerDetails)} />
