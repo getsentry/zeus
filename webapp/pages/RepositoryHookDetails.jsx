@@ -14,19 +14,20 @@ export default class RepositoryHookDetails extends AsyncPage {
     return [['hook', `/hooks/${params.hookId}`]];
   }
 
-  getHookBase() {
+  getHookBase(secret = false) {
     let {hook} = this.state;
     let {hostname, port, protocol} = document.location;
 
     if (protocol === 'http') port = port === 80 ? '' : `:${port}`;
     else if (protocol === 'http') port = port === 443 ? '' : `:${port}`;
 
-    return `${protocol}//${hostname}${port}${hook.base_uri}`;
+    return `${protocol}//${hostname}${port}${secret ? hook.secret_uri : hook.public_uri}`;
   }
 
   renderBody() {
     let {hook} = this.state;
-    let hookBase = this.getHookBase();
+    let secretHookBase = this.getHookBase(true);
+    let publicHookBase = this.getHookBase(false);
     // let repo = this.context.repo;
     // let basePath = `/${repo.full_name}`;
     return (
@@ -50,7 +51,7 @@ export default class RepositoryHookDetails extends AsyncPage {
           <dt>Base Path:</dt>
           <dd>
             <code>
-              {hookBase}
+              {secretHookBase}
             </code>
           </dd>
         </dl>
@@ -58,11 +59,11 @@ export default class RepositoryHookDetails extends AsyncPage {
         <h3>Travis Config</h3>
         <h4>Environment</h4>
         <pre>
-          ZEUS_HOOK_BASE={hookBase}
+          ZEUS_HOOK_BASE={secretHookBase}
         </pre>
         <h4>Webhooks</h4>
         <pre>
-          {`notifications:\n  webhooks:\n    urls:\n      - ${hookBase}/provider/travis/webhook\n    on_start: always`}
+          {`notifications:\n  webhooks:\n    urls:\n      - ${publicHookBase}/provider/travis/webhook\n    on_start: always`}
         </pre>
       </div>
     );

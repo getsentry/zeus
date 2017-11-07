@@ -54,6 +54,8 @@ def verify_signature(public_key, signature, payload):
 
 
 class TravisWebhookView(BaseHook):
+    public = True
+
     def post(self, hook):
         payload = request.form.get('payload')
         if not payload:

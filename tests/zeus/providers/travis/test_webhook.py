@@ -219,8 +219,8 @@ def get_config_response(public_key_bytes):
 
 
 def post_request(client, hook, payload, public_key, signature):
-    path = '/hooks/{}/{}/provider/travis/webhook/'.format(
-        hook.id, hook.get_signature(),
+    path = '/hooks/{}/public/provider/travis/webhook/'.format(
+        hook.id,
     )
 
     return client.post(path, data={
@@ -231,8 +231,8 @@ def post_request(client, hook, payload, public_key, signature):
 
 
 def test_missing_payload(client, default_repo, default_hook):
-    path = '/hooks/{}/{}/provider/travis/webhook/'.format(
-        default_hook.id, default_hook.get_signature(),
+    path = '/hooks/{}/public/provider/travis/webhook/'.format(
+        default_hook.id,
     )
 
     resp = client.post(path)
@@ -240,8 +240,8 @@ def test_missing_payload(client, default_repo, default_hook):
 
 
 def test_missing_signature(client, default_repo, default_hook):
-    path = '/hooks/{}/{}/provider/travis/webhook/'.format(
-        default_hook.id, default_hook.get_signature(),
+    path = '/hooks/{}/public/provider/travis/webhook/'.format(
+        default_hook.id,
     )
 
     resp = client.post(path)
