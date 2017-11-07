@@ -131,7 +131,7 @@ def create_app(_read_config=True, **config):
         tempfile.gettempdir(), 'zeus-celerybeat')
     app.config['CELERYBEAT_SCHEDULE'] = {
         'sync-all-repos': {
-            'task': 'zeus.tasks.sync_all_repos',
+            'task': 'zeus.sync_all_repos',
             'schedule': timedelta(minutes=5),
         },
     }
