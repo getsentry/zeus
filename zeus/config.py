@@ -129,6 +129,12 @@ def create_app(_read_config=True, **config):
     app.config['CELERYD_MAX_TASKS_PER_CHILD'] = 10000
     app.config['CELERYBEAT_SCHEDULE_FILE'] = os.path.join(
         tempfile.gettempdir(), 'zeus-celerybeat')
+    app.config['CELERYBEAT_SCHEDULE'] = {
+        'sync-all-repos': {
+            'task': 'zeus.tasks.sync_all_repos',
+            'schedule': timedelta(minutes=5),
+        },
+    }
     app.config['REDBEAT_REDIS_URL'] = app.config['REDIS_URL']
 
     app.config['WORKSPACE_ROOT'] = WORKSPACE_ROOT
