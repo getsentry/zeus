@@ -17,7 +17,7 @@ AGGREGATED_BUILD_STATS = (
 
 
 # TODO(dcramer): put a lock around this
-@celery.task
+@celery.task(max_retries=None)
 def aggregate_build_stats_for_job(job_id: UUID):
     """
     Given a job, aggregate its data upwards into the Build.abs
