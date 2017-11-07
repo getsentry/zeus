@@ -39,8 +39,12 @@ export default class ArtifactsList extends Component {
       <Panel>
         <ResultGridHeader>
           <Flex align="center">
-            <Box flex="1" width={1} pr={15}>
+            <Box flex="1" width={9 / 12} pr={15}>
               File
+            </Box>
+            <Box width={2 / 12}>Type</Box>
+            <Box width={1 / 12} style={{textAlign: 'right'}}>
+              Size
             </Box>
           </Flex>
         </ResultGridHeader>
@@ -51,13 +55,14 @@ export default class ArtifactsList extends Component {
             return (
               <ResultGridRow key={artifact.id}>
                 <Flex align="center">
-                  <Box flex="1" width={1} pr={15}>
+                  <Box flex="1" width={9 / 12} pr={15}>
                     <div>
                       <a href={artifact.download_url}>{artifact.name}</a>
                     </div>
-                    <div>
-                      <small>{this.getTypeName(artifact.type)}</small>
-                    </div>
+                  </Box>
+                  <Box width={2 / 12}>{this.getTypeName(artifact.type)}</Box>
+                  <Box width={2 / 12} style={{textAlign: 'right'}}>
+                    {/* TODO: Show the file size here */}
                   </Box>
                 </Flex>
               </ResultGridRow>
