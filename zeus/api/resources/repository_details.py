@@ -7,6 +7,9 @@ repo_schema = RepositorySchema(strict=True)
 
 
 class RepositoryDetailsResource(BaseRepositoryResource):
+    def select_resurce_for_update(self) -> bool:
+        return self.is_mutation()
+
     def get(self, repo: Repository):
         """
         Return a repository.

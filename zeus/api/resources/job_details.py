@@ -20,6 +20,9 @@ def has_unprocessed_artifacts(job_id):
 
 
 class JobDetailsResource(BaseJobResource):
+    def select_resurce_for_update(self) -> bool:
+        return self.is_mutation()
+
     def get(self, job: Job):
         """
         Return a job.
