@@ -25,7 +25,7 @@ app.add_url_rule(
     view_func=v.GitHubCompleteView.as_view('github-complete')
 )
 app.add_url_rule(
-    '/hooks/<hook_id>/public/provider/travis/webhook/',
+    '/hooks/<hook_id>/public/provider/travis/webhook',
     view_func=TravisWebhookView.as_view('travis-webhook')
 )
 app.add_url_rule(
