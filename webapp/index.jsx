@@ -3,7 +3,7 @@ import {Router, browserHistory} from 'react-router';
 import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 
-import registerServiceWorker from './registerServiceWorker';
+import unregisterServiceWorker from './registerServiceWorker';
 import {setAuth} from './actions/auth';
 
 import routes from './routes';
@@ -27,4 +27,5 @@ render(
   document.getElementById('root')
 );
 
-registerServiceWorker();
+// service workers cause cache issues
+unregisterServiceWorker();
