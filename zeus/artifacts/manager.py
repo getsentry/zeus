@@ -27,7 +27,7 @@ class Manager(object):
         job = artifact.job
         artifact_name = artifact.name
 
-        if artifact.type is None:
+        if not artifact.type:
             inferred_type = self.infer_type(artifact_name)
             if inferred_type != artifact.type:
                 artifact.type = inferred_type
