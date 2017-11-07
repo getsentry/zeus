@@ -16,16 +16,12 @@ revisions_schema = RevisionWithBuildSchema(many=True, strict=True)
 
 
 class RepositoryRevisionsResource(BaseRepositoryResource):
-    def get(self, repo: Repository):
-        """
-        Return a list of revisions for the given repository.
-        """
+    def fetch_revisions(self, repo: Repository):
         vcs = repo.get_vcs()
         if not vcs:
-            return self.respond([])
+            return []
 
         vcs.ensure(update_if_exists=False)
-
         branch = request.args.get('branch', vcs.get_default_branch())
         parent = request.args.get('parent')
 
@@ -34,49 +30,50 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
             parent=parent,
             branch=branch,
         ))
-        if vcs_log:
-            revisions_map = {
-                r.sha: r
-                for r in Revision.query.options(
-                    joinedload('author'),
-                ).filter(
-                    Revision.repository_id == repo.id,
-                    Revision.sha.in_(c.sha for c in vcs_log)
-                )
-            }
 
-            revisions = []
-            for item in vcs_log:
-                if item.sha in revisions_map:
-                    result = revisions_map[item.sha]
-                else:
-                    result = item
-                revisions.append(result)
-        else:
-            revisions = []
+        if not vcs_log:
+            return []
 
+        existing = Revision.query \
+            .options(joinedload('author')) \
+            .filter(
+                Revision.repository_id == repo.id,
+                Revision.sha.in_(c.sha for c in vcs_log)
+            )
+
+        revisions_map = {r.sha: r for r in existing}
+        return [revisions_map.get(item.sha, item) for item in vcs_log]
+
+    def fetch_builds_by_revision(self, repo, revisions):
+        # we query extra builds here, but its a lot easier than trying to get
+        # sqlalchemy to do a ``select (subquery)`` clause and maintain tenant
+        # constraints
+        return {
+            b.source.revision_sha: b
+            for b in Build.query.options(
+                contains_eager('source'),
+                joinedload('source').joinedload('author'),
+                joinedload('source').joinedload('revision'),
+                joinedload('source').joinedload('patch'),
+                subqueryload_all('stats'),
+            ).join(
+                Source,
+                Build.source_id == Source.id,
+            ).filter(
+                Build.repository_id == repo.id,
+                Source.repository_id == repo.id,
+                Source.revision_sha.in_([r.sha for r in revisions]),
+                Source.patch_id == None,  # NOQA
+            ).order_by(Build.number.asc())
+        }
+
+    def get(self, repo: Repository):
+        """
+        Return a list of revisions for the given repository.
+        """
+        revisions = self.fetch_revisions(repo)
         if revisions:
-            # we query extra builds here, but its a lot easier than trying to get
-            # sqlalchemy to do a ``select (subquery)`` clause and maintain tenant
-            # constraints
-            builds = {
-                b.source.revision_sha: b
-                for b in Build.query.options(
-                    contains_eager('source'),
-                    joinedload('source').joinedload('author'),
-                    joinedload('source').joinedload('revision'),
-                    joinedload('source').joinedload('patch'),
-                    subqueryload_all('stats'),
-                ).join(
-                    Source,
-                    Build.source_id == Source.id,
-                ).filter(
-                    Build.repository_id == repo.id,
-                    Source.repository_id == repo.id,
-                    Source.revision_sha.in_([r.sha for r in revisions]),
-                    Source.patch_id == None,  # NOQA
-                ).order_by(Build.number.asc())
-            }
+            builds = self.fetch_builds_by_revision(repo, revisions)
             for revision in revisions:
                 revision.latest_build = builds.get(revision.sha)
 
