@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import styled from 'styled-components';
 
-export const Breadcrumbs = styled.div``;
+export const Breadcrumbs = styled.div`display: inline-block;`;
 
 export const CrumbLink = props => {
   return (
@@ -21,16 +21,20 @@ CrumbLink.propTypes = {
 
 export const Crumb = styled.span`
   font-size: 22px;
-  color: #000;
+  color: #111;
+
+  a {
+    color: inherit;
+  }
 
   &:after {
     margin: 0 5px;
     content: ' / ';
-    color: #ddd;
+    color: #111;
   }
 
   &:last-child {
-    color: #666;
+    color: #111;
     &:after {
       display: none;
     }

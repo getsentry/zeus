@@ -5,12 +5,10 @@ import styled, {css} from 'styled-components';
 import AsyncPage from '../components/AsyncPage';
 import Badge from '../components/Badge';
 import ObjectAuthor from '../components/ObjectAuthor';
-import {Breadcrumbs, Crumb, CrumbLink} from '../components/Breadcrumbs';
 import ObjectCoverage from '../components/ObjectCoverage';
 import ObjectDuration from '../components/ObjectDuration';
 import ObjectResult from '../components/ObjectResult';
-import RepositoryHeader from '../components/RepositoryHeader';
-import ScrollView from '../components/ScrollView';
+import TabbedNav from '../components/TabbedNav';
 import TabbedNavItem from '../components/TabbedNavItem';
 import TimeSince from '../components/TimeSince';
 
@@ -49,24 +47,6 @@ export default class BuildDetails extends AsyncPage {
     return (this.state.build || {}).status !== 'finished';
   }
 
-  render() {
-    // happens before loading is done
-    let {repo} = this.context;
-    let {buildNumber} = this.props.params;
-    return (
-      <RepositoryHeader>
-        <Breadcrumbs>
-          <CrumbLink to={`/${repo.provider}/${repo.owner_name}`}>
-            {repo.owner_name}
-          </CrumbLink>
-          <CrumbLink to={`/${repo.full_name}`}>{repo.name}</CrumbLink>
-          <Crumb>#{buildNumber}</Crumb>
-        </Breadcrumbs>
-        <ScrollView>{this.renderContent()}</ScrollView>
-      </RepositoryHeader>
-    );
-  }
-
   renderBody() {
     let {build} = this.state;
     let {repo} = this.context;
@@ -75,37 +55,38 @@ export default class BuildDetails extends AsyncPage {
       build.stats.coverage.lines_covered > 0 || build.stats.coverage.lines_uncovered > 0;
     let hasTests = build.stats.tests.count > 0;
     return (
-      <div>
+      <BuildWrapper>
         <BuildSummary>
           <Header>
-            <Message>{build.label || build.source.revision.message}</Message>
+            <Message>
+              {build.label || build.source.revision.message}
+            </Message>
           </Header>
           <Meta>
-            {build.status === 'finished' && (
+            {build.status === 'finished' &&
               <DurationWrapper result={build.result}>
                 <ObjectResult data={build} />
                 {build.result} <TimeSince date={build.finished_at} /> in{' '}
                 <ObjectDuration data={build} short={true} />
-              </DurationWrapper>
-            )}
+              </DurationWrapper>}
             <Time>
               <IconClock size="15" />
-              {build.status === 'queued' ? (
-                <span>
-                  created <TimeSince date={build.created_at} />
-                </span>
-              ) : (
-                <span>
-                  started <TimeSince date={build.started_at} />
-                </span>
-              )}
+              {build.status === 'queued'
+                ? <span>
+                    created <TimeSince date={build.created_at} />
+                  </span>
+                : <span>
+                    started <TimeSince date={build.started_at} />
+                  </span>}
             </Time>
             <Author>
               <ObjectAuthor data={build} />
             </Author>
-            <Commit>{build.source.revision.sha.substr(0, 7)}</Commit>
+            <Commit>
+              {build.source.revision.sha.substr(0, 7)}
+            </Commit>
           </Meta>
-          <Tabs>
+          <TabbedNav>
             <TabbedNavItem
               to={`/${repo.full_name}/builds/${buildNumber}`}
               onlyActiveOnIndex={true}>
@@ -115,19 +96,21 @@ export default class BuildDetails extends AsyncPage {
               to={`/${repo.full_name}/builds/${buildNumber}/tests`}
               disabled={!hasTests}>
               Tests
-              {hasTests ? (
-                <Badge>{build.stats.tests.count.toLocaleString()}</Badge>
-              ) : null}
+              {hasTests
+                ? <Badge>
+                    {build.stats.tests.count.toLocaleString()}
+                  </Badge>
+                : null}
             </TabbedNavItem>
             <TabbedNavItem
               to={`/${repo.full_name}/builds/${buildNumber}/coverage`}
               disabled={!hasCoverage}>
               Code Coverage
-              {hasCoverage ? (
-                <Badge>
-                  <ObjectCoverage data={build} diff={false} />
-                </Badge>
-              ) : null}
+              {hasCoverage
+                ? <Badge>
+                    <ObjectCoverage data={build} diff={false} />
+                  </Badge>
+                : null}
             </TabbedNavItem>
             <TabbedNavItem to={`/${repo.full_name}/builds/${buildNumber}/diff`}>
               Diff
@@ -135,28 +118,17 @@ export default class BuildDetails extends AsyncPage {
             <TabbedNavItem to={`/${repo.full_name}/builds/${buildNumber}/artifacts`}>
               Artifacts
             </TabbedNavItem>
-          </Tabs>
+          </TabbedNav>
         </BuildSummary>
         {this.props.children}
-      </div>
+      </BuildWrapper>
     );
   }
 }
 
-const Section = styled.div`
-  padding: 20px;
-`;
+const BuildWrapper = styled.div``;
 
-const BuildSummary = styled(Section)`
-  padding-bottom: 0;
-  padding-top: 0;
-  box-shadow: inset 0 -1px 0 #e0e4e8;
-`;
-
-const Tabs = styled.div`
-  margin-bottom: 20px;
-  overflow: hidden;
-`;
+const BuildSummary = styled.div``;
 
 const Header = styled.div`
   display: flex;
@@ -174,9 +146,7 @@ const Message = styled.div`
   overflow: hidden;
 `;
 
-const Branch = styled.div`
-  font-family: 'Monaco', monospace;
-`;
+const Branch = styled.div`font-family: 'Monaco', monospace;`;
 
 const Meta = styled.div`
   display: flex;

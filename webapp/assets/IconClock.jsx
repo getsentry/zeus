@@ -1,7 +1,7 @@
 import React from 'react';
 import Icon from 'react-icon-base';
 
-function IconClock(props) {
+export default props => {
   return (
     <Icon viewBox="0 0 15 15" {...props}>
       <g stroke="currentColor" strokeWidth="1" fill="none">
@@ -15,6 +15,4 @@ function IconClock(props) {
       </g>
     </Icon>
   );
-}
-
-export default IconClock;
+};

@@ -7,8 +7,6 @@ import {loadBuildsForRepository} from '../actions/builds';
 import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
 import BuildList from '../components/BuildList';
-import RepositoryContent from '../components/RepositoryContent';
-import RepositoryHeader from '../components/RepositoryHeader';
 
 class RepositoryBuildList extends AsyncPage {
   static contextTypes = {
@@ -21,14 +19,7 @@ class RepositoryBuildList extends AsyncPage {
   }
 
   renderBody() {
-    return (
-      <div>
-        <RepositoryHeader />
-        <RepositoryContent {...this.props}>
-          <BuildListBody {...this.props} />
-        </RepositoryContent>
-      </div>
-    );
+    return <BuildListBody {...this.props} />;
   }
 }
 

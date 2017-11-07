@@ -7,8 +7,6 @@ import {loadRevisionsForRepository} from '../actions/revisions';
 import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
 import RevisionList from '../components/RevisionList';
-import RepositoryContent from '../components/RepositoryContent';
-import RepositoryHeader from '../components/RepositoryHeader';
 
 class RepositoryRevisionList extends AsyncPage {
   static contextTypes = {
@@ -21,14 +19,7 @@ class RepositoryRevisionList extends AsyncPage {
   }
 
   renderBody() {
-    return (
-      <div>
-        <RepositoryHeader />
-        <RepositoryContent {...this.props}>
-          <RevisionListBody {...this.props} />
-        </RepositoryContent>
-      </div>
-    );
+    return <RevisionListBody {...this.props} />;
   }
 }
 

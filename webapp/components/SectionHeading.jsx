@@ -8,9 +8,10 @@ export default styled(({label, ...props}) => {
     </div>
   );
 })`
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   text-transform: uppercase;
   margin: 0 0 20px;
-  color: #767488;
+  letter-spacing: -1px;
+  color: #111;
 `;

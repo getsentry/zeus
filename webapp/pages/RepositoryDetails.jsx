@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import {ResourceNotFound} from '../errors';
 import AsyncPage from '../components/AsyncPage';
-import Content from '../components/Content';
-import Sidebar from '../components/Sidebar';
+import RepositoryContent from '../components/RepositoryContent';
+import RepositoryHeader from '../components/RepositoryHeader';
 
 export default class RepositoryDetails extends AsyncPage {
   static contextTypes = {
@@ -46,10 +46,10 @@ export default class RepositoryDetails extends AsyncPage {
   renderBody() {
     return (
       <div>
-        <Sidebar params={this.props.params} />
-        <Content>
+        <RepositoryHeader />
+        <RepositoryContent>
           {this.props.children}
-        </Content>
+        </RepositoryContent>
       </div>
     );
   }
