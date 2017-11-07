@@ -1,9 +1,10 @@
 import styled, {css} from 'styled-components';
 
-export default styled.button`
+export default styled.a`
   background: #7b6be6;
   color: #fff;
-  border-width: 2px solid #7b6be6;
+  display: inline-block;
+  border: 2px solid #7b6be6;
   border-radius: 3px;
   cursor: pointer;
   font-weight: 500;
@@ -25,8 +26,8 @@ export default styled.button`
       default:
         return css`
           background: #fff;
-          color: #666;
-          border-color: #999;
+          color: #111;
+          border-color: #111;
         `;
     }
   }};
@@ -37,6 +38,11 @@ export default styled.button`
         return css`
           font-size: 12px;
           padding: 4px 8px;
+        `;
+      case 'large':
+        return css`
+          font-size: 16px;
+          padding: 8px 12px;
         `;
       default:
         return css`

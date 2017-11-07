@@ -14,7 +14,7 @@ export default class CalloutBox extends Component {
       <div style={{margin: 'auto', maxWidth: 800}}>
         <div
           style={{
-            border: '10px solid #D6D4EA',
+            border: '10px solid #111',
             margin: 20,
             borderRadius: '4px',
             padding: '20px 40px 20px'
