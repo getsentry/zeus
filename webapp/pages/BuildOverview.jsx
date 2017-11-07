@@ -52,7 +52,7 @@ export default class BuildOverview extends AsyncPage {
         {this.state.artifacts.length !== 0 && (
           <div>
             <SectionHeading>Artifacts</SectionHeading>
-            <ArtifactsList testList={this.state.artifacts} collapsable={true} />
+            <ArtifactsList artifacts={this.state.artifacts} collapsable={true} />
           </div>
         )}
         {this.state.testFailures.length !== 0 && (
