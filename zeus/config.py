@@ -71,7 +71,7 @@ def create_app(_read_config=True, **config):
         app.config.setdefault('MAIL_SERVER', os.environ.get('MAIL_SERVER'))
         app.config.setdefault('MAIL_PORT', os.environ.get('MAIL_PORT'))
         app.config.setdefault('MAIL_USE_TLS', bool(os.environ.get('MAIL_USE_TLS', '1')))
-        app.config.setdefault('MAIL_USE_SSL', bool(os.environ.get('MAIL_USE_SSL', '1')))
+        app.config.setdefault('MAIL_USE_SSL', bool(os.environ.get('MAIL_USE_SSL', '0')))
         app.config.setdefault('MAIL_USERNAME', os.environ.get('MAIL_USERNAME'))
         app.config.setdefault('MAIL_PASSWORD', os.environ.get('MAIL_PASSWORD'))
         app.config.setdefault('MAIL_DEFAULT_SENDER', os.environ.get('MAIL_DEFAULT_SENDER'))
