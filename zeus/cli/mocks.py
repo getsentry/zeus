@@ -1,9 +1,10 @@
 import click
 
-from random import choice, randint, random
+from random import choice, randint, random, randrange
 from sqlalchemy.exc import IntegrityError
 
 from zeus import factories, models
+from zeus.constants import Result, Status
 from zeus.config import db
 from zeus.db.utils import try_create
 from zeus.tasks import aggregate_build_stats_for_job
@@ -101,6 +102,13 @@ def mock_build(repo: models.Repository, parent_revision: models.Revision=None, u
                 failed=test_failed,
                 passed=not test_failed,
             )
+
+        artifact_count = randrange(3) \
+            if job.status == Status.finished and job.result == Result.passed \
+            else 0
+        for n in range(0, artifact_count):
+            factories.ArtifactFactory.create(job=job, repository=repo)
+
         db.session.commit()
         aggregate_build_stats_for_job(job_id=job.id)
 
