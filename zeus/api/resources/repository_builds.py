@@ -46,6 +46,9 @@ def identify_revision(repository, treeish):
 
 
 class RepositoryBuildsResource(BaseRepositoryResource):
+    def select_resurce_for_update(self):
+        return False
+
     def get(self, repo: Repository):
         """
         Return a list of builds for the given repository.

@@ -18,6 +18,9 @@ artifacts_schema = ArtifactSchema(strict=True, many=True)
 
 
 class JobArtifactsResource(BaseJobResource):
+    def select_resurce_for_update(self):
+        return False
+
     def get(self, job: Job):
         """
         Return a list of artifacts for a given job.
