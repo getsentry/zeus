@@ -34,12 +34,7 @@ export default class RevisionListItem extends Component {
       );
 
     return (
-      <ListItemLink
-        to={
-          revision.latest_build
-            ? `/${repo.full_name}/builds/${revision.latest_build.number}`
-            : null
-        }>
+      <ListItemLink to={null}>
         <Row>
           <Column>
             <Flex>
@@ -87,17 +82,17 @@ const Message = styled.div`
 `;
 
 const Author = styled.div`
-  font-family: "Monaco", monospace;
+  font-family: 'Monaco', monospace;
   font-size: 12px;
   font-weight: 600;
 `;
 
 const Commit = styled(Author)`
-font-weight: 400;
+  font-weight: 400;
 `;
 
 const RepoLink = styled(Author)`
-font-weight: 400;
+  font-weight: 400;
 `;
 
 const Meta = styled.div`

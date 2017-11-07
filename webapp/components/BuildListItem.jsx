@@ -27,8 +27,11 @@ export default class BuildListItem extends Component {
   render() {
     let {build, includeAuthor, includeRepo} = this.props;
     let repo = this.props.repo || build.repository;
+    let link = build.number
+      ? `/${repo.full_name}/builds/${build.number}`
+      : `/${repo.full_name}/revisions/${build.source.revision.sha}`;
     return (
-      <ListItemLink to={`/${repo.full_name}/builds/${build.number}`}>
+      <ListItemLink to={link}>
         <Row>
           <Column>
             <Flex>
@@ -82,7 +85,7 @@ const Message = styled.div`
 `;
 
 const Author = styled.div`
-  font-family: "Monaco", monospace;
+  font-family: 'Monaco', monospace;
   font-size: 12px;
   font-weight: 600;
 `;
