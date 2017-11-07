@@ -25,7 +25,7 @@ def process_artifact(artifact_id, manager=None, **kwargs):
     if not artifact.file:
         return
 
-    job = Job.query.with_for_update().get(artifact.job_id)
+    job = Job.query.get(artifact.job_id)
 
     if job.result == Result.aborted:
         return
