@@ -7,6 +7,7 @@ import tempfile
 from datetime import timedelta
 from flask import Flask
 from flask_alembic import Alembic
+from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 
@@ -24,6 +25,7 @@ WORKSPACE_ROOT = os.path.expanduser(os.environ.get(
 alembic = Alembic()
 celery = Celery()
 db = SQLAlchemy()
+mail = Mail()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.WARN, wrap_wsgi=True)
 ssl = SSL()
@@ -77,6 +79,8 @@ def create_app(_read_config=True, **config):
 
     if os.environ.get('SERVER_NAME'):
         app.config['SERVER_NAME'] = os.environ['SERVER_NAME']
+
+    app.config.setdefault('DOMAIN', app.config.get('SERVER_NAME', 'localhost'))
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
@@ -185,7 +189,7 @@ def create_app(_read_config=True, **config):
     configure_db(app)
 
     redis.init_app(app)
-
+    mail.init_app(app)
     celery.init_app(app, sentry)
 
     configure_api(app)
@@ -226,3 +230,7 @@ def configure_web(app):
     from zeus import web
 
     app.register_blueprint(web.app, url_prefix='')
+
+    if app.debug:
+        from zeus.web import debug
+        app.register_blueprint(debug.app, url_prefix='/debug')

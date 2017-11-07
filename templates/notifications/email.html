@@ -1,0 +1,163 @@
+<html lang="en">
+
+<head>
+  <title>{{ subject }}</title>
+  <style type="text/css">
+    .wrapper {
+      font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
+      font-size: 16px;
+      font-weight: 300;
+      background: #fff;
+    }
+
+    a,
+    a:hover,
+    a:active,
+    a:focus {
+      color: #7b6be6;
+      text-decoration: none;
+    }
+
+    p,
+    table,
+    dl,
+    ul,
+    ol,
+    blockquote,
+    pre {
+      margin: 0 0 20px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
+      font-weight: 500;
+      border-radius: 3px;
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin: 0 0 20px;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    ul.unstyled {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .header {
+      border-bottom: 3px solid #111;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      margin: 0;
+    }
+
+    .header .details {
+      float: right;
+      background: #fff;
+      color: #7b6be6;
+      display: block;
+      border: 2px solid #7b6be6;
+      border-radius: 3px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 16px;
+      padding: 8px 12px;
+    }
+
+    .result-icon {
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    .unstyled .result-icon {
+      width: 12px;
+      height: 12px;
+      border-radius: 12px;
+    }
+
+    .header .result-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 16px;
+    }
+
+    .result-icon.result-passed {
+      background: #76D392;
+    }
+
+    .result-icon.result-failed {
+      background: #F06E5B;
+    }
+
+    .result-icon.result-aborted {
+      background: #BFBFCB;
+    }
+
+    code,
+    pre {
+      font-family: 'Monaco', monospace,
+      padding: 0;
+    }
+
+
+    .source code,
+    .source strong {
+      font-weight: 400;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <a href="{{ uri }}" class="details">View Build</a>
+      <h1>
+        <span class="result-icon result-{{ build.result.id }}"></span> #{{build.number }} {{ build.label }}</h1>
+      <div class="source">
+        <code>{{ revision.short_sha }}</code> by
+        <strong>{{ author.email }}</strong> on
+        <strong>{{ date_created.strftime('%Y-%m-%d') }}</strong>
+      </div>
+    </div>
+
+    <pre class="commit-message">{{ revision.message }}</pre> {% if failing_tests_count %}
+    <h2>Failing Tests &mdash; {{ failing_tests_count }} total</h2>
+    <ul class="unstyled">
+      {% for test in failing_tests %}
+      <li>
+        <span class="result-icon result-failed"></span> {{ test.name }}</li>
+      {% endfor %} {% if failing_tests_count > failing_tests|length %}
+      <li> ... </li>
+      {% endif %}
+    </ul>
+    {% endif %} {% if job_list %}
+    <h2>Jobs</h2>
+    <ul class="unstyled">
+      {% for job in job_list %}
+      <li>
+        <span class="result-icon result-{{ job.result.id }}"></span> #{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif %}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+
+</body>
+
+</html>
