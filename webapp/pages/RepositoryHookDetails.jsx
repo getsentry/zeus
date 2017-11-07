@@ -19,6 +19,7 @@ const generateTravisConfig = publicHookBase => {
     on_start: always
     on_cancel: always
     on_error: always
+  email: false
 install:
   - npm install zeus-cli
 after_success:
