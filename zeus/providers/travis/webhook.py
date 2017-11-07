@@ -38,11 +38,9 @@ def get_travis_public_key(domain) -> str:
         )
         resp.raise_for_status()
         public_key = resp.json()[
-            'config']['notifications']['webhook']['public_key']
+            'config']['notifications']['webhook']['public_key'].encode('utf-8')
         redis.setex(cache_key, public_key, 300)
-    else:
-        public_key = public_key.encode('utf-8')
-    return serialization.load_pem_public_key(public_key.encode('utf-8'), backend=default_backend())
+    return serialization.load_pem_public_key(public_key, backend=default_backend())
 
 
 def verify_signature(public_key, signature, payload):
