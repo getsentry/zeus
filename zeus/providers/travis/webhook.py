@@ -88,6 +88,7 @@ class TravisWebhookView(BaseHook):
 
         data = {
             'ref': payload['commit'],
+            'url': payload['build_url'],
         }
 
         if payload['pull_request']:
@@ -108,6 +109,12 @@ class TravisWebhookView(BaseHook):
                 data={
                     'status': 'finished' if job_payload['status'] is not None else 'in_progress',
                     'result': get_result(job_payload['state']),
+                    'allow_failure': bool(job_payload['allow_failure']),
+                    'url': 'https://travis-ci.org/{owner}/{name}/jobs/{job_id}'.format(
+                        owner=payload['repository']['owner_name'],
+                        name=payload['repository']['name'],
+                        job_id=job_payload['id'],
+                    )
                 }
             )
 

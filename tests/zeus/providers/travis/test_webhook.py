@@ -192,7 +192,7 @@ EXAMPLE = b"""{
       "author_email": "lykoszine@gmail.com",
       "committer_name": "GitHub",
       "committer_email": "noreply@github.com",
-      "allow_failure": false
+      "allow_failure": true
     }
   ]
 }"""
@@ -204,7 +204,6 @@ def make_signature(payload, private_key) -> bytes:
     from cryptography.hazmat.primitives import hashes
     from cryptography.hazmat.primitives.asymmetric import padding
 
-    print(payload)
     return private_key.sign(
         payload,
         padding.PSS(
@@ -273,6 +272,7 @@ def test_queued_build(client, default_repo, default_hook, default_revision,
     assert build.repository_id == default_repo.id
     assert build.source_id == source.id
     assert build.label == default_revision.subject
+    assert build.url == 'https://travis-ci.org/travis-ci/docs-travis-ci-com/builds/288639281'
 
     job = Job.query.unrestricted_unsafe().filter(
         Job.provider == 'travis',
@@ -283,3 +283,5 @@ def test_queued_build(client, default_repo, default_hook, default_revision,
     assert job.repository_id == default_repo.id
     assert job.status == Status.finished
     assert job.result == Result.passed
+    assert job.allow_failure
+    assert job.url == 'https://travis-ci.org/travis-ci/docs-travis-ci-com/jobs/288639284'
