@@ -15,15 +15,12 @@ const NavItem = styled(Link)`
   color: #AAA7BB;
   margin-left: 10px;
   padding: 5px 10px;
+  border: 2px solid #fff;
 
-  &.active {
-    background: #7B6BE6;
-    color: #fff;
-  }
-
-  &.${props => props.activeClassName} {
-    background: #7B6BE6;
-    color: #fff;
+  &.active, .${props => props.activeClassName} {
+    border: 2px solid #7B6BE6;
+    border-radius: 4px;
+    color: #7B6BE6;
   }
 `;
 

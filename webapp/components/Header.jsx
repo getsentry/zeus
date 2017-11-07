@@ -12,6 +12,6 @@ export default styled(props => {
   overflow: hidden;
   height: 66px;
   background: #fff;
-  padding: 20px;
+  padding: 17px 20px 20px;
   box-shadow: inset 0 -1px 0 #dbdae3;
 `;

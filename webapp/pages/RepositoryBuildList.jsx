@@ -9,8 +9,6 @@ import AsyncComponent from '../components/AsyncComponent';
 import BuildList from '../components/BuildList';
 import RepositoryContent from '../components/RepositoryContent';
 import RepositoryHeader from '../components/RepositoryHeader';
-import TabbedNav from '../components/TabbedNav';
-import TabbedNavItem from '../components/TabbedNavItem';
 
 class RepositoryBuildList extends AsyncPage {
   static contextTypes = {
@@ -23,30 +21,10 @@ class RepositoryBuildList extends AsyncPage {
   }
 
   renderBody() {
-    let props = this.props;
-    let repo = this.context.repo;
-    let basePath = `/${repo.full_name}`;
     return (
       <div>
         <RepositoryHeader />
         <RepositoryContent {...this.props}>
-          <TabbedNav>
-            <TabbedNavItem
-              to={{pathname: basePath, query: {}}}
-              activeClassName=""
-              className={
-                props.location.pathname === basePath && !(props.location.query || {}).show
-                  ? 'active'
-                  : ''
-              }>
-              My Builds
-            </TabbedNavItem>
-            <TabbedNavItem
-              to={{pathname: basePath, query: {show: 'all'}}}
-              activeClassName="active">
-              All Builds
-            </TabbedNavItem>
-          </TabbedNav>
           <BuildListBody {...this.props} />
         </RepositoryContent>
       </div>
