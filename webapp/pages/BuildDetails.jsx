@@ -45,6 +45,15 @@ export default class BuildDetails extends AsyncPage {
     return 'Build Details';
   }
 
+  getHeaderMessage() {
+    const {build} = this.state;
+    const {message} = build.source.revision;
+
+    // Extract the first line only, if there are multiple lines
+    const match = (build.label || message).match(/.*(?=\n|$)/);
+    return match && match[0];
+  }
+
   shouldFetchUpdates() {
     return (this.state.build || {}).status !== 'finished';
   }
@@ -78,7 +87,7 @@ export default class BuildDetails extends AsyncPage {
       <div>
         <BuildSummary>
           <Header>
-            <Message>{build.label || build.source.revision.message}</Message>
+            <Message>{this.getHeaderMessage()}</Message>
           </Header>
           <Meta>
             {build.status === 'finished' && (
