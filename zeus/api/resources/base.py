@@ -85,7 +85,7 @@ class Resource(View):
         return resp
 
     def schema_from_request(self, schema: Schema, partial=False):
-        return schema.load(request.get_json() or {}, partial=partial)
+        return schema.load(request.get_json() or request.form, partial=partial)
 
     def respond_with_schema(self, schema: Schema, value, status: int=200) -> Response:
         result = schema.dump(value)
