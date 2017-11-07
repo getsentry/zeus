@@ -56,13 +56,17 @@ export default class ArtifactsList extends Component {
               <ResultGridRow key={artifact.id}>
                 <Flex align="center">
                   <Box flex="1" width={9 / 12} pr={15}>
-                    <div>
-                      {this.props.collapsable ? (
-                        artifact.name
-                      ) : (
+                    {this.props.collapsable ? (
+                      artifact.name
+                    ) : (
+                      <div>
                         <a href={artifact.download_url}>{artifact.name}</a>
-                      )}
-                    </div>
+                        <br />
+                        <small>
+                          {artifact.job.provider} #{artifact.job.number}
+                        </small>
+                      </div>
+                    )}
                   </Box>
                   <Box width={2 / 12}>{this.getTypeName(artifact.type)}</Box>
                   <Box width={2 / 12} style={{textAlign: 'right'}}>
