@@ -23,17 +23,6 @@ export default class ArtifactsList extends Component {
     this.state = {collapsable: props.collapsable};
   }
 
-  getTypeName(type) {
-    if (!type) {
-      return '';
-    }
-
-    return type
-      .toLowerCase()
-      .replace(/^.|_+[^_]/g, txt => ' ' + txt.slice(-1).toUpperCase())
-      .replace(/_/g, '');
-  }
-
   render() {
     return (
       <Panel>
@@ -68,7 +57,7 @@ export default class ArtifactsList extends Component {
                       </div>
                     )}
                   </Box>
-                  <Box width={2 / 12}>{this.getTypeName(artifact.type)}</Box>
+                  <Box width={2 / 12}>{artifact.type}</Box>
                   <Box width={2 / 12} style={{textAlign: 'right'}}>
                     {/* TODO: Show the file size here */}
                   </Box>
