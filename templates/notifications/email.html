@@ -3,6 +3,7 @@
 <head>
   <title>{{ subject }}</title>
   <style type="text/css">
+    body,
     .wrapper {
       font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
       font-size: 16px;
@@ -79,32 +80,30 @@
     }
 
     .result-icon {
-      display: inline-block;
       margin-right: 5px;
+      height: 16px;
+      width: 16px;
+    }
+
+    li {
+      margin-bottom: 10px;
     }
 
     .unstyled .result-icon {
-      width: 12px;
-      height: 12px;
-      border-radius: 12px;
-    }
-
-    .header .result-icon {
-      width: 16px;
-      height: 16px;
-      border-radius: 16px;
+      width: 14px;
+      height: 14px;
     }
 
     .result-icon.result-passed {
-      background-color: #76D392;
+      color: #76D392;
     }
 
     .result-icon.result-failed {
-      background-color: #F06E5B;
+      color: #F06E5B;
     }
 
     .result-icon.result-aborted {
-      background-color: #BFBFCB;
+      color: #BFBFCB;
     }
 
     code,
@@ -132,7 +131,15 @@
     <div class="header">
       <a href="{{ uri }}" class="details">View Build</a>
       <h1>
-        <span class="result-icon result-{{ build.result.id }}"></span> #{{build.number }} {{ build.label }}</h1>
+        {% if build.result.id == 'failed' %}
+        <svg viewBox="0 0 15 15" class="result-icon result-{{ build.result.id }}">
+          <g stroke="currentColor" stroke-width="1" fill="none">
+            <circle cx="7.5" cy="7.5" r="7" />
+            <path d="M4.5,4.5 L10.5,10.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M4.5,10.5 L10.5,4.5" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+        </svg>
+        {% endif %} #{{build.number }} {{ build.label }}</h1>
       <div class="source">
         <code>{{ revision.short_sha }}</code> by
         <strong>{{ author.email }}</strong> on
@@ -142,22 +149,46 @@
 
     <pre class="commit-message">{{ revision.message }}</pre> {% if failing_tests_count %}
     <h2>Failing Tests &mdash; {{ failing_tests_count }} total</h2>
-    <ul class="unstyled">
+    <table class="table">
       {% for test in failing_tests %}
-      <li>
-        <span class="result-icon result-failed"></span> {{ test.name }}</li>
+      <tr>
+        <td style="width: 16px">
+          {{ test.name }}</td>
+      </tr>
       {% endfor %} {% if failing_tests_count > failing_tests|length %}
-      <li> ... </li>
+      <tr>
+        <td> ... </td>
+      </tr>
       {% endif %}
-    </ul>
+    </table>
     {% endif %} {% if job_list %}
     <h2>Jobs</h2>
-    <ul class="unstyled">
+    <table class="table">
       {% for job in job_list %}
-      <li>
-        <span class="result-icon result-{{ job.result.id }}"></span> #{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif %}</li>
-      {% endfor %}
-    </ul>
+      <tr>
+        <td style="width: 16px">
+          {% if job.result.id == 'failed' %}
+          <svg viewBox="0 0 15 15" class="result-icon result-{{ build.result.id }}">
+            <g stroke="currentColor" stroke-width="1" fill="none">
+              <circle cx="7.5" cy="7.5" r="7" />
+              <path d="M4.5,4.5 L10.5,10.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M4.5,10.5 L10.5,4.5" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+          </svg>
+          {% elif job.result.id == 'passed' %}
+          <svg viewBox="0 0 15 15" class="result-icon result-{{ build.result.id }}">
+            <g stroke="currentColor" stroke-width="1" fill="none">
+              <circle cx="7.5" cy="7.5" r="7" />
+              <polyline stroke-linecap="round" stroke-linejoin="round" points="3.50527373 8.48964823 6.43411675 11.016436 11.5264504 5.52683372"
+              />
+            </g>
+          </svg>
+          {% endif %}
+        </td>
+        <td>#{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif %}</td>
+        {% endfor %}
+      </tr>
+    </table>
     {% endif %}
   </div>
 
