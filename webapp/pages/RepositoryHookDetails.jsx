@@ -58,7 +58,7 @@ export default class RepositoryHookDetails extends AsyncPage {
         <Panel>
           <ResultGridRow>
             <Flex>
-              <Box flex="1" width={1 / 12} pr={15}>
+              <Box flex="1" pr={15}>
                 <strong>ID</strong>
               </Box>
               <Box width={10 / 12}>
@@ -68,7 +68,7 @@ export default class RepositoryHookDetails extends AsyncPage {
           </ResultGridRow>
           <ResultGridRow>
             <Flex>
-              <Box flex="1" width={1 / 12} pr={15}>
+              <Box flex="1" pr={15}>
                 <strong>Provider</strong>
               </Box>
               <Box width={10 / 12}>
@@ -78,7 +78,7 @@ export default class RepositoryHookDetails extends AsyncPage {
           </ResultGridRow>
           <ResultGridRow>
             <Flex>
-              <Box flex="1" width={1 / 12} pr={15}>
+              <Box flex="1" pr={15}>
                 <strong>Token</strong>
               </Box>
               <Box width={10 / 12}>
@@ -92,7 +92,17 @@ export default class RepositoryHookDetails extends AsyncPage {
           </ResultGridRow>
           <ResultGridRow>
             <Flex>
-              <Box flex="1" width={1 / 12} pr={15}>
+              <Box flex="1" pr={15}>
+                <strong>ZEUS_HOOK_BASE</strong>
+              </Box>
+              <Box width={10 / 12}>
+                {hook.secret_uri}
+              </Box>
+            </Flex>
+          </ResultGridRow>
+          <ResultGridRow>
+            <Flex>
+              <Box flex="1" pr={15}>
                 <strong>Created</strong>
               </Box>
               <Box width={10 / 12}>
