@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
-import RepositoryContent from '../components/RepositoryContent';
-import RepositoryHeader from '../components/RepositoryHeader';
 import TabbedNav from '../components/TabbedNav';
 import TabbedNavItem from '../components/TabbedNavItem';
 
@@ -22,16 +20,13 @@ export default class RepositoryTests extends AsyncPage {
     let basePath = `/${repo.full_name}`;
     return (
       <div>
-        <RepositoryHeader />
-        <RepositoryContent {...this.props}>
-          <TabbedNav>
-            <TabbedNavItem to={`${basePath}/tests`} onlyActiveOnIndex={true}>
-              Tree View
-            </TabbedNavItem>
-            <TabbedNavItem to={`${basePath}/tests/all`}>All Tests</TabbedNavItem>
-          </TabbedNav>
-          {this.props.children}
-        </RepositoryContent>
+        <TabbedNav>
+          <TabbedNavItem to={`${basePath}/tests`} onlyActiveOnIndex={true}>
+            Tree View
+          </TabbedNavItem>
+          <TabbedNavItem to={`${basePath}/tests/all`}>All Tests</TabbedNavItem>
+        </TabbedNav>
+        {this.props.children}
       </div>
     );
   }

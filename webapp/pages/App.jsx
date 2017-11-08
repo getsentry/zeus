@@ -61,7 +61,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div>
         <Indicators />
         <ErrorBoundary>
           {!this.props.isAuthenticated === null

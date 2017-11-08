@@ -7,10 +7,9 @@ import {Flex, Box} from 'grid-styled';
 import {addIndicator, removeIndicator} from '../actions/indicators';
 import {addRepo, removeRepo, updateRepo} from '../actions/repos';
 import AsyncPage from '../components/AsyncPage';
+import Layout from '../components/Layout';
 import Panel from '../components/Panel';
 import ResultGridRow from '../components/ResultGridRow';
-import Section from '../components/Section';
-import SidebarLayout from '../components/SidebarLayout';
 
 class GitHubRepoItem extends Component {
   static propTypes = {
@@ -117,13 +116,11 @@ class GitHubRepositoryList extends AsyncPage {
 
   render() {
     return (
-      <SidebarLayout title={this.getTitle()}>
-        <Section>
-          <Panel>
-            {this.renderContent()}
-          </Panel>
-        </Section>
-      </SidebarLayout>
+      <Layout title={this.getTitle()}>
+        <Panel>
+          {this.renderContent()}
+        </Panel>
+      </Layout>
     );
   }
 
