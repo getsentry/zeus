@@ -70,11 +70,14 @@ def create_app(_read_config=True, **config):
             }
         app.config.setdefault('MAIL_SERVER', os.environ.get('MAIL_SERVER'))
         app.config.setdefault('MAIL_PORT', os.environ.get('MAIL_PORT'))
-        app.config.setdefault('MAIL_USE_TLS', bool(int(os.environ.get('MAIL_USE_TLS', '1'))))
-        app.config.setdefault('MAIL_USE_SSL', bool(int(os.environ.get('MAIL_USE_SSL', '0'))))
+        app.config.setdefault('MAIL_USE_TLS', bool(
+            int(os.environ.get('MAIL_USE_TLS', '1'))))
+        app.config.setdefault('MAIL_USE_SSL', bool(
+            int(os.environ.get('MAIL_USE_SSL', '0'))))
         app.config.setdefault('MAIL_USERNAME', os.environ.get('MAIL_USERNAME'))
         app.config.setdefault('MAIL_PASSWORD', os.environ.get('MAIL_PASSWORD'))
-        app.config.setdefault('MAIL_DEFAULT_SENDER', os.environ.get('MAIL_DEFAULT_SENDER'))
+        app.config.setdefault('MAIL_DEFAULT_SENDER',
+                              os.environ.get('MAIL_DEFAULT_SENDER'))
     else:
         REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
         SQLALCHEMY_URI = os.environ.get(
@@ -164,6 +167,8 @@ def create_app(_read_config=True, **config):
     app.wsgi_app = with_health_check(app.wsgi_app)
 
     app.config.update(config)
+
+    app.config.setdefault('MAIL_SUPPRESS_SEND', not app.debug)
 
     # HACK(dcramer): the CLI causes validation to happen on init, which it shouldn't
     if 'init' not in sys.argv:
