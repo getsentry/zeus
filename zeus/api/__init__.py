@@ -24,6 +24,18 @@ app.add_resource(
 app.add_resource('/repos/<provider>/<owner_name>/<repo_name>/test-tree',
                  r.RepositoryTestTreeResource)
 app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>', r.RevisionDetailsResource)
+app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/file-coverage', r.RevisionFileCoverageResource)
+app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/artifacts', r.RevisionArtifactsResource)
+app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/jobs', r.RevisionJobsResource)
+app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/source', r.RevisionSourceResource)
+app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/tests', r.RevisionTestsResource)
+app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>', r.BuildDetailsResource)
 app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/file-coverage',

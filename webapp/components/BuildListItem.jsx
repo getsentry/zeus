@@ -8,7 +8,7 @@ import ObjectAuthor from './ObjectAuthor';
 import ObjectCoverage from './ObjectCoverage';
 import ObjectDuration from './ObjectDuration';
 import ObjectResult from './ObjectResult';
-import ResultGridRow from './ResultGridRow';
+import {Column, Row} from './ResultGrid';
 import TimeSince from './TimeSince';
 
 export default class BuildListItem extends Component {
@@ -27,48 +27,49 @@ export default class BuildListItem extends Component {
   render() {
     let {build, includeAuthor, includeRepo} = this.props;
     let repo = this.props.repo || build.repository;
+    let link = build.number
+      ? `/${repo.full_name}/builds/${build.number}`
+      : `/${repo.full_name}/revisions/${build.source.revision.sha}`;
     return (
-      <ListItemLink to={`/${repo.full_name}/builds/${build.number}`}>
-        <ResultGridRow>
-          <Flex align="center">
-            <Box flex="1" width={8 / 12} pr={15}>
-              <Flex>
-                <Box width={15} mr={8}>
-                  <ObjectResult data={build} />
-                </Box>
-                <Box flex="1" style={{minWidth: 0}}>
-                  <Message>
-                    {build.label || build.source.revision.message.split('\n')[0]}
-                  </Message>
-                  <Meta>
-                    {includeRepo
-                      ? <RepoLink to={`/${repo.full_name}`}>
-                          {build.repository.owner_name}/{build.repository.name}
-                        </RepoLink>
-                      : null}
-                    <Commit>
-                      {build.source.revision.sha.substr(0, 7)}
-                    </Commit>
-                    {includeAuthor
-                      ? <Author>
-                          <ObjectAuthor data={build} />
-                        </Author>
-                      : null}
-                  </Meta>
-                </Box>
-              </Flex>
-            </Box>
-            <Box width={1 / 12} style={{textAlign: 'center'}}>
-              <ObjectCoverage data={build} />
-            </Box>
-            <Box width={1 / 12} style={{textAlign: 'center'}}>
-              <ObjectDuration data={build} short={true} />
-            </Box>
-            <Box width={2 / 12} style={{textAlign: 'right'}}>
-              <TimeSince date={this.props.date || build.created_at} />
-            </Box>
-          </Flex>
-        </ResultGridRow>
+      <ListItemLink to={link}>
+        <Row>
+          <Column>
+            <Flex>
+              <Box width={15} mr={8}>
+                <ObjectResult data={build} />
+              </Box>
+              <Box flex="1" style={{minWidth: 0}}>
+                <Message>
+                  {build.label || build.source.revision.message.split('\n')[0]}
+                </Message>
+                <Meta>
+                  {includeRepo
+                    ? <RepoLink to={`/${repo.full_name}`}>
+                        {build.repository.owner_name}/{build.repository.name}
+                      </RepoLink>
+                    : null}
+                  <Commit>
+                    {build.source.revision.sha.substr(0, 7)}
+                  </Commit>
+                  {includeAuthor
+                    ? <Author>
+                        <ObjectAuthor data={build} />
+                      </Author>
+                    : null}
+                </Meta>
+              </Box>
+            </Flex>
+          </Column>
+          <Column width={90} textAlign="center">
+            <ObjectCoverage data={build} />
+          </Column>
+          <Column width={90} textAlign="center">
+            <ObjectDuration data={build} short={true} />
+          </Column>
+          <Column width={150} textAlign="right">
+            <TimeSince date={this.props.date || build.created_at} />
+          </Column>
+        </Row>
       </ListItemLink>
     );
   }
@@ -84,7 +85,7 @@ const Message = styled.div`
 `;
 
 const Author = styled.div`
-  font-family: "Monaco", monospace;
+  font-family: 'Monaco', monospace;
   font-size: 12px;
   font-weight: 600;
 `;

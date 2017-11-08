@@ -7,6 +7,9 @@ import AsyncPage from '../components/AsyncPage';
 import {Breadcrumbs, CrumbLink} from '../components/Breadcrumbs';
 import Content from '../components/Content';
 import Header from '../components/Header';
+import ResultGrid from '../components/ResultGrid';
+import Section from '../components/Section';
+import ScrollView from '../components/ScrollView';
 import Sidebar from '../components/Sidebar';
 
 export default class OwnerDetails extends AsyncPage {
@@ -51,17 +54,31 @@ export default class OwnerDetails extends AsyncPage {
               </CrumbLink>
             </Breadcrumbs>
           </Header>
-          <ul>
-            {this.state.repoList.map(repo => {
-              return (
-                <li key={repo.name}>
-                  <Link to={`/${repo.full_name}`}>
-                    {repo.name}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <ScrollView>
+            <Section>
+              <ResultGrid.ResultGrid>
+                <ResultGrid.Header>
+                  <ResultGrid.Column>Repository</ResultGrid.Column>
+                </ResultGrid.Header>
+                {this.state.repoList.map(repo => {
+                  return (
+                    <ResultGrid.Row key={repo.name}>
+                      <ResultGrid.Column>
+                        <Link to={`/${repo.full_name}`}>
+                          {repo.name}
+                        </Link>
+                        <br />
+                        {!!repo.url &&
+                          <small>
+                            {repo.url}
+                          </small>}
+                      </ResultGrid.Column>
+                    </ResultGrid.Row>
+                  );
+                })}
+              </ResultGrid.ResultGrid>
+            </Section>
+          </ScrollView>
         </Content>
       </div>
     );

@@ -1,9 +1,10 @@
 from sqlalchemy.orm import joinedload
 from marshmallow import fields
 
-from zeus.models import Artifact, Build, Job
+from zeus.models import Artifact, Job, Revision
+from zeus.utils.builds import fetch_build_for_revision
 
-from .base_build import BaseBuildResource
+from .base_revision import BaseRevisionResource
 from ..schemas import ArtifactSchema, JobSchema
 
 
@@ -14,11 +15,17 @@ class ArtifactWithJobSchema(ArtifactSchema):
 artifacts_schema = ArtifactWithJobSchema(strict=True, many=True)
 
 
-class BuildArtifactsResource(BaseBuildResource):
-    def get(self, build: Build):
+class RevisionArtifactsResource(BaseRevisionResource):
+    def select_resurce_for_update(self) -> bool:
+        return self.is_mutation()
+
+    def get(self, revision: Revision, repo=None):
         """
-        Return a list of artifacts for a given build.
+        Return all artifacts of all builds in a revision.
         """
+        build = fetch_build_for_revision(revision.repository, revision)
+        build_ids = [original.id for original in build.original]
+
         query = Artifact.query.options(
             joinedload('job'),
             joinedload('job').joinedload('build'),
@@ -26,7 +33,7 @@ class BuildArtifactsResource(BaseBuildResource):
             joinedload('job').joinedload('build').joinedload(
                 'source').joinedload('repository'),
         ).join(Job, Job.id == Artifact.job_id).filter(
-            Job.build_id == build.id,
+            Job.build_id.in_(build_ids),
         ).order_by(Artifact.name.asc())
 
         return self.respond_with_schema(artifacts_schema, query)

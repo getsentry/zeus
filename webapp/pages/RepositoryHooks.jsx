@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
 import Button from '../components/Button';
+import {ResultGrid, Column, Header, Row} from '../components/ResultGrid';
+import SectionHeading from '../components/SectionHeading';
+import TimeSince from '../components/TimeSince';
 
 import {addIndicator, removeIndicator} from '../actions/indicators';
 
@@ -45,28 +48,45 @@ class RepositoryHooks extends AsyncPage {
     return (
       <div>
         <div>
-          <div style={{float: 'right'}}>
-            <Button onClick={this.createHook} type="primary">
+          <div style={{float: 'right', marginTop: -5}}>
+            <Button onClick={this.createHook} type="primary" size="small">
               Create Hook
             </Button>
           </div>
-          <h2>Hooks</h2>
+          <SectionHeading>Hooks</SectionHeading>
         </div>
-        {hookList.length
-          ? <ul>
-              {hookList.map(hook => {
-                return (
-                  <li key={hook.id}>
-                    <Link to={`/${repo.full_name}/settings/hooks/${hook.id}`}>
-                      {hook.id}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          : <p>
-              {"You haven't registered any hooks for this repository yet."}
-            </p>}
+        <ResultGrid>
+          {hookList.length
+            ? <div>
+                <Header>
+                  <Column>ID</Column>
+                  <Column width={120}>Provider</Column>
+                  <Column width={150}>Created</Column>
+                </Header>
+                {hookList.map(hook => {
+                  return (
+                    <Row key={hook.id}>
+                      <Column>
+                        <Link to={`/${repo.full_name}/settings/hooks/${hook.id}`}>
+                          {hook.id}
+                        </Link>
+                      </Column>
+                      <Column width={120}>
+                        {hook.provider}
+                      </Column>
+                      <Column width={150}>
+                        <TimeSince date={hook.created_at} />
+                      </Column>
+                    </Row>
+                  );
+                })}
+              </div>
+            : <Row>
+                <Column>
+                  {"You haven't registered any hooks for this repository yet."}
+                </Column>
+              </Row>}
+        </ResultGrid>
       </div>
     );
   }

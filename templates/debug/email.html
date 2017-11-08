@@ -1,0 +1,36 @@
+<html>
+
+<head>
+  <title>{% if preview.subject %}{{ preview.subject }}{% else %}Mail Preview{% endif %}</title>
+</head>
+
+<body style="margin: 0; padding: 0;">
+  <div style="padding: 20px; border-bottom: 1px solid #ddd; background: #fff; margin-bottom: 20px;">
+    <div style="text-align: center;">
+      {% if preview.subject %}
+      <h1 style="margin: 0 0 10px;">{{ preview.subject }}</h1>{% endif %}
+      <label for="format" style="margin-right: 10px">Format:</label>
+      <select id="format" style="width: 100px">
+        <option value="html">HTML</option>
+        <option value="txt" {% if format=='txt' %} selected="selected" {% endif %}>Plaintext</option>
+      </select>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    function selectFormat(e) {
+      var value = e.target.value;
+      window.location.href = window.location.pathname + '?format=' + value;
+    }
+
+    var formatSelect = document.getElementById('format');
+    formatSelect.addEventListener('change', selectFormat);
+  </script>
+
+  <div id="preview" style="margin: 10px">
+    {% if format == 'txt' %}
+    <pre>{{ preview.get_text_body() }}</pre> {% else %} {{ preview.get_html_body() }} {% endif %}
+  </div>
+</body>
+
+</html>

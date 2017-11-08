@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Flex, Box} from 'grid-styled';
 
 import RevisionListItem from '../components/RevisionListItem';
-import Panel from '../components/Panel';
-import ResultGridHeader from '../components/ResultGridHeader';
+import {ResultGrid, Column, Header} from '../components/ResultGrid';
 
 export default class RevisionList extends Component {
   static propTypes = {
@@ -15,23 +13,19 @@ export default class RevisionList extends Component {
   render() {
     let {revisionList, repo, params} = this.props;
     return (
-      <Panel>
-        <ResultGridHeader>
-          <Flex>
-            <Box flex="1" width={6 / 12} pr={15}>
-              Revision
-            </Box>
-            <Box width={1 / 12} style={{textAlign: 'center'}}>
-              Coverage
-            </Box>
-            <Box width={1 / 12} style={{textAlign: 'center'}}>
-              Duration
-            </Box>
-            <Box width={2 / 12} style={{textAlign: 'right'}}>
-              Commit Date
-            </Box>
-          </Flex>
-        </ResultGridHeader>
+      <ResultGrid>
+        <Header>
+          <Column>Revision</Column>
+          <Column width={90} textAlign="center">
+            Coverage
+          </Column>
+          <Column width={90} textAlign="center">
+            Duration
+          </Column>
+          <Column width={150} textAlign="right">
+            Commit Date
+          </Column>
+        </Header>
         <div>
           {revisionList.map(revision => {
             return (
@@ -44,7 +38,7 @@ export default class RevisionList extends Component {
             );
           })}
         </div>
-      </Panel>
+      </ResultGrid>
     );
   }
 }

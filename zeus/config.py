@@ -7,6 +7,7 @@ import tempfile
 from datetime import timedelta
 from flask import Flask
 from flask_alembic import Alembic
+from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 
@@ -24,6 +25,7 @@ WORKSPACE_ROOT = os.path.expanduser(os.environ.get(
 alembic = Alembic()
 celery = Celery()
 db = SQLAlchemy()
+mail = Mail()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.WARN, wrap_wsgi=True)
 ssl = SSL()
@@ -66,6 +68,16 @@ def create_app(_read_config=True, **config):
                     'project': os.environ.get('GC_PROJECT'),
                 },
             }
+        app.config.setdefault('MAIL_SERVER', os.environ.get('MAIL_SERVER'))
+        app.config.setdefault('MAIL_PORT', os.environ.get('MAIL_PORT'))
+        app.config.setdefault('MAIL_USE_TLS', bool(
+            int(os.environ.get('MAIL_USE_TLS', '1'))))
+        app.config.setdefault('MAIL_USE_SSL', bool(
+            int(os.environ.get('MAIL_USE_SSL', '0'))))
+        app.config.setdefault('MAIL_USERNAME', os.environ.get('MAIL_USERNAME'))
+        app.config.setdefault('MAIL_PASSWORD', os.environ.get('MAIL_PASSWORD'))
+        app.config.setdefault('MAIL_DEFAULT_SENDER',
+                              os.environ.get('MAIL_DEFAULT_SENDER'))
     else:
         REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
         SQLALCHEMY_URI = os.environ.get(
@@ -77,6 +89,8 @@ def create_app(_read_config=True, **config):
 
     if os.environ.get('SERVER_NAME'):
         app.config['SERVER_NAME'] = os.environ['SERVER_NAME']
+
+    app.config.setdefault('DOMAIN', app.config.get('SERVER_NAME', 'localhost'))
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
@@ -154,6 +168,8 @@ def create_app(_read_config=True, **config):
 
     app.config.update(config)
 
+    app.config.setdefault('MAIL_SUPPRESS_SEND', not app.debug)
+
     # HACK(dcramer): the CLI causes validation to happen on init, which it shouldn't
     if 'init' not in sys.argv:
         req_vars = (
@@ -185,7 +201,7 @@ def create_app(_read_config=True, **config):
     configure_db(app)
 
     redis.init_app(app)
-
+    mail.init_app(app)
     celery.init_app(app, sentry)
 
     configure_api(app)
@@ -226,3 +242,7 @@ def configure_web(app):
     from zeus import web
 
     app.register_blueprint(web.app, url_prefix='')
+
+    if app.debug:
+        from zeus.web import debug
+        app.register_blueprint(debug.app, url_prefix='/debug')

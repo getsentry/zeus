@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Flex, Box} from 'grid-styled';
 
 import Collapsable from './Collapsable';
-import Panel from './Panel';
-import ResultGridHeader from './ResultGridHeader';
-import ResultGridRow from './ResultGridRow';
+import {ResultGrid, Column, Header, Row} from './ResultGrid';
 
 export default class ArtifactsList extends Component {
   static propTypes = {
@@ -23,48 +20,46 @@ export default class ArtifactsList extends Component {
     this.state = {collapsable: props.collapsable};
   }
 
-  getTypeName(type) {
-    if (!type) {
-      return '';
-    }
-
-    return type
-      .toLowerCase()
-      .replace(/^.|_+[^_]/g, txt => ' ' + txt.slice(-1).toUpperCase())
-      .replace(/_/g, '');
-  }
-
   render() {
     return (
-      <Panel>
-        <ResultGridHeader>
-          <Flex align="center">
-            <Box flex="1" width={1} pr={15}>
-              File
-            </Box>
-          </Flex>
-        </ResultGridHeader>
+      <ResultGrid>
+        <Header>
+          <Column>File</Column>
+          <Column width={120}>Type</Column>
+          <Column width={90} textAlign="right">
+            Size
+          </Column>
+        </Header>
         <Collapsable
           collapsable={this.props.collapsable}
           maxVisible={this.props.maxVisible}>
           {this.props.artifacts.map(artifact => {
             return (
-              <ResultGridRow key={artifact.id}>
-                <Flex align="center">
-                  <Box flex="1" width={1} pr={15}>
-                    <div>
-                      <a href={artifact.download_url}>{artifact.name}</a>
-                    </div>
-                    <div>
-                      <small>{this.getTypeName(artifact.type)}</small>
-                    </div>
-                  </Box>
-                </Flex>
-              </ResultGridRow>
+              <Row key={artifact.id}>
+                <Column>
+                  {this.props.collapsable
+                    ? artifact.name
+                    : <div>
+                        <a href={artifact.download_url}>
+                          {artifact.name}
+                        </a>
+                        <br />
+                        <small>
+                          {artifact.job.provider} #{artifact.job.number}
+                        </small>
+                      </div>}
+                </Column>
+                <Column width={120}>
+                  {artifact.type}
+                </Column>
+                <Column width={90} textAlign="right">
+                  {/* TODO: Show the file size here */}
+                </Column>
+              </Row>
             );
           })}
         </Collapsable>
-      </Panel>
+      </ResultGrid>
     );
   }
 }

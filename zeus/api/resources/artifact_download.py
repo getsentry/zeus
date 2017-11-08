@@ -1,4 +1,4 @@
-from flask import Response
+from flask import redirect
 
 from zeus.models import Artifact
 
@@ -10,4 +10,4 @@ class ArtifactDownloadResource(BaseArtifactResource):
         """
         Streams an artifact file to the client.
         """
-        return Response(artifact.file.get_file())
+        return redirect(artifact.file.url_for(expire=30), code=302)

@@ -1,7 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import {Flex, Box} from 'grid-styled';
 
 import AsyncPage from '../components/AsyncPage';
+import Panel from '../components/Panel';
+import ResultGridRow from '../components/ResultGridRow';
+import SectionHeading from '../components/SectionHeading';
+import TimeSince from '../components/TimeSince';
+
+const generateTravisConfig = publicHookBase => {
+  return `notifications:
+  webhooks:
+    urls:
+      - ${publicHookBase}/provider/travis/webhook
+    on_success: always
+    on_failure: always
+    on_start: always
+    on_cancel: always
+    on_error: always
+  email: false
+install:
+  - npm install zeus-cli
+after_success:
+  - zeus-cli upload-artifacts --discover
+after_failure:
+  - zeus-cli upload-artifacts --discover`;
+};
 
 export default class RepositoryHookDetails extends AsyncPage {
   static contextTypes = {
@@ -26,46 +51,69 @@ export default class RepositoryHookDetails extends AsyncPage {
 
   renderBody() {
     let {hook} = this.state;
-    let secretHookBase = this.getHookBase(true);
     let publicHookBase = this.getHookBase(false);
-    // let repo = this.context.repo;
-    // let basePath = `/${repo.full_name}`;
     return (
       <div>
-        <h2>
-          Hook <small>{hook.id}</small>
-        </h2>
-        <dl className="flat">
-          <dt>Provider:</dt>
-          <dd>
-            {hook.provider}
-          </dd>
-          <dt>Token:</dt>
-          <dd>
-            {hook.token
-              ? <code>
-                  {hook.token}
-                </code>
-              : <em>hidden</em>}
-          </dd>
-          <dt>Base Path:</dt>
-          <dd>
-            <code>
-              {secretHookBase}
-            </code>
-          </dd>
-        </dl>
+        <h2>Hook Details</h2>
+        <Panel>
+          <ResultGridRow>
+            <Flex>
+              <Box flex="1" width={1 / 12} pr={15}>
+                <strong>ID</strong>
+              </Box>
+              <Box width={10 / 12}>
+                {hook.id}
+              </Box>
+            </Flex>
+          </ResultGridRow>
+          <ResultGridRow>
+            <Flex>
+              <Box flex="1" width={1 / 12} pr={15}>
+                <strong>Provider</strong>
+              </Box>
+              <Box width={10 / 12}>
+                {hook.provider}
+              </Box>
+            </Flex>
+          </ResultGridRow>
+          <ResultGridRow>
+            <Flex>
+              <Box flex="1" width={1 / 12} pr={15}>
+                <strong>Token</strong>
+              </Box>
+              <Box width={10 / 12}>
+                {hook.token
+                  ? <code>
+                      {hook.token}
+                    </code>
+                  : <em>hidden</em>}
+              </Box>
+            </Flex>
+          </ResultGridRow>
+          <ResultGridRow>
+            <Flex>
+              <Box flex="1" width={1 / 12} pr={15}>
+                <strong>Created</strong>
+              </Box>
+              <Box width={10 / 12}>
+                <TimeSince date={hook.created_at} />
+              </Box>
+            </Flex>
+          </ResultGridRow>
+        </Panel>
 
-        <h3>Travis Config</h3>
-        <h4>Environment</h4>
-        <pre>
-          ZEUS_HOOK_BASE={secretHookBase}
-        </pre>
-        <h4>Webhooks</h4>
-        <pre>
-          {`notifications:\n  webhooks:\n    urls:\n      - ${publicHookBase}/provider/travis/webhook\n    on_start: always`}
-        </pre>
+        <SectionHeading>Travis Config</SectionHeading>
+        <Panel>
+          <Config>
+            {generateTravisConfig(publicHookBase)}
+          </Config>
+        </Panel>
       </div>
     );
   }
 }
+
+const Config = styled.pre`
+  padding: 0 20px;
+  font-size: 13px;
+`;

@@ -20,6 +20,12 @@ import RepositorySettings from './pages/RepositorySettings';
 import RepositoryTests from './pages/RepositoryTests';
 import RepositoryTestList from './pages/RepositoryTestList';
 import RepositoryTestTree from './pages/RepositoryTestTree';
+import RevisionArtifacts from './pages/RevisionArtifacts';
+import RevisionCoverage from './pages/RevisionCoverage';
+import RevisionDetails from './pages/RevisionDetails';
+import RevisionDiff from './pages/RevisionDiff';
+import RevisionOverview from './pages/RevisionOverview';
+import RevisionTestList from './pages/RevisionTestList';
 import UserBuildList from './pages/UserBuildList';
 
 import Login from './components/Login';
@@ -54,6 +60,13 @@ export default (
         <Route path="diff" component={BuildDiff} />
         <Route path="tests" component={BuildTestList} />
         <Route path="artifacts" component={BuildArtifacts} />
+      </Route>
+      <Route path="revisions/:sha" component={RevisionDetails}>
+        <IndexRoute component={RevisionOverview} />
+        <Route path="coverage" component={RevisionCoverage} />
+        <Route path="diff" component={RevisionDiff} />
+        <Route path="tests" component={RevisionTestList} />
+        <Route path="artifacts" component={RevisionArtifacts} />
       </Route>
     </Route>
     <Route path="*" component={NotFoundError} />
