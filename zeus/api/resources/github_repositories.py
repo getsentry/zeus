@@ -119,7 +119,7 @@ class GitHubRepositoriesResource(Resource):
             except IntegrityError:
                 repo = Repository.query.unrestricted_unsafe().filter(
                     Repository.provider == RepositoryProvider.github,
-                    Repository.external_id == str(repo['id']),
+                    Repository.external_id == str(repo_data['id']),
                 ).first()
                 # it's possible to get here if the "full name" already exists
                 assert repo
