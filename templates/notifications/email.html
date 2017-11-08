@@ -186,7 +186,13 @@
           </svg>
           {% endif %}
         </td>
-        <td>#{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif %}</td>
+        <td>#{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif %}
+          <br />{% if job.url %}
+          <small>
+            <a href="{{ job.url }}">{{ job.url }}</a>
+          </small>
+          {% endif %}
+        </td>
         {% endfor %}
       </tr>
     </table>
