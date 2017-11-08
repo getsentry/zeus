@@ -77,9 +77,8 @@ class TravisWebhookView(BaseHook):
             current_app.logger.error('travis.webhook-invalid-signature', exc_info=True)
             return Response(status=400)
 
-        # TODO(dcramer): use two separate providers for Travis private and travis public
-        # and/or store the domain with the hook config
-        public_key = get_travis_public_key('api.travis-ci.org')
+        domain = (hook.data or {}).get('domain', 'api.travis-ci.org')
+        public_key = get_travis_public_key(domain)
         try:
             verify_signature(public_key, signature, payload.encode('utf-8'))
         except InvalidSignature:

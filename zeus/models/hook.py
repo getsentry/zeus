@@ -6,6 +6,7 @@ from secrets import compare_digest, token_bytes
 from zeus.config import db
 from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
 from zeus.db.utils import model_repr
+from zeus.db.types import JSONEncodedDict
 
 
 class Hook(RepositoryBoundMixin, StandardAttributes, db.Model):
@@ -16,6 +17,7 @@ class Hook(RepositoryBoundMixin, StandardAttributes, db.Model):
         db.LargeBinary(64), default=lambda: Hook.generate_token(), unique=True, nullable=False
     )
     provider = db.Column(db.String(64), nullable=False)
+    data = db.Column(JSONEncodedDict, nullable=True)
 
     __tablename__ = 'hook'
     __repr__ = model_repr('repository_id')
