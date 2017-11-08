@@ -96,7 +96,9 @@ export default class RepositoryHookDetails extends AsyncPage {
                 <strong>ZEUS_HOOK_BASE</strong>
               </Box>
               <Box width={10 / 12}>
-                {hook.secret_uri}
+                <code>
+                  {this.getHookBase(true)}
+                </code>
               </Box>
             </Flex>
           </ResultGridRow>
