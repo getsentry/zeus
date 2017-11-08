@@ -20,6 +20,16 @@ export default class ArtifactsList extends Component {
     this.state = {collapsable: props.collapsable};
   }
 
+  humanFileSize(size) {
+    if (size === 0) return '0 B';
+    if (!size) return null;
+
+    let i = Math.floor(Math.log(size) / Math.log(1024));
+    return (
+      (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i]
+    );
+  }
+
   render() {
     return (
       <ResultGrid>
@@ -37,23 +47,23 @@ export default class ArtifactsList extends Component {
             return (
               <Row key={artifact.id}>
                 <Column>
-                  {this.props.collapsable
-                    ? artifact.name
-                    : <div>
-                        <a href={artifact.download_url}>
-                          {artifact.name}
-                        </a>
-                        <br />
-                        <small>
-                          {artifact.job.provider} #{artifact.job.number}
-                        </small>
-                      </div>}
+                  {this.props.collapsable ? (
+                    artifact.name
+                  ) : (
+                    <div>
+                      <a href={artifact.download_url}>{artifact.name}</a>
+                      <br />
+                      <small>
+                        {artifact.job.provider} #{artifact.job.number}
+                      </small>
+                    </div>
+                  )}
                 </Column>
-                <Column width={120}>
+                <Column width={120} textAlign="right">
                   {artifact.type}
                 </Column>
                 <Column width={90} textAlign="right">
-                  {/* TODO: Show the file size here */}
+                  {this.humanFileSize(artifact.file.size)}
                 </Column>
               </Row>
             );
