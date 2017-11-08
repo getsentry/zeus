@@ -44,26 +44,32 @@ def send_email_notification(build: Build):
         return
 
     msg = build_message(build)
+    if not msg:
+        return
+
     mail.send(msg)
 
 
 def build_message(build: Build) -> Message:
-    source = Source.query.get(build.source_id)
-    assert source
-    revision = Revision.query.filter(
-        Revision.sha == source.revision_sha,
-        Revision.repository_id == build.repository_id,
-    ).first()
-    assert revision
     author = Author.query.join(
         Source, Source.author_id == Author.id,
     ).filter(
         Source.id == build.source_id,
     ).first()
-    assert author
+    if not author:
+        return
+
+    source = Source.query.get(build.source_id)
+    assert source
 
     repo = Repository.query.get(build.repository_id)
     assert repo
+
+    revision = Revision.query.filter(
+        Revision.sha == source.revision_sha,
+        Revision.repository_id == build.repository_id,
+    ).first()
+    assert revision
 
     job_list = list(Job.query.filter(Job.build_id == build.id))
     job_ids = [j.id for j in job_list]
