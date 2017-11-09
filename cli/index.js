@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /* eslint-env node */
 
 const _ = require('lodash');
