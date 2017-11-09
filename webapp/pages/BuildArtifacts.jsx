@@ -18,18 +18,12 @@ export default class BuildArtifacts extends AsyncPage {
     return [['artifacts', `/repos/${repo.full_name}/builds/${buildNumber}/artifacts`]];
   }
 
-  shouldFetchUpdates() {
-    return this.context.build.status !== 'finished';
-  }
-
   renderBody() {
     return (
       <Section>
-        {this.state.artifacts.length ? (
-          <ArtifactsList artifacts={this.state.artifacts} />
-        ) : (
-          <em>This build did not produce artifacts.</em>
-        )}
+        {this.state.artifacts.length
+          ? <ArtifactsList artifacts={this.state.artifacts} />
+          : <em>This build did not produce artifacts.</em>}
       </Section>
     );
   }

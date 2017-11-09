@@ -38,10 +38,6 @@ export default class BuildDetailsBase extends AsyncPage {
     return [['build', this.getBuildEndpoint()]];
   }
 
-  shouldFetchUpdates() {
-    return (this.state.build || {}).status !== 'finished';
-  }
-
   renderBody() {
     let {build} = this.state;
     let hasCoverage =

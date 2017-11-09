@@ -33,10 +33,6 @@ class RevisionListBody extends AsyncComponent {
     repo: PropTypes.object.isRequired
   };
 
-  shouldFetchUpdates(stateKey, endpoint, params) {
-    return false;
-  }
-
   fetchData(refresh) {
     return new Promise((resolve, reject) => {
       let {repo} = this.context;

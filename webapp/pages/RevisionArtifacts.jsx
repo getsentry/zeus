@@ -18,10 +18,6 @@ export default class RevisionArtifacts extends AsyncPage {
     return [['artifacts', `/repos/${repo.full_name}/revisions/${sha}/artifacts`]];
   }
 
-  shouldFetchUpdates() {
-    return this.context.build.status !== 'finished';
-  }
-
   renderBody() {
     return (
       <Section>

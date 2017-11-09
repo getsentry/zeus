@@ -23,8 +23,6 @@ export default class AsyncComponent extends Component {
     this.render = this.render.bind(this);
 
     this.state = this.getDefaultState(props, context);
-
-    this.timers = {};
   }
 
   componentWillMount() {
@@ -46,19 +44,11 @@ export default class AsyncComponent extends Component {
 
   componentWillUnmount() {
     this.api && this.api.clear();
-    Object.keys(this.timers).forEach(key => {
-      window.clearTimeout(this.timers[key]);
-    });
     super.componentWillUnmount && super.componentWillUnmount();
   }
 
   refreshData(refresh = false) {
-    this.fetchData(refresh).then(() => {
-      if (this.shouldFetchUpdates()) {
-        if (this.timers.refreshData) window.clearTimeout(this.timers.refreshData);
-        this.timers.refreshData = window.setTimeout(() => this.refreshData(true), 5000);
-      }
-    });
+    this.fetchData(refresh);
   }
 
   /**
@@ -70,14 +60,6 @@ export default class AsyncComponent extends Component {
     return new Promise((resolve, reject) => {
       return resolve();
     });
-  }
-
-  /**
-   * Return a boolean indicating whether this endpoint should attempt to
-   * automatically fetch updates (using polling).
-   */
-  shouldFetchUpdates() {
-    return true;
   }
 
   // XXX: cant call this getInitialState as React whines
