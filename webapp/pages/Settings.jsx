@@ -22,6 +22,7 @@ export default class Settings extends AsyncPage {
         <Header>
           <Nav>
             <NavItem to={'/settings/github/repos'}>Repositories</NavItem>
+            <NavItem to={'/settings/token'}>API Token</NavItem>
           </Nav>
         </Header>
 

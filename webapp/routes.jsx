@@ -27,6 +27,7 @@ import RevisionDiff from './pages/RevisionDiff';
 import RevisionOverview from './pages/RevisionOverview';
 import RevisionTestList from './pages/RevisionTestList';
 import Settings from './pages/Settings';
+import TokenSettings from './pages/TokenSettings';
 import UserBuildList from './pages/UserBuildList';
 
 import Login from './components/Login';
@@ -40,6 +41,7 @@ export default (
     <Route path="/settings" component={requireAuth(Settings)}>
       <IndexRoute onEnter={(_, replace) => replace('/settings/github/repos')} />
       <Route path="github/repos" component={GitHubRepositoryList} />
+      <Route path="token" component={TokenSettings} />
     </Route>
     <Route path="/builds" component={requireAuth(UserBuildList)} />
     <Route path="/login" component={Login} />
