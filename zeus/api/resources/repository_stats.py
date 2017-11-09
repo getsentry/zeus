@@ -165,7 +165,7 @@ class RepositoryStatsResource(BaseRepositoryResource):
             cur_date = decr_res(cur_date)
             data.append({
                 'time': int(float(cur_date.strftime('%s.%f')) * 1000),
-                'value': int(float(results.get(cur_date, 0))),
+                'value': int(float(results.get(cur_date) or 0)),
             })
         # data.reverse()
 
