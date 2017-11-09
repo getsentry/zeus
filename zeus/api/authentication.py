@@ -11,7 +11,7 @@ class AuthenticationFailed(Exception):
 
 class ApiTokenAuthentication(object):
     def authenticate(self):
-        header = request.headers.get('Authentication', '').lower()
+        header = request.headers.get('Authorization', '').lower()
         if not header:
             return None
 
