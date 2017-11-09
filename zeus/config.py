@@ -33,7 +33,7 @@ ssl = SSL()
 
 def with_health_check(app):
     def middleware(environ, start_response):
-        if environ.get('PATH_INFO', '') == '/_health':
+        if environ.get('PATH_INFO', '') == '/healthz':
             start_response('200 OK', [('Content-Type', 'application/json')])
             return [json.dumps({'ok': True})]
         return app(environ, start_response)
