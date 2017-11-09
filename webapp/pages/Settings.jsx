@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router';
 
 import AsyncPage from '../components/AsyncPage';
-import Button from '../components/Button';
-import Layout from '../components/Layout';
-import {ResultGrid, Column, Row} from '../components/ResultGrid';
-import SectionHeading from '../components/SectionHeading';
+import Content from '../components/Content';
+import Header from '../components/Header';
+import Nav, {NavItem} from '../components/Nav';
 
 export default class Settings extends AsyncPage {
   static contextTypes = {
@@ -20,46 +18,19 @@ export default class Settings extends AsyncPage {
 
   render() {
     return (
-      <Layout title={this.getTitle()}>
-        {this.renderContent()}
-      </Layout>
+      <div>
+        <Header>
+          <Nav>
+            <NavItem to={'/settings/github/repos'}>Repositories</NavItem>
+          </Nav>
+        </Header>
+
+        <Content>{this.renderContent()}</Content>
+      </div>
     );
   }
 
   renderBody() {
-    return (
-      <div>
-        <h1>
-          {"These are your settings. There's not much to them yet."}
-        </h1>
-
-        <div>
-          <div style={{float: 'right', marginTop: -5}}>
-            <Button
-              onClick={() => {
-                this.context.router.push('/settings/github/repos');
-              }}
-              type="primary"
-              size="small">
-              Manage GitHub Repositories
-            </Button>
-          </div>
-          <SectionHeading>Repositories</SectionHeading>
-        </div>
-        <ResultGrid>
-          {this.context.repoList.map(repo => {
-            return (
-              <Row key={repo.id}>
-                <Column>
-                  <Link to={repo.full_name}>
-                    {repo.owner_name} / {repo.name}
-                  </Link>
-                </Column>
-              </Row>
-            );
-          })}
-        </ResultGrid>
-      </div>
-    );
+    return this.props.children;
   }
 }

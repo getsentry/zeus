@@ -37,9 +37,9 @@ import requireAuth from './utils/requireAuth';
 export default (
   <Route path="/" component={App}>
     <IndexRedirect to="/builds" />
-    <Route path="/settings">
-      <IndexRoute component={requireAuth(Settings)} />
-      <Route path="github/repos" component={requireAuth(GitHubRepositoryList)} />
+    <Route path="/settings" component={requireAuth(Settings)}>
+      <IndexRoute onEnter={(_, replace) => replace('/settings/github/repos')} />
+      <Route path="github/repos" component={GitHubRepositoryList} />
     </Route>
     <Route path="/builds" component={requireAuth(UserBuildList)} />
     <Route path="/login" component={Login} />

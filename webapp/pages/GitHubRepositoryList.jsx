@@ -7,8 +7,6 @@ import {Flex, Box} from 'grid-styled';
 import {addIndicator, removeIndicator} from '../actions/indicators';
 import {addRepo, removeRepo, updateRepo} from '../actions/repos';
 import AsyncPage from '../components/AsyncPage';
-import Layout from '../components/Layout';
-import Panel from '../components/Panel';
 import ResultGridRow from '../components/ResultGridRow';
 
 class GitHubRepoItem extends Component {
@@ -34,15 +32,17 @@ class GitHubRepoItem extends Component {
             {repo.name}
           </Box>
           <Box width={1 / 12} style={{textAlign: 'center'}}>
-            {repo.loading
-              ? '...'
-              : repo.active
-                ? <a onClick={this.props.onDisableRepo} style={{cursor: 'pointer'}}>
-                    Disable
-                  </a>
-                : <a onClick={this.props.onEnableRepo} style={{cursor: 'pointer'}}>
-                    Enable
-                  </a>}
+            {repo.loading ? (
+              '...'
+            ) : repo.active ? (
+              <a onClick={this.props.onDisableRepo} style={{cursor: 'pointer'}}>
+                Disable
+              </a>
+            ) : (
+              <a onClick={this.props.onEnableRepo} style={{cursor: 'pointer'}}>
+                Enable
+              </a>
+            )}
           </Box>
         </Flex>
       </ResultGridRow>
@@ -113,16 +113,6 @@ class GitHubRepositoryList extends AsyncPage {
       }
     );
   };
-
-  render() {
-    return (
-      <Layout title={this.getTitle()}>
-        <Panel>
-          {this.renderContent()}
-        </Panel>
-      </Layout>
-    );
-  }
 
   renderBody() {
     let {location} = this.props;
