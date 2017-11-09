@@ -21,11 +21,11 @@ const generateTravisConfig = publicHookBase => {
     on_error: always
   email: false
 install:
-  - npm install zeus-cli
+  - npm install zeus-ci
 after_success:
-  - zeus-cli upload-artifacts --discover
+  - zeus-ci upload path/to/artifact "mime/type"
 after_failure:
-  - zeus-cli upload-artifacts --discover`;
+  - zeus-ci upload path/to/artifact "mime/type"`;
 };
 
 export default class RepositoryHookDetails extends AsyncPage {
