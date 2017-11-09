@@ -4,7 +4,7 @@ import sys
 from base64 import urlsafe_b64encode
 
 from zeus.config import db
-from zeus.models import Repository, Hook
+from zeus.models import Repository, RepositoryProvider, Hook
 
 from .base import cli
 
@@ -15,11 +15,15 @@ def hooks():
 
 
 @hooks.command()
-@click.argument('repository_url', required=True)
+@click.argument('repository', required=True)
 @click.argument('provider', required=True)
-def add(repository_url, provider):
+def add(repository, provider):
+    repo_bits = repository.split('/', 2)
+    assert len(repo_bits) == 3, 'repository not in valid format: {provider}/{owner}/{name}'
     repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.url == repository_url,
+        Repository.provider == RepositoryProvider(repo_bits[0]),
+        Repository.owner_name == repo_bits[1],
+        Repository.name == repo_bits[2],
     ).first()
     assert repo
 
@@ -47,6 +51,17 @@ def list(provider):
     click.echo('Registered Hooks:')
     for hook in query:
         click.echo(' -> {} ({})'.format(hook.id, hook.provider))
+
+
+@hooks.command()
+@click.argument('hook_id', required=True)
+def get(hook_id):
+    hook = Hook.query.unrestricted_unsafe().get(hook_id)
+    click.echo('-> id           = {}'.format(str(hook.id)))
+    click.echo('-> repository   = {}'.format(hook.repository.get_full_name()))
+    click.echo('-> token        = {}'.format(urlsafe_b64encode(hook.token).decode('utf-8')))
+    click.echo('-> provider     = {}'.format(hook.provider))
+    click.echo('-> base_path    = /hooks/{}/{}'.format(str(hook.id), hook.get_signature()))
 
 
 @hooks.command()

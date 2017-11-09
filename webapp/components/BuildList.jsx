@@ -1,43 +1,46 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Flex, Box} from 'grid-styled';
 
 import BuildListItem from '../components/BuildListItem';
-import Panel from '../components/Panel';
-import ResultGridHeader from '../components/ResultGridHeader';
+import {ResultGrid, Column, Header} from '../components/ResultGrid';
 
 export default class BuildList extends Component {
   static propTypes = {
-    buildList: PropTypes.arrayOf(PropTypes.object).isRequired
+    buildList: PropTypes.arrayOf(PropTypes.object).isRequired,
+    includeAuthor: PropTypes.bool,
+    includeRepo: PropTypes.bool
   };
 
   render() {
+    let {buildList, includeAuthor, includeRepo, params} = this.props;
     return (
-      <Panel>
-        <ResultGridHeader>
-          <Flex>
-            <Box flex="1" width={6 / 12} pr={15}>
-              Build
-            </Box>
-            <Box width={1 / 12} style={{textAlign: 'center'}}>
-              Duration
-            </Box>
-            <Box width={1 / 12} style={{textAlign: 'center'}}>
-              Coverage
-            </Box>
-            <Box width={2 / 12} style={{textAlign: 'right'}}>
-              When
-            </Box>
-          </Flex>
-        </ResultGridHeader>
+      <ResultGrid>
+        <Header>
+          <Column>Build</Column>
+          <Column width={90} textAlign="center">
+            Coverage
+          </Column>
+          <Column width={90} textAlign="center">
+            Duration
+          </Column>
+          <Column width={150} textAlign="right">
+            When
+          </Column>
+        </Header>
         <div>
-          {this.props.buildList.map(build => {
+          {buildList.map(build => {
             return (
-              <BuildListItem key={build.id} build={build} params={this.props.params} />
+              <BuildListItem
+                key={build.id}
+                build={build}
+                params={params}
+                includeAuthor={includeAuthor}
+                includeRepo={includeRepo}
+              />
             );
           })}
         </div>
-      </Panel>
+      </ResultGrid>
     );
   }
 }

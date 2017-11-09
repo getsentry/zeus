@@ -19,9 +19,24 @@ The initial version aims to support Travis CI via GitHub, including:
 ## Setup
 
 ```shell
-mkvirtualenv zeus --python `which python3`
+# create a new python environment
+python3 -m venv venv
+
+# load the environment as the active
+source venv/bin/activate
+
+# load dependencies
 make
+
+# initialize config
 zeus init
+```
+
+Note, before running any future Python commands (including ``zeus``), you'll
+need to activate the environment:
+
+```shell
+source venv/bin/activate
 ```
 
 Bootstrap the database (see ``Makefile`` for details):
@@ -101,9 +116,9 @@ zeus
 |   ├── Build
 |   |   ├── ItemStat
 |   |   ├── Source
+|   |   ├── FileCoverage
 |   |   └── Job
 |   |       ├── Artifact
-|   |       ├── FileCoverage
 |   |       ├── ItemStat
 |   |       └── TestCase
 |   |           ├── Artifact
@@ -114,6 +129,7 @@ zeus
 |       └── Revision
 |           └── Author
 └── User
+    ├── Email
     └── Identity
 ```
 

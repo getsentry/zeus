@@ -1,8 +1,8 @@
 exam==0.10.6
 factory_boy==2.8.1
-pytest==3.1.2
+pytest==3.2.3
 pytest-cov==2.5.1
 pytest-mock==1.6.0
-pytest-responses==0.1.0
+pytest-responses==0.2.0
 pytest-xdist==1.18.0
-responses==0.7.0
+responses==0.8.1

@@ -16,9 +16,9 @@ class FileCoverageFactory(ModelFactory):
     filename = factory.LazyAttribute(
         lambda o: 'tests/%s/%s/%s.py' % (faker.word(), faker.word(), faker.word())
     )
-    job = factory.SubFactory('zeus.factories.JobFactory')
-    job_id = factory.SelfAttribute('job.id')
-    repository = factory.SelfAttribute('job.repository')
+    build = factory.SubFactory('zeus.factories.BuildFactory')
+    build_id = factory.SelfAttribute('build.id')
+    repository = factory.SelfAttribute('build.repository')
     repository_id = factory.SelfAttribute('repository.id')
     data = 'CCCUUUU'
     lines_covered = factory.Faker('random_int', min=0, max=100)

@@ -16,9 +16,11 @@ class FileData(Mutable):
 
         self.filename = data.get('filename')
         self.storage = (
-            data.get('storage', default_storage or current_app.config['FILE_STORAGE'])
+            data.get(
+                'storage', default_storage or current_app.config['FILE_STORAGE'])
         )
         self.path = data.get('path', default_path)
+        self.size = data.get('size', None)
 
     def __repr__(self):
         return '<%s: filename=%s>' % (type(self).__name__, self.filename)
@@ -33,16 +35,30 @@ class FileData(Mutable):
             options['path'] = self.path
         return storage(**options)
 
-    def url_for(self):
+    def url_for(self, expire=300):
         if self.filename is None:
             return
-        return self.get_storage().url_for(self.filename)
+        return self.get_storage().url_for(self.filename, expire=expire)
 
     def save(self, fp, filename=None):
         if filename:
             self.filename = filename
         elif self.filename is None:
             raise ValueError('Missing filename')
+
+        # Flask's FileStorage object might give us an accurate content_length,
+        # otherwise we need to seek the underlying file to obtain its size.
+        # For in-memory files this will fail, so we just assume None as default
+        if hasattr(fp, 'content_length') and fp.content_length:
+            self.size = fp.content_length
+        else:
+            try:
+                pos = fp.tell()
+                fp.seek(0, 2)
+                self.size = fp.tell()
+                fp.seek(pos)
+            except (AttributeError, IOError):
+                self.size = None
 
         self.get_storage().save(self.filename, fp)
         self.changed()
@@ -78,6 +94,7 @@ class File(TypeDecorator):
                     'filename': value.filename,
                     'storage': value.storage,
                     'path': value.path,
+                    'size': value.size,
                 }
             return str(json.dumps(value))
 

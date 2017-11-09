@@ -1,9 +1,10 @@
 from flask import current_app, request
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Repository, Revision, Source
+from zeus.models import Author, Build, Email, Repository, Revision, Source
 from zeus.pubsub.utils import publish
 from zeus.vcs.base import UnknownRevision
 
@@ -32,7 +33,13 @@ def identify_revision(repository, treeish):
     if not vcs:
         return
 
-    commit = next(vcs.log(parent=treeish, limit=1))
+    vcs.ensure(update_if_exists=False)
+
+    try:
+        commit = next(vcs.log(parent=treeish, limit=1))
+    except UnknownRevision:
+        vcs.update()
+        commit = next(vcs.log(parent=treeish, limit=1))
 
     revision, _ = commit.save(repository)
 
@@ -40,6 +47,9 @@ def identify_revision(repository, treeish):
 
 
 class RepositoryBuildsResource(BaseRepositoryResource):
+    def select_resurce_for_update(self):
+        return False
+
     def get(self, repo: Repository):
         """
         Return a list of builds for the given repository.
@@ -61,9 +71,13 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         show = request.args.get('show')
         if show == 'mine' or (not show and user):
             query = query.filter(
-                Source.author_id.
-                in_(db.session.query(Author.id).filter(
-                    Author.email == user.email)),
+                Source.author_id.in_(
+                    db.session.query(Author.id).filter(Author.email.in_(
+                        db.session.query(Email.email).filter(
+                            Email.user_id == user.id
+                        )
+                    ))
+                )
             )
 
         return self.paginate_with_schema(builds_schema, query)
@@ -116,8 +130,17 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         if not source.patch_id:
             if not build.label:
                 build.label = source.revision.message.split('\n')[0]
+
+        if not build.label:
+            return self.error('missing build label')
+
         db.session.add(build)
-        db.session.commit()
+
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            return self.respond(status=422)
 
         result = build_schema.dump(build)
         assert not result.errors, 'this should never happen'

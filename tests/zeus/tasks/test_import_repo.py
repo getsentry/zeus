@@ -7,13 +7,14 @@ from zeus.vcs.base import Vcs, RevisionResult
 
 def test_import_repo(mocker, db_session, default_repo):
     mock_vcs_backend = mocker.MagicMock(spec=Vcs)
-    mock_get_vcs = mocker.patch.object(Repository, 'get_vcs', return_value=mock_vcs_backend)
+    mock_get_vcs = mocker.patch.object(
+        Repository, 'get_vcs', return_value=mock_vcs_backend)
     mock_delay = mocker.patch.object(import_repo, 'delay')
 
     def log(parent):
         if parent is None:
             yield RevisionResult(
-                id='a' * 40,
+                sha='a' * 40,
                 message='hello world!',
                 author='Example <foo@example.com>',
                 author_date=datetime(2013, 9, 19, 22, 15, 22),

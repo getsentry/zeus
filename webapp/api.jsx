@@ -1,3 +1,5 @@
+import {ApiError} from './errors';
+
 export class Request {
   static UNSET = 0;
   static OPENED = 1;
@@ -36,10 +38,8 @@ export class Request {
           // we otherwise wouldn't want it
           // responseData.xhr = xhr;
           resolve(responseData);
-        } else if (xhr.status === 401 && responseData.url) {
-          window.location.href = responseData.url;
         } else {
-          let error = new Error(xhr.responseText);
+          let error = new ApiError(xhr.responseText, xhr.status);
           error.data = responseData;
           error.xhr = xhr;
           reject(error);

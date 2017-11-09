@@ -1,3 +1,4 @@
+from zeus import factories
 from zeus.models import Build
 
 
@@ -69,3 +70,20 @@ def test_repo_build_create_missing_revision(
     assert build.repository_id == default_repo.id
     assert build.source_id == default_source.id
     assert build.label == 'test build'
+
+
+def test_repo_build_existing_entityt(
+    client, default_login, default_source, default_repo, default_repo_access
+):
+    existing_build = factories.BuildFactory(source=default_source, travis=True)
+
+    resp = client.post(
+        '/api/repos/{}/builds'.format(default_repo.get_full_name()),
+        json={
+            'provider': existing_build.provider,
+            'external_id': existing_build.external_id,
+            'ref': default_source.revision_sha,
+            'label': 'test build',
+        }
+    )
+    assert resp.status_code == 422, repr(resp.data)

@@ -3,9 +3,111 @@ import os.path
 import re
 
 from subprocess import Popen, PIPE
+from typing import List, Optional, Tuple
 
 from zeus.db.utils import create_or_update, get_or_create, try_create
-from zeus.models import Author, Revision, Source
+from zeus.models import Author, Repository, Revision, Source
+
+
+class RevisionResult(object):
+    parents = None
+    branches = None
+
+    def __init__(
+        self,
+        sha: str,
+        message: str,
+        author: str,
+        author_date,
+        committer: str=None,
+        committer_date=None,
+        parents: Optional[List[str]]=None,
+        branches: Optional[List[str]]=None
+    ):
+        self.sha = sha
+        self.message = message
+        self.author = author
+        self.author_date = author_date
+        self.committer = committer or author
+        self.committer_date = committer_date or author_date
+        if parents is not None:
+            self.parents = parents
+        if branches is not None:
+            self.branches = branches
+
+    def __repr__(self):
+        return '<%s: sha=%r author=%r subject=%r>' % (
+            type(self).__name__, self.sha, self.author, self.subject
+        )
+
+    def _get_author(self, repository: Repository, value: str) -> Author:
+        match = re.match(r'^(.+) <([^>]+)>$', value)
+        if not match:
+            if '@' in value:
+                name, email = value, value
+            else:
+                name, email = value, '{0}@localhost'.format(value)
+        else:
+            name, email = match.group(1), match.group(2)
+
+        author, _ = get_or_create(
+            Author,
+            where={
+                'email': email,
+                'repository_id': repository.id,
+            },
+            defaults={
+                'name': name,
+            }
+        )
+
+        return author
+
+    @property
+    def date_created(self):
+        return self.author_date
+
+    @property
+    def date_committed(self):
+        return self.committer_date
+
+    @property
+    def subject(self) -> str:
+        return self.message.splitlines()[0]
+
+    def save(self, repository: Repository) -> Tuple[Revision, bool]:
+        author = self._get_author(repository, self.author)
+        if self.author == self.committer:
+            committer = author
+        else:
+            committer = self._get_author(repository, self.committer)
+
+        revision, created = create_or_update(
+            Revision,
+            where={
+                'repository': repository,
+                'sha': self.sha,
+            },
+            values={
+                'author': author,
+                'committer': committer,
+                'message': self.message,
+                'parents': self.parents,
+                'branches': self.branches,
+                'date_created': self.author_date,
+                'date_committed': self.committer_date,
+            }
+        )
+
+        # we also want to create a source for this item as it's the canonical
+        # representation in the UI
+        try_create(Source, {
+            'revision_sha': self.sha,
+            'repository': repository,
+            'author': author,
+        })
+
+        return (revision, created)
 
 
 class CommandError(Exception):
@@ -17,7 +119,8 @@ class CommandError(Exception):
 
     def __str__(self):
         return '%s returned %d:\nSTDOUT: %r\nSTDERR: %r' % (
-            self.cmd, self.retcode, self.stdout.decode('utf-8'), self.stderr.decode('utf-8')
+            self.cmd, self.retcode, self.stdout.decode(
+                'utf-8'), self.stderr.decode('utf-8')
         )
 
 
@@ -52,10 +155,12 @@ class BufferParser(object):
 
 class Vcs(object):
     ssh_connect_path = os.path.realpath(
-        os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 'bin', 'ssh-connect')
+        os.path.join(os.path.dirname(__file__), os.pardir,
+                     os.pardir, 'bin', 'ssh-connect')
     )
 
-    def __init__(self, path, url, username=None):
+    def __init__(self, id: str, path: str, url: str, username: str=None):
+        self.id = id
         self.path = path
         self.url = url
         self.username = username
@@ -63,10 +168,10 @@ class Vcs(object):
         self._path_exists = None
         self._updated = False
 
-    def get_default_env(self):
+    def get_default_env(self) -> dict:
         return {}
 
-    def run(self, *args, **kwargs):
+    def run(self, *args, **kwargs) -> str:
         if self.exists():
             kwargs.setdefault('cwd', self.path)
 
@@ -75,7 +180,7 @@ class Vcs(object):
         for key, value in self.get_default_env().items():
             env.setdefault(key, value)
 
-        env.setdefault('ZEUS_SSH_REPO', self.url)
+        env.setdefault('ZEUS_SSH_REPO', self.id)
 
         for key, value in kwargs.pop('env', {}):
             env[key] = value
@@ -90,7 +195,7 @@ class Vcs(object):
             raise CommandError(args[0], proc.returncode, stdout, stderr)
         return stdout.decode('utf-8')
 
-    def exists(self):
+    def exists(self) -> bool:
         return os.path.exists(self.path)
 
     def clone(self):
@@ -109,7 +214,8 @@ class Vcs(object):
             self.update()
         self._updated = True
 
-    def log(self, parent=None, branch=None, author=None, offset=0, limit=100):
+    def log(self, parent: str=None, branch: str=None, author: str=None,
+            offset=0, limit=100) -> List[RevisionResult]:
         """ Gets the commit log for the repository.
 
         Only one of parent or branch can be specified for restricting searches.
@@ -131,110 +237,20 @@ class Vcs(object):
         """
         raise NotImplementedError
 
-    def export(self, id):
+    def export(self, sha: str) -> str:
         raise NotImplementedError
 
-    def get_default_revision(self):
+    def get_default_branch(self) -> str:
+        return self.get_default_revision()
+
+    def get_default_revision(self) -> str:
         raise NotImplementedError
 
-    def is_child_parent(self, child_in_question, parent_in_question):
+    def is_child_parent(self, child_in_question: str, parent_in_question: str) -> bool:
         raise NotImplementedError
 
-    def get_known_branches(self):
+    def get_known_branches(self) -> List[str]:
         """ This is limited to parallel trees with names.
         :return: A list of unique names for the branches.
         """
         raise NotImplementedError
-
-
-class RevisionResult(object):
-    parents = None
-    branches = None
-
-    def __init__(
-        self,
-        id,
-        message,
-        author,
-        author_date,
-        committer=None,
-        committer_date=None,
-        parents=None,
-        branches=None
-    ):
-        self.id = id
-        self.message = message
-        self.author = author
-        self.author_date = author_date
-        self.committer = committer or author
-        self.committer_date = committer_date or author_date
-        if parents is not None:
-            self.parents = parents
-        if branches is not None:
-            self.branches = branches
-
-    def __repr__(self):
-        return '<%s: id=%r author=%r subject=%r>' % (
-            type(self).__name__, self.id, self.author, self.subject
-        )
-
-    def _get_author(self, repository, value):
-        match = re.match(r'^(.+) <([^>]+)>$', value)
-        if not match:
-            if '@' in value:
-                name, email = value, value
-            else:
-                name, email = value, '{0}@localhost'.format(value)
-        else:
-            name, email = match.group(1), match.group(2)
-
-        author, _ = get_or_create(
-            Author,
-            where={
-                'email': email,
-                'repository_id': repository.id,
-            },
-            defaults={
-                'name': name,
-            }
-        )
-
-        return author
-
-    @property
-    def subject(self):
-        return self.message.splitlines()[0]
-
-    def save(self, repository):
-        author = self._get_author(repository, self.author)
-        if self.author == self.committer:
-            committer = author
-        else:
-            committer = self._get_author(repository, self.committer)
-
-        revision, created = create_or_update(
-            Revision,
-            where={
-                'repository': repository,
-                'sha': self.id,
-            },
-            values={
-                'author': author,
-                'committer': committer,
-                'message': self.message,
-                'parents': self.parents,
-                'branches': self.branches,
-                'date_created': self.author_date,
-                'date_committed': self.committer_date,
-            }
-        )
-
-        # we also want to create a source for this item as it's the canonical
-        # representation in the UI
-        try_create(Source, {
-            'revision_sha': self.id,
-            'repository': repository,
-            'author': author,
-        })
-
-        return (revision, created)

@@ -1,9 +1,10 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from flask import current_app
 
 from zeus import auth
 from zeus.config import celery, db
 from zeus.models import Repository, RepositoryStatus
+from zeus.utils import timezone
 
 
 # TODO(dcramer): a lot of this code is shared with import_repo
@@ -18,7 +19,8 @@ def sync_repo(repo_id, max_log_passes=10):
 
     vcs = repo.get_vcs()
     if vcs is None:
-        current_app.logger.warning('Repository %s has no VCS backend set', repo.id)
+        current_app.logger.warning(
+            'Repository %s has no VCS backend set', repo.id)
         return
 
     if repo.status != RepositoryStatus.active:
@@ -28,7 +30,7 @@ def sync_repo(repo_id, max_log_passes=10):
     Repository.query.filter(
         Repository.id == repo.id,
     ).update({
-        'last_update_attempt': datetime.now(timezone.utc),
+        'last_update_attempt': timezone.now(),
     })
     db.session.commit()
 
@@ -50,7 +52,7 @@ def sync_repo(repo_id, max_log_passes=10):
 
             current_app.logger.info('Created revision {}'.format(repo.id))
             might_have_more = True
-            parent = commit.id
+            parent = commit.sha
         max_log_passes -= 1
 
     Repository.query.filter(

@@ -1,3 +1,4 @@
+from zeus import factories
 from zeus.config import db
 from zeus.constants import Result, Status
 
@@ -16,15 +17,15 @@ def test_job_details(
 
 
 def test_update_job_to_finished(
-    client, mocker, default_login, default_repo, default_build, default_job, default_repo_access
+    client, mocker, default_login, default_repo, default_build, default_repo_access
 ):
-    assert default_job.result != Result.failed
+    job = factories.JobFactory(build=default_build, in_progress=True)
 
     mock_delay = mocker.patch('zeus.tasks.aggregate_build_stats_for_job.delay')
 
     resp = client.put(
         '/api/repos/{}/builds/{}/jobs/{}'.format(
-            default_repo.get_full_name(), default_build.number, default_job.number
+            default_repo.get_full_name(), default_build.number, job.number
         ),
         json={
             'result': 'failed',
@@ -33,24 +34,26 @@ def test_update_job_to_finished(
     )
     assert resp.status_code == 200
     data = resp.json()
-    assert data['id'] == str(default_job.id)
+    assert data['id'] == str(job.id)
 
-    assert default_job.status == Status.finished
-    assert default_job.result == Result.failed
+    assert job.status == Status.finished
+    assert job.result == Result.failed
+    assert job.date_started
+    assert job.date_finished
 
-    mock_delay.assert_called_once_with(job_id=default_job.id)
+    mock_delay.assert_called_once_with(job_id=job.id)
 
 
 def test_update_job_to_in_progress(
-    client, mocker, default_login, default_repo, default_build, default_job, default_repo_access
+    client, mocker, default_login, default_repo, default_build, default_repo_access
 ):
-    assert default_job.result != Result.failed
+    job = factories.JobFactory(build=default_build, queued=True)
 
     mock_delay = mocker.patch('zeus.tasks.aggregate_build_stats_for_job.delay')
 
     resp = client.put(
         '/api/repos/{}/builds/{}/jobs/{}'.format(
-            default_repo.get_full_name(), default_build.number, default_job.number
+            default_repo.get_full_name(), default_build.number, job.number
         ),
         json={
             'status': 'in_progress',
@@ -58,11 +61,13 @@ def test_update_job_to_in_progress(
     )
     assert resp.status_code == 200
     data = resp.json()
-    assert data['id'] == str(default_job.id)
+    assert data['id'] == str(job.id)
 
-    assert default_job.status == Status.in_progress
+    assert job.status == Status.in_progress
+    assert job.date_started
+    assert not job.date_finished
 
-    mock_delay.assert_called_once_with(job_id=default_job.id)
+    mock_delay.assert_called_once_with(job_id=job.id)
 
 
 def test_update_job_to_finished_with_pending_artifacts(
@@ -94,3 +99,30 @@ def test_update_job_to_finished_with_pending_artifacts(
     assert default_job.result == Result.failed
 
     mock_delay.assert_called_once_with(job_id=default_job.id)
+
+
+def test_update_job_restart(
+    client, mocker, default_login, default_repo, default_build, default_repo_access
+):
+    job = factories.JobFactory(build=default_build, finished=True, passed=True)
+
+    mock_delay = mocker.patch('zeus.tasks.aggregate_build_stats_for_job.delay')
+
+    resp = client.put(
+        '/api/repos/{}/builds/{}/jobs/{}'.format(
+            default_repo.get_full_name(), default_build.number, job.number
+        ),
+        json={
+            'status': 'in_progress',
+        }
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data['id'] == str(job.id)
+
+    assert job.status == Status.in_progress
+    assert job.result == Result.unknown
+    assert job.date_started
+    assert not job.date_finished
+
+    mock_delay.assert_called_once_with(job_id=job.id)

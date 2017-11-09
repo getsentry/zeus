@@ -16,35 +16,21 @@ export default class AsyncComponent extends Component {
     router: PropTypes.object.isRequired
   };
 
-  static errorHandler = (component, fn) => {
-    return function(...args) {
-      try {
-        return fn(...args);
-      } catch (err) {
-        /*eslint no-console:0*/
-        setTimeout(() => {
-          throw err;
-        });
-        // component.setState({
-        //   error: err
-        // });
-        return null;
-      }
-    };
-  };
-
   constructor(props, context) {
     super(props, context);
 
-    this.fetchData = AsyncComponent.errorHandler(this, this.fetchData.bind(this));
-    this.render = AsyncComponent.errorHandler(this, this.render.bind(this));
+    this.refreshData = this.refreshData.bind(this);
+    this.render = this.render.bind(this);
 
     this.state = this.getDefaultState(props, context);
+
+    this.timers = {};
   }
 
   componentWillMount() {
     this.api = new Client();
-    this.fetchData();
+    this.refreshData();
+    super.componentWillMount && super.componentWillMount();
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -54,13 +40,45 @@ export default class AsyncComponent extends Component {
     ) {
       this.remountComponent(nextProps, nextContext);
     }
+    super.componentWillReceiveProps &&
+      super.componentWillReceiveProps(nextProps, nextContext);
   }
 
   componentWillUnmount() {
     this.api && this.api.clear();
+    Object.keys(this.timers).forEach(key => {
+      window.clearTimeout(this.timers[key]);
+    });
+    super.componentWillUnmount && super.componentWillUnmount();
   }
 
-  fetchData() {}
+  refreshData(refresh = false) {
+    this.fetchData(refresh).then(() => {
+      if (this.shouldFetchUpdates()) {
+        if (this.timers.refreshData) window.clearTimeout(this.timers.refreshData);
+        this.timers.refreshData = window.setTimeout(() => this.refreshData(true), 5000);
+      }
+    });
+  }
+
+  /**
+   * Method to asynchronously fetch data.
+   *
+   * Must return a Promise.
+   */
+  fetchData() {
+    return new Promise((resolve, reject) => {
+      return resolve();
+    });
+  }
+
+  /**
+   * Return a boolean indicating whether this endpoint should attempt to
+   * automatically fetch updates (using polling).
+   */
+  shouldFetchUpdates() {
+    return true;
+  }
 
   // XXX: cant call this getInitialState as React whines
   getDefaultState(props, context) {
@@ -68,7 +86,9 @@ export default class AsyncComponent extends Component {
   }
 
   remountComponent(props, context) {
-    this.setState(this.getDefaultState(props, context), this.fetchData);
+    /// XXX(dcramer): why is this happening?
+    if (props === undefined) return;
+    this.setState(this.getDefaultState(props, context), this.refreshData);
   }
 
   renderLoading() {
@@ -76,9 +96,7 @@ export default class AsyncComponent extends Component {
   }
 
   renderError(error) {
-    // TODO
-    return <p style={{color: 'red'}}>Something went wrong!</p>;
-    // return <RouteError error={error} component={this} onRetry={this.remountComponent} />;
+    throw error;
   }
 
   renderContent() {

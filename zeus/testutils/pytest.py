@@ -71,11 +71,42 @@ def db_session(request, req_ctx, db):
     # db.session.remove()
 
 
-def pytest_runtest_setup(item):
+@pytest.fixture(scope='function', autouse=True)
+def filestorage(app):
     FileStorageCache.clear()
+
+    yield FileStorageCache
+
+
+@pytest.fixture(scope='function', autouse=True)
+def redis(app):
+    config.redis.flushdb()
+    yield config.redis
 
 
 @pytest.fixture(scope='function')
 def client(app):
     with app.test_client() as client:
         yield client
+
+
+@pytest.fixture
+def private_key():
+    from cryptography.hazmat.primitives.asymmetric import rsa
+    from cryptography.hazmat.backends import default_backend
+
+    return rsa.generate_private_key(backend=default_backend(), public_exponent=65537, key_size=2048)
+
+
+@pytest.fixture
+def public_key(private_key):
+    return private_key.public_key()
+
+
+@pytest.fixture
+def public_key_bytes(public_key):
+    from cryptography.hazmat.primitives import serialization
+    return public_key.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+    )

@@ -1,31 +1,42 @@
+import json
 import logging
 import raven
+import sys
+import tempfile
 
 from datetime import timedelta
 from flask import Flask
 from flask_alembic import Alembic
+from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 
 from zeus.utils.celery import Celery
 from zeus.utils.redis import Redis
+from zeus.utils.ssl import SSL
 
 import os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
+WORKSPACE_ROOT = os.path.expanduser(os.environ.get(
+    'WORKSPACE_ROOT', '~/.zeus/'))
+
 alembic = Alembic()
 celery = Celery()
 db = SQLAlchemy()
+mail = Mail()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.WARN, wrap_wsgi=True)
+ssl = SSL()
 
 
-def force_ssl(app):
+def with_health_check(app):
     def middleware(environ, start_response):
-        environ['wsgi.url_scheme'] = 'https'
+        if environ.get('PATH_INFO', '') == '/_health':
+            start_response('200 OK', [('Content-Type', 'application/json')])
+            return [json.dumps({'ok': True})]
         return app(environ, start_response)
-
     return middleware
 
 
@@ -57,6 +68,16 @@ def create_app(_read_config=True, **config):
                     'project': os.environ.get('GC_PROJECT'),
                 },
             }
+        app.config.setdefault('MAIL_SERVER', os.environ.get('MAIL_SERVER'))
+        app.config.setdefault('MAIL_PORT', os.environ.get('MAIL_PORT'))
+        app.config.setdefault('MAIL_USE_TLS', bool(
+            int(os.environ.get('MAIL_USE_TLS', '1'))))
+        app.config.setdefault('MAIL_USE_SSL', bool(
+            int(os.environ.get('MAIL_USE_SSL', '0'))))
+        app.config.setdefault('MAIL_USERNAME', os.environ.get('MAIL_USERNAME'))
+        app.config.setdefault('MAIL_PASSWORD', os.environ.get('MAIL_PASSWORD'))
+        app.config.setdefault('MAIL_DEFAULT_SENDER',
+                              os.environ.get('MAIL_DEFAULT_SENDER'))
     else:
         REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
         SQLALCHEMY_URI = os.environ.get(
@@ -68,6 +89,8 @@ def create_app(_read_config=True, **config):
 
     if os.environ.get('SERVER_NAME'):
         app.config['SERVER_NAME'] = os.environ['SERVER_NAME']
+
+    app.config.setdefault('DOMAIN', app.config.get('SERVER_NAME', 'localhost'))
 
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
@@ -122,35 +145,45 @@ def create_app(_read_config=True, **config):
     app.config['CELERY_TASK_SERIALIZER'] = 'zeus_json'
     app.config['CELERYD_PREFETCH_MULTIPLIER'] = 1
     app.config['CELERYD_MAX_TASKS_PER_CHILD'] = 10000
+    app.config['CELERYBEAT_SCHEDULE_FILE'] = os.path.join(
+        tempfile.gettempdir(), 'zeus-celerybeat')
+    app.config['CELERYBEAT_SCHEDULE'] = {
+        'sync-all-repos': {
+            'task': 'zeus.sync_all_repos',
+            'schedule': timedelta(minutes=5),
+        },
+    }
+    app.config['REDBEAT_REDIS_URL'] = app.config['REDIS_URL']
 
+    app.config['WORKSPACE_ROOT'] = WORKSPACE_ROOT
     app.config['REPO_ROOT'] = os.environ.get(
-        'REPO_ROOT', '/usr/local/cache/zeus-repos')
+        'REPO_ROOT', os.path.join(WORKSPACE_ROOT, 'zeus-repos'))
 
     if _read_config:
         if os.environ.get('ZEUS_CONF'):
             # ZEUS_CONF=/etc/zeus.conf.py
             app.config.from_envvar('ZEUS_CONF')
         else:
-            # Look for ~/.zeus/zeus.conf.py
-            path = os.path.normpath(
-                os.path.expanduser('~/.zeus/zeus.config.py'))
-            app.config.from_pyfile(path, silent=True)
+            # Look for $WORKSPACE_ROOT/zeus.conf.py
+            app.config.from_pyfile(os.path.join(
+                WORKSPACE_ROOT, 'zeus.config.py'), silent=True)
+
+    app.wsgi_app = with_health_check(app.wsgi_app)
 
     app.config.update(config)
 
-    req_vars = (
-        'GITHUB_CLIENT_ID', 'GITHUB_CLIENT_SECRET', 'REDIS_URL', 'SECRET_KEY',
-        'SQLALCHEMY_DATABASE_URI'
-    )
-    for varname in req_vars:
-        if not app.config.get(varname):
-            raise SystemExit(
-                'Required configuration not present for {}'.format(varname))
+    app.config.setdefault('MAIL_SUPPRESS_SEND', not app.debug)
 
-    if app.config.get('SSL'):
-        app.wgsi_app = force_ssl(app)
-        app.config['PREFERRED_URL_SCHEME'] = 'https'
-        app.config['SESSION_COOKIE_SECURE'] = True
+    # HACK(dcramer): the CLI causes validation to happen on init, which it shouldn't
+    if 'init' not in sys.argv:
+        req_vars = (
+            'GITHUB_CLIENT_ID', 'GITHUB_CLIENT_SECRET', 'REDIS_URL', 'SECRET_KEY',
+            'SQLALCHEMY_DATABASE_URI'
+        )
+        for varname in req_vars:
+            if not app.config.get(varname):
+                raise SystemExit(
+                    'Required configuration not present for {}'.format(varname))
 
     from zeus.testutils.client import ZeusTestClient
     app.test_client_class = ZeusTestClient
@@ -166,10 +199,13 @@ def create_app(_read_config=True, **config):
     app.logger.addHandler(SentryHandler(
         client=sentry.client, level=logging.WARN))
 
+    if app.config['SSL']:
+        ssl.init_app(app)
+
     configure_db(app)
 
     redis.init_app(app)
-
+    mail.init_app(app)
     celery.init_app(app, sentry)
 
     configure_api(app)
@@ -210,3 +246,7 @@ def configure_web(app):
     from zeus import web
 
     app.register_blueprint(web.app, url_prefix='')
+
+    if app.debug:
+        from zeus.web import debug
+        app.register_blueprint(debug.app, url_prefix='/debug')

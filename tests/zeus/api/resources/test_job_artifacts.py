@@ -43,12 +43,14 @@ def test_create_job_artifact(
         data={
             'name': 'junit.xml',
             'file': (BytesIO(sample_xunit.encode('utf-8')), 'junit.xml'),
+            'type': 'xunit',
         },
     )
     assert resp.status_code == 201
     data = resp.json()
     artifact = Artifact.query.get(data['id'])
     assert artifact.file.filename.endswith('junit.xml')
+    assert artifact.type == 'xunit'
 
 
 def test_create_job_artifact_as_base64(
@@ -62,9 +64,11 @@ def test_create_job_artifact_as_base64(
         json={
             'name': 'junit.xml',
             'file': b64encode(sample_xunit.encode('utf-8')).decode('utf-8'),
+            'type': 'xunit',
         },
     )
     assert resp.status_code == 201
     data = resp.json()
     artifact = Artifact.query.get(data['id'])
     assert artifact.file.filename.endswith('junit.xml')
+    assert artifact.type == 'xunit'

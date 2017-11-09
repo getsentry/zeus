@@ -6,7 +6,7 @@ from zeus.vcs.base import RevisionResult
 
 def test_revision_result(default_repo: Repository):
     result = RevisionResult(
-        id='c' * 40,
+        sha='c' * 40,
         author='Foo Bar <foo@example.com>',
         committer='Biz Baz <baz@example.com>',
         author_date=datetime(2013, 9, 19, 22, 15, 22),

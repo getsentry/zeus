@@ -4,14 +4,11 @@ from flask.views import View
 from time import sleep
 
 from zeus import auth
+from zeus.exceptions import ApiUnauthorized
 
 from ..authentication import ApiTokenAuthentication, SessionAuthentication
 
 LINK_HEADER = '<{uri}&page={page}>; rel="{name}"'
-
-
-class AuthenticationFailed(Exception):
-    pass
 
 
 class Resource(View):
@@ -27,7 +24,8 @@ class Resource(View):
     def select_resurce_for_update(self) -> bool:
         # should the base resource treat it's query operations as locking
         # and utilize SELECT_FOR_UPDATE?
-        return self.is_mutation()
+        # return self.is_mutation()
+        return False
 
     def dispatch_request(self, *args, **kwargs) -> Response:
         delay = current_app.config.get('API_DELAY', 0)
@@ -42,7 +40,7 @@ class Resource(View):
                     if _tenant:
                         tenant = _tenant
                         break
-                except AuthenticationFailed:
+                except auth.AuthenticationFailed:
                     return self.respond({
                         'error': 'invalid_auth',
                     }, 401)
@@ -52,7 +50,6 @@ class Resource(View):
         elif self.auth_required:
             return self.respond({
                 'error': 'auth_required',
-                'url': '/auth/github',
             }, 401)
 
         try:
@@ -67,6 +64,10 @@ class Resource(View):
             if tenant:
                 resp.headers['X-Stream-Token'] = auth.generate_token(tenant)
             return resp
+        except ApiUnauthorized:
+            return self.respond({
+                'error': 'auth_required',
+            }, 401)
         except Exception:
             current_app.logger.exception('failed to handle api request')
             return self.error('internal server error', 500)
@@ -83,7 +84,7 @@ class Resource(View):
         return resp
 
     def schema_from_request(self, schema: Schema, partial=False):
-        return schema.load(request.get_json() or {}, partial=partial)
+        return schema.load(request.get_json() or request.form, partial=partial)
 
     def respond_with_schema(self, schema: Schema, value, status: int=200) -> Response:
         result = schema.dump(value)

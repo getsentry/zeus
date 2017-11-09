@@ -4,7 +4,7 @@ from zeus.artifacts.coverage import CoverageHandler
 from zeus.models import FileCoverage
 
 
-def test_cobertura_result_generation(default_job, sample_cobertura):
+def test_cobertura_result_generation(default_build, default_job, sample_cobertura):
     fp = BytesIO(sample_cobertura.encode('utf-8'))
 
     handler = CoverageHandler(default_job)
@@ -14,18 +14,18 @@ def test_cobertura_result_generation(default_job, sample_cobertura):
 
     r1 = results[0]
     assert type(r1) == FileCoverage
-    assert r1.job_id == default_job.id
-    assert r1.repository_id == default_job.repository_id
+    assert r1.build_id == default_build.id
+    assert r1.repository_id == default_build.repository_id
     assert r1.filename == 'setup.py'
     assert r1.data == 'NUNNNNNNNNNUCCNU'
     r2 = results[1]
     assert type(r2) == FileCoverage
-    assert r2.job_id == default_job.id
-    assert r2.repository_id == default_job.repository_id
+    assert r2.build_id == default_build.id
+    assert r2.repository_id == default_build.repository_id
     assert r2.data == 'CCCNNNU'
 
 
-def test_jacoco_result_generation(default_job, sample_jacoco):
+def test_jacoco_result_generation(default_build, default_job, sample_jacoco):
     fp = BytesIO(sample_jacoco.encode('utf-8'))
 
     handler = CoverageHandler(default_job)
@@ -35,13 +35,13 @@ def test_jacoco_result_generation(default_job, sample_jacoco):
 
     r1 = results[0]
     assert type(r1) == FileCoverage
-    assert r1.job_id == default_job.id
-    assert r1.repository_id == default_job.repository_id
+    assert r1.build_id == default_build.id
+    assert r1.repository_id == default_build.repository_id
     assert r1.filename == 'src/main/java/com/dropbox/apx/onyx/api/resource/stats/StatsResource.java'
     assert r1.data == 'NNNNCCCCNNCCUU'
 
 
-def test_process(mocker, default_job):
+def test_process(mocker, default_build, default_job):
     get_coverage = mocker.patch.object(CoverageHandler, 'get_coverage')
     process_diff = mocker.patch.object(CoverageHandler, 'process_diff')
 
@@ -54,8 +54,8 @@ def test_process(mocker, default_job):
     # now try with some duplicate coverage
     get_coverage.return_value = [
         FileCoverage(
-            job_id=default_job.id,
-            repository_id=default_job.repository_id,
+            build_id=default_build.id,
+            repository_id=default_build.repository_id,
             filename='setup.py',
             data='CUNNNNCCNNNUNNNUUUUUU',
             lines_covered=2,
@@ -73,8 +73,8 @@ def test_process(mocker, default_job):
 
     get_coverage.return_value = [
         FileCoverage(
-            job_id=default_job.id,
-            repository_id=default_job.repository_id,
+            build_id=default_build.id,
+            repository_id=default_build.repository_id,
             filename='setup.py',
             data='NUUNNNNNNNNUCCNU',
             lines_covered=2,
@@ -90,7 +90,7 @@ def test_process(mocker, default_job):
 
     file_cov = list(
         FileCoverage.query.unrestricted_unsafe().filter(
-            FileCoverage.job_id == default_job.id,
+            FileCoverage.build_id == default_build.id,
         )
     )
     assert len(file_cov) == 1

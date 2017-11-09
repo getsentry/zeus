@@ -16,14 +16,18 @@ faker = Factory.create()
 
 class JobFactory(ModelFactory):
     id = GUIDFactory()
+    label = factory.faker.Faker('sentence')
     build = factory.SubFactory('zeus.factories.BuildFactory')
     build_id = factory.SelfAttribute('build.id')
     repository = factory.SelfAttribute('build.repository')
     repository_id = factory.SelfAttribute('repository.id')
     label = factory.faker.Faker('sentence')
     result = factory.Iterator([Result.failed, Result.passed])
-    status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
-    date_created = factory.LazyAttribute(lambda o: timezone.now() - timedelta(minutes=30))
+    status = factory.Iterator(
+        [Status.queued, Status.in_progress, Status.finished])
+    allow_failure = False
+    date_created = factory.LazyAttribute(
+        lambda o: timezone.now() - timedelta(minutes=30))
     date_started = factory.LazyAttribute(
         lambda o: (
             faker.date_time_between(
@@ -47,14 +51,24 @@ class JobFactory(ModelFactory):
         model = models.Job
 
     class Params:
-        queued = factory.Trait(result=Result.unknown, status=Status.queued)
-        in_progress = factory.Trait(result=Result.unknown, status=Status.in_progress)
+        queued = factory.Trait(
+            result=Result.unknown,
+            status=Status.queued,
+            date_started=None,
+            date_finished=None)
+        in_progress = factory.Trait(
+            result=Result.unknown,
+            status=Status.in_progress,
+            date_finished=None)
+        finished = factory.Trait(
+            status=Status.finished)
         failed = factory.Trait(result=Result.failed, status=Status.finished)
         passed = factory.Trait(result=Result.passed, status=Status.finished)
         aborted = factory.Trait(result=Result.aborted, status=Status.finished)
         travis = factory.Trait(
             provider='travis-ci',
-            external_id=factory.LazyAttribute(lambda o: randint(10000, 999999)),
+            external_id=factory.LazyAttribute(
+                lambda o: str(randint(10000, 999999))),
             url=factory.LazyAttribute(lambda o: 'https://travis-ci.org/{}/{}/jobs/{}'.format(
                 o.repository.owner_name,
                 o.repository.name,

@@ -1,10 +1,13 @@
 from flask import session
-from zeus.models import User
+
+from zeus import auth
+from zeus.models import Identity, User
 
 from .base import Resource
-from ..schemas import UserSchema
+from ..schemas import IdentitySchema, UserSchema
 
 user_schema = UserSchema(strict=True)
+identities_schema = IdentitySchema(many=True, strict=True)
 
 
 class AuthIndexResource(Resource):
@@ -17,7 +20,7 @@ class AuthIndexResource(Resource):
         if session.get('uid'):
             user = User.query.get(session['uid'])
             if user is None:
-                del session['uid']
+                session.clear()
         else:
             user = None
 
@@ -25,11 +28,17 @@ class AuthIndexResource(Resource):
             context = {
                 'isAuthenticated': False,
                 'user': None,
+                'identities': [],
             }
         else:
+            identity_list = list(Identity.query.filter(
+                Identity.user_id == User.id,
+            ))
+
             context = {
                 'isAuthenticated': True,
                 'user': user_schema.dump(user).data,
+                'identities': identities_schema.dump(identity_list).data,
             }
         return context
 
@@ -37,10 +46,7 @@ class AuthIndexResource(Resource):
         """
         Logout.
         """
-        if not session.get('uid'):
-            return
-
-        del session['uid']
+        auth.logout()
 
         return {
             'isAuthenticated': False,

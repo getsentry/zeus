@@ -23,6 +23,7 @@ RUN set -x \
         libpq-dev \
         libxml2-dev \
         libxslt-dev \
+        ssh \
     && rm -rf /var/lib/apt/lists/*
 
 # grab gosu for easy step-down from root
@@ -99,8 +100,9 @@ COPY . /usr/src/zeus
 RUN pip install -e .
 RUN node_modules/.bin/webpack -p
 
+ENV WORKSPACE_ROOT /workspace
 ENV REPO_ROOT /workspace/repos
-RUN mkdir -p $REPO_ROOT
+RUN mkdir -p $WORKSPACE_ROOT $REPO_ROOT
 
 ENV PATH /usr/src/zeus/bin:$PATH
 

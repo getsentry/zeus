@@ -12,35 +12,21 @@ export default class AsyncPage extends Component {
     router: PropTypes.object.isRequired
   };
 
-  static errorHandler = (component, fn) => {
-    return function(...args) {
-      try {
-        return fn(...args);
-      } catch (err) {
-        /*eslint no-console:0*/
-        setTimeout(() => {
-          throw err;
-        });
-        // component.setState({
-        //   error: err
-        // });
-        return null;
-      }
-    };
-  };
-
   constructor(props, context) {
     super(props, context);
 
-    this.fetchData = AsyncPage.errorHandler(this, this.fetchData.bind(this));
-    this.render = AsyncPage.errorHandler(this, this.render.bind(this));
+    this.refreshData = this.refreshData.bind(this);
+    this.render = this.render.bind(this);
 
     this.state = this.getDefaultState(props, context);
+
+    this.timers = {};
   }
 
   componentWillMount() {
     this.api = new Client();
-    this.fetchData();
+    this.refreshData();
+    super.componentWillMount && super.componentWillMount();
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -50,10 +36,16 @@ export default class AsyncPage extends Component {
     ) {
       this.remountComponent(nextProps, nextContext);
     }
+    super.componentWillReceiveProps &&
+      super.componentWillReceiveProps(nextProps, nextContext);
   }
 
   componentWillUnmount() {
     this.api && this.api.clear();
+    Object.keys(this.timers).forEach(key => {
+      window.clearTimeout(this.timers[key]);
+    });
+    super.componentWillUnmount && super.componentWillUnmount();
   }
 
   // XXX: cant call this getInitialState as React whines
@@ -73,10 +65,10 @@ export default class AsyncPage extends Component {
   }
 
   remountComponent(props, context) {
-    this.setState(this.getDefaultState(props, context), this.fetchData);
+    this.setState(this.getDefaultState(props, context), this.refreshData);
   }
 
-  fetchData() {
+  refreshData() {
     let endpoints = this.getEndpoints();
     if (!endpoints.length) {
       this.setState({
@@ -92,32 +84,47 @@ export default class AsyncPage extends Component {
       remainingRequests: endpoints.length
     });
     endpoints.forEach(([stateKey, endpoint, params]) => {
-      this.api.request(endpoint, params).then(
-        data => {
-          this.setState(prevState => {
-            return {
-              [stateKey]: data,
-              remainingRequests: prevState.remainingRequests - 1,
-              loading: prevState.remainingRequests > 1
-            };
-          });
-        },
-        error => {
-          this.setState(prevState => {
-            return {
-              [stateKey]: null,
-              errors: {
-                ...prevState.errors,
-                [stateKey]: error
-              },
-              remainingRequests: prevState.remainingRequests - 1,
-              loading: prevState.remainingRequests > 1,
-              error: true
-            };
-          });
-        }
-      );
+      this.fetchDataForEndpoint(stateKey, endpoint, params);
     });
+  }
+
+  fetchDataForEndpoint(stateKey, endpoint, params) {
+    this.api.request(endpoint, params).then(
+      data => {
+        this.setState(prevState => {
+          return {
+            [stateKey]: data,
+            remainingRequests: Math.max(prevState.remainingRequests - 1, 0),
+            loading: prevState.remainingRequests > 1
+          };
+        });
+        // "Real Time"
+        // XXX(dcramer): Sophos (an antivirus tool that Sentry mandates) causes issues
+        // with things like websockets and other streaming requests. On top of that,
+        // streaming in data is a huge pain in the ass, so here's our "real time" bit.
+        if (this.timers[stateKey]) window.clearTimeout(this.timers[stateKey]);
+        if (this.shouldFetchUpdates(stateKey, endpoint, params)) {
+          this.timers[stateKey] = window.setTimeout(
+            () => this.fetchDataForEndpoint(stateKey, endpoint, params),
+            5000
+          );
+        }
+      },
+      error => {
+        this.setState(prevState => {
+          return {
+            [stateKey]: null,
+            errors: {
+              ...prevState.errors,
+              [stateKey]: error
+            },
+            remainingRequests: Math.max(prevState.remainingRequests - 1, 0),
+            loading: prevState.remainingRequests > 1,
+            error: true
+          };
+        });
+      }
+    );
   }
 
   /**
@@ -135,14 +142,20 @@ export default class AsyncPage extends Component {
     return null;
   }
 
+  /**
+   * Return a boolean indicating whether this endpoint should attempt to
+   * automatically fetch updates (using polling).
+   */
+  shouldFetchUpdates(stateKey, endpoint, params) {
+    return true;
+  }
+
   renderLoading() {
     return <PageLoadingIndicator />;
   }
 
   renderError(error) {
-    // TODO
-    return <p style={{color: 'red'}}>Something went wrong!</p>;
-    // return <RouteError error={error} component={this} onRetry={this.remountComponent} />;
+    throw this.state.errors[Object.keys(this.state.errors).find(_ => true)] || error;
   }
 
   renderContent() {

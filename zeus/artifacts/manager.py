@@ -11,13 +11,19 @@ class Manager(object):
     def process(self, artifact):
         job = artifact.job
         artifact_name = artifact.name
-        for cls, matches in self.handlers:
-            for pattern in matches:
-                if fnmatch(artifact_name, pattern):
-                    break
-            else:
-                continue
 
+        matches = []
+        if not artifact.type:
+            for cls, patterns in self.handlers:
+                for pattern in patterns:
+                    if fnmatch(artifact_name, pattern):
+                        matches.append(cls)
+        else:
+            for cls, _ in self.handlers:
+                if artifact.type in cls.supported_types:
+                    matches.append(cls)
+
+        for cls in matches:
             handler = cls(job)
             fp = artifact.file.get_file()
             try:

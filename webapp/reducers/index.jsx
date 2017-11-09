@@ -4,6 +4,7 @@ import auth from './auth';
 import builds from './builds';
 import indicators from './indicators';
 import repos from './repos';
+import revisions from './revisions';
 import stream from './stream';
 
 export default combineReducers({
@@ -11,5 +12,6 @@ export default combineReducers({
   builds,
   indicators,
   repos,
+  revisions,
   stream
 });

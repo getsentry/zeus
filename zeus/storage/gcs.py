@@ -35,7 +35,7 @@ class GoogleCloudStorage(object):
 
     def url_for(self, filename, expire=300):
         blob = self.bucket.blob(self.get_file_path(filename))
-        return blob.generate_signed_url(timedelta(minutes=5))
+        return blob.generate_signed_url(timedelta(seconds=expire))
 
     def get_file(self, filename):
         blob = self.bucket.blob(self.get_file_path(filename))

@@ -1,89 +1,79 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router';
 import styled from 'styled-components';
 import {Flex, Box} from 'grid-styled';
 
-import BuildAuthor from './BuildAuthor';
-import BuildCoverage from './BuildCoverage';
+import ListItemLink from './ListItemLink';
+import ObjectAuthor from './ObjectAuthor';
+import ObjectCoverage from './ObjectCoverage';
 import ObjectDuration from './ObjectDuration';
 import ObjectResult from './ObjectResult';
-import ResultGridRow from './ResultGridRow';
+import {Column, Row} from './ResultGrid';
 import TimeSince from './TimeSince';
 
 export default class BuildListItem extends Component {
   static propTypes = {
-    build: PropTypes.object.isRequired
+    build: PropTypes.object.isRequired,
+    repo: PropTypes.object,
+    date: PropTypes.object,
+    includeAuthor: PropTypes.bool,
+    includeRepo: PropTypes.bool
+  };
+
+  static defaultProps = {
+    includeAuthor: true
   };
 
   render() {
-    let {build} = this.props;
-    let repo = build.repository;
+    let {build, includeAuthor, includeRepo} = this.props;
+    let repo = this.props.repo || build.repository;
+    let link = build.number
+      ? `/${repo.full_name}/builds/${build.number}`
+      : `/${repo.full_name}/revisions/${build.source.revision.sha}`;
     return (
-      <BuildListItemLink to={`/${repo.full_name}/builds/${build.number}`}>
-        <ResultGridRow>
-          <Flex align="center">
-            <Box flex="1" width={8 / 12} pr={15}>
-              <Flex>
-                <Box width={15} mr={8}>
-                  <ObjectResult data={build} />
-                </Box>
-                <Box flex="1" style={{minWidth: 0}}>
-                  <Message>
-                    #{build.number} {build.source.revision.message.split('\n')[0]}
-                  </Message>
-                  <Meta>
-                    <Commit>
-                      {build.source.revision.sha.substr(0, 7)}
-                    </Commit>
-                    <Author>
-                      <BuildAuthor build={build} />
-                    </Author>
-                  </Meta>
-                </Box>
-              </Flex>
-            </Box>
-            <Box width={1 / 12} style={{textAlign: 'center'}}>
-              <ObjectDuration data={build} short={true} />
-            </Box>
-            <Box width={1 / 12} style={{textAlign: 'center'}}>
-              <BuildCoverage build={build} />
-            </Box>
-            <Box width={2 / 12} style={{textAlign: 'right'}}>
-              <TimeSince date={build.created_at} />
-            </Box>
-          </Flex>
-        </ResultGridRow>
-      </BuildListItemLink>
+      <ListItemLink to={link}>
+        <Row>
+          <Column>
+            <Flex>
+              <Box width={15} mr={8}>
+                <ObjectResult data={build} />
+              </Box>
+              <Box flex="1" style={{minWidth: 0}}>
+                <Message>
+                  {build.label || build.source.revision.message.split('\n')[0]}
+                </Message>
+                <Meta>
+                  {includeRepo
+                    ? <RepoLink to={`/${repo.full_name}`}>
+                        {build.repository.owner_name}/{build.repository.name}
+                      </RepoLink>
+                    : null}
+                  <Commit>
+                    {build.source.revision.sha.substr(0, 7)}
+                  </Commit>
+                  {includeAuthor
+                    ? <Author>
+                        <ObjectAuthor data={build} />
+                      </Author>
+                    : null}
+                </Meta>
+              </Box>
+            </Flex>
+          </Column>
+          <Column width={90} textAlign="center">
+            <ObjectCoverage data={build} />
+          </Column>
+          <Column width={90} textAlign="center">
+            <ObjectDuration data={build} short={true} />
+          </Column>
+          <Column width={150} textAlign="right">
+            <TimeSince date={this.props.date || build.created_at} />
+          </Column>
+        </Row>
+      </ListItemLink>
     );
   }
 }
-
-const BuildListItemLink = styled(Link)`
-  display: block;
-
-  &:hover {
-    background-color: #F0EFF5;
-  }
-
-  &.${props => props.activeClassName} {
-    color: #fff;
-    background: #7B6BE6;
-
-    > div {
-      color: #fff !important;
-
-      svg {
-        color: #fff;
-        opacity: .5;
-      }
-    }
-  }
-`;
-
-BuildListItemLink.defaultProps = {
-  activeClassName: 'active'
-};
 
 const Message = styled.div`
   font-size: 15px;
@@ -95,12 +85,16 @@ const Message = styled.div`
 `;
 
 const Author = styled.div`
-  font-family: "Monaco", monospace;
+  font-family: 'Monaco', monospace;
   font-size: 12px;
   font-weight: 600;
 `;
 
 const Commit = styled(Author)`
+  font-weight: 400;
+`;
+
+const RepoLink = styled(Author)`
   font-weight: 400;
 `;
 

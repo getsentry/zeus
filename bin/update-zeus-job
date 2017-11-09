@@ -1,12 +1,16 @@
 #!/bin/bash -eu
+if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
+    BUILD_NAME="PR #${TRAVIS_PULL_REQUEST}"
+else
+    BUILD_NAME=""
+fi
 
-# TODO(dcramer): pass URL
 curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER \
     -X POST \
     -H 'Content-Type: application/json' \
-    -d "{\"label\": \"$TRAVIS_BUILD_NUMBER\", \"ref\": \"$TRAVIS_COMMIT\", \"url\": \"https://travis-ci.org/getsentry/zeus/builds/${TRAVIS_BUILD_ID}\"}"
+    -d "{\"label\": \"${BUILD_NAME}\", \"ref\": \"$TRAVIS_COMMIT\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/builds/${TRAVIS_BUILD_ID}\"}"
 
 curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER/jobs/$TRAVIS_JOB_NUMBER \
     -X POST \
     -H 'Content-Type: application/json' \
-    -d "{\"label\": \"$TRAVIS_JOB_NUMBER\", \"status\": \"$1\", \"result\": \"$2\", \"url\": \"https://travis-ci.org/getsentry/zeus/jobs/${TRAVIS_JOB_ID}\"}"
+    -d "{\"status\": \"$1\", \"result\": \"$2\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/jobs/${TRAVIS_JOB_ID}\", \"allow_failure\": ${TRAVIS_ALLOW_FAILURE}}"

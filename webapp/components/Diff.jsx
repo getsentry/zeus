@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Highlight from 'react-hljs';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 
 import './Diff.css';
 
@@ -11,9 +11,9 @@ export default class Diff extends Component {
 
   render() {
     return (
-      <Highlight className="diff">
+      <SyntaxHighlighter language="diff" className="diff">
         {this.props.diff}
-      </Highlight>
+      </SyntaxHighlighter>
     );
   }
 }

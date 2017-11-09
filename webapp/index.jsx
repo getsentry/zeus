@@ -3,11 +3,14 @@ import {Router, browserHistory} from 'react-router';
 import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 
-import registerServiceWorker from './registerServiceWorker';
 import {setAuth} from './actions/auth';
 
 import routes from './routes';
 import store from './store';
+
+import 'react-select/dist/react-select.css';
+
+import './index.css';
 
 // we cache the user details in localStorage, but its still fetched on
 // the initial load to update/validate
@@ -15,10 +18,10 @@ if (localStorage.auth) {
   store.dispatch(setAuth(localStorage.auth));
 }
 
-import hljs from 'highlight.js/lib/highlight';
-import diff from 'highlight.js/lib/languages/diff';
+import {registerLanguage} from 'react-syntax-highlighter/dist/light';
+import diff from 'react-syntax-highlighter/dist/languages/diff';
 
-hljs.registerLanguage('diff', diff);
+registerLanguage('diff', diff);
 
 render(
   <Provider store={store}>
@@ -26,5 +29,3 @@ render(
   </Provider>,
   document.getElementById('root')
 );
-
-registerServiceWorker();

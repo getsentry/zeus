@@ -1,3 +1,5 @@
+import zeus
+
 from enum import Enum
 
 
@@ -40,3 +42,7 @@ RESULT_PRIORITY = (
 
 GITHUB_AUTH_URI = 'https://github.com/login/oauth/authorize'
 GITHUB_TOKEN_URI = 'https://github.com/login/oauth/access_token'
+
+USER_AGENT = 'zeus/{0}'.format(
+    zeus.VERSION,
+)

@@ -43,11 +43,13 @@ export const loadBuilds = items => {
   };
 };
 
-export const loadBuildsForRepository = (repoFullName, query) => {
+export const loadBuildsForRepository = (repoFullName, query, emptyState = true) => {
   return dispatch => {
-    dispatch({
-      type: PRE_LOAD_BUILD_LIST
-    });
+    if (emptyState) {
+      dispatch({
+        type: PRE_LOAD_BUILD_LIST
+      });
+    }
     api
       .get(`/repos/${repoFullName}/builds`, {
         query

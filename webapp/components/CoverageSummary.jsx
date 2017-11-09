@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Flex, Box} from 'grid-styled';
 
 import Collapsable from './Collapsable';
-import Panel from './Panel';
-import ResultGridHeader from './ResultGridHeader';
-import ResultGridRow from './ResultGridRow';
+import {ResultGrid, Column, Header, Row} from './ResultGrid';
 
 export default class CoverageSummary extends Component {
   static propTypes = {
@@ -25,20 +22,16 @@ export default class CoverageSummary extends Component {
 
   render() {
     return (
-      <Panel>
-        <ResultGridHeader>
-          <Flex align="center">
-            <Box flex="1" width={10 / 12} pr={15}>
-              File
-            </Box>
-            <Box width={1 / 12} style={{textAlign: 'right'}}>
-              Diff
-            </Box>
-            <Box width={1 / 12} style={{textAlign: 'right'}}>
-              Overall
-            </Box>
-          </Flex>
-        </ResultGridHeader>
+      <ResultGrid>
+        <Header>
+          <Column>File</Column>
+          <Column width={80} textAlign="right">
+            Diff
+          </Column>
+          <Column width={80} textAlign="right">
+            Overall
+          </Column>
+        </Header>
         <Collapsable
           collapsable={this.props.collapsable}
           maxVisible={this.props.maxVisible}>
@@ -48,31 +41,29 @@ export default class CoverageSummary extends Component {
             let totalLines = fileCoverage.lines_covered + fileCoverage.lines_uncovered;
 
             return (
-              <ResultGridRow key={fileCoverage.filename}>
-                <Flex align="center">
-                  <Box flex="1" width={11 / 12} pr={15}>
-                    {fileCoverage.filename}
-                  </Box>
-                  <Box width={1 / 12} style={{textAlign: 'right'}}>
-                    {totalDiffLines
-                      ? `${parseInt(
-                          fileCoverage.diff_lines_covered / totalDiffLines * 1000,
-                          10
-                        ) / 10}%`
-                      : ''}
-                  </Box>
-                  <Box width={1 / 12} style={{textAlign: 'right'}}>
-                    {totalLines
-                      ? `${parseInt(fileCoverage.lines_covered / totalLines * 1000, 10) /
-                          10}%`
-                      : ''}
-                  </Box>
-                </Flex>
-              </ResultGridRow>
+              <Row key={fileCoverage.filename}>
+                <Column>
+                  {fileCoverage.filename}
+                </Column>
+                <Column width={80} textAlign="right">
+                  {totalDiffLines
+                    ? `${parseInt(
+                        fileCoverage.diff_lines_covered / totalDiffLines * 1000,
+                        10
+                      ) / 10}%`
+                    : ''}
+                </Column>
+                <Column width={80} textAlign="right">
+                  {totalLines
+                    ? `${parseInt(fileCoverage.lines_covered / totalLines * 1000, 10) /
+                        10}%`
+                    : ''}
+                </Column>
+              </Row>
             );
           })}
         </Collapsable>
-      </Panel>
+      </ResultGrid>
     );
   }
 }

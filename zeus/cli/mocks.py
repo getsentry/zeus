@@ -1,11 +1,12 @@
 import click
 
-from random import randint, random
+from random import choice, randint, random, randrange
 from sqlalchemy.exc import IntegrityError
 
 from zeus import factories, models
 from zeus.api.schemas import BuildSchema
 from zeus.config import db
+from zeus.constants import Result, Status
 from zeus.db.utils import try_create
 from zeus.pubsub.utils import publish
 from zeus.tasks import aggregate_build_stats_for_job
@@ -15,7 +16,7 @@ from .base import cli
 build_schema = BuildSchema(strict=True)
 
 
-def mock_single_repository(builds=10, user_ids=()):
+def mock_single_repository(user_ids=()):
     repo = factories.RepositoryFactory.build(
         status=models.RepositoryStatus.active,
         github=True,
@@ -29,6 +30,7 @@ def mock_single_repository(builds=10, user_ids=()):
             models.Repository.owner_name == repo.owner_name,
             models.Repository.name == repo.name
         ).first()
+        click.echo('Using {!r}'.format(repo))
     else:
         click.echo('Created {!r}'.format(repo))
 
@@ -39,47 +41,88 @@ def mock_single_repository(builds=10, user_ids=()):
         })
 
     db.session.commit()
+    return repo
 
-    parent_revision = None
-    for n in range(builds):
-        revision = factories.RevisionFactory.create(
-            repository=repo,
-            parents=[parent_revision.sha] if parent_revision else None,
-        )
-        source = factories.SourceFactory.create(
-            revision=revision,
-            patch=factories.PatchFactory(
-                parent_revision=parent_revision,
-            ) if parent_revision and random() > 0.8 else None,
-        )
-        parent_revision = revision
-        build = factories.BuildFactory.create(source=source, travis=True)
 
-        for n in range(1, 4):
-            has_failure = randint(0, 2) == 0
-            job = factories.JobFactory.create(
-                build=build,
-                failed=has_failure,
-                passed=not has_failure,
-                travis=True,
+def mock_author(repo: models.Repository, user_id) -> models.Author:
+    author = models.Author.query.unrestricted_unsafe().filter(
+        models.Author.email.in_(
+            db.session.query(models.Email.email).filter(
+                models.Email.user_id == user_id
+            )
+        )
+    ).first()
+    if author:
+        return author
+
+    user = models.User.query.get(user_id)
+    return factories.AuthorFactory(
+        repository=repo,
+        email=user.email,
+    )
+
+
+def mock_build(repo: models.Repository, parent_revision: models.Revision=None, user_ids=()):
+    if user_ids and randint(0, 1) == 0:
+        chosen_user_id = choice(user_ids)
+        author = mock_author(repo, chosen_user_id)
+    else:
+        author = None
+
+    revision = factories.RevisionFactory.create(
+        repository=repo,
+        parents=[parent_revision.sha] if parent_revision else None,
+        **{'author': author} if author else {}
+    )
+    source = factories.SourceFactory.create(
+        revision=revision,
+        patch=factories.PatchFactory(
+            parent_revision=parent_revision,
+        ) if parent_revision and random() > 0.8 else None,
+    )
+    parent_revision = revision
+
+    build = factories.BuildFactory.create(source=source, travis=True)
+    click.echo('Created {!r}'.format(build))
+
+    for n in range(randint(0, 50)):
+        factories.FileCoverageFactory.create(
+            build=build, in_diff=randint(0, 5) == 0)
+
+    for n in range(1, 4):
+        has_failure = randint(0, 2) == 0
+        job = factories.JobFactory.create(
+            build=build,
+            failed=has_failure,
+            passed=not has_failure,
+            travis=True,
+            allow_failure=n == 3,
+        )
+
+        for n in range(randint(0, 50)):
+            test_failed = has_failure and randint(0, 5) == 0
+            factories.TestCaseFactory.create(
+                job=job,
+                failed=test_failed,
+                passed=not test_failed,
             )
 
-            for n in range(randint(0, 50)):
-                test_failed = has_failure and randint(0, 5) == 0
-                factories.TestCaseFactory.create(
-                    job=job,
-                    failed=test_failed,
-                    passed=not test_failed,
-                )
-            for n in range(randint(0, 50)):
-                factories.FileCoverageFactory.create(job=job, in_diff=randint(0, 5) == 0)
-            db.session.commit()
-            aggregate_build_stats_for_job(job_id=job.id)
+        artifact_count = randrange(3) \
+            if job.status == Status.finished and job.result == Result.passed \
+            else 0
+        for n in range(0, artifact_count):
+            factories.ArtifactFactory.create(job=job, repository=repo)
 
         db.session.commit()
+
+        aggregate_build_stats_for_job(job_id=job.id)
+
         result = build_schema.dump(build)
         publish('builds', 'build.create', result.data)
         click.echo('Created {!r}'.format(build))
+
+    db.session.commit()
+    return build
 
 
 @cli.group('mocks')
@@ -91,4 +134,18 @@ def mocks():
 def load_all():
     user_ids = [u for u, in db.session.query(models.User.id)]
     for n in range(3):
-        mock_single_repository(user_ids=user_ids)
+        repo = mock_single_repository(user_ids=user_ids)
+        parent_revision = None
+        for n in range(10):
+            build = mock_build(repo, parent_revision, user_ids=user_ids)
+            parent_revision = build.source.revision
+
+
+@mocks.command()
+def stream():
+    user_ids = [u for u, in db.session.query(models.User.id)]
+    repo = mock_single_repository(user_ids=user_ids)
+    parent_revision = None
+    while True:
+        build = mock_build(repo, parent_revision, user_ids=user_ids)
+        parent_revision = build.source.revision

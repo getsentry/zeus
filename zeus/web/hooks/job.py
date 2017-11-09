@@ -1,7 +1,7 @@
 from flask import request
 
-from zeus.models import Build, Job
-from zeus.api import client
+from zeus.models import Build
+from zeus.api.utils.upserts import upsert_job
 
 from .base import BaseHook
 
@@ -15,32 +15,9 @@ class JobHook(BaseHook):
         if not build:
             return self.respond('', 404)
 
-        job = Job.query.filter(
-            Job.provider == hook.provider,
-            Job.external_id == job_xid,
-            Job.build_id == build.id,
-        ).first()
-
-        json = request.get_json() or {}
-        json['external_id'] = job_xid
-        json['provider'] = hook.provider
-
-        if job:
-            response = client.put(
-                '/repos/{}/builds/{}/jobs/{}'.format(
-                    hook.repository.get_full_name(),
-                    job.build.number,
-                    job.number,
-                ),
-                json=json
-            )
-        else:
-            response = client.post(
-                '/repos/{}/builds/{}/jobs'.format(
-                    hook.repository.get_full_name(),
-                    build.number,
-                ),
-                json=json
-            )
-
-        return response
+        return upsert_job(
+            build=build,
+            provider=hook.provider,
+            external_id=job_xid,
+            data=request.get_json() or {},
+        )

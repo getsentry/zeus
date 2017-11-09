@@ -5,12 +5,15 @@ import os
 from .base import cli
 
 CONFIG = """
+import os.path
+
 SECRET_KEY = {secret_key}
 
 GITHUB_CLIENT_ID = {github_client_id}
 GITHUB_CLIENT_SECRET = {github_client_secret}
 
-REPO_ROOT = {repo_root}
+WORKSPACE_ROOT = {workspace_root}
+REPO_ROOT = os.path.join(WORKSPACE_ROOT, 'repo-cache')
 """.strip()
 
 
@@ -26,12 +29,10 @@ def init(path, github_client_id, github_client_secret):
     config_path = os.path.join(path, 'zeus.config.py')
     if os.path.exists(config_path):
         click.confirm(
-            'Configuration file already present at [{}]. Overwrite it?'.format(config_path),
+            'Configuration file already present at [{}]. Overwrite it?'.format(
+                config_path),
             abort=True
         )
-
-    repo_path = os.path.join(path, 'repo-cache')
-    os.makedirs(repo_path)
 
     with open(config_path, 'wb') as fp:
         fp.write(
@@ -39,7 +40,7 @@ def init(path, github_client_id, github_client_secret):
                 secret_key=repr(binascii.hexlify(os.urandom(24))),
                 github_client_id=repr(github_client_id),
                 github_client_secret=repr(github_client_secret),
-                repo_root=repr(repo_path),
+                workspace_root=repr(path),
             ).encode('utf-8')
         )
     click.echo('Configuration written at {}'.format(config_path))

@@ -7,7 +7,10 @@ class FileField(fields.Field):
             return None
         elif isinstance(value, dict):
             return value
-        return {'name': value.filename}
+        return {
+            'name': value.filename,
+            'size': value.size,
+        }
 
     def _deserialize(self, value, attr, data):
         # XXX(dcramer): this would need to serialize into something compatible with

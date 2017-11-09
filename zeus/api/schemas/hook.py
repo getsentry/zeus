@@ -10,7 +10,8 @@ class HookSchema(Schema):
     id = fields.UUID(dump_only=True)
     provider = fields.Str()
     token = fields.Method('get_token', dump_only=True)
-    base_uri = fields.Method('get_base_uri', dump_only=True)
+    secret_uri = fields.Method('get_secret_uri', dump_only=True)
+    public_uri = fields.Method('get_public_uri', dump_only=True)
     created_at = fields.DateTime(attribute="date_created", dump_only=True)
 
     @post_load
@@ -23,5 +24,8 @@ class HookSchema(Schema):
             return urlsafe_b64encode(obj.token).decode('utf-8')
         return None
 
-    def get_base_uri(self, obj):
+    def get_public_uri(self, obj):
+        return '/hooks/{}/public'.format(str(obj.id))
+
+    def get_secret_uri(self, obj):
         return '/hooks/{}/{}'.format(str(obj.id), obj.get_signature())

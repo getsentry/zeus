@@ -44,6 +44,8 @@ class APIClient(object):
         elif files:
             if not data:
                 data = {}
+            for key, value in request.form.items():
+                data[key] = value
             for key, value in files.items():
                 data[key] = value
             content_type = 'multipart/form-data'

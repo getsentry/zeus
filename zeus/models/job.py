@@ -20,6 +20,7 @@ class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
     label = db.Column(db.String, nullable=True)
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
     result = db.Column(Enum(Result), nullable=False, default=Result.unknown)
+    allow_failure = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     date_started = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     date_finished = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     data = db.Column(JSONEncodedDict, nullable=True)

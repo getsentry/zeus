@@ -8,6 +8,7 @@ import TestList from '../components/TestList';
 export default class BuildTestList extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
+    build: PropTypes.object.isRequired,
     repo: PropTypes.object.isRequired
   };
 
@@ -15,6 +16,10 @@ export default class BuildTestList extends AsyncPage {
     let {repo} = this.context;
     let {buildNumber} = this.props.params;
     return [['testList', `/repos/${repo.full_name}/builds/${buildNumber}/tests`]];
+  }
+
+  shouldFetchUpdates() {
+    return this.context.build.status !== 'finished';
   }
 
   renderBody() {

@@ -7,6 +7,6 @@
         "donjayamanne.python",
         "dbaeumer.vscode-eslint",
         "lextudio.restructuredtext",
-        "jmlntw.vscode-ensure-single-final-newline"
+        "PeterJausovec.vscode-docker"
     ]
 }

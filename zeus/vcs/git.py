@@ -17,7 +17,7 @@ class LazyGitRevisionResult(RevisionResult):
 
     @memoize
     def branches(self):
-        return self.vcs.branches_for_commit(self.id)
+        return self.vcs.branches_for_commit(self.sha)
 
 
 class GitVcs(Vcs):
@@ -28,17 +28,23 @@ class GitVcs(Vcs):
             'GIT_SSH': self.ssh_connect_path,
         }
 
-    # This is static so that the repository serializer can easily use it
-    @staticmethod
-    def get_default_revision() -> str:
+    def get_default_branch(self) -> str:
+        return 'master'
+
+    def get_default_revision(self) -> str:
         return 'master'
 
     @property
     def remote_url(self) -> str:
-        if self.url.startswith(('ssh:', 'http:', 'https:')):
+        if self.url.startswith('ssh:') and not self.username:
+            username = 'git'
+        else:
+            username = self.username
+        if username and self.url.startswith(('ssh:', 'http:', 'https:')):
             parsed = urlparse(self.url)
             url = '%s://%s@%s/%s' % (
-                parsed.scheme, parsed.username or self.username or 'git',
+                parsed.scheme,
+                parsed.username or username,
                 parsed.hostname + (':%s' % (parsed.port, )
                                    if parsed.port else ''), parsed.path.lstrip('/'),
             )
@@ -131,7 +137,7 @@ class GitVcs(Vcs):
             result = self.run(cmd)
         except CommandError as cmd_error:
             err_msg = cmd_error.stderr
-            if branch and branch in err_msg:
+            if branch and branch in err_msg.decode('utf-8'):
                 import traceback
                 import logging
                 msg = traceback.format_exception(CommandError, cmd_error, None)
@@ -154,7 +160,7 @@ class GitVcs(Vcs):
 
             yield LazyGitRevisionResult(
                 vcs=self,
-                id=sha,
+                sha=sha,
                 author=author,
                 committer=committer,
                 author_date=author_date,
@@ -163,8 +169,8 @@ class GitVcs(Vcs):
                 message=message,
             )
 
-    def export(self, id) -> str:
-        cmd = ['diff', '%s^..%s' % (id, id)]
+    def export(self, sha) -> str:
+        cmd = ['diff', '%s^..%s' % (sha, sha)]
         self.ensure()
         result = self.run(cmd)
         return result

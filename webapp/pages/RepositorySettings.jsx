@@ -1,9 +1,8 @@
 import React from 'react';
+import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
-import RepositoryContent from '../components/RepositoryContent';
-import RepositoryHeader from '../components/RepositoryHeader';
 
 export default class RepositorySettings extends AsyncPage {
   static contextTypes = {
@@ -12,12 +11,14 @@ export default class RepositorySettings extends AsyncPage {
   };
 
   renderBody() {
+    let {repo} = this.context;
     return (
       <div>
-        <RepositoryHeader />
-        <RepositoryContent {...this.props}>
-          {this.props.children}
-        </RepositoryContent>
+        <ul>
+          <li>
+            <Link to={`/${repo.full_name}/settings/hooks`}>Hooks</Link>
+          </li>
+        </ul>
       </div>
     );
   }

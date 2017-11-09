@@ -5,7 +5,8 @@ from zeus.models import Repository, RepositoryAccess, RepositoryBackend, Reposit
 REPO_DETAILS_RESPONSE = """{
     "id": 1,
     "full_name": "getsentry/zeus",
-    "clone_url": "https://github.com/getsentry/zeus.git"
+    "clone_url": "https://github.com/getsentry/zeus.git",
+    "ssh_url": "git@github.com:getsentry/zeus.git"
 }"""
 
 REPO_LIST_RESPONSE = """[{
@@ -34,7 +35,8 @@ def test_new_repository_github(client, mocker, default_login, default_user, defa
         body=REPO_DETAILS_RESPONSE
     )
 
-    responses.add('POST', 'https://api.github.com/repos/getsentry/zeus/keys', body=KEY_RESPONSE)
+    responses.add(
+        'POST', 'https://api.github.com/repos/getsentry/zeus/keys', body=KEY_RESPONSE)
 
     resp = client.post(
         '/api/github/repos', json={
@@ -46,13 +48,14 @@ def test_new_repository_github(client, mocker, default_login, default_user, defa
     assert data['id']
 
     repo = Repository.query.unrestricted_unsafe().get(data['id'])
-    assert repo.url == 'https://github.com/getsentry/zeus.git'
+    assert repo.url == 'git@github.com:getsentry/zeus.git'
     assert repo.backend == RepositoryBackend.git
     assert repo.provider == RepositoryProvider.github
     assert repo.external_id == '1'
-    assert repo.data == {'github': {'full_name': 'getsentry/zeus'}}
+    assert repo.data == {'full_name': 'getsentry/zeus'}
 
-    access = list(RepositoryAccess.query.filter(RepositoryAccess.repository_id == repo.id))
+    access = list(RepositoryAccess.query.filter(
+        RepositoryAccess.repository_id == repo.id))
     assert len(access) == 1
     assert access[0].user_id == default_user.id
 

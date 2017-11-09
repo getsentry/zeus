@@ -1,14 +1,11 @@
 import React from 'react';
 
-import Section from '../components/Section';
-import ScrollView from '../components/ScrollView';
+import Content from '../components/Content';
 
 export default props => {
   return (
-    <ScrollView>
-      <Section>
-        {props.children}
-      </Section>
-    </ScrollView>
+    <Content>
+      {props.children}
+    </Content>
   );
 };

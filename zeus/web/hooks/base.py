@@ -8,15 +8,17 @@ from zeus.models import Hook
 
 
 class BaseHook(View):
+    public = False
+
     methods = ['GET', 'POST', 'PUT', 'DELETE']
 
-    def dispatch_request(self, hook_id, signature, *args, **kwargs) -> Response:
+    def dispatch_request(self, hook_id, signature=None, *args, **kwargs) -> Response:
         current_app.logger.info('received webhook id=%s', hook_id)
 
         hook = Hook.query.unrestricted_unsafe().options(
             joinedload('repository'),
         ).get(hook_id)
-        if not hook.is_valid_signature(signature):
+        if not self.public and not hook.is_valid_signature(signature):
             current_app.logger.warn('invalid webhook signature id=%s', hook_id)
             return '', 403
 

@@ -30,11 +30,23 @@ export const updateRepo = payload => {
 
 export const loadRepos = () => {
   return dispatch => {
-    return api.get('/repos').then(items => {
-      dispatch({
-        type: LOAD_REPO_LIST,
-        items
+    return api
+      .get('/repos')
+      .then(items => {
+        dispatch({
+          type: LOAD_REPO_LIST,
+          items
+        });
+      })
+      .catch(err => {
+        if (err.xhr.status == 401) {
+          dispatch({
+            type: LOAD_REPO_LIST,
+            items: []
+          });
+        } else {
+          throw err;
+        }
       });
-    });
   };
 };

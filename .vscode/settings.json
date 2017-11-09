@@ -13,7 +13,7 @@
         ".mypy_cache": true
     },
     "files.trimTrailingWhitespace": true,
-    "files.ensureSingleFinalNewline": true,
+    "files.trimFinalNewlines": true,
 
     "prettier.bracketSpacing": false,
     "prettier.singleQuote": true,
@@ -25,6 +25,12 @@
     },
 
     "[css]": {
+        "editor.detectIndentation": false,
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true
+    },
+
+    "[html]": {
         "editor.detectIndentation": false,
         "editor.tabSize": 2,
         "editor.formatOnSave": true

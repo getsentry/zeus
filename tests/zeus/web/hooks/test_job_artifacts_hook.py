@@ -27,6 +27,7 @@ def test_new_artifact(client, default_source, default_repo, default_hook, sample
         data={
             'name': 'junit.xml',
             'file': (BytesIO(sample_xunit.encode('utf-8')), 'junit.xml'),
+            'type': 'xunit',
         },
     )
 
@@ -34,3 +35,4 @@ def test_new_artifact(client, default_source, default_repo, default_hook, sample
     data = resp.json()
     artifact = Artifact.query.get(data['id'])
     assert artifact.file.filename.endswith('junit.xml')
+    assert artifact.type == 'xunit'

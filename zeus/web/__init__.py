@@ -3,6 +3,8 @@ from flask import Blueprint
 from . import hooks as h
 from . import views as v
 
+from ..providers.travis.webhook import TravisWebhookView
+
 app = Blueprint('web', __name__)
 app.add_url_rule(
     '/auth/github',
@@ -20,7 +22,11 @@ app.add_url_rule(
 )
 app.add_url_rule(
     '/auth/github/complete',
-    view_func=v.GitHubCompleteView.as_view('github-complete', complete_url='web.index')
+    view_func=v.GitHubCompleteView.as_view('github-complete')
+)
+app.add_url_rule(
+    '/hooks/<hook_id>/public/provider/travis/webhook',
+    view_func=TravisWebhookView.as_view('travis-webhook')
 )
 app.add_url_rule(
     '/hooks/<hook_id>/<signature>/builds/<build_xid>', view_func=h.BuildHook.as_view('build-hook')

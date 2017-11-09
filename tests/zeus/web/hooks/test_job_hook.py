@@ -65,6 +65,9 @@ def test_existing_job(client, default_source, default_repo, default_hook):
         json=payload,
     )
     assert resp.status_code == 200, repr(resp.data)
+    data = resp.json()
+    assert data['result'] == 'passed'
+    assert data['status'] == 'finished'
 
     job = Job.query.unrestricted_unsafe().get(job.id)
 

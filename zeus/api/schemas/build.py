@@ -8,7 +8,7 @@ from .stats import StatsSchema
 
 class BuildSchema(Schema):
     id = fields.UUID(dump_only=True)
-    number = fields.Number(dump_only=True)
+    number = fields.Integer(dump_only=True)
     label = fields.Str()
     created_at = fields.DateTime(attribute="date_created", dump_only=True)
     started_at = fields.DateTime(attribute="date_started", dump_only=True)
@@ -29,4 +29,4 @@ class BuildCreateSchema(Schema):
     ref = fields.Str()
     provider = fields.Str()
     external_id = fields.Str()
-    url = fields.Str()
+    url = fields.Str(allow_none=True)

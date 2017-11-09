@@ -2,17 +2,20 @@ from zeus.models import Hook
 
 
 def test_repo_hook_list(client, default_login, default_hook, default_repo, default_repo_access):
-    resp = client.get('/api/repos/{}/hooks'.format(default_repo.get_full_name()))
+    resp = client.get(
+        '/api/repos/{}/hooks'.format(default_repo.get_full_name()))
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 1
     assert data[0]['id'] == str(default_hook.id)
     assert data[0]['token']
-    assert data[0]['base_uri']
+    assert data[0]['secret_uri']
+    assert data[0]['public_uri']
 
 
 def test_repo_hook_list_without_access(client, default_login, default_build, default_repo):
-    resp = client.get('/api/repos/{}/hooks'.format(default_repo.get_full_name()))
+    resp = client.get(
+        '/api/repos/{}/hooks'.format(default_repo.get_full_name()))
     assert resp.status_code == 404
 
 

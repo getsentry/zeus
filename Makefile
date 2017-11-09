@@ -38,3 +38,10 @@ drop-db:
 
 create-db:
 	createdb -E utf-8 zeus
+
+build-docker-iamge:
+	docker build -t zeus .
+
+run-docker-image:
+	docker rm zeus || exit 0
+	docker run  -d -p 8080:8080/tcp -v ~/.zeus:/workspace --name zeus zeus

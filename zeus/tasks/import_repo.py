@@ -36,10 +36,14 @@ def import_repo(repo_id, parent=None):
     else:
         vcs.clone()
 
+    has_more = False
     for commit in vcs.log(parent=parent):
         revision, created = commit.save(repo)
         db.session.commit()
-        parent = commit.id
+        if parent == commit.sha:
+            break
+        parent = commit.sha
+        has_more = True
 
     Repository.query.filter(
         Repository.id == repo.id,
@@ -48,7 +52,7 @@ def import_repo(repo_id, parent=None):
     })
     db.session.commit()
 
-    if parent:
+    if has_more:
         import_repo.delay(
             repo_id=repo.id,
             parent=parent,
