@@ -83,6 +83,9 @@ def mock_build(repo: models.Repository, parent_revision: models.Revision=None, u
     parent_revision = revision
 
     build = factories.BuildFactory.create(source=source, travis=True)
+
+    result = build_schema.dump(build)
+    publish('builds', 'build.create', result.data)
     click.echo('Created {!r}'.format(build))
 
     for n in range(randint(0, 50)):

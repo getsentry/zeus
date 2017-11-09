@@ -1,11 +1,11 @@
 import aioredis
 import asyncio
-from functools import wraps
 import io
 import json
 
 from aiohttp.web import Application, Response, StreamResponse
 from collections import namedtuple
+from functools import wraps
 from flask import current_app
 from urllib.parse import urlparse
 from uuid import uuid4
@@ -16,14 +16,14 @@ Event = namedtuple('Event', ['id', 'event', 'data'])
 
 
 def is_valid_origin(request):
-    domain_parts = urlparse(request.url)
     allowed_origins = current_app.config.get('ALLOWED_ORIGINS')
     if allowed_origins is None:
-        allowed_origins = set(current_app.config.get(
-            'DOMAIN', current_app.config.get('SERVER_NAME', '')))
-    return domain_parts.hostname in allowed_origins
+        return request.url.host == current_app.config['DOMAIN']
+    return request.url.host in allowed_origins
 
 
+# TODO(dcramer): this still isnt working. is_valid_origin had an error
+# and it was never bubbled up
 def log_errors(func):
     @wraps(func)
     async def wrapped(*a, **k):
@@ -35,7 +35,7 @@ def log_errors(func):
     return wrapped
 
 
-@log_errors
+# @log_errors
 async def worker(channel, queue, token, repo_ids=None, build_ids=None):
     allowed_repo_ids = frozenset(token['repo_ids'])
 
@@ -54,9 +54,22 @@ async def worker(channel, queue, token, repo_ids=None, build_ids=None):
             data,
         )
         await queue.put(evt)
+        current_app.logger.debug(
+            'pubsub.event.received qsize=%s', queue.qsize())
 
 
-@log_errors
+# @log_errors
+async def ping(loop, resp, client_guid):
+    # periodically send ping to the browser. Any message that
+    # starts with ":" colon ignored by a browser and could be used
+    # as ping message.
+    while True:
+        await asyncio.sleep(60, loop=loop)
+        current_app.logger.debug('pubsub.ping guid=%s', client_guid)
+        resp.write(b': ping\r\n\r\n')
+
+
+# @log_errors
 async def stream(request):
     client_guid = str(uuid4())
 
@@ -75,7 +88,7 @@ async def stream(request):
         return Response(status=401)
 
     current_app.logger.debug(
-        'client.connected guid=%s tenant=%s', client_guid, token)
+        'pubsub.client.connected guid=%s tenant=%s', client_guid, token)
 
     loop = request.app.loop
 
@@ -87,7 +100,6 @@ async def stream(request):
         password=parts.password,
         loop=loop,
     )
-    current_app.logger.debug('pubsub.redis.connected')
     try:
         queue = asyncio.Queue(loop=loop)
 
@@ -95,8 +107,7 @@ async def stream(request):
         asyncio.ensure_future(
             worker(res[0], queue, token, repo_ids, build_ids))
 
-        current_app.logger.debug('pubsub.response-initiated')
-        resp = StreamResponse()
+        resp = StreamResponse(status=200, reason='OK')
         resp.headers['Content-Type'] = 'text/event-stream; charset=UTF-8'
         resp.headers['Cache-Control'] = 'no-cache'
         resp.headers['Connection'] = 'keep-alive'
@@ -105,18 +116,20 @@ async def stream(request):
                 'Origin')
             resp.headers['Access-Control-Expose-Headers'] = '*'
         resp.enable_chunked_encoding()
+
         # The StreamResponse is a FSM. Enter it with a call to prepare.
         await resp.prepare(request)
+        resp.set_tcp_nodelay(not resp.tcp_nodelay)
+        loop.create_task(ping(loop, resp, client_guid))
 
-        current_app.logger.debug('pubsub.looping')
         while True:
             event = await queue.get()
             if event is None:
                 break
-            current_app.logger.debug('pubsub.event', extra={'event': event})
             buffer = io.BytesIO()
             if event.id:
-                buffer.write(b"id: %s\r\n" % (event.id.encode('utf-8'),))
+                buffer.write(b"id: %s\r\n" %
+                             (event.id.encode('utf-8'),))
             if event.event:
                 buffer.write(b"event: %s\r\n" %
                              (event.event.encode('utf-8')))
@@ -126,43 +139,23 @@ async def stream(request):
             buffer.write(b'\r\n')
             resp.write(buffer.getvalue())
             queue.task_done()
+            current_app.logger.debug(
+                'pubsub.event.sent qsize=%s', queue.qsize())
             # Yield to the scheduler so other processes do stuff.
             await resp.drain()
 
         await resp.write_eof()
         return resp
     finally:
+        current_app.logger.debug(
+            'client.disconnected guid=%s', client_guid, exc_info=True)
+        conn.close()
         await conn.wait_closed()
-        current_app.logger.debug('client.disconnected guid=%s', client_guid)
-
-
-async def debug(request):
-    d = """
-        <html>
-        <head>
-            <script type="text/javascript">
-            var eventList = document.getElementById('events');
-            var evtSource = new EventSource('/');
-            evtSource.addEventListener('message', function(e) {
-                console.log('we here');
-                var newElement = document.createElement("li");
-                newElement.innerHTML = "message: " + e.data;
-                eventList.appendChild(newElement);
-            });
-            </script>
-        </head>
-        <body>
-            <h1>Response from server:</h1>
-            <ul id="events"></ul>
-        </body>
-    </html>
-    """
-    return Response(text=d, content_type='text/html')
 
 
 async def build_server(loop, host, port):
-    app = Application(loop=loop)
+    app = Application(loop=loop, logger=current_app.logger,
+                      debug=current_app.debug)
     app.router.add_route('GET', '/', stream)
-    app.router.add_route('GET', '/debug', debug)
 
     return await loop.create_server(app.make_handler(), host, port)
