@@ -25,11 +25,14 @@ class RepositoryHooks extends AsyncPage {
   createHook = e => {
     let {repo} = this.context;
     let indicator = this.props.addIndicator('Saving changes..', 'loading');
+
+    // eslint-disable-next-line
+    const provider = window.prompt('Please enter a service name', 'travis');
+    if (!provider) return;
+
     this.api
       .post(`/repos/${repo.full_name}/hooks`, {
-        data: {
-          provider: 'travis'
-        }
+        data: {provider}
       })
       .then(hook => {
         this.props.removeIndicator(indicator);
@@ -56,36 +59,36 @@ class RepositoryHooks extends AsyncPage {
           <SectionHeading>Hooks</SectionHeading>
         </div>
         <ResultGrid>
-          {hookList.length
-            ? <div>
-                <Header>
-                  <Column>ID</Column>
-                  <Column width={120}>Provider</Column>
-                  <Column width={150}>Created</Column>
-                </Header>
-                {hookList.map(hook => {
-                  return (
-                    <Row key={hook.id}>
-                      <Column>
-                        <Link to={`/${repo.full_name}/settings/hooks/${hook.id}`}>
-                          {hook.id}
-                        </Link>
-                      </Column>
-                      <Column width={120}>
-                        {hook.provider}
-                      </Column>
-                      <Column width={150}>
-                        <TimeSince date={hook.created_at} />
-                      </Column>
-                    </Row>
-                  );
-                })}
-              </div>
-            : <Row>
-                <Column>
-                  {"You haven't registered any hooks for this repository yet."}
-                </Column>
-              </Row>}
+          {hookList.length ? (
+            <div>
+              <Header>
+                <Column>ID</Column>
+                <Column width={120}>Provider</Column>
+                <Column width={150}>Created</Column>
+              </Header>
+              {hookList.map(hook => {
+                return (
+                  <Row key={hook.id}>
+                    <Column>
+                      <Link to={`/${repo.full_name}/settings/hooks/${hook.id}`}>
+                        {hook.id}
+                      </Link>
+                    </Column>
+                    <Column width={120}>{hook.provider}</Column>
+                    <Column width={150}>
+                      <TimeSince date={hook.created_at} />
+                    </Column>
+                  </Row>
+                );
+              })}
+            </div>
+          ) : (
+            <Row>
+              <Column>
+                {"You haven't registered any hooks for this repository yet."}
+              </Column>
+            </Row>
+          )}
         </ResultGrid>
       </div>
     );

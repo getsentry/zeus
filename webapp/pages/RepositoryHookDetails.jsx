@@ -61,9 +61,7 @@ export default class RepositoryHookDetails extends AsyncPage {
               <Box flex="1" pr={15}>
                 <strong>ID</strong>
               </Box>
-              <Box width={10 / 12}>
-                {hook.id}
-              </Box>
+              <Box width={10 / 12}>{hook.id}</Box>
             </Flex>
           </ResultGridRow>
           <ResultGridRow>
@@ -71,9 +69,7 @@ export default class RepositoryHookDetails extends AsyncPage {
               <Box flex="1" pr={15}>
                 <strong>Provider</strong>
               </Box>
-              <Box width={10 / 12}>
-                {hook.provider}
-              </Box>
+              <Box width={10 / 12}>{hook.provider}</Box>
             </Flex>
           </ResultGridRow>
           <ResultGridRow>
@@ -82,11 +78,7 @@ export default class RepositoryHookDetails extends AsyncPage {
                 <strong>Token</strong>
               </Box>
               <Box width={10 / 12}>
-                {hook.token
-                  ? <code>
-                      {hook.token}
-                    </code>
-                  : <em>hidden</em>}
+                {hook.token ? <code>{hook.token}</code> : <em>hidden</em>}
               </Box>
             </Flex>
           </ResultGridRow>
@@ -96,9 +88,7 @@ export default class RepositoryHookDetails extends AsyncPage {
                 <strong>ZEUS_HOOK_BASE</strong>
               </Box>
               <Box width={10 / 12}>
-                <code>
-                  {this.getHookBase(true)}
-                </code>
+                <code>{this.getHookBase(true)}</code>
               </Box>
             </Flex>
           </ResultGridRow>
@@ -114,12 +104,14 @@ export default class RepositoryHookDetails extends AsyncPage {
           </ResultGridRow>
         </Panel>
 
-        <SectionHeading>Travis Config</SectionHeading>
-        <Panel>
-          <Config>
-            {generateTravisConfig(publicHookBase)}
-          </Config>
-        </Panel>
+        {hook.provider.startsWith('travis') && (
+          <div>
+            <SectionHeading>Travis Config</SectionHeading>
+            <Panel>
+              <Config>{generateTravisConfig(publicHookBase)}</Config>
+            </Panel>
+          </div>
+        )}
       </div>
     );
   }
