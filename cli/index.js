@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-const _ = require('lodash');
+const {createReadStream} = require('fs');
+const {basename} = require('path');
 const request = require('request');
 
 const ZEUS_HOOK_BASE = process.env.ZEUS_HOOK_BASE;
@@ -47,9 +48,24 @@ require('yargs')
           type: 'string'
         }),
     argv => {
-      const form = _.pick(argv, ['file', 'type']);
       const url = `${ZEUS_HOOK_BASE}/builds/${BUILD_ID}/jobs/${JOB_ID}/artifacts`;
-      request.post(url).form(form);
+      const formData = {
+        type: argv.type,
+        file: {
+          value: createReadStream(argv.file),
+          options: {
+            filename: basename(argv.file)
+          }
+        }
+      };
+      request.post({url, formData}, err => {
+        if (err) {
+          console.error('Artifact upload failed: ', err);
+          process.exit(1);
+        }
+
+        console.log('Artifact upload completed');
+      });
     }
   )
   .help().argv;
