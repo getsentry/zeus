@@ -147,10 +147,10 @@ async def stream(request):
         await resp.write_eof()
         return resp
     finally:
-        current_app.logger.debug(
-            'client.disconnected guid=%s', client_guid, exc_info=True)
         conn.close()
         await conn.wait_closed()
+        current_app.logger.debug(
+            'client.disconnected guid=%s', client_guid, exc_info=True)
 
 
 async def build_server(loop, host, port):
