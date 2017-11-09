@@ -7,7 +7,7 @@ import Duration from '../components/Duration';
 import {ResultGrid, Column, Header, Row} from '../components/ResultGrid';
 
 export default class RepositoryStats extends AsyncPage {
-  static contextTypes = {
+  static itextTypes = {
     ...AsyncPage.contextTypes,
     repo: PropTypes.object.isRequired
   };
@@ -101,10 +101,8 @@ export default class RepositoryStats extends AsyncPage {
               </Column>
               <Column width={120} textAlign="right">
                 {totalLines
-                  ? `${parseInt(
-                      stat['coverage.lines_uncovered'] / totalLines * 1000,
-                      10
-                    ) / 10}%`
+                  ? `${parseInt(stat['coverage.lines_covered'] / totalLines * 1000, 10) /
+                      10}%`
                   : ''}
               </Column>
               <Column width={120} textAlign="right">
