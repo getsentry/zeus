@@ -32,7 +32,7 @@ class AuthIndexResource(Resource):
             }
         else:
             identity_list = list(Identity.query.filter(
-                Identity.user_id == User.id,
+                Identity.user_id == user.id,
             ))
 
             context = {
