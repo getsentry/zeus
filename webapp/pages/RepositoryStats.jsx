@@ -7,7 +7,7 @@ import Duration from '../components/Duration';
 import {ResultGrid, Column, Header, Row} from '../components/ResultGrid';
 
 export default class RepositoryStats extends AsyncPage {
-  static itextTypes = {
+  static contextTypes = {
     ...AsyncPage.contextTypes,
     repo: PropTypes.object.isRequired
   };
@@ -21,6 +21,7 @@ export default class RepositoryStats extends AsyncPage {
     let endpoint = `/repos/${repo.full_name}/stats`;
     let params = {resolution: '1d', points: 90};
     return [
+      ['buildsDuration', endpoint, {query: {stat: 'builds.duration', ...params}}],
       ['buildsFailed', endpoint, {query: {stat: 'builds.failed', ...params}}],
       ['buildsPassed', endpoint, {query: {stat: 'builds.passed', ...params}}],
       ['buildsTotal', endpoint, {query: {stat: 'builds.total', ...params}}],
@@ -33,6 +34,7 @@ export default class RepositoryStats extends AsyncPage {
 
   renderBody() {
     let {
+      buildsDuration,
       buildsFailed,
       buildsPassed,
       buildsTotal,
@@ -52,6 +54,9 @@ export default class RepositoryStats extends AsyncPage {
     linesUncovered.forEach(
       ({time, value}) => (groupedStats[time]['coverage.lines_uncovered'] = value)
     );
+    buildsDuration.forEach(
+      ({time, value}) => (groupedStats[time]['builds.duration'] = value)
+    );
     buildsTotal.forEach(({time, value}) => (groupedStats[time]['builds.total'] = value));
     buildsFailed.forEach(
       ({time, value}) => (groupedStats[time]['builds.failed'] = value)
@@ -65,6 +70,9 @@ export default class RepositoryStats extends AsyncPage {
           <Column>Point</Column>
           <Column width={120} textAlign="right">
             Total<br />Builds
+          </Column>
+          <Column width={120} textAlign="right">
+            Avg<br />Duration
           </Column>
           <Column width={120} textAlign="right">
             Pct<br />Green Builds
@@ -90,6 +98,9 @@ export default class RepositoryStats extends AsyncPage {
               </Column>
               <Column width={120} textAlign="right">
                 {stat['builds.total'].toLocaleString()}
+              </Column>
+              <Column width={120} textAlign="right">
+                {stat['builds.duration'] ? <Duration ms={stat['builds.duration']} /> : ''}
               </Column>
               <Column width={120} textAlign="right">
                 {stat['builds.total']

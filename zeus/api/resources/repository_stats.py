@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 from flask import request
-from sqlalchemy.sql import func
+from sqlalchemy.sql import extract, func
 
 from zeus.config import db
-from zeus.models import Build, ItemStat, Repository, Result
+from zeus.models import Build, ItemStat, Repository, Result, Status
 from zeus.utils import timezone
 
 from .base_repository import BaseRepositoryResource
@@ -14,6 +14,7 @@ STAT_CHOICES = (
     'builds.failed',
     'builds.passed',
     'builds.total',
+    'builds.duration',
     'tests.count',
     'tests.duration',
     'tests.failures',
@@ -108,7 +109,8 @@ class RepositoryStatsResource(BaseRepositoryResource):
             date_begin = decr_res(date_begin)
 
         # TODO(dcramer): put minimum date bounds
-        if stat in ('builds.aborted', 'builds.failed', 'builds.passed', 'builds.total'):
+        if stat in ('builds.aborted', 'builds.failed', 'builds.passed',
+                    'builds.total', 'builds.duration'):
             if stat == 'builds.failed':
                 filters = [Build.result == Result.failed]
             elif stat == 'builds.passed':
@@ -116,14 +118,22 @@ class RepositoryStatsResource(BaseRepositoryResource):
             elif stat == 'builds.aborted':
                 filters = [Build.result == Result.aborted]
             else:
-                filters = []
+                filters = [Build.status == Status.finished]
+
+            if stat == 'builds.duration':
+                value = func.avg((
+                    extract('epoch', Build.date_finished) - extract('epoch', Build.date_started)) * 1000)
+                filters = [Build.status == Status.finished]
+            else:
+                value = func.count(Build.id)
+
             results = {
                 # HACK(dcramer): force (but dont convert) the timezone to be utc
                 # while this isnt correct, we're not looking for correctness yet
                 k.replace(tzinfo=timezone.utc): v
                 for k, v in db.session.query(
                     grouper.label('grouper'),
-                    func.count(Build.id).label('value'),
+                    value.label('value'),
                 ).filter(
                     Build.repository_id == repo.id,
                     Build.date_created >= date_begin,
