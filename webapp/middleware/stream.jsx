@@ -12,7 +12,7 @@ const createMiddleware = () => {
    * Create the EventSource object and attach the standard callbacks
    */
   const initialize = ({dispatch}, config) => {
-    stream = new EventSource(`http://localhost:8090?token=${config.token}`);
+    stream = new EventSource(`${window.ZEUS_PUBSUB_ENDPOINT}?token=${config.token}`);
 
     // Function will dispatch actions returned from action creators.
     const dispatchAction = partial(compose, [dispatch]);

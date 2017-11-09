@@ -22,6 +22,9 @@ DEFAULT_HOST_NAME = socket.gethostname().split('.', 1)[0].lower()
 def devserver(environment, workers, port, ngrok, ngrok_domain, pubsub, pubsub_port):
     os.environ.setdefault('FLASK_DEBUG', '1')
     os.environ['NODE_ENV'] = environment
+    if pubsub:
+        os.environ['PUBSUB_ENDPOINT'] = 'http://localhost:{}'.format(
+            pubsub_port)
 
     if ngrok:
         root_url = 'https://{}.ngrok.io'.format(ngrok_domain)

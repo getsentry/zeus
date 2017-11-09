@@ -95,6 +95,9 @@ def create_app(_read_config=True, **config):
 
     app.config.setdefault('DOMAIN', app.config.get('SERVER_NAME', 'localhost'))
 
+    app.config['PUBSUB_ENDPOINT'] = os.environ.get(
+        'PUBSUB_ENDPOINT', 'http://localhost:8090')
+
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
     app.config['LOG_LEVEL'] = os.environ.get('LOG_LEVEL') or 'INFO'
