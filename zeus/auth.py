@@ -21,6 +21,7 @@ class Tenant(object):
         if not user:
             return cls()
 
+        g.current_user = user
         return UserTenant(user_id=user.id)
 
     @classmethod
