@@ -123,7 +123,8 @@ class RepositoryStatsResource(BaseRepositoryResource):
             if stat == 'builds.duration':
                 value = func.avg((
                     extract('epoch', Build.date_finished) - extract('epoch', Build.date_started)) * 1000)
-                filters = [Build.status == Status.finished]
+                filters = [Build.status == Status.finished,
+                           Build.result == Result.passed]
             else:
                 value = func.count(Build.id)
 
