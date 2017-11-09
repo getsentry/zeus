@@ -1,0 +1,14 @@
+{
+  "name": "zeus-ci",
+  "version": "0.1.0",
+  "description": "CLI for https://zeus.ci",
+  "main": "index.js",
+  "repository": "https://github.com/getsentry/zeus",
+  "license": "Apache 2.0",
+  "bin": "index.js",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "request": "^2.83.0",
+    "yargs": "^10.0.3"
+  }
+}
