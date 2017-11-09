@@ -13,7 +13,7 @@ export default function(ComposedComponent) {
     };
 
     componentWillMount() {
-      if (!this.props.isAuthenticated) {
+      if (this.props.isAuthenticated === false) {
         this.context.router.push('/login');
       }
     }
