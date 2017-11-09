@@ -17,14 +17,14 @@ class TokenSettings extends AsyncPage {
     return [['token', '/user/token']];
   }
 
-  async renewToken() {
-    try {
-      const token = await this.api.post('/user/token');
-      this.setState({token});
-    } catch (e) {
-      this.props.addIndicator('Could not create a new token.', 'error', 5000);
-    }
-  }
+  renewToken = () => {
+    this.api
+      .post('/user/token')
+      .then(token => this.setState({token}))
+      .catch(e =>
+        this.props.addIndicator('Could not create a new token.', 'error', 5000)
+      );
+  };
 
   renderBody() {
     const {token} = this.state;
@@ -32,7 +32,7 @@ class TokenSettings extends AsyncPage {
       <div>
         <SectionHeading>This is your API token:</SectionHeading>
         <pre>zeus-u-{token.key}</pre>
-        <Button type="danger" onClick={() => this.renewToken()}>
+        <Button type="danger" onClick={this.renewToken}>
           Refresh API Token
         </Button>
         <WarningMessage>The old token will be invalid afterwards</WarningMessage>
@@ -41,7 +41,7 @@ class TokenSettings extends AsyncPage {
       <div>
         <SectionHeading>You have not createt an API token yet</SectionHeading>
         <pre>zeus-u-{token.key}</pre>
-        <Button onClick={() => this.renewToken()}>Generate API Token</Button>
+        <Button onClick={this.renewToken}>Generate API Token</Button>
       </div>
     );
   }
