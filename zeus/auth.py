@@ -5,7 +5,7 @@ from typing import List, Optional
 from urllib.parse import urlparse, urljoin
 
 from zeus.config import db
-from zeus.models import ApiToken, ApiTokenRepositoryAccess, RepositoryAccess, User
+from zeus.models import ApiToken, ApiTokenRepositoryAccess, Repository, RepositoryAccess, User
 from zeus.utils import timezone
 
 
@@ -24,6 +24,13 @@ class Tenant(object):
         return UserTenant(user_id=user.id)
 
     @classmethod
+    def from_repository(cls, repository: Repository):
+        if not repository:
+            return cls()
+
+        return RepositoryTenant(repository_id=repository.id)
+
+    @classmethod
     def from_api_token(cls, token: ApiToken):
         if not token:
             return cls()
@@ -40,13 +47,13 @@ class ApiTokenTenant(Tenant):
 
     @cached_property
     def repository_ids(self) -> List:
-        if not self.user_id:
+        if not self.token_id:
             return None
 
         return [
             r[0]
             for r in db.session.query(ApiTokenRepositoryAccess.repository_id).filter(
-                RepositoryAccess.apitoken_id == self.token_id,
+                ApiTokenRepositoryAccess.apitoken_id == self.token_id,
             )
         ]
 
@@ -69,6 +76,21 @@ class UserTenant(Tenant):
                 RepositoryAccess.user_id == self.user_id,
             )
         ]
+
+
+class RepositoryTenant(Tenant):
+    def __init__(self, repository_id: str):
+        self.repository_id = repository_id
+
+    def __repr__(self):
+        return '<{} repository_id={}>'.format(type(self).__name__, self.repository_id)
+
+    @cached_property
+    def repository_ids(self) -> List:
+        if not self.repository_id:
+            return None
+
+        return [self.repository_id]
 
 
 def get_user_from_request() -> Optional[User]:
