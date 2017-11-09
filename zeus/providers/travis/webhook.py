@@ -7,6 +7,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from flask import current_app, request, Response
+from urllib.parse import urlparse
 
 from zeus.api.utils.upserts import upsert_build, upsert_job
 from zeus.config import redis
@@ -96,6 +97,8 @@ class TravisWebhookView(BaseHook):
             'url': payload['build_url'],
         }
 
+        domain = urlparse(data['url']).netloc
+
         if payload['pull_request']:
             data['label'] = 'PR #{}'.format(payload['pull_request_number'])
 
@@ -115,7 +118,8 @@ class TravisWebhookView(BaseHook):
                     'status': 'finished' if job_payload['status'] is not None else 'in_progress',
                     'result': get_result(job_payload['state']),
                     'allow_failure': bool(job_payload['allow_failure']),
-                    'url': 'https://travis-ci.org/{owner}/{name}/jobs/{job_id}'.format(
+                    'url': 'https://{domain}/{owner}/{name}/jobs/{job_id}'.format(
+                        domain=domain,
                         owner=payload['repository']['owner_name'],
                         name=payload['repository']['name'],
                         job_id=job_payload['id'],
