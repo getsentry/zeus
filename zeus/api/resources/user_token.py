@@ -1,4 +1,3 @@
-from flask import Response
 from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
@@ -12,27 +11,28 @@ token_schema = TokenSchema(strict=True)
 
 
 class UserTokenResource(Resource):
-    def dispatch_request(self, *args, **kwargs) -> Response:
+    def get(self):
+        """
+        Return the API token for the user.
+        """
         user = auth.get_current_user()
         if not user:
             return self.error('not authenticated', 401)
 
-        return Resource.dispatch_request(self, user, *args, **kwargs)
-
-    def get(self, user):
-        """
-        Return the API token for the user.
-        """
         token = UserApiToken.query \
             .filter(UserApiToken.user == user) \
             .one_or_none()
 
         return self.respond_with_schema(token_schema, token)
 
-    def post(self, user):
+    def post(self):
         """
         Create a new API token for the user.
         """
+        user = auth.get_current_user()
+        if not user:
+            return self.error('not authenticated', 401)
+
         token = UserApiToken.query \
             .filter(UserApiToken.user == user) \
             .one_or_none()
