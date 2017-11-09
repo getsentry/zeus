@@ -1,5 +1,6 @@
 import sqlalchemy
 
+from secrets import token_hex
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.sql import func
 
@@ -76,3 +77,21 @@ class RepositoryBoundMixin(object):
     @declared_attr
     def repository(cls):
         return db.relationship('Repository', innerjoin=True, uselist=False)
+
+
+class ApiTokenMixin(object):
+    @declared_attr
+    def key(cls):
+        return db.Column(
+            db.String(64), default=lambda: ApiTokenMixin.generate_token(), unique=True, nullable=False
+        )
+
+    @classmethod
+    def generate_token(cls):
+        return token_hex(32)
+
+    def get_token_key(self):
+        raise NotImplementedError
+
+    def get_tenant(self):
+        raise NotImplementedError
