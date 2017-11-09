@@ -21,6 +21,7 @@ export default class RepositoryHeader extends Component {
           </NavItem>
           <NavItem to={`${basePath}/builds`}>Builds</NavItem>
           <NavItem to={`${basePath}/tests`}>Tests</NavItem>
+          <NavItem to={`${basePath}/stats`}>Stats</NavItem>
           <NavItem to={`${basePath}/settings`}>Settings</NavItem>
         </Nav>
       </Header>

@@ -18,6 +18,7 @@ import RepositoryHookDetails from './pages/RepositoryHookDetails';
 import RepositoryRevisionList from './pages/RepositoryRevisionList';
 import RepositorySettingsLayout from './pages/RepositorySettingsLayout';
 import RepositorySettings from './pages/RepositorySettings';
+import RepositoryStats from './pages/RepositoryStats';
 import RepositoryTests from './pages/RepositoryTests';
 import RepositoryTestList from './pages/RepositoryTestList';
 import RepositoryTestTree from './pages/RepositoryTestTree';
@@ -53,6 +54,7 @@ export default (
       component={requireAuth(RepositoryDetails)}>
       <IndexRoute component={requireAuth(RepositoryRevisionList)} />
       <Route path="builds" component={RepositoryBuildList} />
+      <Route path="stats" component={RepositoryStats} />
       <Route path="settings" component={RepositorySettingsLayout}>
         <IndexRoute component={RepositorySettings} />
         <Route path="hooks" component={RepositoryHooks} />

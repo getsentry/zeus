@@ -21,6 +21,8 @@ app.add_resource(
 app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/revisions', r.RepositoryRevisionsResource)
 app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/stats', r.RepositoryStatsResource)
+app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/tests', r.RepositoryTestsResource)
 app.add_resource('/repos/<provider>/<owner_name>/<repo_name>/test-tree',
                  r.RepositoryTestTreeResource)
