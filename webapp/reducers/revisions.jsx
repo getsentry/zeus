@@ -4,7 +4,7 @@ import {
   PRE_LOAD_REVISION_LIST,
   REMOVE_REVISION,
   UPDATE_REVISION
-} from '../actions/types';
+} from '../types';
 
 const initialState = {
   items: [],

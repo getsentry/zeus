@@ -17,7 +17,9 @@ DEFAULT_HOST_NAME = socket.gethostname().split('.', 1)[0].lower()
 @click.option('--port', '-p', default=8080)
 @click.option('--ngrok/--no-ngrok', default=False)
 @click.option('--ngrok-domain', default='zeus-{}'.format(DEFAULT_HOST_NAME))
-def devserver(environment, workers, port, ngrok, ngrok_domain):
+@click.option('--pubsub/--no-pubsub', default=True)
+@click.option('--pubsub-port', default=8090)
+def devserver(environment, workers, port, ngrok, ngrok_domain, pubsub, pubsub_port):
     os.environ.setdefault('FLASK_DEBUG', '1')
     os.environ['NODE_ENV'] = environment
 
@@ -37,12 +39,17 @@ def devserver(environment, workers, port, ngrok, ngrok_domain):
         ('webpack', ['node_modules/.bin/webpack',
                      '--watch', '--config=config/webpack.config.js']),
     ]
+    if pubsub:
+        daemons.append(
+            ('pubsub', ['zeus', 'pubsub', '--port={}'.format(pubsub_port)]))
+
     if workers:
         daemons.append(
             ('worker', ['zeus', 'worker', '--cron', '--log-level=INFO']))
     if ngrok:
         daemons.append(
-            ('ngrok', ['ngrok', 'http', '-subdomain={}'.format(ngrok_domain), str(port)])
+            ('ngrok', ['ngrok', 'http',
+                       '-subdomain={}'.format(ngrok_domain), str(port)])
         )
 
     cwd = os.path.realpath(os.path.join(

@@ -59,9 +59,11 @@ class Resource(View):
 
         try:
             resp = method(*args, **kwargs)
-            if isinstance(resp, Response):
-                return resp
-            return self.respond(resp)
+            if not isinstance(resp, Response):
+                resp = self.respond(resp)
+            if tenant:
+                resp.headers['X-Stream-Token'] = auth.generate_token(tenant)
+            return resp
         except ApiUnauthorized:
             return self.respond({
                 'error': 'auth_required',

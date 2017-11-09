@@ -5,7 +5,7 @@ import {
   PRE_LOAD_BUILD_LIST,
   REMOVE_BUILD,
   UPDATE_BUILD
-} from './types';
+} from '../types';
 
 export const addBuild = payload => {
   return dispatch => {

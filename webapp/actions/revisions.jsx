@@ -5,7 +5,7 @@ import {
   PRE_LOAD_REVISION_LIST,
   REMOVE_REVISION,
   UPDATE_REVISION
-} from './types';
+} from '../types';
 
 export const addRevision = payload => {
   return dispatch => {

@@ -1,4 +1,4 @@
-import {SET_CURRENT_AUTH} from '../actions/types';
+import {SET_CURRENT_AUTH} from '../types';
 
 const initialState = {
   // default to unknown state

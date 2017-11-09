@@ -31,6 +31,8 @@ export class Request {
     xhr.onreadystatechange = () => {
       if (xhr.readyState === Request.DONE) {
         let responseData = this.processResponseText(xhr);
+        // TODO(dcramer): make links available
+        responseData.getResponseHeader = xhr.getResponseHeader.bind(xhr);
         if (xhr.status >= 200 && xhr.status < 300) {
           // XXX(dcramer): this keeps the xhr ref around when
           // we otherwise wouldn't want it

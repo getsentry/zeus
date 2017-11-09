@@ -1,5 +1,5 @@
 import api from '../api';
-import {ADD_REPO, LOAD_REPO_LIST, REMOVE_REPO, UPDATE_REPO} from './types';
+import {ADD_REPO, LOAD_REPO_LIST, REMOVE_REPO, UPDATE_REPO} from '../types';
 
 export const addRepo = payload => {
   return dispatch => {

@@ -18,10 +18,6 @@ export default class BuildTestList extends AsyncPage {
     return [['testList', `/repos/${repo.full_name}/builds/${buildNumber}/tests`]];
   }
 
-  shouldFetchUpdates() {
-    return this.context.build.status !== 'finished';
-  }
-
   renderBody() {
     return (
       <Section>

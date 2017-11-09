@@ -12,10 +12,6 @@ export default class RepositoryStats extends AsyncPage {
     repo: PropTypes.object.isRequired
   };
 
-  shouldFetchUpdates() {
-    return false;
-  }
-
   getEndpoints() {
     let {repo} = this.context;
     let endpoint = `/repos/${repo.full_name}/stats`;

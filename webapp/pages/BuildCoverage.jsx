@@ -18,10 +18,6 @@ export default class BuildCoverage extends AsyncPage {
     return [['coverage', `/repos/${repo.full_name}/builds/${buildNumber}/file-coverage`]];
   }
 
-  shouldFetchUpdates() {
-    return this.context.build.status !== 'finished';
-  }
-
   renderBody() {
     return (
       <Section>

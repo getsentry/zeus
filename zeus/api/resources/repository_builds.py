@@ -5,6 +5,7 @@ from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
 from zeus import auth
 from zeus.config import db
 from zeus.models import Author, Build, Email, Repository, Revision, Source
+from zeus.pubsub.utils import publish
 from zeus.vcs.base import UnknownRevision
 
 from .base_repository import BaseRepositoryResource
@@ -141,4 +142,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             db.session.rollback()
             return self.respond(status=422)
 
-        return self.respond_with_schema(build_schema, build)
+        result = build_schema.dump(build)
+        assert not result.errors, 'this should never happen'
+        publish('builds', 'build.create', result.data)
+        return self.respond(result.data, 200)

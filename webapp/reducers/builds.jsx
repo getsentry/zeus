@@ -4,7 +4,7 @@ import {
   PRE_LOAD_BUILD_LIST,
   REMOVE_BUILD,
   UPDATE_BUILD
-} from '../actions/types';
+} from '../types';
 
 const initialState = {
   items: [],

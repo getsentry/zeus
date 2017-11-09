@@ -4,12 +4,16 @@ from random import choice, randint, random, randrange
 from sqlalchemy.exc import IntegrityError
 
 from zeus import factories, models
-from zeus.constants import Result, Status
+from zeus.api.schemas import BuildSchema
 from zeus.config import db
+from zeus.constants import Result, Status
 from zeus.db.utils import try_create
+from zeus.pubsub.utils import publish
 from zeus.tasks import aggregate_build_stats_for_job
 
 from .base import cli
+
+build_schema = BuildSchema(strict=True)
 
 
 def mock_single_repository(user_ids=()):
@@ -79,6 +83,9 @@ def mock_build(repo: models.Repository, parent_revision: models.Revision=None, u
     parent_revision = revision
 
     build = factories.BuildFactory.create(source=source, travis=True)
+
+    result = build_schema.dump(build)
+    publish('builds', 'build.create', result.data)
     click.echo('Created {!r}'.format(build))
 
     for n in range(randint(0, 50)):
@@ -110,7 +117,12 @@ def mock_build(repo: models.Repository, parent_revision: models.Revision=None, u
             factories.ArtifactFactory.create(job=job, repository=repo)
 
         db.session.commit()
+
         aggregate_build_stats_for_job(job_id=job.id)
+
+        result = build_schema.dump(build)
+        publish('builds', 'build.create', result.data)
+        click.echo('Created {!r}'.format(build))
 
     db.session.commit()
     return build

@@ -87,6 +87,9 @@ def create_app(_read_config=True, **config):
             'options': {},
         }
 
+    app.config.setdefault('MAIL_DEFAULT_SENDER', '{}@localhost'.format(
+        os.environ.get('USERNAME', 'root')))
+
     if os.environ.get('SERVER_NAME'):
         app.config['SERVER_NAME'] = os.environ['SERVER_NAME']
 
@@ -105,6 +108,8 @@ def create_app(_read_config=True, **config):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     app.config['REDIS_URL'] = REDIS_URL
+
+    app.config['STREAM_URL'] = 'http://localhost:8090/stream'
 
     app.config['SENTRY_DSN'] = os.environ.get('SENTRY_DSN') or None
     app.config['SENTRY_DSN_FRONTEND'] = os.environ.get(

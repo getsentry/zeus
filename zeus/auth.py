@@ -3,6 +3,7 @@ import re
 from cached_property import cached_property
 from datetime import datetime
 from flask import current_app, g, request, session
+from itsdangerous import BadSignature, JSONWebSignatureSerializer
 from sqlalchemy.orm import joinedload
 from typing import List, Optional
 from urllib.parse import urlparse, urljoin
@@ -235,6 +236,21 @@ def get_current_tenant() -> Tenant:
         rv = get_tenant_from_request()
         set_current_tenant(rv)
     return rv
+
+
+def generate_token(tenant: Tenant) -> str:
+    s = JSONWebSignatureSerializer(current_app.secret_key, salt='auth')
+    return s.dumps({
+        'repo_ids': [str(o) for o in tenant.repository_ids],
+    })
+
+
+def parse_token(token: str) -> str:
+    s = JSONWebSignatureSerializer(current_app.secret_key, salt='auth')
+    try:
+        return s.loads(token)
+    except BadSignature:
+        return None
 
 
 def is_safe_url(target: str) -> bool:

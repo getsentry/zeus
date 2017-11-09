@@ -27,10 +27,6 @@ export default class BuildOverviewBase extends AsyncPage {
     ];
   }
 
-  shouldFetchUpdates() {
-    return this.context.build.status !== 'finished';
-  }
-
   renderBody() {
     let failingJobs = this.state.jobList.filter(
       job => job.result == 'failed' && !job.allow_failure

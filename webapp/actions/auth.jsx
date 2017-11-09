@@ -1,5 +1,5 @@
 import api from '../api';
-import {SET_CURRENT_AUTH} from './types';
+import {SET_CURRENT_AUTH, STREAM_CONNECT} from '../types';
 
 export function setAuth(payload) {
   return {
@@ -27,6 +27,13 @@ export function authSession() {
           localStorage.removeItem('auth');
         }
         dispatch(setAuth(data));
+        dispatch({
+          type: STREAM_CONNECT,
+          payload: {
+            timestamp: new Date(),
+            token: data.getResponseHeader('X-Stream-Token')
+          }
+        });
       },
       error => {
         localStorage.removeItem('auth');
