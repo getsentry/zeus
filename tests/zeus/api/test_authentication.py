@@ -1,7 +1,8 @@
 import pytest
 
 from zeus import factories
-from zeus.api.authentication import ApiTokenAuthentication, AuthenticationFailed
+from zeus.auth import AuthenticationFailed
+from zeus.api.authentication import ApiTokenAuthentication
 
 
 def test_no_header(app):

@@ -11,10 +11,6 @@ from ..authentication import ApiTokenAuthentication, SessionAuthentication
 LINK_HEADER = '<{uri}&page={page}>; rel="{name}"'
 
 
-class AuthenticationFailed(Exception):
-    pass
-
-
 class Resource(View):
     methods = ['GET', 'POST', 'PUT', 'DELETE']
 
@@ -44,7 +40,7 @@ class Resource(View):
                     if _tenant:
                         tenant = _tenant
                         break
-                except AuthenticationFailed:
+                except auth.AuthenticationFailed:
                     return self.respond({
                         'error': 'invalid_auth',
                     }, 401)

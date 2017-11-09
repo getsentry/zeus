@@ -1,11 +1,12 @@
 from cached_property import cached_property
 from datetime import datetime
 from flask import current_app, g, request, session
+from sqlalchemy.orm import joinedload
 from typing import List, Optional
 from urllib.parse import urlparse, urljoin
 
 from zeus.config import db
-from zeus.models import ApiToken, ApiTokenRepositoryAccess, Repository, RepositoryAccess, User
+from zeus.models import ApiToken, ApiTokenRepositoryAccess, Repository, RepositoryAccess, RepositoryApiToken, User, UserApiToken
 from zeus.utils import timezone
 
 
@@ -94,7 +95,80 @@ class RepositoryTenant(Tenant):
         return [self.repository_id]
 
 
+class AuthenticationFailed(Exception):
+    pass
+
+
+def get_tenant_from_token():
+    header = request.headers.get('Authorization', '').lower()
+    if not header:
+        return None
+
+    if not header.startswith('bearer:'):
+        return None
+
+    token = header.split(':', 1)[-1].strip()
+    if not token.startswith('zeus-'):
+        # Assuming this is a legacy token
+        return get_tenant_from_legacy_token(token)
+
+    parts = token.split('-', 2)
+    if not len(parts) == 3:
+        raise AuthenticationFailed
+
+    if parts[1] == 'u':
+        return get_tenant_from_user_token(parts[2])
+    if parts[1] == 'r':
+        return get_tenant_from_repository_token(parts[2])
+
+    raise AuthenticationFailed
+
+
+def get_tenant_from_user_token(key):
+    token = UserApiToken.query \
+        .options(joinedload('user')) \
+        .filter(UserApiToken.key == key) \
+        .first()
+
+    if not token:
+        raise AuthenticationFailed
+
+    return Tenant.from_user(token.user)
+
+
+def get_tenant_from_repository_token(key):
+    token = RepositoryApiToken.query \
+        .options(joinedload('repository')) \
+        .filter(RepositoryApiToken.key == key) \
+        .first()
+
+    if not token:
+        raise AuthenticationFailed
+
+    return Tenant.from_repository(token.repository)
+
+
+def get_tenant_from_legacy_token(token):
+    api_token = ApiToken.query.filter(
+        ApiToken.access_token == token,
+    ).first()
+
+    if not api_token:
+        raise AuthenticationFailed
+
+    if api_token.is_expired():
+        raise AuthenticationFailed
+
+    if api_token:
+        g.current_api_token = api_token
+
+    return Tenant.from_api_token(api_token)
+
+
 def get_user_from_request() -> Optional[User]:
+    import traceback
+    traceback.print_stack()
+
     expire = session.get('expire')
     if not expire:
         return None
@@ -143,7 +217,10 @@ def get_current_user() -> Optional[User]:
 
 
 def get_tenant_from_request():
-    # auth = validate_auth(request.headers.get('Authorization'))
+    tenant = get_tenant_from_token()
+    if tenant:
+        return tenant
+
     user = get_current_user()
     return Tenant.from_user(user)
 
