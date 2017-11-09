@@ -46,14 +46,18 @@ def merge_builds(target, build):
 
 def merge_build_group(build_group):
     if len(build_group) == 1:
-        return build_group[0]
+        build = build_group[0]
+        build.original = [build]
+        return build
 
     providers = groupby(build_group, lambda build: build.provider)
     latest_builds = [max(build, key=lambda build: build.number)
                      for _, build in providers]
 
     if len(latest_builds) == 1:
-        return latest_builds[0]
+        build = latest_builds[0]
+        build.original = [build]
+        return build
 
     build = Build()
     build.original = []
