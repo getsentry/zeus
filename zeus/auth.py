@@ -166,9 +166,6 @@ def get_tenant_from_legacy_token(token):
 
 
 def get_user_from_request() -> Optional[User]:
-    import traceback
-    traceback.print_stack()
-
     expire = session.get('expire')
     if not expire:
         return None
