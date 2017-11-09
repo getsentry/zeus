@@ -3,7 +3,8 @@ import {SET_CURRENT_AUTH} from '../actions/types';
 const initialState = {
   // default to unknown state
   isAuthenticated: null,
-  user: null
+  user: null,
+  identities: null
 };
 
 export default (state = initialState, action = {}) => {

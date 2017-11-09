@@ -50,7 +50,7 @@ class UnstyledHeader extends Component {
   render() {
     let props = this.props;
     return (
-      <div {...props}>
+      <div className={props.className}>
         <div style={{float: 'left', marginRight: 10}}>
           <NavLink to="/">
             <Logo size="26" />

@@ -7,7 +7,8 @@ import {Flex, Box} from 'grid-styled';
 import {addIndicator, removeIndicator} from '../actions/indicators';
 import {addRepo, removeRepo, updateRepo} from '../actions/repos';
 import AsyncPage from '../components/AsyncPage';
-import ResultGridRow from '../components/ResultGridRow';
+import Button from '../components/Button';
+import {ResultGrid, Row, Column} from '../components/ResultGrid';
 
 class GitHubRepoItem extends Component {
   static propTypes = {
@@ -26,31 +27,32 @@ class GitHubRepoItem extends Component {
   render() {
     let {repo} = this.props;
     return (
-      <ResultGridRow>
-        <Flex>
-          <Box flex="1" width={11 / 12} pr={15}>
-            {repo.name}
-          </Box>
-          <Box width={1 / 12} style={{textAlign: 'center'}}>
-            {repo.loading ? (
-              '...'
-            ) : repo.active ? (
-              <a onClick={this.props.onDisableRepo} style={{cursor: 'pointer'}}>
-                Disable
-              </a>
-            ) : (
-              <a onClick={this.props.onEnableRepo} style={{cursor: 'pointer'}}>
-                Enable
-              </a>
-            )}
-          </Box>
-        </Flex>
-      </ResultGridRow>
+      <Row>
+        <Column>
+          {repo.name}
+        </Column>
+        <Column textAlign="right" width={80}>
+          {repo.loading
+            ? '...'
+            : repo.active
+              ? <Button onClick={this.props.onDisableRepo} size="small" type="danger">
+                  Disable
+                </Button>
+              : <Button onClick={this.props.onEnableRepo} size="small">
+                  Enable
+                </Button>}
+        </Column>
+      </Row>
     );
   }
 }
 
 class GitHubRepositoryList extends AsyncPage {
+  static propTypes = {
+    ...AsyncPage.propTypes,
+    identities: PropTypes.object.isRequired
+  };
+
   getTitle() {
     return 'GitHub Repositories';
   }
@@ -62,7 +64,10 @@ class GitHubRepositoryList extends AsyncPage {
         'ghRepoList',
         '/github/repos',
         {
-          query: this.props.location.query
+          query: {
+            private: this.hasPrivateScope() ? 1 : 0,
+            ...this.props.location.query
+          }
         }
       ]
     ];
@@ -114,6 +119,13 @@ class GitHubRepositoryList extends AsyncPage {
     );
   };
 
+  hasPrivateScope() {
+    return (
+      this.props.identities.find(i => i.provider === 'github').scopes.indexOf('repo') !==
+      -1
+    );
+  }
+
   renderBody() {
     let {location} = this.props;
     let query = location.query || {};
@@ -121,34 +133,21 @@ class GitHubRepositoryList extends AsyncPage {
       <Flex>
         <Box flex="1" width={2 / 12} pr={15}>
           <div style={{marginBottom: 10, fontSize: '0.8em'}}>
-            <label>
-              <input
-                type="checkbox"
-                name="private"
-                value="1"
-                checked={query.private === '1'}
-                onChange={e => {
-                  this.context.router.push({
-                    ...location,
-                    query: {
-                      ...query,
-                      private: e.target.checked ? '1' : undefined
-                    }
-                  });
-                }}
-              />{' '}
-              Include private repos
-            </label>
+            {!this.hasPrivateScope() &&
+              <Button
+                onClick={this.context.router.push({
+                  ...location,
+                  query: {
+                    ...query,
+                    private: true
+                  }
+                })}>
+                Enable Private Repos
+              </Button>}
           </div>
           <ul>
             <li key="_">
-              <Link
-                to={{
-                  query: {},
-                  pathname: this.props.location.pathname
-                }}>
-                mine
-              </Link>
+              <Link to={{query: {}, pathname: this.props.location.pathname}}>mine</Link>
             </li>
             {this.state.ghOrgList.map(ghOrg => {
               return (
@@ -166,26 +165,43 @@ class GitHubRepositoryList extends AsyncPage {
           </ul>
         </Box>
         <Box width={10 / 12}>
-          {this.state.ghRepoList.map(ghRepo => {
-            return (
-              <GitHubRepoItem
-                key={ghRepo.name}
-                repo={ghRepo}
-                onEnableRepo={() => this.onToggleRepo(ghRepo.name, true)}
-                onDisableRepo={() => this.onToggleRepo(ghRepo.name, false)}
-              />
-            );
-          })}
+          <ResultGrid>
+            {this.state.ghRepoList.filter(ghRepo => ghRepo.active).map(ghRepo => {
+              return (
+                <GitHubRepoItem
+                  key={ghRepo.name}
+                  repo={ghRepo}
+                  onEnableRepo={() => this.onToggleRepo(ghRepo.name, true)}
+                  onDisableRepo={() => this.onToggleRepo(ghRepo.name, false)}
+                />
+              );
+            })}
+            {this.state.ghRepoList.filter(ghRepo => !ghRepo.active).map(ghRepo => {
+              return (
+                <GitHubRepoItem
+                  key={ghRepo.name}
+                  repo={ghRepo}
+                  onEnableRepo={() => this.onToggleRepo(ghRepo.name, true)}
+                  onDisableRepo={() => this.onToggleRepo(ghRepo.name, false)}
+                />
+              );
+            })}
+          </ResultGrid>
         </Box>
       </Flex>
     );
   }
 }
 
-export default connect(null, {
-  addIndicator,
-  removeIndicator,
-  addRepo,
-  removeRepo,
-  updateRepo
-})(GitHubRepositoryList);
+export default connect(
+  ({auth}) => ({
+    identities: auth.identities
+  }),
+  {
+    addIndicator,
+    removeIndicator,
+    addRepo,
+    removeRepo,
+    updateRepo
+  }
+)(GitHubRepositoryList);
