@@ -19,7 +19,7 @@ export default class RepositoryStats extends AsyncPage {
   getEndpoints() {
     let {repo} = this.context;
     let endpoint = `/repos/${repo.full_name}/stats`;
-    let params = {resolution: '1d', points: 90};
+    let params = {resolution: '1w', points: 52};
     return [
       ['buildsDuration', endpoint, {query: {stat: 'builds.duration', ...params}}],
       ['buildsFailed', endpoint, {query: {stat: 'builds.failed', ...params}}],
@@ -67,7 +67,7 @@ export default class RepositoryStats extends AsyncPage {
     return (
       <ResultGrid>
         <Header>
-          <Column>Point</Column>
+          <Column>Week Of</Column>
           <Column width={120} textAlign="right">
             Total<br />Builds
           </Column>
@@ -94,7 +94,7 @@ export default class RepositoryStats extends AsyncPage {
           return (
             <Row key={time}>
               <Column>
-                {moment(time).format('lll')}
+                {moment(time).format('ll')}
               </Column>
               <Column width={120} textAlign="right">
                 {stat['builds.total'].toLocaleString()}
