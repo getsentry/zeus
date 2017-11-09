@@ -18,13 +18,12 @@ const generateTravisConfig = publicHookBase => {
     on_start: always
     on_cancel: always
     on_error: always
-  email: false
-install:
-  - npm install zeus-ci
 after_success:
-  - zeus-ci upload path/to/artifact "mime/type"
+  - npm install zeus-ci
+  - zeus-ci upload -t "mime/type" path/to/artifact
 after_failure:
-  - zeus-ci upload path/to/artifact "mime/type"`;
+  - npm install zeus-ci
+  - zeus-ci upload -t "mime/type" path/to/artifact`;
 };
 
 export default class RepositoryHookDetails extends AsyncPage {
@@ -59,28 +58,20 @@ export default class RepositoryHookDetails extends AsyncPage {
             <Column width={200}>
               <strong>ID</strong>
             </Column>
-            <Column textAlign="left">
-              {hook.id}
-            </Column>
+            <Column textAlign="left">{hook.id}</Column>
           </Row>
           <Row>
             <Column width={200}>
               <strong>Provider</strong>
             </Column>
-            <Column textAlign="left">
-              {hook.provider}
-            </Column>
+            <Column textAlign="left">{hook.provider}</Column>
           </Row>
           <Row>
             <Column width={200}>
               <strong>Token</strong>
             </Column>
             <Column textAlign="left">
-              {hook.token
-                ? <code>
-                    {hook.token}
-                  </code>
-                : <em>hidden</em>}
+              {hook.token ? <code>{hook.token}</code> : <em>hidden</em>}
             </Column>
           </Row>
           <Row>
@@ -88,9 +79,7 @@ export default class RepositoryHookDetails extends AsyncPage {
               <strong>ZEUS_HOOK_BASE</strong>
             </Column>
             <Column textAlign="left">
-              <code>
-                {this.getHookBase(true)}
-              </code>
+              <code>{this.getHookBase(true)}</code>
             </Column>
           </Row>
           <Row>
@@ -103,15 +92,14 @@ export default class RepositoryHookDetails extends AsyncPage {
           </Row>
         </ResultGrid>
 
-        {hook.provider.startsWith('travis') &&
+        {hook.provider.startsWith('travis') && (
           <div>
             <SectionHeading>Travis Config</SectionHeading>
             <Panel>
-              <Config>
-                {generateTravisConfig(publicHookBase)}
-              </Config>
+              <Config>{generateTravisConfig(publicHookBase)}</Config>
             </Panel>
-          </div>}
+          </div>
+        )}
       </div>
     );
   }
