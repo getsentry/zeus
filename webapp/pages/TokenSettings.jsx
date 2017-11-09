@@ -28,7 +28,7 @@ class TokenSettings extends AsyncPage {
 
   renderBody() {
     const {token} = this.state;
-    return token ? (
+    return token && token.key ? (
       <div>
         <SectionHeading>This is your API token:</SectionHeading>
         <pre>zeus-u-{token.key}</pre>
@@ -40,7 +40,6 @@ class TokenSettings extends AsyncPage {
     ) : (
       <div>
         <SectionHeading>You have not createt an API token yet</SectionHeading>
-        <pre>zeus-u-{token.key}</pre>
         <Button onClick={this.renewToken}>Generate API Token</Button>
       </div>
     );
