@@ -8,6 +8,9 @@ import Select from 'react-select';
 import {logout} from '../actions/auth';
 import Logo from '../assets/Logo';
 
+import MdSettings from 'react-icons/lib/md/settings';
+import MdLogout from 'react-icons/lib/md/exit-to-app';
+
 const NavLink = styled(Link)`
   display: inline-block;
   width: 26px;
@@ -55,8 +58,12 @@ class UnstyledHeader extends Component {
         </div>
         {props.isAuthenticated &&
           <div style={{float: 'right'}}>
-            <NavLink to="/settings">S</NavLink>
-            <NavLink onClick={props.logout}>L</NavLink>
+            <NavLink to="/settings">
+              <MdSettings />
+            </NavLink>
+            <NavLink onClick={props.logout}>
+              <MdLogout />
+            </NavLink>
           </div>}
         <Select
           placeholder="Select Repository"
