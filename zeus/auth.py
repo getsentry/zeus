@@ -1,3 +1,5 @@
+import re
+
 from cached_property import cached_property
 from datetime import datetime
 from flask import current_app, g, request, session
@@ -105,10 +107,10 @@ def get_tenant_from_token():
     if not header:
         return None
 
-    if not header.startswith('bearer:'):
+    if not header.startswith('bearer'):
         return None
 
-    token = header.split(':', 1)[-1].strip()
+    token = re.sub(r"^bearer(:|\s)\s*", '', header).strip()
     if not token.startswith('zeus-'):
         # Assuming this is a legacy token
         return get_tenant_from_legacy_token(token)
