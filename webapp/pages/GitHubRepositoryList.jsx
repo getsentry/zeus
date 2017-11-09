@@ -28,19 +28,19 @@ class GitHubRepoItem extends Component {
     let {repo} = this.props;
     return (
       <Row>
-        <Column>
-          {repo.name}
-        </Column>
+        <Column>{repo.name}</Column>
         <Column textAlign="right" width={80}>
-          {repo.loading
-            ? '...'
-            : repo.active
-              ? <Button onClick={this.props.onDisableRepo} size="small" type="danger">
-                  Disable
-                </Button>
-              : <Button onClick={this.props.onEnableRepo} size="small">
-                  Enable
-                </Button>}
+          {repo.loading ? (
+            '...'
+          ) : repo.active ? (
+            <Button onClick={this.props.onDisableRepo} size="small" type="danger">
+              Disable
+            </Button>
+          ) : (
+            <Button onClick={this.props.onEnableRepo} size="small">
+              Enable
+            </Button>
+          )}
         </Column>
       </Row>
     );
@@ -120,10 +120,9 @@ class GitHubRepositoryList extends AsyncPage {
   };
 
   hasPrivateScope() {
-    return (
-      this.props.identities.find(i => i.provider === 'github').scopes.indexOf('repo') !==
-      -1
-    );
+    const {identities} = this.props;
+    const github = identities && identities.find(i => i.provider === 'github');
+    return github && github.scopes.indexOf('repo') !== -1;
   }
 
   renderBody() {
@@ -133,7 +132,7 @@ class GitHubRepositoryList extends AsyncPage {
       <Flex>
         <Box flex="1" width={2 / 12} pr={15}>
           <div style={{marginBottom: 10, fontSize: '0.8em'}}>
-            {!this.hasPrivateScope() &&
+            {!this.hasPrivateScope() && (
               <Button
                 onClick={this.context.router.push({
                   ...location,
@@ -143,7 +142,8 @@ class GitHubRepositoryList extends AsyncPage {
                   }
                 })}>
                 Enable Private Repos
-              </Button>}
+              </Button>
+            )}
           </div>
           <ul>
             <li key="_">
