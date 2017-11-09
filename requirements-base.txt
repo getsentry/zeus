@@ -16,6 +16,7 @@ lxml==3.8.0
 marshmallow==2.13.5
 oauth2client==3.0.0
 psycopg2==2.7.1
+python-dateutil==2.6.1
 raven==6.1.0
 redis==2.10.5
 requests[security]==2.18.1

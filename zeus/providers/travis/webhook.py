@@ -1,3 +1,4 @@
+import dateutil.parser
 import json
 import requests
 
@@ -75,7 +76,8 @@ class TravisWebhookView(BaseHook):
         try:
             signature = b64decode(signature)
         except ValueError:
-            current_app.logger.error('travis.webhook-invalid-signature', exc_info=True)
+            current_app.logger.error(
+                'travis.webhook-invalid-signature', exc_info=True)
             return Response(status=400)
 
         domain = (hook.data or {}).get('domain', 'api.travis-ci.org')
@@ -83,13 +85,15 @@ class TravisWebhookView(BaseHook):
         try:
             verify_signature(public_key, signature, payload.encode('utf-8'))
         except InvalidSignature:
-            current_app.logger.error('travis.webhook-invalid-signature', exc_info=True)
+            current_app.logger.error(
+                'travis.webhook-invalid-signature', exc_info=True)
             return Response(status=400)
 
         try:
             payload = json.loads(payload)
         except (TypeError, ValueError):
-            current_app.logger.error('travis.webhook-invalid-payload', exc_info=True)
+            current_app.logger.error(
+                'travis.webhook-invalid-payload', exc_info=True)
             return Response(status=400)
 
         data = {
@@ -123,7 +127,9 @@ class TravisWebhookView(BaseHook):
                         owner=payload['repository']['owner_name'],
                         name=payload['repository']['name'],
                         job_id=job_payload['id'],
-                    )
+                    ),
+                    'started_at': dateutil.parser.parse(job_payload['started_at']) if job_payload['started_at'] else None,
+                    'finished_at': dateutil.parser.parse(job_payload['finished_at']) if job_payload['finished_at'] else None,
                 }
             )
 

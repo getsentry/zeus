@@ -29,4 +29,4 @@ class BuildCreateSchema(Schema):
     ref = fields.Str()
     provider = fields.Str()
     external_id = fields.Str()
-    url = fields.Str()
+    url = fields.Str(allow_none=True)

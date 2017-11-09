@@ -52,11 +52,12 @@ class JobDetailsResource(BaseJobResource):
                 # decide how Zeus should deal with it. We either could orphan/hide/remove the
                 # current job, or alternatively we would want to truncate all of its children
                 # which is fairly complex.
-                if 'date_started' not in result.data:
+                if not result.data.get('date_started'):
                     job.date_started = timezone.now()
                 if 'result' not in result.data:
                     job.result = Result.unknown
-            if job.status == Status.finished and prev_status != job.status and not job.date_finished:
+            if job.status == Status.finished and prev_status != job.status and not result.data.get(
+                    'date_finished'):
                 job.date_finished = timezone.now()
                 if not job.date_started:
                     job.date_started = job.date_created
