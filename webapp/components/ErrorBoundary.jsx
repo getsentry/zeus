@@ -40,10 +40,10 @@ export default class ErrorBoundary extends Component {
             idx(error, _ => _.data.error) === 'identity_needs_upgrade'
           ) {
             return <IdentityNeedsUpgradeError url={error.data.url} />;
+          } else if (error.code === 401) {
+            return <Login />;
           }
-          // XXX(dcramer): this works around the issue where an identity has
-          // been removed
-          return <Login />;
+          return <InternalError error={error} />;
         default:
           return <InternalError error={error} />;
       }
