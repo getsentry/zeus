@@ -1,6 +1,7 @@
 import React from 'react';
 import {IndexRoute, Route, IndexRedirect} from 'react-router';
 
+import AccountSettings from './pages/AccountSettings';
 import App from './pages/App';
 import BuildArtifacts from './pages/BuildArtifacts';
 import BuildCoverage from './pages/BuildCoverage';
@@ -39,7 +40,8 @@ export default (
   <Route path="/" component={App}>
     <IndexRedirect to="/builds" />
     <Route path="/settings" component={requireAuth(Settings)}>
-      <IndexRoute onEnter={(_, replace) => replace('/settings/github/repos')} />
+      <IndexRedirect to="/settings/account" />
+      <Route path="account" component={AccountSettings} />
       <Route path="github/repos" component={GitHubRepositoryList} />
       <Route path="token" component={TokenSettings} />
     </Route>

@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import {Flex, Box} from 'grid-styled';
 
 import AsyncPage from '../components/AsyncPage';
 import Panel from '../components/Panel';
-import ResultGridRow from '../components/ResultGridRow';
+import {ResultGrid, Column, Row} from '../components/ResultGrid';
 import SectionHeading from '../components/SectionHeading';
 import TimeSince from '../components/TimeSince';
 
@@ -55,63 +54,64 @@ export default class RepositoryHookDetails extends AsyncPage {
     return (
       <div>
         <h2>Hook Details</h2>
-        <Panel>
-          <ResultGridRow>
-            <Flex>
-              <Box flex="1" pr={15}>
-                <strong>ID</strong>
-              </Box>
-              <Box width={10 / 12}>{hook.id}</Box>
-            </Flex>
-          </ResultGridRow>
-          <ResultGridRow>
-            <Flex>
-              <Box flex="1" pr={15}>
-                <strong>Provider</strong>
-              </Box>
-              <Box width={10 / 12}>{hook.provider}</Box>
-            </Flex>
-          </ResultGridRow>
-          <ResultGridRow>
-            <Flex>
-              <Box flex="1" pr={15}>
-                <strong>Token</strong>
-              </Box>
-              <Box width={10 / 12}>
-                {hook.token ? <code>{hook.token}</code> : <em>hidden</em>}
-              </Box>
-            </Flex>
-          </ResultGridRow>
-          <ResultGridRow>
-            <Flex>
-              <Box flex="1" pr={15}>
-                <strong>ZEUS_HOOK_BASE</strong>
-              </Box>
-              <Box width={10 / 12}>
-                <code>{this.getHookBase(true)}</code>
-              </Box>
-            </Flex>
-          </ResultGridRow>
-          <ResultGridRow>
-            <Flex>
-              <Box flex="1" pr={15}>
-                <strong>Created</strong>
-              </Box>
-              <Box width={10 / 12}>
-                <TimeSince date={hook.created_at} />
-              </Box>
-            </Flex>
-          </ResultGridRow>
-        </Panel>
+        <ResultGrid>
+          <Row>
+            <Column width={200}>
+              <strong>ID</strong>
+            </Column>
+            <Column textAlign="left">
+              {hook.id}
+            </Column>
+          </Row>
+          <Row>
+            <Column width={200}>
+              <strong>Provider</strong>
+            </Column>
+            <Column textAlign="left">
+              {hook.provider}
+            </Column>
+          </Row>
+          <Row>
+            <Column width={200}>
+              <strong>Token</strong>
+            </Column>
+            <Column textAlign="left">
+              {hook.token
+                ? <code>
+                    {hook.token}
+                  </code>
+                : <em>hidden</em>}
+            </Column>
+          </Row>
+          <Row>
+            <Column width={200}>
+              <strong>ZEUS_HOOK_BASE</strong>
+            </Column>
+            <Column textAlign="left">
+              <code>
+                {this.getHookBase(true)}
+              </code>
+            </Column>
+          </Row>
+          <Row>
+            <Column width={200}>
+              <strong>Created</strong>
+            </Column>
+            <Column textAlign="left">
+              <TimeSince date={hook.created_at} />
+            </Column>
+          </Row>
+        </ResultGrid>
 
-        {hook.provider.startsWith('travis') && (
+        {hook.provider.startsWith('travis') &&
           <div>
             <SectionHeading>Travis Config</SectionHeading>
             <Panel>
-              <Config>{generateTravisConfig(publicHookBase)}</Config>
+              <Config>
+                {generateTravisConfig(publicHookBase)}
+              </Config>
             </Panel>
-          </div>
-        )}
+          </div>}
       </div>
     );
   }

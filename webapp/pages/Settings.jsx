@@ -21,12 +21,15 @@ export default class Settings extends AsyncPage {
       <div>
         <Header>
           <Nav>
+            <NavItem to={'/settings/account'}>Account Details</NavItem>
             <NavItem to={'/settings/github/repos'}>Repositories</NavItem>
-            <NavItem to={'/settings/token'}>API Token</NavItem>
+            <NavItem to={'/settings/token'}>API Access</NavItem>
           </Nav>
         </Header>
 
-        <Content>{this.renderContent()}</Content>
+        <Content>
+          {this.renderContent()}
+        </Content>
       </div>
     );
   }
