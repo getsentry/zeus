@@ -12,7 +12,8 @@ import TabbedNav from '../components/TabbedNav';
 import TabbedNavItem from '../components/TabbedNavItem';
 import TimeSince from '../components/TimeSince';
 
-import IconClock from '../assets/IconClock';
+import MdClock from 'react-icons/lib/md/timer';
+import MdPerson from 'react-icons/lib/md/person';
 
 export default class BuildDetailsBase extends AsyncPage {
   static contextTypes = {
@@ -62,7 +63,7 @@ export default class BuildDetailsBase extends AsyncPage {
                 <ObjectDuration data={build} short={true} />
               </DurationWrapper>}
             <Time>
-              <IconClock size="15" />
+              <MdClock size="16" style={{marginRight: 5}} />
               {build.status === 'queued'
                 ? <span>
                     created <TimeSince date={build.created_at} />
@@ -72,6 +73,7 @@ export default class BuildDetailsBase extends AsyncPage {
                   </span>}
             </Time>
             <Author>
+              <MdPerson size="16" style={{marginRight: 5}} />
               <ObjectAuthor data={build} />
             </Author>
             <Commit>
@@ -147,7 +149,6 @@ const Meta = styled.div`
   }
 
   svg {
-    margin-right: 6px;
     color: #bfbfcb;
     position: relative;
     top: -1px;

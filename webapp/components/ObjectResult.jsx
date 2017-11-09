@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import styled, {css} from 'styled-components';
 
-import IconClock from '../assets/IconClock';
-import IconCircleCheck from '../assets/IconCircleCheck';
-import IconCircleCross from '../assets/IconCircleCross';
+import MdCheck from 'react-icons/lib/md/check-circle';
+import MdClock from 'react-icons/lib/md/timer';
+import MdError from 'react-icons/lib/md/error';
 
 export default class ObjectResult extends Component {
   static propTypes = {
@@ -21,9 +21,9 @@ export default class ObjectResult extends Component {
     let {result, status} = this.props.data;
     return (
       <ResultIcon status={status} result={result}>
-        {status != 'finished' && result === 'unknown' && <IconClock size="15" />}
-        {result == 'passed' && <IconCircleCheck size="15" />}
-        {(result == 'failed' || result == 'aborted') && <IconCircleCross size="15" />}
+        {status != 'finished' && result === 'unknown' && <MdClock size="16" />}
+        {result == 'passed' && <MdCheck size="16" />}
+        {(result == 'failed' || result == 'aborted') && <MdError size="16" />}
       </ResultIcon>
     );
   }
@@ -31,7 +31,7 @@ export default class ObjectResult extends Component {
 
 export const ResultIcon = styled.div`
   display: inline-block;
-  margin-right: 10px;
+  margin-right: 5px;
 
   ${props => {
     switch (props.result) {
