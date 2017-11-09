@@ -18,6 +18,7 @@ const NavLink = styled(Link)`
   margin: 5px 0;
   margin-right: 10px;
   cursor: pointer;
+  vertical-align: middle;
 
   &:last-child {
     margin-right: 0;
@@ -59,10 +60,10 @@ class UnstyledHeader extends Component {
         {props.isAuthenticated &&
           <div style={{float: 'right'}}>
             <NavLink to="/settings">
-              <MdSettings />
+              <MdSettings size={24} />
             </NavLink>
             <NavLink onClick={props.logout}>
-              <MdLogout />
+              <MdLogout size={24} />
             </NavLink>
           </div>}
         <Select
