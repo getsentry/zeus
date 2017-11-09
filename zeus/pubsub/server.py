@@ -153,9 +153,14 @@ async def stream(request):
             'client.disconnected guid=%s', client_guid, exc_info=True)
 
 
+async def health_check(request):
+    return Response(text=json.dumps({'ok': True}))
+
+
 async def build_server(loop, host, port):
     app = Application(loop=loop, logger=current_app.logger,
                       debug=current_app.debug)
     app.router.add_route('GET', '/', stream)
+    app.router.add_route('GET', '/healthz', health_check)
 
     return await loop.create_server(app.make_handler(), host, port)
