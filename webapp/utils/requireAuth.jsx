@@ -4,25 +4,31 @@ import {connect} from 'react-redux';
 
 export default function(ComposedComponent) {
   class Authenticate extends React.Component {
-    static propTypes = {
-      isAuthenticated: PropTypes.bool
-    };
+    static propTypes = {isAuthenticated: PropTypes.bool};
 
-    static contextTypes = {
-      router: PropTypes.object.isRequired
-    };
+    static contextTypes = {router: PropTypes.object.isRequired};
 
     componentWillMount() {
       if (this.props.isAuthenticated === false) {
-        this.context.router.push('/login');
+        this.context.router.push({
+          pathname: '/login',
+          query: {next: this.buildUrl()}
+        });
       }
     }
 
     componentWillUpdate(nextProps) {
-      // logged out
       if (this.props.isAuthenticated && !nextProps.isAuthenticated) {
-        this.context.router.push('/login');
+        this.context.router.push({
+          pathname: '/login',
+          query: {next: this.buildUrl()}
+        });
       }
+    }
+
+    buildUrl() {
+      let {location} = this.props;
+      return `${location.pathname}${location.search || ''}`;
     }
 
     render() {

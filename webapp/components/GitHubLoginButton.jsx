@@ -11,16 +11,16 @@ export default class GitHubLoginButton extends Component {
 
   static defaultProps = {
     url: '/auth/github',
-    next: `${window.location.pathname}${window.location.search || ''}`,
     text: 'Login with GitHub'
   };
+
   render() {
     let {url, next, text} = this.props;
-    let fullUrl =
-      url.indexOf('?') !== -1
+    let fullUrl = next
+      ? url.indexOf('?') !== -1
         ? `${url}&next=${window.encodeURIComponent(next)}`
-        : `${url}?next=${window.encodeURIComponent(next)}`;
-
+        : `${url}?next=${window.encodeURIComponent(next)}`
+      : url;
     return (
       <Button href={fullUrl} size="large">
         {text}

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import idx from 'idx';
 import {connect} from 'react-redux';
 
 import GitHubLoginButton from './GitHubLoginButton';
@@ -31,7 +32,7 @@ class Login extends Component {
       <Modal title="Login">
         <p>To continue you will need to first authenticate using your GitHub account.</p>
         <p style={{textAlign: 'center', marginBottom: 0}}>
-          <GitHubLoginButton />
+          <GitHubLoginButton next={idx(this.context.router, _ => _.query.next)} />
         </p>
       </Modal>
     );
