@@ -90,6 +90,12 @@ def client(app):
         yield client
 
 
+@pytest.fixture(scope='function', autouse=True)
+def outbox(app):
+    with config.mail.record_messages() as ob:
+        yield ob
+
+
 @pytest.fixture
 def private_key():
     from cryptography.hazmat.primitives.asymmetric import rsa

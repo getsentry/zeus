@@ -75,16 +75,27 @@ def default_repo_access(db_session, default_repo, default_user):
 
 
 @pytest.fixture(scope='function')
-def default_revision(default_repo):
+def default_author(default_repo, default_user):
+    return factories.AuthorFactory(
+        repository=default_repo,
+        name='Fizz Buzz',
+        email=default_user.email,
+    )
+
+
+@pytest.fixture(scope='function')
+def default_revision(default_repo, default_author):
     return factories.RevisionFactory(
         repository=default_repo,
+        author=default_author,
         sha='884ea9e17b53933febafd7e02d8bd28f3c9d479d',
     )
 
 
 @pytest.fixture(scope='function')
-def default_parent_revision(default_repo, default_revision):
+def default_parent_revision(default_author, default_repo, default_revision):
     return factories.RevisionFactory(
+        author=default_author,
         repository=default_repo,
         parents=[default_revision.sha],
         sha='adba8d362c656c7f97f5da9fa4e644be1b72a449',

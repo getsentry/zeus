@@ -8,7 +8,7 @@ from zeus.constants import Result, Status
 from zeus.db.utils import create_or_update
 from zeus.models import (Artifact, Build, FailureReason,
                          FileCoverage, ItemStat, Job, TestCase)
-from zeus.notifications.email import send_email_notification
+from zeus.tasks.send_build_notifications import send_build_notifications
 from zeus.utils import timezone
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 
@@ -269,4 +269,5 @@ def aggregate_build_stats(build_id: UUID):
     if build.status == Status.finished and not was_finished:
         for stat in AGGREGATED_BUILD_STATS:
             aggregate_stat_for_build(build, stat)
-        send_email_notification(build)
+        db.session.commit()
+        send_build_notifications.delay(build_id=build.id)

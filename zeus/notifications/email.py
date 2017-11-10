@@ -26,9 +26,6 @@ def has_linked_account(build: Build) -> bool:
 
 
 def send_email_notification(build: Build):
-    if build.result != Result.failed:
-        return
-
     options = dict(
         db.session.query(ItemOption.name, ItemOption.value).filter(
             ItemOption.item_id == build.repository_id,
@@ -38,9 +35,15 @@ def send_email_notification(build: Build):
         )
     )
     if options.get('mail.notify-author') == '0':
+        current_app.logger.info('mail.notify-author-disabled', extra={
+            'build_id': build.id,
+        })
         return
 
     if not has_linked_account(build):
+        current_app.logger.info('mail.missing-linked-account', extra={
+            'build_id': build.id,
+        })
         return
 
     msg = build_message(build)
@@ -57,6 +60,9 @@ def build_message(build: Build) -> Message:
         Source.id == build.source_id,
     ).first()
     if not author:
+        current_app.logger.info('mail.missing-author', extra={
+            'build_id': build.id,
+        })
         return
 
     source = Source.query.get(build.source_id)
@@ -88,10 +94,12 @@ def build_message(build: Build) -> Message:
             TestCase.job_id.in_(job_ids),
             TestCase.result == Result.failed,
         )
-    else:
-        failing_tests_query = TestCase.query.none()
 
-    failing_tests_count = failing_tests_query.count()
+        failing_tests_count = failing_tests_query.count()
+        failing_tests = failing_tests_query.limit(10)
+    else:
+        failing_tests = ()
+        failing_tests_count = 0
 
     context = {
         'title': subject,
@@ -136,7 +144,7 @@ def build_message(build: Build) -> Message:
         'date_created': build.date_created,
         'failing_tests': [{
             'name': test.name
-        } for test in failing_tests_query.limit(10)],
+        } for test in failing_tests],
         'failing_tests_count': failing_tests_count,
     }
 

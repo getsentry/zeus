@@ -30,10 +30,14 @@ def test_finished_job(mocker, db_session, default_source):
     job = factories.JobFactory(build=build, failed=True)
     db_session.add(job)
 
+    mock_send_build_notifications = mocker.patch('zeus.tasks.send_build_notifications.delay')
+
     aggregate_build_stats_for_job(job.id)
 
     assert build.status == Status.finished
     assert build.result == Result.failed
+
+    mock_send_build_notifications.assert_called_once_with(build_id=build.id)
 
 
 def test_failing_tests(mocker, db_session, default_source):
