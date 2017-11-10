@@ -4,6 +4,10 @@ from collections import OrderedDict
 from json.decoder import JSONDecodeError
 
 
+class AuthenticationFailed(Exception):
+    pass
+
+
 class ApiError(Exception):
     code = None
     json = None

@@ -9,7 +9,10 @@ from typing import List, Optional
 from urllib.parse import urlparse, urljoin
 
 from zeus.config import db
-from zeus.models import ApiToken, ApiTokenRepositoryAccess, Repository, RepositoryAccess, RepositoryApiToken, User, UserApiToken
+from zeus.exceptions import AuthenticationFailed
+from zeus.models import (
+    ApiToken, ApiTokenRepositoryAccess, Repository, RepositoryAccess, RepositoryApiToken, User, UserApiToken
+)
 from zeus.utils import timezone
 
 
@@ -96,10 +99,6 @@ class RepositoryTenant(Tenant):
             return None
 
         return [self.repository_id]
-
-
-class AuthenticationFailed(Exception):
-    pass
 
 
 def get_tenant_from_token():
