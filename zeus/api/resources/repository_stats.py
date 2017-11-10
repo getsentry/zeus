@@ -17,7 +17,6 @@ STAT_CHOICES = (
     'builds.duration',
     'tests.count',
     'tests.duration',
-    'tests.failures',
     'coverage.lines_covered',
     'coverage.lines_uncovered',
     'coverage.diff_lines_covered',
@@ -154,6 +153,7 @@ class RepositoryStatsResource(BaseRepositoryResource):
                     ItemStat.item_id == Build.id,
                     ItemStat.name == stat,
                     Build.repository_id == repo.id,
+                    Build.result == Result.passed,
                     Build.date_created >= date_begin,
                     Build.date_created < date_end,
                 ).group_by('grouper')
