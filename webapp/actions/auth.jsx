@@ -12,7 +12,9 @@ export function logout() {
   return dispatch => {
     api.delete('/auth').then(() => {
       localStorage.removeItem('auth');
-      dispatch(setAuth({isAuthenticated: false, user: null}));
+      dispatch(
+        setAuth({isAuthenticated: false, user: null, emails: null, identities: null})
+      );
     });
   };
 }

@@ -29,7 +29,8 @@ class UserBuildList extends AsyncPage {
 
 class BuildListBody extends AsyncComponent {
   static propTypes = {
-    buildList: PropTypes.array
+    buildList: PropTypes.array,
+    emails: PropTypes.array.isRequired
   };
 
   fetchData() {
@@ -40,10 +41,11 @@ class BuildListBody extends AsyncComponent {
   }
 
   renderBody() {
+    let emailSet = new Set(this.props.emails.map(e => e.email));
     return (
       <BuildList
         params={this.props.params}
-        buildList={this.props.buildList}
+        buildList={this.props.buildList.filter(build => emailSet.has(build.author.email))}
         includeAuthor={false}
         includeRepo={true}
       />
@@ -54,6 +56,7 @@ class BuildListBody extends AsyncComponent {
 export default connect(
   function(state) {
     return {
+      emails: state.auth.emails,
       buildList: state.builds.items,
       loading: !state.builds.loaded
     };

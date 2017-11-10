@@ -35,7 +35,8 @@ class UserBuildsResource(Resource):
         ).filter(
             Source.author_id.in_(db.session.query(Author.id).filter(Author.email.in_(
                 db.session.query(Email.email).filter(
-                    Email.user_id == user.id
+                    Email.user_id == user.id,
+                    Email.verified == True,  # NOQA
                 )
             )))
         ).order_by(Build.date_created.desc())

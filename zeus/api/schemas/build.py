@@ -21,6 +21,7 @@ class BuildSchema(Schema):
     external_id = fields.Str(dump_only=True)
     url = fields.Str(dump_only=True)
     repository = fields.Nested(RepositorySchema(), dump_only=True)
+    is_author = fields.Bool(dump_only=True)
 
 
 class BuildCreateSchema(Schema):

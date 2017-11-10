@@ -1,7 +1,7 @@
 import pytest
 
 from zeus import factories
-from zeus.auth import AuthenticationFailed
+from zeus.exceptions import AuthenticationFailed
 from zeus.api.authentication import ApiTokenAuthentication
 
 
