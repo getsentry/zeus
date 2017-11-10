@@ -45,7 +45,9 @@ class BuildListBody extends AsyncComponent {
     return (
       <BuildList
         params={this.props.params}
-        buildList={this.props.buildList.filter(build => emailSet.has(build.author.email))}
+        buildList={this.props.buildList.filter(build =>
+          emailSet.has(build.source.author.email)
+        )}
         includeAuthor={false}
         includeRepo={true}
       />
