@@ -38,11 +38,6 @@ export default class BuildOverviewBase extends AsyncPage {
     let unallowedFailures = this.state.jobList.filter(job => !job.allow_failure);
     return (
       <Section>
-        {!!this.state.artifacts.length &&
-          <div>
-            <SectionHeading>Artifacts</SectionHeading>
-            <ArtifactsList artifacts={this.state.artifacts} collapsable={true} />
-          </div>}
         {!!this.state.testFailures.length &&
           <div>
             <SectionHeading>Failing Tests</SectionHeading>
@@ -75,6 +70,11 @@ export default class BuildOverviewBase extends AsyncPage {
               <JobList build={this.context.build} jobList={allowedFailures} />
             </div>}
         </div>
+        {!!this.state.artifacts.length &&
+          <div>
+            <SectionHeading>Artifacts</SectionHeading>
+            <ArtifactsList artifacts={this.state.artifacts} collapsable={true} />
+          </div>}
       </Section>
     );
   }
