@@ -159,6 +159,10 @@ def create_app(_read_config=True, **config):
             'task': 'zeus.sync_all_repos',
             'schedule': timedelta(minutes=5),
         },
+        'cleanup-builds': {
+            'task': 'zeus.sync_all_repos',
+            'schedule': timedelta(minutes=5),
+        },
     }
     app.config['REDBEAT_REDIS_URL'] = app.config['REDIS_URL']
 

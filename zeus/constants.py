@@ -19,6 +19,7 @@ class Result(Enum):
     aborted = 5
     passed = 1
     skipped = 3
+    errored = 4
     failed = 2
 
     def __str__(self):
@@ -33,6 +34,7 @@ STATUS_PRIORITY = (
 )
 
 RESULT_PRIORITY = (
+    Result.errored,
     Result.aborted,
     Result.failed,
     Result.unknown,

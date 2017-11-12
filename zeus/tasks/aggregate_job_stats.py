@@ -210,6 +210,7 @@ def record_coverage_stats(build_id: UUID):
             )
 
 
+@celery.task(name='zeus.aggregate_build_stats', max_retries=None)
 def aggregate_build_stats(build_id: UUID):
     """
     Updates various denormalized / aggregate attributes on Build per its
@@ -217,9 +218,12 @@ def aggregate_build_stats(build_id: UUID):
     the status and result.
     """
     # now we pull in the entirety of the build's data to aggregate state upward
-    build = Build.query.with_for_update().get(build_id)
+    build = Build.query.unrestricted_unsafe().with_for_update().get(build_id)
     if not build:
-        raise ValueError
+        raise ValueError('Unable to find build with id = {}'.format(build_id))
+
+    auth.set_current_tenant(auth.Tenant(
+        repository_ids=[build.repository_id]))
 
     job_list = Job.query.filter(Job.build_id == build.id)
 
@@ -241,15 +245,13 @@ def aggregate_build_stats(build_id: UUID):
         build.result = Result.failed
     # else, if we're finished, we can aggregate from results
     elif is_finished:
-        build.result = aggregate_result(
-            (j.result for j in job_list if not j.allow_failure))
-        # special case when there were only 'allowed failures'
-        if build.result == Result.unknown:
-            if not job_list:
-                # if no jobs were run we should fail
-                build.result = Result.failed
-            else:
-                build.result = Result.passed
+        if not job_list:
+            build.result = Result.errored
+        elif not any(j for j in job_list if not j.allow_failure):
+            build.result = Result.passed
+        else:
+            build.result = aggregate_result(
+                (j.result for j in job_list if not j.allow_failure))
     # we should never get here as long we've got jobs and correct data
     else:
         build.result = Result.unknown
