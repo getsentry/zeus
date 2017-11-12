@@ -12,7 +12,7 @@ import TabbedNav from '../components/TabbedNav';
 import TabbedNavItem from '../components/TabbedNavItem';
 import TimeSince from '../components/TimeSince';
 
-import MdClock from 'react-icons/lib/md/timer';
+import MdClock from 'react-icons/lib/md/access-time';
 import MdPerson from 'react-icons/lib/md/person';
 
 export default class BuildDetailsBase extends AsyncPage {

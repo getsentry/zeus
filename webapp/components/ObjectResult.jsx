@@ -2,9 +2,13 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import styled, {css} from 'styled-components';
 
-import MdCheck from 'react-icons/lib/md/check-circle';
-import MdClock from 'react-icons/lib/md/timer';
-import MdError from 'react-icons/lib/md/error';
+import PassedIcon from 'react-icons/lib/md/check-circle';
+import InProgressIcon from 'react-icons/lib/md/av-timer';
+import QueuedIcon from 'react-icons/lib/md/history';
+import AbortedIcon from 'react-icons/lib/md/cancel';
+import ErroredIcon from 'react-icons/lib/md/error';
+import FailedIcon from 'react-icons/lib/md/remove-circle';
+import UnknownIcon from 'react-icons/lib/md/help';
 
 export default class ObjectResult extends Component {
   static propTypes = {
@@ -21,9 +25,13 @@ export default class ObjectResult extends Component {
     let {result, status} = this.props.data;
     return (
       <ResultIcon status={status} result={result}>
-        {status != 'finished' && result === 'unknown' && <MdClock size="16" />}
-        {result == 'passed' && <MdCheck size="16" />}
-        {(result == 'failed' || result == 'aborted') && <MdError size="16" />}
+        {status == 'queued' && <QueuedIcon size="16" />}
+        {status == 'in_progress' && <InProgressIcon size="16" />}
+        {result == 'passed' && <PassedIcon size="16" />}
+        {result == 'aborted' && <AbortedIcon size="16" />}
+        {result == 'failed' && <FailedIcon size="16" />}
+        {result == 'errored' && <ErroredIcon size="16" />}
+        {status != 'finished' && result === 'unknown' && <UnknownIcon size="16" />}
       </ResultIcon>
     );
   }
