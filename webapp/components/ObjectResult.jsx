@@ -31,7 +31,7 @@ export default class ObjectResult extends Component {
         {result == 'aborted' && <AbortedIcon size="16" />}
         {result == 'failed' && <FailedIcon size="16" />}
         {result == 'errored' && <ErroredIcon size="16" />}
-        {status != 'finished' && result === 'unknown' && <UnknownIcon size="16" />}
+        {status == 'finished' && result === 'unknown' && <UnknownIcon size="16" />}
       </ResultIcon>
     );
   }
