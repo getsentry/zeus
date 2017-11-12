@@ -18,7 +18,7 @@ export default function(ComposedComponent) {
     }
 
     componentWillUpdate(nextProps) {
-      if (this.props.isAuthenticated && !nextProps.isAuthenticated) {
+      if (nextProps.isAuthenticated === false) {
         this.context.router.push({
           pathname: '/login',
           query: {next: this.buildUrl()}
