@@ -1,10 +1,33 @@
-import {STREAM_CONNECT, STREAM_OPEN, STREAM_ERROR, STREAM_MESSAGE} from '../types';
+import {
+  STREAM_CONNECT,
+  STREAM_OPEN,
+  STREAM_ERROR,
+  STREAM_MESSAGE,
+  STREAM_SUBSCRIBE,
+  STREAM_UNSUBSCRIBE
+} from '../types';
 
 export const connect = token => ({
   type: STREAM_CONNECT,
   payload: {
     timestamp: new Date(),
     token
+  }
+});
+
+export const subscribe = channels => ({
+  type: STREAM_SUBSCRIBE,
+  payload: {
+    timestamp: new Date(),
+    channels
+  }
+});
+
+export const unsubscribe = channels => ({
+  type: STREAM_UNSUBSCRIBE,
+  payload: {
+    timestamp: new Date(),
+    channels
   }
 });
 

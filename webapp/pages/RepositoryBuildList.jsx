@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {loadBuildsForRepository} from '../actions/builds';
+import {subscribe} from '../decorators/stream';
 
 import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
@@ -50,7 +51,7 @@ class BuildListBody extends AsyncComponent {
       <BuildList
         params={this.props.params}
         buildList={this.props.buildList.filter(
-          build => build.repository.id === this.context.repo.id
+          build => build.repository.full_name === this.context.repo.full_name
         )}
       />
     );
@@ -58,11 +59,9 @@ class BuildListBody extends AsyncComponent {
 }
 
 export default connect(
-  function(state) {
-    return {
-      buildList: state.builds.items,
-      loading: !state.builds.loaded
-    };
-  },
+  ({builds}) => ({
+    buildList: builds.items,
+    loading: !builds.loaded
+  }),
   {loadBuildsForRepository}
-)(RepositoryBuildList);
+)(subscribe((props, {repo}) => [`repos:${repo.full_name}:builds`])(RepositoryBuildList));
