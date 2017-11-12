@@ -160,7 +160,7 @@ def create_app(_read_config=True, **config):
             'schedule': timedelta(minutes=5),
         },
         'cleanup-builds': {
-            'task': 'zeus.sync_all_repos',
+            'task': 'zeus.cleanup_builds',
             'schedule': timedelta(minutes=5),
         },
     }
