@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {loadBuildsForUser} from '../actions/builds';
+import {subscribe} from '../decorators/stream';
 
 import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
@@ -62,4 +63,4 @@ export default connect(
     };
   },
   {loadBuildsForUser}
-)(UserBuildList);
+)(subscribe((props, {repo}) => ['builds'])(UserBuildList));

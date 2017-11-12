@@ -16,26 +16,31 @@ const createMiddleware = () => {
     channels: [],
     token: null
   };
+  let channelRefs = {
+    // ref: count
+  };
 
   /**
    * Close the connection and cleanup
    */
   const closeStream = store => {
     if (stream) {
-      console.warn(`Closing connection to ${stream.url} ...`);
+      console.info(`Closing connection to ${stream.url} ...`);
       stream.close();
       stream = null;
     }
   };
 
-  const openStream = store => {
+  const ensureStream = store => {
     if (stream) {
       closeStream(store);
     }
     if (!config.token) {
+      console.info('No token available for stream');
       return;
     }
     if (config.channels.length === 0) {
+      console.info('No channel subscriptions for stream');
       return;
     }
 
@@ -44,6 +49,8 @@ const createMiddleware = () => {
         config.channels.join(',')
       )}`
     );
+
+    console.info(`Opening connection to ${stream.url}`);
 
     // Function will dispatch actions returned from action creators.
     const dispatchAction = partial(compose, [store.dispatch]);
@@ -60,13 +67,33 @@ const createMiddleware = () => {
    */
   const initializeStream = (store, payload) => {
     config.token = payload.token;
-    openStream(store);
+    ensureStream(store);
   };
 
-  const changeSubscription = channels => {
-    config.channels = channels;
-    closeStream();
-    openStream();
+  const addChannels = (store, channels) => {
+    channels.forEach(c => {
+      if (channelRefs[c]) {
+        channelRefs[c] += 1;
+      } else {
+        channelRefs[c] = 1;
+      }
+    });
+    config.channels = [...config.channels, ...channels].filter(c => !!channelRefs[c]);
+    console.info('Subscription changed', config.channels);
+    ensureStream(store);
+  };
+
+  const removeChannels = (store, channels) => {
+    channels.forEach(c => {
+      if (channelRefs[c] > 1) {
+        channelRefs[c] -= 1;
+      } else if (channelRefs[c]) {
+        delete channelRefs[c];
+      }
+    });
+    config.channels = [...config.channels, ...channels].filter(c => !!channelRefs[c]);
+    console.info('Subscription changed', config.channels);
+    ensureStream(store);
   };
 
   /**
@@ -89,8 +116,12 @@ const createMiddleware = () => {
         break;
 
       case STREAM_SUBSCRIBE:
+        addChannels(store, action.payload.channels);
+        next(action);
+        break;
+
       case STREAM_UNSUBSCRIBE:
-        changeSubscription(store, action.payload.channels);
+        removeChannels(store, action.payload.channels);
         next(action);
         break;
 

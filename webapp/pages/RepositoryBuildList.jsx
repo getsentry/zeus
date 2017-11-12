@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -47,21 +47,31 @@ class BuildListBody extends AsyncComponent {
   }
 
   renderBody() {
-    return (
-      <BuildList
-        params={this.props.params}
-        buildList={this.props.buildList.filter(
-          build => build.repository.full_name === this.context.repo.full_name
-        )}
-      />
-    );
+    return <BuildList params={this.props.params} buildList={this.props.buildList} />;
   }
 }
 
-export default connect(
-  ({builds}) => ({
-    buildList: builds.items,
+// We force the repo param into props so that we can read it as part of connect
+// in order to filter down the data we're propagating to the child
+const DecoratedRepositoryBuildList = connect(
+  ({builds}, {repo}) => ({
+    buildList: builds.items.filter(
+      build => build.repository.full_name === repo.full_name
+    ),
     loading: !builds.loaded
   }),
   {loadBuildsForRepository}
 )(subscribe((props, {repo}) => [`repos:${repo.full_name}:builds`])(RepositoryBuildList));
+
+class RepositoryBuildListWithRepoProp extends Component {
+  static contextTypes = {
+    ...AsyncPage.contextTypes,
+    repo: PropTypes.object.isRequired
+  };
+
+  render() {
+    return <DecoratedRepositoryBuildList {...this.props} repo={this.context.repo} />;
+  }
+}
+
+export default RepositoryBuildListWithRepoProp;

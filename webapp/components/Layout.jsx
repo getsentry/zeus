@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Content from './Content';
 import Header from './Header';
 
-export default class SidebarLayout extends Component {
+export default class Layout extends Component {
   static propTypes = {
     title: PropTypes.string
   };

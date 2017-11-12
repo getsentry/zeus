@@ -27,7 +27,7 @@ const NavLink = styled(Link)`
 
 class UnstyledHeader extends Component {
   static contextTypes = {
-    repo: PropTypes.object.isRequired,
+    repo: PropTypes.object,
     repoList: PropTypes.arrayOf(PropTypes.object).isRequired,
     router: PropTypes.object.isRequired
   };
