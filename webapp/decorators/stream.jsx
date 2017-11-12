@@ -17,7 +17,7 @@ export const subscribe = config => {
         unsubscribe: PropTypes.func.isRequired
       };
 
-      componentWillMount() {
+      componentDidMount() {
         this.subscriptions = config(this.props, this.context);
         this.props.subscribe(this.subscriptions);
       }
