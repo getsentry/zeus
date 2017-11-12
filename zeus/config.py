@@ -78,6 +78,8 @@ def create_app(_read_config=True, **config):
         app.config.setdefault('MAIL_PASSWORD', os.environ.get('MAIL_PASSWORD'))
         app.config.setdefault('MAIL_DEFAULT_SENDER',
                               os.environ.get('MAIL_DEFAULT_SENDER'))
+        app.config.setdefault(
+            'ALLOWED_ORIGINS', [x.strip() for x in os.environ.get('ALLOWED_ORIGINS', '').split(',') if x.strip()])
     else:
         REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost/0')
         SQLALCHEMY_URI = os.environ.get(
