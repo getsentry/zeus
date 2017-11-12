@@ -64,7 +64,7 @@ async def ping(loop, resp, client_guid):
     # starts with ":" colon ignored by a browser and could be used
     # as ping message.
     while True:
-        await asyncio.sleep(60, loop=loop)
+        await asyncio.sleep(15, loop=loop)
         current_app.logger.debug('pubsub.ping guid=%s', client_guid)
         resp.write(b': ping\r\n\r\n')
 
@@ -75,6 +75,9 @@ async def stream(request):
 
     if request.headers.get('accept') != 'text/event-stream':
         return Response(status=406)
+
+    if request.method != 'GET':
+        return Response(status=405)
 
     token = request.query.get('token')
     if not token:
@@ -117,10 +120,11 @@ async def stream(request):
             resp.headers['Access-Control-Expose-Headers'] = '*'
         resp.enable_chunked_encoding()
 
-        # The StreamResponse is a FSM. Enter it with a call to prepare.
         await resp.prepare(request)
-        resp.set_tcp_nodelay(not resp.tcp_nodelay)
+
         loop.create_task(ping(loop, resp, client_guid))
+
+        # resp.write(b'retry: 100\r\n\r\n')
 
         while True:
             event = await queue.get()
