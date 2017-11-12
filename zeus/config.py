@@ -93,7 +93,8 @@ def create_app(_read_config=True, **config):
     if os.environ.get('SERVER_NAME'):
         app.config['SERVER_NAME'] = os.environ['SERVER_NAME']
 
-    app.config.setdefault('DOMAIN', app.config.get('SERVER_NAME', 'localhost'))
+    app.config.setdefault('DOMAIN', app.config.get(
+        'SERVER_NAME') or 'localhost')
 
     app.config['PUBSUB_ENDPOINT'] = os.environ.get(
         'PUBSUB_ENDPOINT', 'http://localhost:8090')
