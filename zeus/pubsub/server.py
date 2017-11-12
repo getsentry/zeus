@@ -108,7 +108,7 @@ async def stream(request):
             worker(res[0], queue, token, repo_ids, build_ids))
 
         resp = StreamResponse(status=200, reason='OK')
-        resp.headers['Content-Type'] = 'text/event-stream; charset=UTF-8'
+        resp.headers['Content-Type'] = 'text/event-stream'
         resp.headers['Cache-Control'] = 'no-cache'
         resp.headers['Connection'] = 'keep-alive'
         if 'Origin' in request.headers and is_valid_origin(request):
