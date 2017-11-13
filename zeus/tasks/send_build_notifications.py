@@ -9,7 +9,7 @@ from zeus.notifications import email
 
 @celery.task(name='zeus.tasks.send_build_notifications', max_retries=None)
 def send_build_notifications(build_id: UUID):
-    build = Build.query.get(build_id)
+    build = Build.query.unrestricted_unsafe().get(build_id)
     if not build:
         raise ValueError('Unable to find build with id = {}'.format(build_id))
 
