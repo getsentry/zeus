@@ -96,7 +96,9 @@ export default class RepositoryStats extends AsyncPage {
                 {stat['builds.total'].toLocaleString()}
               </Column>
               <Column width={120} textAlign="right">
-                {stat['builds.duration'] ? <Duration ms={stat['builds.duration']} /> : ''}
+                {stat['builds.duration']
+                  ? <Duration ms={parseInt(stat['builds.duration'] * 1000, 10) / 1000} />
+                  : ''}
               </Column>
               <Column width={120} textAlign="right">
                 {stat['builds.total']
@@ -117,7 +119,14 @@ export default class RepositoryStats extends AsyncPage {
               </Column>
               <Column width={120} textAlign="right">
                 {stat['tests.duration']
-                  ? <Duration ms={stat['tests.duration'] / stat['tests.count']} />
+                  ? <Duration
+                      ms={
+                        parseInt(
+                          stat['tests.duration'] / stat['tests.count'] * 1000,
+                          10
+                        ) / 1000
+                      }
+                    />
                   : ''}
               </Column>
             </Row>
