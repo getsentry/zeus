@@ -50,6 +50,7 @@ export const ResultIcon = styled.div`
           }
         `;
       case 'failed':
+      case 'errored':
         return css`
           color: #F06E5B;
           svg {
