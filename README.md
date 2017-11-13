@@ -14,13 +14,30 @@ The initial version aims to support Travis CI via GitHub, including:
 - code coverage
 - artifacts (e.g. from ``py.test --html``)
 
-## Requirements
+## User Guide
+
+Currently Zeus publicly supports GitHub.com as well as easy integration with Travis CI.
+
+To add a new project:
+
+1. Add a repository (via settings).
+2. Go to the repository's settings and generate a new Hook.
+3. Bind ZEUS_HOOK_BASE as a secret environment variable in Travis.
+4. Update your .travis.yml to include the Zeus webhook.
+5. (Optional) Update your .travis.yml to include artifact upload.
+6. (Optional) Update your .travis.yml to disable Travis' native email notifications.
+
+Note: travis-ci.com is not yet supported publicly.
+
+## Contributing
+
+### Requirements
 
 - Python 3 (3.6+)
 - Node
 - Postgres 9.4+
 
-## Setup
+### Setup
 
 ```shell
 # create a new python environment
@@ -58,7 +75,7 @@ zeus devserver
 zeus devserver --workers
 ```
 
-## Getting some data
+### Getting some data
 
 ```shell
 $ zeus repos add https://github.com/getsentry/zeus.git
@@ -76,7 +93,7 @@ Additionally, you can generate some mock data:
 $ zeus mocks load-all
 ```
 
-## Layout
+### Layout
 
 ```
 zeus
@@ -103,7 +120,7 @@ zeus
     └── pages.js            // react components (pages)
 ```
 
-## Data Model
+### Data Model
 
 - Most models contain a GUID (UUID) primary key.
 - Some generalized models (such as ``ItemStat``) are keyed by GUID, and do not contain backrefs or constraints.
@@ -138,7 +155,7 @@ zeus
 ```
 
 
-## Hooks
+### Hooks
 
 A subset of APIs are exposed using simple hook credentials. These credentials are coupled to a provider (e.g. `travis-ci`) and a single repository.
 
