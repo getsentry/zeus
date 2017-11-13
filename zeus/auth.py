@@ -195,7 +195,7 @@ def get_user_from_request() -> Optional[User]:
 
 
 def login_user(user_id: str, session=session, current_datetime=None):
-    session['uid'] = user_id
+    session['uid'] = str(user_id)
     session['expire'] = int((
         (current_datetime or timezone.now()) + current_app.config['PERMANENT_SESSION_LIFETIME']).strftime('%s'))
     session.permanent = True
@@ -239,9 +239,12 @@ def get_current_tenant() -> Tenant:
 
 def generate_token(tenant: Tenant) -> str:
     s = JSONWebSignatureSerializer(current_app.secret_key, salt='auth')
-    return s.dumps({
+    payload = {
         'repo_ids': [str(o) for o in tenant.repository_ids],
-    })
+    }
+    if session.get('uid'):
+        payload['uid'] = str(session['uid'])
+    return s.dumps(payload)
 
 
 def parse_token(token: str) -> str:
