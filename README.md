@@ -8,12 +8,6 @@
 
 Zeus is a frontend and analytics provider for CI solutions. It is inspired by the work done at Dropbox on [Changes](https://github.com/dropbox/changes/).
 
-The initial version aims to support Travis CI via GitHub, including:
-
-- xunit
-- code coverage
-- artifacts (e.g. from ``py.test --html``)
-
 ## User Guide
 
 Currently Zeus publicly supports GitHub.com as well as easy integration with Travis CI.
@@ -25,9 +19,15 @@ To add a new project:
 3. Bind ZEUS_HOOK_BASE as a secret environment variable in Travis.
 4. Update your .travis.yml to include the Zeus webhook.
 5. (Optional) Update your .travis.yml to include artifact upload.
-6. (Optional) Update your .travis.yml to disable Travis' native email notifications.
+6. (Optional, not yet recommended) Update your .travis.yml to disable Travis' native email notifications.
 
-Note: travis-ci.com is not yet supported publicly.
+Once you've added a project Zeus will automatically update with details from any builds you've run.
+
+Some quick caveats:
+
+- The project is still pretty early on, and may break/change without warning.
+- travis-ci.com and GitHub Enterprise are not yet supported.
+- Notifications will only be triggered for users which have authenticated against Zeus.
 
 ## Contributing
 
