@@ -242,7 +242,7 @@ def generate_token(tenant: Tenant) -> str:
     payload = {
         'repo_ids': [str(o) for o in tenant.repository_ids],
     }
-    if getattr(tenant, 'user_id'):
+    if getattr(tenant, 'user_id', None):
         payload['uid'] = str(tenant.user_id)
     return s.dumps(payload)
 
