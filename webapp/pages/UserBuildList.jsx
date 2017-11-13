@@ -54,7 +54,7 @@ class BuildListBody extends AsyncComponent {
 
 export default connect(
   function(state) {
-    let emailSet = new Set(state.auth.emails.map(e => e.email));
+    let emailSet = new Set((state.auth.emails || []).map(e => e.email));
     return {
       buildList: state.builds.items.filter(build =>
         emailSet.has(build.source.author.email)
