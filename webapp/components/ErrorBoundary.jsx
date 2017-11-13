@@ -46,6 +46,7 @@ export default class ErrorBoundary extends Component {
               />
             );
           } else if (error.code === 401) {
+            // TOOD(dcramer): we need to bind next, and likely just redirect to the login view
             return <Login />;
           }
           return <InternalError error={error} />;
