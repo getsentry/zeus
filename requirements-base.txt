@@ -28,3 +28,4 @@ requests[security]==2.18.1
 toronado==0.0.11
 unidecode==0.04.21
 uwsgi==2.0.15
+yarl==0.12.0
