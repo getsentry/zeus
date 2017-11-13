@@ -28,19 +28,19 @@ class GitHubRepoItem extends Component {
     let {repo} = this.props;
     return (
       <Row>
-        <Column>{repo.name}</Column>
+        <Column>
+          {repo.name}
+        </Column>
         <Column textAlign="right" width={80}>
-          {repo.loading ? (
-            '...'
-          ) : repo.active ? (
-            <Button onClick={this.props.onDisableRepo} size="small" type="danger">
-              Disable
-            </Button>
-          ) : (
-            <Button onClick={this.props.onEnableRepo} size="small">
-              Enable
-            </Button>
-          )}
+          {repo.loading
+            ? '...'
+            : repo.active
+              ? <Button onClick={this.props.onDisableRepo} size="small" type="danger">
+                  Disable
+                </Button>
+              : <Button onClick={this.props.onEnableRepo} size="small">
+                  Enable
+                </Button>}
         </Column>
       </Row>
     );
@@ -132,18 +132,18 @@ class GitHubRepositoryList extends AsyncPage {
       <Flex>
         <Box flex="1" width={2 / 12} pr={15}>
           <div style={{marginBottom: 10, fontSize: '0.8em'}}>
-            {!this.hasPrivateScope() && (
+            {!this.hasPrivateScope() &&
               <Button
-                onClick={this.context.router.push({
-                  ...location,
-                  query: {
-                    ...query,
-                    private: true
-                  }
-                })}>
+                onClick={() =>
+                  this.context.router.push({
+                    ...location,
+                    query: {
+                      ...query,
+                      private: true
+                    }
+                  })}>
                 Enable Private Repos
-              </Button>
-            )}
+              </Button>}
           </div>
           <ul>
             <li key="_">
