@@ -27,7 +27,7 @@ celery = Celery()
 db = SQLAlchemy()
 mail = Mail()
 redis = Redis()
-sentry = Sentry(logging=True, level=logging.WARN, wrap_wsgi=True)
+sentry = Sentry(logging=True, level=logging.ERROR, wrap_wsgi=True)
 ssl = SSL()
 
 
