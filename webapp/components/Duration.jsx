@@ -39,7 +39,7 @@ export default class Duration extends Component {
       if (short) return `${result}s`;
       return result !== 1 ? result + ' seconds' : result + ' second';
     } else {
-      result = value / 1000;
+      result = parseInt(value * 1000, 10) / 1000;
       if (short) return `${result}s`;
       return `${result} seconds`;
     }
