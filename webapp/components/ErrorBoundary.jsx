@@ -39,7 +39,12 @@ export default class ErrorBoundary extends Component {
             error.code === 401 &&
             idx(error, _ => _.data.error) === 'identity_needs_upgrade'
           ) {
-            return <IdentityNeedsUpgradeError url={error.data.url} />;
+            return (
+              <IdentityNeedsUpgradeError
+                location={this.props.location || window.location}
+                url={error.data.url}
+              />
+            );
           } else if (error.code === 401) {
             return <Login />;
           }
