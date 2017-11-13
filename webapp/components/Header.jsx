@@ -38,8 +38,9 @@ class UnstyledHeader extends Component {
     });
   }
 
-  onSelectRepo = ({value}) => {
-    this.context.router.push(`/${value}`);
+  onSelectRepo = node => {
+    if (!node) return;
+    this.context.router.push(`/${node.value}`);
   };
 
   getActiveRepo() {
