@@ -242,8 +242,8 @@ def generate_token(tenant: Tenant) -> str:
     payload = {
         'repo_ids': [str(o) for o in tenant.repository_ids],
     }
-    if session.get('uid'):
-        payload['uid'] = str(session['uid'])
+    if getattr(tenant, 'user_id'):
+        payload['uid'] = str(tenant.user_id)
     return s.dumps(payload)
 
 
