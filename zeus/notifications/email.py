@@ -1,5 +1,5 @@
 from flask import current_app, render_template
-from flask_mail import Message, sanitize_address
+from flask_mail import Message
 
 from zeus.config import db, mail
 from zeus.constants import Result
@@ -148,9 +148,7 @@ def build_message(build: Build) -> Message:
         'failing_tests_count': failing_tests_count,
     }
 
-    msg = Message(subject, recipients=recipients, extra_headers={
-        'Reply-To': ', '.join(sanitize_address(r) for r in recipients),
-    })
+    msg = Message(subject, recipients=recipients, reply_to=recipients)
     msg.body = render_template('notifications/email.txt', **context)
     msg.html = inline_css(
         render_template('notifications/email.html', **context)
