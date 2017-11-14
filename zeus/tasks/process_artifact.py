@@ -31,12 +31,13 @@ def process_artifact(artifact_id, manager=None, **kwargs):
         if manager is None:
             manager = default_manager
 
-        try:
-            manager.process(artifact)
-        except Exception:
-            current_app.logger.exception(
-                'Unrecoverable exception processing artifact %s: %s', artifact.job_id, artifact
-            )
+        with db.session.begin_nested():
+            try:
+                manager.process(artifact)
+            except Exception:
+                current_app.logger.exception(
+                    'Unrecoverable exception processing artifact %s: %s', artifact.job_id, artifact
+                )
 
     artifact.status = Status.finished
     db.session.add(artifact)
