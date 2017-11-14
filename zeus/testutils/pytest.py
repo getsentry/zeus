@@ -26,6 +26,7 @@ def app(request, session_config):
         SECRET_KEY=os.urandom(24),
         GITHUB_CLIENT_ID='github.client-id',
         GITHUB_CLIENT_SECRET='github.client-secret',
+        MAIL_SUPPRESS_SEND=True,
     )
     app.testing = True
     yield app
