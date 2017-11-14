@@ -183,7 +183,7 @@ def create_app(_read_config=True, **config):
 
     app.config.update(config)
 
-    app.config.setdefault('MAIL_SUPPRESS_SEND', not app.debug)
+    app.config.setdefault('MAIL_SUPPRESS_SEND', app.debug or app.testing)
 
     # HACK(dcramer): the CLI causes validation to happen on init, which it shouldn't
     if 'init' not in sys.argv:
