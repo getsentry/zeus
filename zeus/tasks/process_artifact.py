@@ -11,8 +11,9 @@ from .aggregate_job_stats import aggregate_build_stats_for_job
 
 @celery.task(max_retries=None)
 def process_artifact(artifact_id, manager=None, **kwargs):
-    artifact = Artifact.query.unrestricted_unsafe().select_for_update().get(artifact_id)
+    artifact = Artifact.query.unrestricted_unsafe().with_for_update().get(artifact_id)
     if artifact is None:
+        current_app.logger.error('Artifact %s not found', artifact_id)
         return
 
     artifact.status = Status.in_progress
@@ -25,19 +26,27 @@ def process_artifact(artifact_id, manager=None, **kwargs):
     job = Job.query.get(artifact.job_id)
 
     if job.result == Result.aborted:
+        current_app.logger.info(
+            'Skipping artifact processing (%s) due to Job aborted', artifact_id)
+        artifact.status = Status.aborted
+        db.session.add(artifact)
+        db.session.commit()
         return
 
     if artifact.file:
         if manager is None:
             manager = default_manager
 
-            try:
-                with db.session.begin_nested():
-                    manager.process(artifact)
-            except Exception:
-                current_app.logger.exception(
-                    'Unrecoverable exception processing artifact %s: %s', artifact.job_id, artifact
-                )
+        try:
+            with db.session.begin_nested():
+                manager.process(artifact)
+        except Exception:
+            current_app.logger.exception(
+                'Unrecoverable exception processing artifact %s: %s', artifact.job_id, artifact
+            )
+    else:
+        current_app.logger.info(
+            'Skipping artifact processing (%s) due to missing file', artifact_id)
 
     artifact.status = Status.finished
     db.session.add(artifact)

@@ -18,7 +18,7 @@ def cleanup_builds():
     )
     # HACK(dramer): ensure we dont double process this artifact
     queryset.update({
-        'status': Artifact.in_progress,
+        'status': Status.in_progress,
     })
     db.session.flush()
     for result in queryset:
