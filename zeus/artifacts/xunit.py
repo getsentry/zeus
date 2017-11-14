@@ -14,6 +14,7 @@ class XunitHandler(ArtifactHandler):
         test_list = self.get_tests(fp)
 
         manager = TestResultManager(self.job)
+        manager.clear()
         manager.save(test_list)
 
         return test_list
