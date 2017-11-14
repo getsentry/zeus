@@ -11,7 +11,7 @@ from .aggregate_job_stats import aggregate_build_stats_for_job
 
 @celery.task(max_retries=None)
 def process_artifact(artifact_id, manager=None, **kwargs):
-    artifact = Artifact.query.unrestricted_unsafe().get(artifact_id)
+    artifact = Artifact.query.unrestricted_unsafe().select_for_update().get(artifact_id)
     if artifact is None:
         return
 
