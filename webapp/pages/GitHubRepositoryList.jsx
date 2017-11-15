@@ -129,18 +129,16 @@ class GitHubRepositoryList extends AsyncPage {
               this.props.removeRepo(repo);
             }
             this.props.removeIndicator(indicator);
-            this.setState({
-              ghRepoList: newGhRepoList
-            });
+            this.setState({ghRepoList: newGhRepoList});
           })
           .catch(error => {
             this.props.addIndicator('An error occurred.', 'error', 5000);
             this.props.removeIndicator(indicator);
 
-            let newGhRepo = (this.state.ghRepoList || []).find(
-              r => r.name === ghRepo.name
-            );
+            let newGhRepoList = [...this.state.ghRepoList];
+            let newGhRepo = newGhRepoList.find(r => r.name === ghRepo.name);
             newGhRepo.loading = false;
+            this.setState({ghRepoList: newGhRepoList});
 
             throw error;
           });
