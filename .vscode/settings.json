@@ -12,8 +12,8 @@
         ".vscode/tags": true,
         ".mypy_cache": true
     },
-    "files.trimTrailingWhitespace": true,
-    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": false,
+    "files.trimFinalNewlines": false,
 
     "prettier.bracketSpacing": false,
     "prettier.singleQuote": true,
