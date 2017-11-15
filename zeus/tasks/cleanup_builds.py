@@ -26,7 +26,7 @@ def cleanup_builds():
 
     # first we timeout any jobs which have been sitting for far too long
     Job.query.unrestricted_unsafe().filter(
-        Job.status == Status.in_progress,
+        Job.status != Status.finished,
         Job.date_started < timezone.now() - timedelta(hours=1),
     ).update({
         'status': Status.finished,
@@ -42,6 +42,5 @@ def cleanup_builds():
             Job.status != Status.finished,
         ).exists()
     )
-
     for build in queryset:
         aggregate_build_stats(build_id=build.id)
