@@ -6,6 +6,7 @@ from zeus.constants import Status, Result
 from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
 from zeus.db.types import Enum, GUID, JSONEncodedDict
 from zeus.db.utils import model_repr
+from zeus.utils import timezone
 
 
 class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
@@ -22,6 +23,7 @@ class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
     result = db.Column(Enum(Result), nullable=False, default=Result.unknown)
     allow_failure = db.Column(db.Boolean, nullable=False, default=False, server_default='0')
     date_started = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
+    date_updated = db.Column(db.TIMESTAMP(timezone=True), nullable=True, onupdate=timezone.now)
     date_finished = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     data = db.Column(JSONEncodedDict, nullable=True)
     provider = db.Column(db.String, nullable=True)
