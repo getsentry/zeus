@@ -113,7 +113,7 @@ class GitHubCache(object):
             self.client = client
 
     def get_repos(self, owner, no_cache=False):
-        cache_key = 'gh:2:repos:{}:{}:{}'.format(
+        cache_key = 'gh:3:repos:{}:{}:{}'.format(
             md5(self.client.token.encode('utf')).hexdigest(),
             md5(b','.join(s.encode('utf') for s in self.scopes)).hexdigest(),
             md5(owner.encode('utf-8')).hexdigest() if owner else '',
