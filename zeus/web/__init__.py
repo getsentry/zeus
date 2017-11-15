@@ -9,7 +9,9 @@ app = Blueprint('web', __name__)
 app.add_url_rule(
     '/auth/github',
     view_func=v.GitHubAuthView.as_view(
-        'github-auth', authorized_url='web.github-complete', scopes=('user:email', 'read:org')
+        'github-auth',
+        authorized_url='web.github-complete',
+        scopes=('user:email', 'read:org', 'public_repo')
     ),
 )
 app.add_url_rule(
