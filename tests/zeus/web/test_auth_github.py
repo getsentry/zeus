@@ -18,7 +18,7 @@ def test_login(client):
     assert qs['redirect_uri'] == ['http://localhost/auth/github/complete']
     assert qs['access_type'] == ['offline']
     assert qs['response_type'] == ['code']
-    assert sorted(qs['scope'][0].split(',')) == ['read:org', 'user:email']
+    assert sorted(qs['scope'][0].split(',')) == ['public_repo', 'read:org', 'user:email']
 
 
 def test_login_complete(client, db_session, mocker, responses):
