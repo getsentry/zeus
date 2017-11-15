@@ -29,7 +29,7 @@ class CoverageHandler(ArtifactHandler):
                 with redis.lock(lock_key):
                     result = self.merge_coverage(result)
                     db.session.add(result)
-            db.session.commit()
+            db.session.flush()
 
         return results
 

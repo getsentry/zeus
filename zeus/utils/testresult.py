@@ -60,6 +60,7 @@ class TestResultManager(object):
         TestCase.query.filter(
             TestCase.job_id == self.job.id,
         )
+        db.session.flush()
 
     def save(self, test_list):
         if not test_list:
@@ -94,14 +95,15 @@ class TestResultManager(object):
                     testartifact.save_base64_content(ta['base64'])
                     db.session.add(testartifact)
 
-        db.session.commit()
+        db.session.flush()
 
         try:
             self._record_test_counts(test_list)
             self._record_test_failures(test_list)
             self._record_test_duration(test_list)
         except Exception:
-            current_app.logger.exception('Failed to record aggregate test statistics')
+            current_app.logger.exception(
+                'Failed to record aggregate test statistics')
 
     def _record_test_counts(self, test_list):
         create_or_update(
@@ -117,7 +119,7 @@ class TestResultManager(object):
                 ).as_scalar(),
             }
         )
-        db.session.commit()
+        db.session.flush()
 
     def _record_test_failures(self, test_list):
         create_or_update(
@@ -134,7 +136,7 @@ class TestResultManager(object):
                 ).as_scalar(),
             }
         )
-        db.session.commit()
+        db.session.flush()
 
     def _record_test_duration(self, test_list):
         create_or_update(
