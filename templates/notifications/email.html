@@ -196,11 +196,11 @@
             </g>
           </svg>
         </td>
-        <td></td>{{ test.name }}</td>
+        <td>{{ test.name }}</td>
       </tr>
       {% endfor %} {% if failing_tests_count > failing_tests|length %}
       <tr>
-        <td> ... </td>
+        <td colspan="2"> ... </td>
       </tr>
       {% endif %}
     </table>
