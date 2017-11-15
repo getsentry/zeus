@@ -1,6 +1,7 @@
-from flask import render_template, request
+from flask import redirect, render_template, request
 from jinja2 import Markup
 
+from zeus import auth
 from zeus.models import Build
 from zeus.notifications.email import build_message
 
@@ -28,7 +29,12 @@ class MailPreview(object):
 
 
 def debug_notification():
+    if not auth.get_current_user():
+        auth.bind_redirect_target(request.path)
+        return redirect('/login')
+
     build = Build.query.order_by(Build.date_created.desc()).limit(1).first()
+    assert build
     msg = build_message(build)
     preview = MailPreview(msg)
     return preview.render()

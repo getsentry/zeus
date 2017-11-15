@@ -6,10 +6,12 @@
     body,
     .wrapper {
       font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
-      font-size: 16px;
+      font-size: 15px;
+      padding: 15px;
       font-weight: 300;
       background: #fff;
       color: #111;
+      line-height: 1.4;
     }
 
     a,
@@ -41,8 +43,10 @@
     }
 
     h2 {
-      font-size: 16px;
+      font-size: 14px;
       margin: 0 0 20px;
+      text-transform: uppercase;
+      letter-spacing: -1px;
     }
 
     ul {
@@ -54,6 +58,36 @@
       padding-left: 0;
     }
 
+    li {
+      margin-bottom: 10px;
+    }
+
+    code,
+    pre {
+      font-family: 'Monaco', monospace;
+      font-weight: 300;
+      padding: 0;
+      font-size: 12px;
+    }
+
+    td {
+      vertical-align: top;
+      padding: 8px 2px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    th {
+      text-align: left;
+      padding: 0 2px 5px;
+      border-bottom: 3px solid #eee;
+      font-size: 12px;
+      color: #999;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
     .header {
       border-bottom: 1px solid #dbdae3;
       padding-bottom: 10px;
@@ -61,8 +95,8 @@
     }
 
     .header h1 {
-      font-weight: 400;
-      font-size: 22px;
+      font-weight: 500;
+      font-size: 20px;
       margin: 0;
     }
 
@@ -85,10 +119,6 @@
       width: 16px;
     }
 
-    li {
-      margin-bottom: 10px;
-    }
-
     .unstyled .result-icon {
       width: 14px;
       height: 14px;
@@ -106,22 +136,17 @@
       color: #BFBFCB;
     }
 
-    code,
-    pre {
-      font-family: 'Monaco', monospace;
-      font-weight: 300;
-      padding: 0;
-      font-size: 14px;
-    }
-
     .source {
-      color: #666;
-      font-size: 85%;
+      color: #7f7d8f;
+      font-size: 80%;
+      margin-left: -5px;
     }
 
     .source code,
     .source strong {
+      font-size: 11px;
       font-weight: 400;
+      margin: 0 5px;
     }
   </style>
 </head>
@@ -133,13 +158,12 @@
       <h1>
         {% if build.result.id == 'failed' %}
         <svg viewBox="0 0 15 15" class="result-icon result-{{ build.result.id }}">
-          <g stroke="currentColor" stroke-width="1" fill="none">
-            <circle cx="7.5" cy="7.5" r="7" />
-            <path d="M4.5,4.5 L10.5,10.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M4.5,10.5 L10.5,4.5" stroke-linecap="round" stroke-linejoin="round" />
+          <g fill="currentColor">
+            <path d="m28.4 21.6v-3.2h-16.8v3.2h16.8z m-8.4-18.2c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
+            />
           </g>
         </svg>
-        {% endif %} #{{build.number }} {{ build.label }}</h1>
+        {% endif %} {{ build.label }}</h1>
       <div class="source">
         <code>{{ revision.short_sha }}</code> by
         <strong>{{ author.email }}</strong> on
@@ -150,10 +174,20 @@
     <pre class="commit-message">{{ revision.message }}</pre> {% if failing_tests_count %}
     <h2>Failing Tests &mdash; {{ failing_tests_count }} total</h2>
     <table class="table">
+      <tr>
+        <th colspan="2">Test</th>
+      </tr>
       {% for test in failing_tests %}
       <tr>
         <td style="width: 16px">
-          {{ test.name }}</td>
+          <svg viewBox="0 0 40 40" class="result-icon result-{{ build.result.id }}">
+            <g fill="currentColor">
+              <path d="m28.4 21.6v-3.2h-16.8v3.2h16.8z m-8.4-18.2c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
+              />
+            </g>
+          </svg>
+        </td>
+        <td></td>{{ test.name }}</td>
       </tr>
       {% endfor %} {% if failing_tests_count > failing_tests|length %}
       <tr>
@@ -165,29 +199,31 @@
     <h2>Jobs{% if job_failure_count %}
       <small> &mdash; {{ job_failure_count }}</small>{% endif %}</h2>
     <table class="table">
+      <tr>
+        <th colspan="2">Job</th>
+      </tr>
       {% for job in job_list %}
       <tr>
         <td style="width: 16px">
           {% if job.result.id == 'failed' %}
-          <svg viewBox="0 0 15 15" class="result-icon result-{{ build.result.id }}">
-            <g stroke="currentColor" stroke-width="1" fill="none">
-              <circle cx="7.5" cy="7.5" r="7" />
-              <path d="M4.5,4.5 L10.5,10.5" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M4.5,10.5 L10.5,4.5" stroke-linecap="round" stroke-linejoin="round" />
+          <svg viewBox="0 0 40 40" class="result-icon result-{{ build.result.id }}">
+            <g fill="currentColor">
+              <path d="m28.4 21.6v-3.2h-16.8v3.2h16.8z m-8.4-18.2c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
+              />
             </g>
           </svg>
           {% elif job.result.id == 'passed' %}
-          <svg viewBox="0 0 15 15" class="result-icon result-{{ build.result.id }}">
-            <g stroke="currentColor" stroke-width="1" fill="none">
-              <circle cx="7.5" cy="7.5" r="7" />
-              <polyline stroke-linecap="round" stroke-linejoin="round" points="3.50527373 8.48964823 6.43411675 11.016436 11.5264504 5.52683372"
-              />
+          <svg viewBox="0 0 40 40" class="result-icon result-{{ build.result.id }}">
+            <g fill="currentColor">
+              <path d="m16.6 28.4l15-15-2.3-2.5-12.7 12.7-5.9-5.9-2.3 2.3z m3.4-25c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6
+              7.4-16.6 16.6-16.6z" />
             </g>
           </svg>
           {% endif %}
         </td>
-        <td>#{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif %}
-          <br />{% if job.url %}
+        <td>
+          <div class="job-name">#{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif %}</div>
+          {% if job.url %}
           <small>
             <a href="{{ job.url }}">{{ job.url }}</a>
           </small>
