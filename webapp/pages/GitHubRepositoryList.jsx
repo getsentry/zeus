@@ -1,3 +1,4 @@
+import sortBy from 'lodash/sortBy';
 import React, {Component} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
@@ -13,8 +14,8 @@ import {ResultGrid, Row, Column} from '../components/ResultGrid';
 class GitHubRepoItem extends Component {
   static propTypes = {
     repo: PropTypes.object.isRequired,
-    onDisableRepo: PropTypes.func.isRequired,
-    onEnableRepo: PropTypes.func.isRequired
+    onDisableRepo: PropTypes.func,
+    onEnableRepo: PropTypes.func
   };
 
   constructor(props, context) {
@@ -24,23 +25,42 @@ class GitHubRepoItem extends Component {
     };
   }
 
+  renderButton() {
+    let {repo} = this.props;
+
+    if (repo.active) {
+      return (
+        <Button onClick={this.props.onDisableRepo} size="small" type="danger">
+          Disable
+        </Button>
+      );
+    }
+
+    if (repo.admin) {
+      return (
+        <Button onClick={this.props.onEnableRepo} size="small">
+          Enable
+        </Button>
+      );
+    }
+
+    return (
+      <Button
+        disabled
+        size="small"
+        title="You need administrator privileges to activate this repository">
+        Enable
+      </Button>
+    );
+  }
+
   render() {
     let {repo} = this.props;
     return (
       <Row>
-        <Column>
-          {repo.name}
-        </Column>
+        <Column>{repo.name}</Column>
         <Column textAlign="right" width={80}>
-          {repo.loading
-            ? '...'
-            : repo.active
-              ? <Button onClick={this.props.onDisableRepo} size="small" type="danger">
-                  Disable
-                </Button>
-              : <Button onClick={this.props.onEnableRepo} size="small">
-                  Enable
-                </Button>}
+          {repo.loading ? '...' : this.renderButton()}
         </Column>
       </Row>
     );
@@ -113,6 +133,12 @@ class GitHubRepositoryList extends AsyncPage {
           .catch(error => {
             this.props.addIndicator('An error occurred.', 'error', 5000);
             this.props.removeIndicator(indicator);
+
+            let newGhRepo = (this.state.ghRepoList || []).find(
+              r => r.name === ghRepo.name
+            );
+            newGhRepo.loading = false;
+
             throw error;
           });
       }
@@ -128,11 +154,17 @@ class GitHubRepositoryList extends AsyncPage {
   renderBody() {
     let {location} = this.props;
     let query = location.query || {};
+
+    const repositories = sortBy(
+      this.state.ghRepoList || [],
+      repo => `${Number(!repo.active)}:${Number(!repo.admin)}: ${repo.name}}`
+    );
+
     return (
       <Flex>
         <Box flex="1" width={2 / 12} pr={15}>
           <div style={{marginBottom: 10, fontSize: '0.8em'}}>
-            {!this.hasPrivateScope() &&
+            {!this.hasPrivateScope() && (
               <Button
                 onClick={() =>
                   this.context.router.push({
@@ -141,9 +173,11 @@ class GitHubRepositoryList extends AsyncPage {
                       ...query,
                       private: true
                     }
-                  })}>
+                  })
+                }>
                 Enable Private Repos
-              </Button>}
+              </Button>
+            )}
           </div>
           <ul>
             <li key="_">
@@ -166,17 +200,7 @@ class GitHubRepositoryList extends AsyncPage {
         </Box>
         <Box width={10 / 12}>
           <ResultGrid>
-            {this.state.ghRepoList.filter(ghRepo => ghRepo.active).map(ghRepo => {
-              return (
-                <GitHubRepoItem
-                  key={ghRepo.name}
-                  repo={ghRepo}
-                  onEnableRepo={() => this.onToggleRepo(ghRepo.name, true)}
-                  onDisableRepo={() => this.onToggleRepo(ghRepo.name, false)}
-                />
-              );
-            })}
-            {this.state.ghRepoList.filter(ghRepo => !ghRepo.active).map(ghRepo => {
+            {repositories.map(ghRepo => {
               return (
                 <GitHubRepoItem
                   key={ghRepo.name}
