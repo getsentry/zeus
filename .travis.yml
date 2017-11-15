@@ -23,11 +23,13 @@ script:
   - git --version
   - py.test tests -v --cov . --cov-report="xml:coverage.xml" --junit-xml="junit.xml"
 after_success:
-  - bin/upload-zeus-artifact junit.xml "text/xml+xunit"
-  - bin/upload-zeus-artifact coverage.xml "text/xml+coverage"
+  - npm install -g @zeus-ci/cli
+  - $(npm bin -g)/zeus upload -t "text/xml+xunit" junit.xml
+  - $(npm bin -g)/zeus upload -t "text/xml+coverage" coverage.xml
 after_failure:
-  - bin/upload-zeus-artifact junit.xml "text/xml+xunit"
-  - bin/upload-zeus-artifact coverage.xml "text/xml+coverage"
+  - npm install -g @zeus-ci/cli
+  - $(npm bin -g)/zeus upload -t "text/xml+xunit" junit.xml
+  - $(npm bin -g)/zeus upload -t "text/xml+coverage" coverage.xml
 notifications:
   webhooks:
     urls:
