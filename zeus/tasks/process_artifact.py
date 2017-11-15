@@ -28,7 +28,7 @@ def process_artifact(artifact_id, manager=None, **kwargs):
     if job.result == Result.aborted:
         current_app.logger.info(
             'Skipping artifact processing (%s) due to Job aborted', artifact_id)
-        artifact.status = Status.aborted
+        artifact.status = Status.finished
         db.session.add(artifact)
         db.session.commit()
         return
