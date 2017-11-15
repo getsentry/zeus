@@ -12,6 +12,7 @@ class RepositorySchema(Schema):
     url = fields.Str()
     provider = fields.Str()
     backend = EnumField(RepositoryBackend)
+    admin = fields.Bool()
     created_at = fields.DateTime(
         attribute='date_created',
         dump_only=True,
