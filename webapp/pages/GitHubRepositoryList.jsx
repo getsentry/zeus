@@ -28,27 +28,22 @@ class GitHubRepoItem extends Component {
   renderButton() {
     let {repo} = this.props;
 
+    let props = repo.admin || {
+      disabled: true,
+      onClick: null,
+      title: 'You need administrator privileges to activate this repository'
+    };
+
     if (repo.active) {
       return (
-        <Button onClick={this.props.onDisableRepo} size="small" type="danger">
+        <Button onClick={this.props.onDisableRepo} size="small" type="danger" {...props}>
           Disable
         </Button>
       );
     }
 
-    if (repo.admin) {
-      return (
-        <Button onClick={this.props.onEnableRepo} size="small">
-          Enable
-        </Button>
-      );
-    }
-
     return (
-      <Button
-        disabled
-        size="small"
-        title="You need administrator privileges to activate this repository">
+      <Button onClick={this.props.onEnableRepo} size="small" {...props}>
         Enable
       </Button>
     );
