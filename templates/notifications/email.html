@@ -11,7 +11,8 @@
       font-weight: 300;
       background: #fff;
       color: #111;
-      line-height: 1.4;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     a,
@@ -70,12 +71,20 @@
       font-size: 12px;
     }
 
+    .table {
+      width: 100%;
+    }
+
     td {
       vertical-align: top;
       padding: 8px 2px;
       color: #333;
       border-bottom: 1px solid #eee;
       font-size: 14px;
+    }
+
+    td div {
+      margin-bottom: 3px;
     }
 
     th {
@@ -222,7 +231,7 @@
           {% endif %}
         </td>
         <td>
-          <div class="job-name">#{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif %}</div>
+          <div>#{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif %}</div>
           {% if job.url %}
           <small>
             <a href="{{ job.url }}">{{ job.url }}</a>
