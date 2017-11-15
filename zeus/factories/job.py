@@ -46,6 +46,9 @@ class JobFactory(ModelFactory):
             timedelta(
                 minutes=10)) if o.status == Status.finished else None
     )
+    date_updated = factory.LazyAttribute(
+        lambda o: o.date_finished or o.date_started or o.date_created
+    )
 
     class Meta:
         model = models.Job
