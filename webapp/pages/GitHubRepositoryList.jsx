@@ -28,6 +28,14 @@ class GitHubRepoItem extends Component {
   renderButton() {
     let {repo} = this.props;
 
+    if (repo.loading) {
+      return (
+        <Button disabled size="small">
+          ...
+        </Button>
+      );
+    }
+
     let props = repo.admin || {
       disabled: true,
       onClick: null,
@@ -55,7 +63,7 @@ class GitHubRepoItem extends Component {
       <Row>
         <Column>{repo.name}</Column>
         <Column textAlign="right" width={80}>
-          {repo.loading ? '...' : this.renderButton()}
+          {this.renderButton()}
         </Column>
       </Row>
     );
