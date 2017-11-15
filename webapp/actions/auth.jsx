@@ -24,7 +24,7 @@ export function authSession() {
     return api.get('/auth').then(
       data => {
         if (data.isAuthenticated) {
-          localStorage.setItem('auth', data);
+          localStorage.setItem('auth', JSON.stringify(data));
         } else {
           localStorage.removeItem('auth');
         }

@@ -14,8 +14,14 @@ import './index.css';
 
 // we cache the user details in localStorage, but its still fetched on
 // the initial load to update/validate
-if (localStorage.auth) {
-  store.dispatch(setAuth(localStorage.auth));
+let auth = localStorage.getItem('auth');
+if (auth) {
+  try {
+    store.dispatch(setAuth(JSON.parse(auth)));
+  } catch (ex) {
+    console.error(ex);
+    localStorage.removeItem('auth');
+  }
 }
 
 import {registerLanguage} from 'react-syntax-highlighter/dist/light';
