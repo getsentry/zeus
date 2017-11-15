@@ -55,8 +55,7 @@ export default styled.a`
   ${props =>
     props.disabled &&
     `
-      color: #ccc !important;
       cursor: default;
-      border-color: #ccc;
+      opacity: 0.3;
     `};
 `;
