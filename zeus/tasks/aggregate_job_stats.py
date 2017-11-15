@@ -218,58 +218,62 @@ def aggregate_build_stats(build_id: UUID):
     the status and result.
     """
     # now we pull in the entirety of the build's data to aggregate state upward
-    build = Build.query.unrestricted_unsafe().with_for_update().get(build_id)
-    if not build:
-        raise ValueError('Unable to find build with id = {}'.format(build_id))
+    lock_key = 'build:{build_id}'.format(
+        build_id=build_id,
+    )
+    with redis.lock(lock_key):
+        build = Build.query.unrestricted_unsafe().with_for_update().get(build_id)
+        if not build:
+            raise ValueError('Unable to find build with id = {}'.format(build_id))
 
-    auth.set_current_tenant(auth.Tenant(
-        repository_ids=[build.repository_id]))
+        auth.set_current_tenant(auth.Tenant(
+            repository_ids=[build.repository_id]))
 
-    job_list = Job.query.filter(Job.build_id == build.id)
+        job_list = Job.query.filter(Job.build_id == build.id)
 
-    was_finished = build.status == Status.finished
-    is_finished = all(p.status == Status.finished for p in job_list)
+        was_finished = build.status == Status.finished
+        is_finished = all(p.status == Status.finished for p in job_list)
 
-    # ensure build's dates are reflective of jobs
-    build.date_started = safe_agg(
-        min, (j.date_started for j in job_list if j.date_started))
+        # ensure build's dates are reflective of jobs
+        build.date_started = safe_agg(
+            min, (j.date_started for j in job_list if j.date_started))
 
-    if is_finished:
-        build.date_finished = safe_agg(
-            max, (j.date_finished for j in job_list if j.date_finished))
-    else:
-        build.date_finished = None
-
-    # if theres any failure, the build failed
-    if any(j.result is Result.failed for j in job_list if not j.allow_failure):
-        build.result = Result.failed
-    # else, if we're finished, we can aggregate from results
-    elif is_finished:
-        if not job_list:
-            build.result = Result.errored
-        elif not any(j for j in job_list if not j.allow_failure):
-            build.result = Result.passed
+        if is_finished:
+            build.date_finished = safe_agg(
+                max, (j.date_finished for j in job_list if j.date_finished))
         else:
-            build.result = aggregate_result(
-                (j.result for j in job_list if not j.allow_failure))
-    # we should never get here as long we've got jobs and correct data
-    else:
-        build.result = Result.unknown
+            build.date_finished = None
 
-    if is_finished:
-        build.status = Status.finished
-    else:
-        # ensure we dont set the status to finished unless it actually is
-        new_status = aggregate_status((j.status for j in job_list))
-        if build.status != new_status:
-            build.status = new_status
+        # if theres any failure, the build failed
+        if any(j.result is Result.failed for j in job_list if not j.allow_failure):
+            build.result = Result.failed
+        # else, if we're finished, we can aggregate from results
+        elif is_finished:
+            if not job_list:
+                build.result = Result.errored
+            elif not any(j for j in job_list if not j.allow_failure):
+                build.result = Result.passed
+            else:
+                build.result = aggregate_result(
+                    (j.result for j in job_list if not j.allow_failure))
+        # we should never get here as long we've got jobs and correct data
+        else:
+            build.result = Result.unknown
 
-    db.session.add(build)
-    db.session.commit()
+        if is_finished:
+            build.status = Status.finished
+        else:
+            # ensure we dont set the status to finished unless it actually is
+            new_status = aggregate_status((j.status for j in job_list))
+            if build.status != new_status:
+                build.status = new_status
 
-    # we dont bother aggregating stats unless we're finished
-    if build.status == Status.finished and not was_finished:
-        for stat in AGGREGATED_BUILD_STATS:
-            aggregate_stat_for_build(build, stat)
+        db.session.add(build)
         db.session.commit()
-        send_build_notifications.delay(build_id=build.id)
+
+        # we dont bother aggregating stats unless we're finished
+        if build.status == Status.finished and not was_finished:
+            for stat in AGGREGATED_BUILD_STATS:
+                aggregate_stat_for_build(build, stat)
+            db.session.commit()
+            send_build_notifications.delay(build_id=build.id)
