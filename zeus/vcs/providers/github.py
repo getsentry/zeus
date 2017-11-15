@@ -54,6 +54,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
             {
                 'id': r['id'],
                 'name': r['full_name'],
+                'admin': r.get('admin', False),
             } for r in cache.get_repos(owner_name, no_cache=not self.cache)
         ]
 
@@ -76,6 +77,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
             'owner_name': owner_name,
             'name': repo_name,
             'url': repo_data['ssh_url'],
+            'admin': repo_data['permissions'].get('admin', False),
             'config': {
                 'full_name': repo_data['full_name']
             }
@@ -136,6 +138,7 @@ class GitHubCache(object):
                 result.extend([{
                     'id': r['id'],
                     'full_name': r['full_name'],
+                    'admin': r['permissions'].get('admin', False),
                 } for r in response])
                 has_results = bool(response)
                 if has_results:

@@ -55,6 +55,7 @@ class GitHubRepositoriesResource(Resource):
         return [
             {
                 'name': r['name'],
+                'admin': r['admin'],
                 'active': str(r['id']) in active_repo_ids,
             } for r in repo_list
         ]
@@ -94,6 +95,11 @@ class GitHubRepositoriesResource(Resource):
                     'url': exc.get_upgrade_url(),
                 }, 401
             )
+
+        if not repo_data['admin']:
+            return self.respond({
+                'message': 'Insufficient permissions to activate repository',
+            }, 403)
 
         lock_key = 'repo:{provider}/{owner_name}/{repo_name}'.format(
             provider='github',
