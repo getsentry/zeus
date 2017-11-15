@@ -186,7 +186,10 @@ def test_login_complete_automatic_repo_access(client, mocker, db_session, respon
             'id': default_repo.external_id,
             'full_name': default_repo.data['full_name'],
             'clone_url': 'https://github.com/{}.git'.format(default_repo.data['full_name']),
-            'ssh_url': 'git@github.com:getsentry/zeus.git'
+            'ssh_url': 'git@github.com:getsentry/zeus.git',
+            'permissions': {
+                'admin': True
+            }
         },
     )
 

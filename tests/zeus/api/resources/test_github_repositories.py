@@ -6,12 +6,18 @@ REPO_DETAILS_RESPONSE = """{
     "id": 1,
     "full_name": "getsentry/zeus",
     "clone_url": "https://github.com/getsentry/zeus.git",
-    "ssh_url": "git@github.com:getsentry/zeus.git"
+    "ssh_url": "git@github.com:getsentry/zeus.git",
+    "permissions": {
+        "admin": true
+    }
 }"""
 
 REPO_LIST_RESPONSE = """[{
     "id": 1,
-    "full_name": "getsentry/zeus"
+    "full_name": "getsentry/zeus",
+    "permissions": {
+        "admin": true
+    }
 }]"""
 
 KEY_RESPONSE = """{
