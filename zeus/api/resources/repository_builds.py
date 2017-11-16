@@ -69,7 +69,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             Build.repository_id == repo.id,
         ).order_by(Build.number.desc())
         show = request.args.get('show')
-        if show == 'mine' or (not show and user):
+        if show == 'mine':
             query = query.filter(
                 Source.author_id.in_(
                     db.session.query(Author.id).filter(Author.email.in_(
