@@ -1,5 +1,6 @@
 from flask import current_app, render_template
 from flask_mail import Message, sanitize_address
+from typing import List
 
 from zeus.config import db, mail
 from zeus.constants import Result
@@ -7,41 +8,33 @@ from zeus.models import Author, Build, Email, ItemOption, Job, Repository, Repos
 from zeus.utils.email import inline_css
 
 
-def has_linked_account(build: Build) -> bool:
-    return db.session.query(
-        db.session.query(Email.email).join(
-            User, Email.user_id == User.id
-        ).join(
-            RepositoryAccess, RepositoryAccess.user_id == User.id
-        ).join(
-            Source, Source.id == build.source_id
-        ).join(
-            Author, Source.author_id == Author.id
-        ).filter(
-            Email.email == Author.email,
-            Email.verified == True,  # NOQA
-            RepositoryAccess.repository_id == build.repository_id,
-        ).exists()
-    ).scalar()
+def find_linked_accounts(build: Build) -> List[User]:
+    return list(User.query.join(
+        Email, Email.user_id == User.id
+    ).join(
+        RepositoryAccess, RepositoryAccess.user_id == User.id
+    ).join(
+        Source, Source.id == build.source_id
+    ).join(
+        Author, Source.author_id == Author.id
+    ).filter(
+        Email.email == Author.email,
+        Email.verified == True,  # NOQA
+        RepositoryAccess.repository_id == build.repository_id,
+    ))
 
 
 def send_email_notification(build: Build):
-    options = dict(
+    repo_options = dict(
         db.session.query(ItemOption.name, ItemOption.value).filter(
             ItemOption.item_id == build.repository_id,
             ItemOption.name.in_([
-                'mail.notify-author',
+                'mail.notify_author',
             ])
         )
     )
-    if options.get('mail.notify-author') == '0':
+    if repo_options.get('mail.notify_author') == '0':
         current_app.logger.info('mail.notify-author-disabled', extra={
-            'build_id': build.id,
-        })
-        return
-
-    if not has_linked_account(build):
-        current_app.logger.info('mail.missing-linked-account', extra={
             'build_id': build.id,
         })
         return
@@ -65,6 +58,30 @@ def build_message(build: Build) -> Message:
         })
         return
 
+    users = find_linked_accounts(build)
+    if not users:
+        current_app.logger.info('mail.no-linked-accounts', extra={
+            'build_id': build.id,
+        })
+        return
+
+    # filter it down to the users that have notifications enabled
+    user_options = dict(
+        db.session.query(ItemOption.item_id, ItemOption.value).filter(
+            ItemOption.item_id.in_([u.id for u in users]),
+            ItemOption.name == 'mail.notify_author',
+        )
+    )
+    users = [
+        u for u in users
+        if user_options.get(u.id, '1') == '1'
+    ]
+    if not users:
+        current_app.logger.info('mail.no-enabed-accounts', extra={
+            'build_id': build.id,
+        })
+        return
+
     source = Source.query.get(build.source_id)
     assert source
 
@@ -80,7 +97,7 @@ def build_message(build: Build) -> Message:
     job_list = list(Job.query.filter(Job.build_id == build.id))
     job_ids = [j.id for j in job_list]
 
-    recipients = [author.email]
+    recipients = [u.email for u in users]
 
     subject = 'Build {} - {}/{} #{}'.format(
         str(build.result).title(),
