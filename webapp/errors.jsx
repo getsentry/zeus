@@ -4,8 +4,11 @@ class ApiError extends Error {
     this.code = code;
   }
 }
+
 class ResourceNotFound extends Error {
   static code = 404;
 }
 
-export {ApiError, ResourceNotFound};
+class NetworkError extends Error {}
+
+export {ApiError, ResourceNotFound, NetworkError};

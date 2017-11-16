@@ -1,4 +1,4 @@
-import {ApiError} from './errors';
+import {ApiError, NetworkError} from './errors';
 
 export class Request {
   static UNSET = 0;
@@ -32,16 +32,25 @@ export class Request {
       if (xhr.readyState === Request.DONE) {
         let responseData = this.processResponseText(xhr);
         // TODO(dcramer): make links available
-        responseData.getResponseHeader = xhr.getResponseHeader.bind(xhr);
+        // we can bind this on strings
+        try {
+          responseData.getResponseHeader = (...args) => xhr.getResponseHeader(...args);
+        } catch (ex) {
+          console.error(ex);
+        }
         if (xhr.status >= 200 && xhr.status < 300) {
           // XXX(dcramer): this keeps the xhr ref around when
           // we otherwise wouldn't want it
           // responseData.xhr = xhr;
           resolve(responseData);
         } else {
-          let error = new ApiError(xhr.responseText, xhr.status);
-          error.data = responseData;
+          let error =
+            xhr.status === 0
+              ? new NetworkError()
+              : new ApiError(xhr.responseText, xhr.status);
           error.xhr = xhr;
+          error.url = params.url;
+          error.data = responseData;
           reject(error);
         }
       }
@@ -55,9 +64,10 @@ export class Request {
         return JSON.parse(xhr.responseText);
       } catch (ex) {
         console.error(ex);
+        return {};
       }
     }
-    return xhr.responseText;
+    return {text: xhr.responseText};
   }
 
   cancel() {

@@ -6,8 +6,9 @@ import idx from 'idx';
 import IdentityNeedsUpgradeError from './IdentityNeedsUpgradeError';
 import InternalError from './InternalError';
 import Login from './Login';
+import NetworkError from './NetworkError';
 import NotFoundError from './NotFoundError';
-import {ApiError, ResourceNotFound} from '../errors';
+import * as errors from '../errors';
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -32,9 +33,9 @@ export default class ErrorBoundary extends Component {
     let {error} = this.state;
     if (error) {
       switch (error.constructor) {
-        case ResourceNotFound:
+        case errors.ResourceNotFound:
           return <NotFoundError />;
-        case ApiError:
+        case errors.ApiError:
           if (
             error.code === 401 &&
             idx(error, _ => _.data.error) === 'identity_needs_upgrade'
@@ -50,6 +51,8 @@ export default class ErrorBoundary extends Component {
             return <Login />;
           }
           return <InternalError error={error} />;
+        case errors.NetworkError:
+          return <NetworkError error={error} />;
         default:
           return <InternalError error={error} />;
       }
