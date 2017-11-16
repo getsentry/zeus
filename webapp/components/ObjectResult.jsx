@@ -49,12 +49,18 @@ export const ResultIcon = styled.div`
             color: #76D392;
           }
         `;
-      case 'failed':
       case 'errored':
         return css`
-          color: #F06E5B;
+          color: #f0a05b;
           svg {
-            color: #F06E5B;
+            color: #f0a05b;
+          }
+        `;
+      case 'failed':
+        return css`
+          color: #f05b5b;
+          svg {
+            color: #f05b5b;
           }
         `;
       default:
