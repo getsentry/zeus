@@ -28,17 +28,19 @@ class AuthIndexResource(Resource):
                     'isAuthenticated': False,
                 }
 
+        user = json.loads(user_response.data)
+
         identity_list = list(Identity.query.filter(
-            Identity.user_id == user_response.data['id'],
+            Identity.user_id == user['id'],
         ))
 
         email_list = list(Email.query.filter(
-            Email.user_id == user_response.data['id'],
+            Email.user_id == user['id'],
         ))
 
         return {
             'isAuthenticated': True,
-            'user': json.loads(user_response.data),
+            'user': user,
             'emails': emails_schema.dump(email_list).data,
             'identities': identities_schema.dump(identity_list).data,
         }
