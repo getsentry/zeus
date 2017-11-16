@@ -39,7 +39,7 @@ class TokenSettings extends AsyncPage {
       </div>
     ) : (
       <div>
-        <SectionHeading>You have not createt an API token yet</SectionHeading>
+        <SectionHeading>You have not created an API token yet</SectionHeading>
         <Button onClick={this.renewToken}>Generate API Token</Button>
       </div>
     );
