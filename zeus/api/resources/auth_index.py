@@ -1,11 +1,9 @@
 import json
 
-from flask import session
-from sqlalchemy.orm import subqueryload_all
-
 from zeus import auth
 from zeus.api import client
-from zeus.models import Email, Identity, User
+from zeus.exceptions import ApiError
+from zeus.models import Email, Identity
 
 from .base import Resource
 from ..schemas import EmailSchema, IdentitySchema, UserSchema
@@ -22,28 +20,20 @@ class AuthIndexResource(Resource):
         """
         Return information on the currently authenticated user.
         """
-        if session.get('uid'):
-            user = User.query.options(
-                subqueryload_all('options')
-            ).get(session['uid'])
-            if user is None:
-                session.clear()
-        else:
-            user = None
-
-        if user is None:
-            return {
-                'isAuthenticated': False,
-            }
-
-        user_response = client.get('/users/me')
+        try:
+            user_response = client.get('/users/me')
+        except ApiError as exc:
+            if exc.code == 401:
+                return {
+                    'isAuthenticated': False,
+                }
 
         identity_list = list(Identity.query.filter(
-            Identity.user_id == user.id,
+            Identity.user_id == user_response.data['id'],
         ))
 
         email_list = list(Email.query.filter(
-            Email.user_id == user.id,
+            Email.user_id == user_response.data['id'],
         ))
 
         return {
