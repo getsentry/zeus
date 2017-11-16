@@ -40,6 +40,28 @@
   left: 20px;
 }
 
+.toast.success .icon:before {
+  content: "\2714 ";
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  line-height: 20px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.toast.error .icon:before {
+  content: "\2715 ";
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  line-height: 20px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
 .toast.success {
   background: green;
   color: white;

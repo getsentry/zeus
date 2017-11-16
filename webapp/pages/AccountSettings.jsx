@@ -36,7 +36,7 @@ class AccountSettings extends AsyncPage {
       })
       .then(result => {
         this.props.removeIndicator(indicator);
-        this.props.addIndicator('Changed saved!', 'success', 5000);
+        this.props.addIndicator('Changes saved!', 'success', 5000);
         this.setState({user: result});
       })
       .catch(error => {
