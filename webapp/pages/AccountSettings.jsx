@@ -2,14 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
+import {addIndicator, removeIndicator} from '../actions/indicators';
 import AsyncPage from '../components/AsyncPage';
 import Badge from '../components/Badge';
 import {ResultGrid, Column, Row} from '../components/ResultGrid';
+import Label from '../components/Label';
+import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
 
 class AccountSettings extends AsyncPage {
   static contextTypes = {
-    user: PropTypes.object,
     router: PropTypes.object.isRequired
   };
 
@@ -18,14 +20,50 @@ class AccountSettings extends AsyncPage {
   }
 
   getEndpoints() {
-    return [['emailList', '/users/me/emails']];
+    return [['emailList', '/users/me/emails'], ['user', '/users/me']];
   }
 
+  toggleNotifications = e => {
+    let {user} = this.state;
+    let indicator = this.props.addIndicator('Saving changes..', 'loading');
+    this.api
+      .put('/users/me', {
+        data: {
+          options: {
+            mail: {notify_author: user.options.mail.notify_author === '1' ? '0' : '1'}
+          }
+        }
+      })
+      .then(result => {
+        this.props.removeIndicator(indicator);
+        this.props.addIndicator('Changed saved!', 'success', 5000);
+        this.setState({user: result});
+      })
+      .catch(error => {
+        this.props.addIndicator('An error occurred.', 'error', 5000);
+        this.props.removeIndicator(indicator);
+        throw error;
+      });
+  };
+
   renderBody() {
-    let {user} = this.props;
-    let {emailList} = this.state;
+    let {emailList, user} = this.state;
     return (
       <div>
+        <SectionHeading>Notifications</SectionHeading>
+        <Section>
+          <p>
+            {"We'll send notifications to your primary email address."}
+          </p>
+          <Label>
+            <input
+              type="checkbox"
+              checked={user.options.mail.notify_author === '1'}
+              onChange={this.toggleNotifications}
+            />{' '}
+            Receive email notifications for build failures
+          </Label>
+        </Section>
         <SectionHeading>Associated Email Addresses</SectionHeading>
         <p>
           {"We've synced these from GitHub, and will use them to identify your commits."}
@@ -55,5 +93,8 @@ export default connect(
   ({auth}) => ({
     user: auth.user
   }),
-  {}
+  {
+    addIndicator,
+    removeIndicator
+  }
 )(AccountSettings);
