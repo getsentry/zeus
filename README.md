@@ -29,6 +29,25 @@ Some quick caveats:
 - travis-ci.com and GitHub Enterprise are not yet supported.
 - Notifications will only be triggered for users which have authenticated against Zeus.
 
+### Supported Artifact Types
+
+While you can upload any kind of Artifact to zeus (e.g. ``.html`` output), the platform has knowledge of certain types
+and will grant additional functionality if they're present.
+
+#### Code Coverage
+
+- text/xml+coverage
+
+#### xUnit
+
+- text/xml+bitten
+- text/xml+junit
+- text/xml+xunit
+
+#### Checkstyle
+
+- text/xml+checkstyle
+
 ## Contributing
 
 ### Requirements

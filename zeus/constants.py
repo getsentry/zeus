@@ -26,6 +26,17 @@ class Result(Enum):
         return self.name
 
 
+class Severity(Enum):
+    unknown = 0
+    ignore = 1
+    info = 2
+    warning = 3
+    error = 4
+
+    def __str__(self):
+        return self.name
+
+
 STATUS_PRIORITY = (
     Status.in_progress,
     Status.queued,

@@ -205,6 +205,12 @@ def sample_diff():
         return fp.read()
 
 
+@pytest.fixture(scope='session')
+def sample_checkstyle():
+    with open(os.path.join(DATA_FIXTURES, 'sample-checkstyle.xml')) as fp:
+        return fp.read()
+
+
 @pytest.fixture(scope='function')
 def git_repo_config():
     root = '/tmp/zeus-git-test'
