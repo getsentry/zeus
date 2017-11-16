@@ -23,7 +23,7 @@ def test_repo_build_list_mine_with_match(
     client, default_login, default_build, default_repo, default_repo_access
 ):
     resp = client.get(
-        '/api/repos/{}/builds'.format(default_repo.get_full_name()))
+        '/api/repos/{}/builds?show=mine'.format(default_repo.get_full_name()))
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 1
@@ -36,7 +36,7 @@ def test_repo_build_list_mine_without_match(
     source = factories.SourceFactory(revision=revision)
     factories.BuildFactory(source=source)
     resp = client.get(
-        '/api/repos/{}/builds'.format(default_repo.get_full_name()))
+        '/api/repos/{}/builds?show=mine'.format(default_repo.get_full_name()))
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 0
