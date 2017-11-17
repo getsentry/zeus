@@ -6,7 +6,7 @@ from zeus.config import celery, db
 from zeus.models import Repository, RepositoryStatus
 
 
-@celery.task(max_retries=None)
+@celery.task(max_retries=None, autoretry_for=(Exception,))
 def import_repo(repo_id, parent=None):
     auth.set_current_tenant(auth.Tenant(repository_ids=[repo_id]))
 

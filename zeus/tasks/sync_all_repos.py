@@ -8,7 +8,7 @@ from zeus.utils import timezone
 from .sync_repo import sync_repo
 
 
-@celery.task(name='zeus.sync_all_repos', max_retries=None)
+@celery.task(name='zeus.sync_all_repos')
 def sync_all_repos():
     queryset = Repository.query.unrestricted_unsafe().filter(
         Repository.status == RepositoryStatus.active,

@@ -19,7 +19,7 @@ AGGREGATED_BUILD_STATS = (
 
 
 # TODO(dcramer): put a lock around this
-@celery.task(max_retries=None)
+@celery.task(max_retries=None, autoretry_for=(Exception,))
 def aggregate_build_stats_for_job(job_id: UUID):
     """
     Given a job, aggregate its data upwards into the Build.abs
@@ -229,7 +229,7 @@ def record_style_violation_stats(job_id: UUID):
     db.session.flush()
 
 
-@celery.task(name='zeus.aggregate_build_stats', max_retries=None)
+@celery.task(name='zeus.aggregate_build_stats', max_retries=None, autoretry_for=(Exception,))
 def aggregate_build_stats(build_id: UUID):
     """
     Updates various denormalized / aggregate attributes on Build per its

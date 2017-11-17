@@ -9,7 +9,7 @@ from .aggregate_job_stats import aggregate_build_stats
 from .process_artifact import process_artifact
 
 
-@celery.task(name='zeus.cleanup_builds', max_retries=None)
+@celery.task(name='zeus.cleanup_builds')
 def cleanup_builds():
     # find any artifacts which seemingly are stuck (not enqueued)
     queryset = Artifact.query.unrestricted_unsafe().filter(

@@ -7,7 +7,8 @@ from zeus.models import Build
 from zeus.notifications import email
 
 
-@celery.task(name='zeus.tasks.send_build_notifications', max_retries=None)
+@celery.task(name='zeus.tasks.send_build_notifications',
+             max_retries=None, autoretry_for=(Exception,))
 def send_build_notifications(build_id: UUID):
     build = Build.query.unrestricted_unsafe().get(build_id)
     if not build:
