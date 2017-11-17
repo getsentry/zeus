@@ -181,7 +181,9 @@
     </div>
 
     <pre class="commit-message">{{ revision.message }}</pre> {% if failing_tests_count %}
-    <h2>Failing Tests &mdash; {{ failing_tests_count }} total</h2>
+    <h2>Failing Tests
+      <small> &mdash; {{ failing_tests_count }} total</small>
+    </h2>
     <table class="table">
       <tr>
         <th colspan="2">Test</th>
@@ -205,7 +207,9 @@
       {% endif %}
     </table>
     {% endif %} {% if style_violations_count %}
-    <h2>Style Violations &mdash; {{ style_violations_count }} total</h2>
+    <h2>Style Violations
+      <small> &mdash; {{ style_violations_count }} total</small>
+    </h2>
     <table class="table">
       <tr>
         <th>Violation</th>
