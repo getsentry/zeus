@@ -1,0 +1,7 @@
+************* Module zeus
+zeus/bar.py:1: [C0111(missing-docstring), ] Missing module docstring
+************* Module zeus.auth
+zeus/foo.py:20: [E0326(bad-whitespace), ] Exactly one space required around keyword argument assignment
+    def __init__(self, repository_ids: Optional[str]=None):
+                                                    ^
+zeus/foo.py:200: [W0301(line-too-long), ] Line too long (112/100)
