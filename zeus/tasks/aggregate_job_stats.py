@@ -60,7 +60,6 @@ def aggregate_build_stats_for_job(job_id: UUID):
         build_id=job.build_id.hex,
     )
     with redis.lock(lock_key):
-        record_coverage_stats(job.build_id)
         aggregate_build_stats.delay(build_id=job.build_id)
 
 
@@ -248,6 +247,8 @@ def aggregate_build_stats(build_id: UUID):
 
         auth.set_current_tenant(auth.Tenant(
             repository_ids=[build.repository_id]))
+
+        record_coverage_stats(build.id)
 
         job_list = Job.query.filter(Job.build_id == build.id)
 

@@ -1,7 +1,7 @@
 from zeus import auth, factories
 from zeus.constants import Result, Status
 from zeus.models import FailureReason, ItemStat
-from zeus.tasks import aggregate_build_stats_for_job
+from zeus.tasks import aggregate_build_stats, aggregate_build_stats_for_job
 
 
 def test_unfinished_job(mocker, db_session, default_source):
@@ -14,7 +14,7 @@ def test_unfinished_job(mocker, db_session, default_source):
     job = factories.JobFactory(build=build, in_progress=True)
     db_session.add(job)
 
-    aggregate_build_stats_for_job(job.id)
+    aggregate_build_stats(build.id)
 
     assert build.status == Status.in_progress
     assert build.result == Result.unknown
@@ -32,7 +32,7 @@ def test_finished_job(mocker, db_session, default_source):
 
     mock_send_build_notifications = mocker.patch('zeus.tasks.send_build_notifications.delay')
 
-    aggregate_build_stats_for_job(job.id)
+    aggregate_build_stats(build.id)
 
     assert build.status == Status.finished
     assert build.result == Result.failed
@@ -53,6 +53,7 @@ def test_failing_tests(mocker, db_session, default_source):
     factories.TestCaseFactory(job=job, failed=True)
 
     aggregate_build_stats_for_job(job.id)
+    aggregate_build_stats(build.id)
 
     assert job.result == Result.failed
     assert build.result == Result.failed
@@ -83,7 +84,6 @@ def test_failing_tests_duplicate_reason(mocker, db_session, default_source):
     aggregate_build_stats_for_job(job.id)
 
     assert job.result == Result.failed
-    assert build.result == Result.failed
 
     reasons = list(FailureReason.query.filter(FailureReason.job_id == job.id))
     assert len(reasons) == 1
@@ -100,9 +100,9 @@ def test_failure_with_allow_failure(mocker, db_session, default_source):
     job = factories.JobFactory(build=build, failed=True, allow_failure=True)
     db_session.add(job)
 
-    aggregate_build_stats_for_job(job.id)
+    aggregate_build_stats(build.id)
 
-    assert job.result == Result.failed
+    assert build.status == Status.finished
     assert build.result == Result.passed
 
 
@@ -116,7 +116,7 @@ def test_newly_unfinished_job(mocker, db_session, default_source):
     job = factories.JobFactory(build=build, in_progress=True)
     db_session.add(job)
 
-    aggregate_build_stats_for_job(job.id)
+    aggregate_build_stats(build.id)
 
     assert build.status == Status.in_progress
     assert build.result == Result.unknown
@@ -147,7 +147,7 @@ def test_coverage_stats(mocker, db_session, default_source):
         diff_lines_uncovered=0,
     ))
 
-    aggregate_build_stats_for_job(job.id)
+    aggregate_build_stats(build.id)
 
     stats = {
         i.name: i.value
@@ -189,6 +189,7 @@ def test_test_stats(mocker, db_session, default_source):
     ))
 
     aggregate_build_stats_for_job(job.id)
+    aggregate_build_stats(build.id)
 
     build_stats = {
         i.name: i.value
