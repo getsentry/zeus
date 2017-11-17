@@ -14,6 +14,7 @@
     },
     "files.trimTrailingWhitespace": false,
     "files.trimFinalNewlines": false,
+    "files.insertFinalNewline": true,
 
     "prettier.bracketSpacing": false,
     "prettier.singleQuote": true,
