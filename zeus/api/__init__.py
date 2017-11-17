@@ -54,6 +54,9 @@ app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/source', r.BuildSourceResource
 )
 app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/style-violations', r.BuildStyleViolationsResource
+)
+app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/tests', r.BuildTestsResource
 )
 app.add_resource(

@@ -22,6 +22,7 @@ class TestCaseFactory(ModelFactory):
     repository_id = factory.SelfAttribute('repository.id')
     result = factory.Iterator([Result.failed, Result.passed])
     duration = factory.Faker('random_int', min=1, max=100000)
+    message = factory.faker.Faker('sentence')
 
     class Meta:
         model = models.TestCase

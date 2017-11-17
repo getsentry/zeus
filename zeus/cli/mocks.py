@@ -109,6 +109,11 @@ def mock_build(repo: models.Repository, parent_revision: models.Revision=None, u
                 failed=test_failed,
                 passed=not test_failed,
             )
+            if has_failure and randint(0, 2) == 0:
+                for n in range(1, 5):
+                    factories.StyleViolationFactory.create(
+                        job=job,
+                    )
 
         artifact_count = randrange(3) \
             if job.status == Status.finished and job.result == Result.passed \
