@@ -43,6 +43,7 @@ export default class BuildDetailsBase extends AsyncPage {
     let hasCoverage =
       build.stats.coverage.lines_covered > 0 || build.stats.coverage.lines_uncovered > 0;
     let hasTests = build.stats.tests.count > 0;
+    let hasStyleViolations = build.stats.style_violations.count > 0;
     return (
       <div>
         <BuildSummary>
@@ -93,6 +94,14 @@ export default class BuildDetailsBase extends AsyncPage {
               {hasCoverage
                 ? <Badge>
                     <ObjectCoverage data={build} diff={false} />
+                  </Badge>
+                : null}
+            </TabbedNavItem>
+            <TabbedNavItem to={`${this.getBaseRoute()}/style-violations`}>
+              Style Violations
+              {hasStyleViolations
+                ? <Badge>
+                    {build.stats.style_violations.count.toLocaleString()}
                   </Badge>
                 : null}
             </TabbedNavItem>
