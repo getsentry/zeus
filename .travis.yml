@@ -22,7 +22,7 @@ install:
 script:
   - git --version
   - node_modules/.bin/eslint webapp --format=checkstyle > checkstyle.xml
-  - flake8 > flake8.txt
+  - flake8 > flake8.log
   - py.test tests -v --cov . --cov-report="xml:coverage.xml" --junit-xml="junit.xml"
   - yarn test
 after_success:
@@ -30,13 +30,13 @@ after_success:
   - $(npm bin -g)/zeus upload -t "text/xml+xunit" junit.xml
   - $(npm bin -g)/zeus upload -t "text/xml+coverage" coverage.xml
   - $(npm bin -g)/zeus upload -t "text/xml+checkstyle" checkstyle.xml
-  - $(npm bin -g)/zeus upload -t "text/plain+pycodestyle" flake8.txt
+  - $(npm bin -g)/zeus upload -t "text/plain+pycodestyle" flake8.log
 after_failure:
   - npm install -g @zeus-ci/cli
   - $(npm bin -g)/zeus upload -t "text/xml+xunit" junit.xml
   - $(npm bin -g)/zeus upload -t "text/xml+coverage" coverage.xml
   - $(npm bin -g)/zeus upload -t "text/xml+checkstyle" checkstyle.xml
-  - $(npm bin -g)/zeus upload -t "text/plain+pycodestyle" flake8.txt
+  - $(npm bin -g)/zeus upload -t "text/plain+pycodestyle" flake8.log
 notifications:
   webhooks:
     urls:
