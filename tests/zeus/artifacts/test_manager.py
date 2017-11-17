@@ -6,6 +6,7 @@ from zeus.artifacts.manager import Manager
 
 def test_process_behavior_with_filenames(mocker, default_job):
     handler = mocker.Mock()
+    handler.__name__ = 'CoverageHandler'
     handler.supported_types = frozenset([])
 
     manager = Manager()
@@ -33,6 +34,7 @@ def test_process_behavior_with_filenames(mocker, default_job):
 
 def test_process_behavior_with_types(mocker, default_job):
     handler = mocker.Mock()
+    handler.__name__ = 'CoverageHandler'
     handler.supported_types = frozenset(['text/xml+coverage'])
 
     manager = Manager()
