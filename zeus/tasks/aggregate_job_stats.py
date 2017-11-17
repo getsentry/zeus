@@ -31,7 +31,7 @@ def aggregate_build_stats_for_job(job_id: UUID):
         job_id=job_id,
     )
     with redis.lock(lock_key):
-        job = Job.query.unrestricted_unsafe().with_for_update().filter(
+        job = Job.query.unrestricted_unsafe().with_for_update(nowait=True).filter(
             Job.id == job_id,
         ).first()
         if not job:
@@ -61,7 +61,7 @@ def aggregate_build_stats_for_job(job_id: UUID):
     )
     with redis.lock(lock_key):
         record_coverage_stats(job.build_id)
-        aggregate_build_stats(job.build_id)
+        aggregate_build_stats.delay(build_id=job.build_id)
 
 
 def aggregate_stat_for_build(build: Build, name: str, func_=func.sum):
@@ -241,7 +241,7 @@ def aggregate_build_stats(build_id: UUID):
         build_id=build_id,
     )
     with redis.lock(lock_key):
-        build = Build.query.unrestricted_unsafe().with_for_update().get(build_id)
+        build = Build.query.unrestricted_unsafe().with_for_update(nowait=True).get(build_id)
         if not build:
             raise ValueError(
                 'Unable to find build with id = {}'.format(build_id))
