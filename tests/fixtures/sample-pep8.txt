@@ -1,0 +1,2 @@
+optparse.py:69:11: E401 multiple imports on one line
+optparse.py:77:1: W302 expected 2 blank lines, found 1

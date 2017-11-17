@@ -44,9 +44,12 @@ and will grant additional functionality if they're present.
 - text/xml+junit
 - text/xml+xunit
 
-#### Checkstyle
+#### Style Checks
 
 - text/xml+checkstyle
+- text/plain+pep8
+- text/plain+pycodestyle
+- text/plain+pylint
 
 ## Contributing
 

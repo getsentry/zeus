@@ -211,6 +211,18 @@ def sample_checkstyle():
         return fp.read()
 
 
+@pytest.fixture(scope='session')
+def sample_pep8():
+    with open(os.path.join(DATA_FIXTURES, 'sample-pep8.txt')) as fp:
+        return fp.read()
+
+
+@pytest.fixture(scope='session')
+def sample_pylint():
+    with open(os.path.join(DATA_FIXTURES, 'sample-pylint.txt')) as fp:
+        return fp.read()
+
+
 @pytest.fixture(scope='function')
 def git_repo_config():
     root = '/tmp/zeus-git-test'
