@@ -15,6 +15,6 @@ manager.register(CoverageHandler, [
 manager.register(XunitHandler, [
                  'xunit.xml', 'junit.xml', '*.xunit.xml', '*.junit.xml'])
 manager.register(PyCodeStyleHandler, [
-                 'pep8.txt', '*.pep8.txt', 'pycodestyle.txt', '*.pycodestyle.txt'])
+                 'pep8.txt', '*.pep8.txt', 'pep8.log', '*.pep8.log', 'pycodestyle.txt', '*.pycodestyle.txt', 'pycodestyle.log', '*.pycodestyle.log'])
 manager.register(PyLintHandler, [
-                 'pylint.txt', '*.pylint.txt'])
+                 'pylint.txt', '*.pylint.txt', 'pylint.log', '*.pylint.log'])
