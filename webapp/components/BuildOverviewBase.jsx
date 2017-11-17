@@ -66,7 +66,7 @@ export default class BuildOverviewBase extends AsyncPage {
         <div>
           <SectionHeading>
             Jobs
-            {!!failingJobs &&
+            {!!failingJobs.length &&
               <small>
                 {' '}&mdash; {failingJobs.length} failed
               </small>}
