@@ -7,13 +7,14 @@ from zeus.config import celery, db, redis
 from zeus.constants import Result, Status
 from zeus.db.utils import create_or_update
 from zeus.models import (Artifact, Build, FailureReason,
-                         FileCoverage, ItemStat, Job, TestCase)
+                         FileCoverage, ItemStat, Job, StyleViolation, TestCase)
 from zeus.tasks.send_build_notifications import send_build_notifications
 from zeus.utils import timezone
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 
 AGGREGATED_BUILD_STATS = (
     'tests.count', 'tests.duration', 'tests.failures',
+    'style_violations.count',
 )
 
 
@@ -52,6 +53,7 @@ def aggregate_build_stats_for_job(job_id: UUID):
         # (we might want to move TestResult's stats here as well)
         if job.status == Status.finished:
             record_test_stats(job.id)
+            record_style_violation_stats(job.id)
             record_failure_reasons(job)
 
     lock_key = 'aggstatsbuild:{build_id}'.format(
@@ -210,6 +212,23 @@ def record_coverage_stats(build_id: UUID):
             )
 
 
+def record_style_violation_stats(job_id: UUID):
+    create_or_update(
+        ItemStat,
+        where={
+            'item_id': job_id,
+            'name': 'style_violations.count',
+        },
+        values={
+            'value':
+            db.session.query(func.count(StyleViolation.id)).filter(
+                StyleViolation.job_id == job_id,
+            ).as_scalar(),
+        }
+    )
+    db.session.flush()
+
+
 @celery.task(name='zeus.aggregate_build_stats', max_retries=None)
 def aggregate_build_stats(build_id: UUID):
     """
@@ -224,7 +243,8 @@ def aggregate_build_stats(build_id: UUID):
     with redis.lock(lock_key):
         build = Build.query.unrestricted_unsafe().with_for_update().get(build_id)
         if not build:
-            raise ValueError('Unable to find build with id = {}'.format(build_id))
+            raise ValueError(
+                'Unable to find build with id = {}'.format(build_id))
 
         auth.set_current_tenant(auth.Tenant(
             repository_ids=[build.repository_id]))

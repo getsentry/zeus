@@ -8,6 +8,7 @@ import JobList from '../components/JobList';
 import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
 import SectionSubheading from '../components/SectionSubheading';
+import StyleViolationList from '../components/StyleViolationList';
 import TestList from '../components/TestList';
 
 export default class BuildOverviewBase extends AsyncPage {
@@ -22,6 +23,7 @@ export default class BuildOverviewBase extends AsyncPage {
     return [
       ['artifacts', `${endpoint}/artifacts`],
       ['jobList', `${endpoint}/jobs`],
+      ['violationList', `${endpoint}/style-violations`],
       ['testFailures', `${endpoint}/tests?result=failed`],
       ['diffCoverage', `${endpoint}/file-coverage?diff_only=true`]
     ];
@@ -51,6 +53,15 @@ export default class BuildOverviewBase extends AsyncPage {
           <div>
             <SectionHeading>Coverage</SectionHeading>
             <CoverageSummary coverage={this.state.diffCoverage} collapsable={true} />
+          </div>}
+        {!!this.state.violationList.length &&
+          <div>
+            <SectionHeading>Style Violations</SectionHeading>
+            <StyleViolationList
+              violationList={this.state.violationList}
+              params={this.props.params}
+              collapsable={true}
+            />
           </div>}
         <div>
           <SectionHeading>

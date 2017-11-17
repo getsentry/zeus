@@ -8,6 +8,7 @@ import BuildCoverage from './pages/BuildCoverage';
 import BuildDetails from './pages/BuildDetails';
 import BuildDiff from './pages/BuildDiff';
 import BuildOverview from './pages/BuildOverview';
+import BuildStyleViolationList from './pages/BuildStyleViolationList';
 import BuildTestList from './pages/BuildTestList';
 import GitHubRepositoryList from './pages/GitHubRepositoryList';
 import OwnerDetails from './pages/OwnerDetails';
@@ -68,6 +69,7 @@ export default (
         <IndexRoute component={BuildOverview} />
         <Route path="coverage" component={BuildCoverage} />
         <Route path="diff" component={BuildDiff} />
+        <Route path="style-violations" component={BuildStyleViolationList} />
         <Route path="tests" component={BuildTestList} />
         <Route path="artifacts" component={BuildArtifacts} />
       </Route>

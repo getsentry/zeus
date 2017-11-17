@@ -15,10 +15,15 @@ class TestStatsSchema(Schema):
     duration = fields.Number()
 
 
+class StyleViolationsSchema(Schema):
+    count = fields.Integer()
+
+
 # should be "dumped" with a list of ItemStat instances
 class StatsSchema(Schema):
     coverage = fields.Nested(CoverageStatsSchema(), dump_only=True)
     tests = fields.Nested(TestStatsSchema(), dump_only=True)
+    style_violations = fields.Nested(StyleViolationsSchema(), dump_only=True)
 
     @pre_dump
     def process_stats(self, data):
