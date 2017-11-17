@@ -12,6 +12,7 @@ regexp = re.compile(
 SEVERITY_MAP = {
     'W': Severity.warning,
     'E': Severity.error,
+    'F': Severity.error,
 }
 
 
@@ -22,7 +23,6 @@ class PyCodeStyleHandler(ArtifactHandler):
     def process(self, fp):
         job = self.job
         for line in fp:
-
             # optparse.py:69:11: E401 multiple imports on one line
             parsed = regexp.match(line.decode('utf-8'))
             if not parsed:
