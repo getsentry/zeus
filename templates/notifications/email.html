@@ -204,6 +204,25 @@
       </tr>
       {% endif %}
     </table>
+    {% endif %} {% if style_violations_count %}
+    <h2>Style Violations &mdash; {{ style_violations_count }} total</h2>
+    <table class="table">
+      <tr>
+        <th>Violation</th>
+      </tr>
+      {% for violation in style_violations %}
+      <tr>
+        <td>{{ violation.filename }}
+          <br />
+          <small>{{ violation.message }}</small>
+        </td>
+      </tr>
+      {% endfor %} {% if style_violations_count > style_violations|length %}
+      <tr>
+        <td> ... </td>
+      </tr>
+      {% endif %}
+    </table>
     {% endif %} {% if job_list %}
     <h2>Jobs{% if job_failure_count %}
       <small> &mdash; {{ job_failure_count }} failed</small>{% endif %}</h2>

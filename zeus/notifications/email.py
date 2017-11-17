@@ -4,7 +4,10 @@ from typing import List
 
 from zeus.config import db, mail
 from zeus.constants import Result
-from zeus.models import Author, Build, Email, ItemOption, Job, Repository, RepositoryAccess, Revision, Source, TestCase, User
+from zeus.models import (
+    Author, Build, Email, ItemOption, Job, Repository, RepositoryAccess,
+    Revision, Source, StyleViolation, TestCase, User
+)
 from zeus.utils.email import inline_css
 
 
@@ -114,9 +117,17 @@ def build_message(build: Build) -> Message:
 
         failing_tests_count = failing_tests_query.count()
         failing_tests = failing_tests_query.limit(10)
+
+        style_violations_query = StyleViolation.query.filter(
+            StyleViolation.job_id.in_(job_ids),
+        )
+        style_violations_count = style_violations_query.count()
+        style_violations = style_violations_query.limit(10)
     else:
         failing_tests = ()
         failing_tests_count = 0
+        style_violations = ()
+        style_violations_count = 0
 
     context = {
         'title': subject,
@@ -163,6 +174,11 @@ def build_message(build: Build) -> Message:
             'name': test.name
         } for test in failing_tests],
         'failing_tests_count': failing_tests_count,
+        'style_violations': [{
+            'message': violation.message,
+            'filename': violation.filename
+        } for violation in style_violations],
+        'style_violations_count': style_violations_count,
     }
 
     msg = Message(subject, recipients=recipients, extra_headers={
