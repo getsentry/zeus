@@ -35,7 +35,7 @@ export default class ArtifactsList extends Component {
       <ResultGrid>
         <Header>
           <Column>File</Column>
-          <Column width={120}>Type</Column>
+          <Column width={160}>Type</Column>
           <Column width={90} textAlign="right">
             Size
           </Column>
@@ -47,19 +47,19 @@ export default class ArtifactsList extends Component {
             return (
               <Row key={artifact.id}>
                 <Column>
-                  {this.props.collapsable ? (
-                    artifact.name
-                  ) : (
-                    <div>
-                      <a href={artifact.download_url}>{artifact.name}</a>
-                      <br />
-                      <small>
-                        {artifact.job.provider} #{artifact.job.number}
-                      </small>
-                    </div>
-                  )}
+                  {this.props.collapsable
+                    ? artifact.name
+                    : <div>
+                        <a href={artifact.download_url}>
+                          {artifact.name}
+                        </a>
+                        <br />
+                        <small>
+                          {artifact.job.provider} #{artifact.job.number}
+                        </small>
+                      </div>}
                 </Column>
-                <Column width={120} textAlign="right">
+                <Column width={160} textAlign="right">
                   {artifact.type}
                 </Column>
                 <Column width={90} textAlign="right">
