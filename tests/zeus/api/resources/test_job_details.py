@@ -1,6 +1,9 @@
+from datetime import datetime
+
 from zeus import factories
 from zeus.config import db
 from zeus.constants import Result, Status
+from zeus.utils import timezone
 
 
 def test_job_details(
@@ -30,6 +33,8 @@ def test_update_job_to_finished(
         json={
             'result': 'failed',
             'status': 'finished',
+            'started_at': '2017-01-01T01:02:30Z',
+            'finished_at': '2017-01-01T01:22:30Z',
         }
     )
     assert resp.status_code == 200
@@ -38,8 +43,8 @@ def test_update_job_to_finished(
 
     assert job.status == Status.finished
     assert job.result == Result.failed
-    assert job.date_started
-    assert job.date_finished
+    assert job.date_started == datetime(2017, 1, 1, 1, 2, 30, tzinfo=timezone.utc)
+    assert job.date_finished == datetime(2017, 1, 1, 1, 22, 30, tzinfo=timezone.utc)
 
     mock_delay.assert_called_once_with(job_id=job.id)
 
