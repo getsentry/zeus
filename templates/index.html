@@ -164,7 +164,8 @@
       release: '{{ SENTRY_RELEASE }}',
     }).install();
   </script>
-  <script type="text/javascript" src="{{ url_for('static', filename='bundle.js') }}"></script>
+  <script type="text/javascript" src="{{ asset_url('vendor.js') }}"></script>
+  <script type="text/javascript" src="{{ asset_url('app.js') }}"></script>
 </body>
 
 </html>

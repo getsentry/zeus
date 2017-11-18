@@ -1,7 +1,7 @@
 import React from 'react';
 import {IndexRoute, Route, IndexRedirect} from 'react-router';
+import Loadable from 'react-loadable';
 
-import AccountSettings from './pages/AccountSettings';
 import App from './pages/App';
 import BuildArtifacts from './pages/BuildArtifacts';
 import BuildCoverage from './pages/BuildCoverage';
@@ -10,7 +10,6 @@ import BuildDiff from './pages/BuildDiff';
 import BuildOverview from './pages/BuildOverview';
 import BuildStyleViolationList from './pages/BuildStyleViolationList';
 import BuildTestList from './pages/BuildTestList';
-import GitHubRepositoryList from './pages/GitHubRepositoryList';
 import OwnerDetails from './pages/OwnerDetails';
 import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
@@ -29,23 +28,42 @@ import RevisionDetails from './pages/RevisionDetails';
 import RevisionDiff from './pages/RevisionDiff';
 import RevisionOverview from './pages/RevisionOverview';
 import RevisionTestList from './pages/RevisionTestList';
-import Settings from './pages/Settings';
-import TokenSettings from './pages/TokenSettings';
 import UserBuildList from './pages/UserBuildList';
 
 import Login from './components/Login';
 import NotFoundError from './components/NotFoundError';
+import PageLoading from './components/PageLoading';
 
 import requireAuth from './utils/requireAuth';
+
+const AsyncSettings = Loadable({
+  loader: () => import('./pages/Settings'),
+  loading: PageLoading
+});
+
+const AsyncAccountSettings = Loadable({
+  loader: () => import('./pages/AccountSettings'),
+  loading: PageLoading
+});
+
+const AsyncGitHubRepositoryList = Loadable({
+  loader: () => import('./pages/GitHubRepositoryList'),
+  loading: PageLoading
+});
+
+const AsyncTokenSettings = Loadable({
+  loader: () => import('./pages/TokenSettings'),
+  loading: PageLoading
+});
 
 export default (
   <Route path="/" component={App}>
     <IndexRedirect to="/builds" />
-    <Route path="/settings" component={requireAuth(Settings)}>
+    <Route path="/settings" component={requireAuth(AsyncSettings)}>
       <IndexRedirect to="/settings/account" />
-      <Route path="account" component={AccountSettings} />
-      <Route path="github/repos" component={GitHubRepositoryList} />
-      <Route path="token" component={TokenSettings} />
+      <Route path="account" component={AsyncAccountSettings} />
+      <Route path="github/repos" component={AsyncGitHubRepositoryList} />
+      <Route path="token" component={AsyncTokenSettings} />
     </Route>
     <Route path="/builds" component={requireAuth(UserBuildList)} />
     <Route path="/login" component={Login} />

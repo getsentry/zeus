@@ -134,6 +134,9 @@ def create_app(_read_config=True, **config):
     app.config['GITHUB_CLIENT_SECRET'] = os.environ.get(
         'GITHUB_CLIENT_SECRET') or None
 
+    app.config['WEBPACK_MANIFEST_PATH'] = os.path.join(
+        ROOT, 'static', 'asset-manifest.json')
+
     app.config['CELERY_ACCEPT_CONTENT'] = ['zeus_json', 'json']
     app.config['CELERY_ACKS_LATE'] = True
     app.config['CELERY_BROKER_URL'] = app.config['REDIS_URL']
@@ -219,6 +222,8 @@ def create_app(_read_config=True, **config):
     mail.init_app(app)
     celery.init_app(app, sentry)
 
+    configure_webpack(app)
+
     configure_api(app)
     configure_web(app)
 
@@ -261,3 +266,27 @@ def configure_web(app):
     if app.debug:
         from zeus.web import debug
         app.register_blueprint(debug.app, url_prefix='/debug')
+
+
+def configure_webpack(app):
+    from flask import url_for
+
+    app.extensions['webpack'] = {'assets': None}
+
+    def get_asset(path):
+        assets = app.extensions['webpack']['assets']
+        if assets is None:
+            try:
+                with open(app.config['WEBPACK_MANIFEST_PATH']) as fp:
+                    assets = json.load(fp)
+            except FileNotFoundError:
+                app.logger.exception('Unable to load webpack manifest')
+                assets = {}
+            app.extensions['webpack']['assets'] = assets
+        return url_for('static', filename=assets.get(path, path))
+
+    @app.context_processor
+    def webpack_assets():
+        return {
+            'asset_url': get_asset,
+        }

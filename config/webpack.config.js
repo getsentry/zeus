@@ -7,19 +7,16 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
-// In development, we always serve from the root. This makes config easier.
-const publicPath = '/';
+const publicPath = '/static/';
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_PATH%/xyz looks better than %PUBLIC_PATH%xyz.
-const publicUrl = '';
+const publicUrl = 'static';
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
 
@@ -77,46 +74,20 @@ function getPlugins() {
   // Generate a manifest file which contains a mapping of all asset filenames
   // to their corresponding output file so that tools can pick it up without
   // having to parse `index.html`.
-  isProd &&
-    plugins.push(
-      new ManifestPlugin({
-        fileName: 'asset-manifest.json'
-      })
-    );
+  plugins.push(
+    new ManifestPlugin({
+      fileName: 'asset-manifest.json'
+    })
+  );
 
-  // Generate a service worker script that will precache, and keep up to date,
-  // the HTML & assets that are part of the Webpack build.
-  isProd &&
-    plugins.push(
-      new SWPrecacheWebpackPlugin({
-        // By default, a cache-busting query parameter is appended to requests
-        // used to populate the caches, to ensure the responses are fresh.
-        // If a URL is already hashed by Webpack, then there is no concern
-        // about it being stale, and the cache-busting can be skipped.
-        dontCacheBustUrlsMatching: /\.\w{8}\./,
-        filename: 'service-worker.js',
-        logger(message) {
-          if (message.indexOf('Total precache size is') === 0) {
-            // This message occurs for every build and is a bit too noisy.
-            return;
-          }
-          if (message.indexOf('Skipping static resource') === 0) {
-            // This message obscures real errors so we ignore it.
-            // https://github.com/facebookincubator/create-react-app/issues/2612
-            return;
-          }
-          console.log(message);
-        },
-        minify: true,
-        // For unknown URLs, fallback to the index page
-        navigateFallback: publicUrl + '/index.html',
-        // Ignores URLs starting from /__ (useful for Firebase):
-        // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
-        navigateFallbackWhitelist: [/^(?!\/__).*/],
-        // Don't precache sourcemaps (they're large) and build asset manifest:
-        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/]
-      })
-    );
+  // this assumes your vendor imports exist in the node_modules directory
+  plugins.push(
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: Infinity
+      // minChunks: module => module.context && module.context.indexOf('node_modules') !== -1
+    })
+  );
 
   // Minify the code.
   isProd &&
@@ -143,13 +114,29 @@ function getPlugins() {
 }
 
 function getEntry() {
-  let entry = [];
+  let entry = {};
   // We ship a few polyfills by default:
-  entry.push(require.resolve('./polyfills'));
+  entry.polyfills = require.resolve('./polyfills');
   // Finally, this is your app's code:
   // We include the app code last so that if there is a runtime error during
   // initialization
-  entry.push(paths.appIndexJs);
+  entry.app = paths.appIndexJs;
+  entry.vendor = [
+    'classnames',
+    'lodash',
+    'react',
+    'react-dom',
+    'react-document-title',
+    'react-loadable',
+    'react-redux',
+    'react-router',
+    'react-select',
+    'react-syntax-highlighter',
+    'react-transition-group',
+    'redux',
+    'redux-thunk',
+    'styled-components'
+  ];
   return entry;
 }
 
@@ -159,6 +146,7 @@ function getEntry() {
 module.exports = {
   // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
+  bail: isProd,
   devtool: isProd ? '#source-map' : '#cheap-module-source-map',
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
@@ -172,10 +160,9 @@ module.exports = {
     // This does not produce a real file. It's just the virtual path that is
     // served by WebpackDevServer in development. This is the JS bundle
     // containing code from all our entry points, and the Webpack runtime.
-    filename: 'bundle.js',
-    // There are also additional JS chunk files if you use code splitting.
-    chunkFilename: '[name].chunk.js',
+    filename: 'js/[name].[hash:8].js',
     // This is the URL that app is served from. We use "/" in development.
+    chunkFilename: 'js/[name].[hash:8].chunk.js',
     publicPath: publicPath,
     // Point sourcemap entries to original disk location (format as URL on Windows)
     devtoolModuleFilenameTemplate: info =>
