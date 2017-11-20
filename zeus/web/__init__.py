@@ -35,5 +35,8 @@ app.add_url_rule(
     '/hooks/<hook_id>/<signature>/builds/<build_xid>/jobs/<job_xid>/artifacts',
     view_func=h.JobArtifactsHook.as_view('job-artifacts-hook')
 )
+app.add_url_rule(
+    '/hooks/<hook_id>/<signature>/change-requests/<cr_xid>', view_func=h.ChangeRequestHook.as_view('change-request-hook')
+)
 app.add_url_rule('/<path:path>', view_func=v.index)
 app.add_url_rule('/', 'index', view_func=v.index)

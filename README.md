@@ -186,6 +186,8 @@ zeus
 |   |       └── TestCase
 |   |           ├── Artifact
 |   |           └── ItemStat
+|   ├── ChangeRequest
+|   |   └── Revision
 |   └── Source
 |       ├── Author
 |       ├── Patch
@@ -229,9 +231,16 @@ This will look for a Build object with the following characteristics:
 - `external_id=abc`
 - `repository_id={Hook.repository_id}`
 
-If a match is found, it will be updated with the given API parameters. If it isn't found, it will be created.
+If a match is found, it will be updated with the given API parameters. If it isn't found, it will be created. All of these operations are treated like a standard UPSERT (UPDATE IF EXISTS or INSERT).
 
-For example, if you were to publish job details from Travis without using the native webhooks:
+The process for publishing data generally looks like this:
+
+1. if applicable, upsert a change request and its source association
+2. upsert the build's basic parameters
+3. upsert the detailed job parameters
+4. publish artifacts
+
+For example, to publish job details from Travis without using the native webhooks:
 
 ```shell
 #!/bin/bash -eu

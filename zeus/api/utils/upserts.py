@@ -1,7 +1,7 @@
 from flask import Response
 
 from zeus.config import redis
-from zeus.models import Repository, Build, Job
+from zeus.models import Repository, Build, ChangeRequest, Job
 from zeus.api import client
 
 
@@ -68,6 +68,39 @@ def upsert_build(repository: Repository, provider: str,
             )
         return client.post(
             '/repos/{}/builds'.format(
+                repository.get_full_name(),
+            ),
+            json=json
+        )
+
+
+def upsert_change_request(repository: Repository, provider: str,
+                          external_id: str, data: dict=None) -> Response:
+    lock_key = 'hook:cr:{repo_id}:{provider}:{cr_xid}'.format(
+        repo_id=repository.id,
+        provider=provider,
+        cr_xid=external_id,
+    )
+    with redis.lock(lock_key):
+        json = data.copy() if data else {}
+        json['external_id'] = external_id
+        json['provider'] = provider
+
+        cr = ChangeRequest.query.filter(
+            ChangeRequest.provider == provider,
+            ChangeRequest.external_id == external_id,
+        ).first()
+
+        if cr:
+            return client.put(
+                '/repos/{}/change-requests/{}'.format(
+                    repository.get_full_name(),
+                    cr.number,
+                ),
+                json=json
+            )
+        return client.post(
+            '/repos/{}/change-requests'.format(
                 repository.get_full_name(),
             ),
             json=json

@@ -2,11 +2,15 @@ import os
 import os.path
 import re
 
+from collections import namedtuple
 from subprocess import Popen, PIPE
 from typing import List, Optional, Tuple
 
 from zeus.db.utils import create_or_update, get_or_create, try_create
 from zeus.models import Author, Repository, Revision, Source
+
+RevisionSaveResult = namedtuple(
+    'RevisionSaveResult', ['revision', 'created'])
 
 
 class RevisionResult(object):
@@ -107,7 +111,7 @@ class RevisionResult(object):
             'author': author,
         })
 
-        return (revision, created)
+        return RevisionSaveResult(revision, created)
 
 
 class CommandError(Exception):
