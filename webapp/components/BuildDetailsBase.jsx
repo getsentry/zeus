@@ -61,7 +61,7 @@ export default class BuildDetailsBase extends AsyncPage {
               </DurationWrapper>}
             <Time>
               <MdClock size="16" style={{marginRight: 5}} />
-              {build.status === 'queued'
+              {build.status === 'queued' || build.status === 'unknown'
                 ? <span>
                     created <TimeSince date={build.created_at} />
                   </span>
