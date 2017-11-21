@@ -1,6 +1,5 @@
 import React from 'react';
 import {Link} from 'react-router';
-import {Flex} from 'grid-styled';
 import styled from 'styled-components';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
@@ -15,64 +14,30 @@ import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
 import BuildList from '../components/BuildList';
 import {ButtonLink} from '../components/Button';
+import Collapsable from '../components/Collapsable';
 import Layout from '../components/Layout';
 import ObjectCoverage from '../components/ObjectCoverage';
 import ObjectDuration from '../components/ObjectDuration';
+import {Column, Header, ResultGrid, Row} from '../components/ResultGrid';
 import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
 
-const RepoItem = styled.div`
-  width: 32%;
-  padding: 5px;
+const RepoLink = styled(Link)`
+  display: block;
+  cursor: pointer;
 
-  a {
-    display: block;
-    text-align: center;
-    padding: 5px;
-    border: 2px solid #111;
-    color: #111;
-    border-radius: 3px;
-    overflow: hidden;
-
-    svg {
-      align-items: center;
-      display: inline-block;
-      margin-right: 5px;
-      vertical-align: text-bottom !important;
-    }
-
-    &:hover {
-      border-color: #7b6be6;
-      background-color: #7b6be6;
-      color: #fff;
-
-      div {
-        color: #fff;
-      }
-    }
+  &:hover {
+    background-color: #f0eff5;
   }
 `;
 
-const RepoName = styled.div`
-  font-weight: 400;
-  margin-bottom: 5px;
-  white-space: nowrap;
-`;
+const RepoName = styled.div`font-weight: 500;`;
 
-const RepoStats = styled.div`
-  font-size: 0.8em;
+const Stat = styled.div`
   color: #666;
-`;
 
-const Stat = styled.span`
-  &:last-child:after {
-    display: none;
-  }
-
-  &:after {
-    content: ' ';
-    display: inline-block;
-    margin: 0 5px;
+  svg {
+    margin-right: 5px;
   }
 `;
 
@@ -95,33 +60,48 @@ class RepoListSection extends AsyncComponent {
 
     return (
       <Section>
-        <Flex wrap>
-          {this.props.repoList.map(repo => {
-            return (
-              <RepoItem key={repo.id} width="33%" p={5}>
-                <Link to={repo.full_name}>
-                  <RepoName>{`${repo.owner_name} / ${repo.name}`}</RepoName>
-                  {repo.latest_build
-                    ? <RepoStats>
+        <ResultGrid>
+          <Header>
+            <Column>Repository</Column>
+            <Column textAlign="center" width={90}>
+              Coverage
+            </Column>
+            <Column textAlign="center" width={90}>
+              Duration
+            </Column>
+          </Header>
+          <Collapsable collapsable maxVisible={5}>
+            {this.props.repoList.map(repo => {
+              return (
+                <RepoLink to={repo.full_name} key={repo.id}>
+                  <Row>
+                    <Column>
+                      <RepoName>{`${repo.owner_name} / ${repo.name}`}</RepoName>
+                    </Column>
+                    <Column textAlign="center" width={90}>
+                      {!!repo.latest_build &&
                         <Stat>
                           <InProgressIcon size={14} />
                           <ObjectDuration data={repo.latest_build} />
-                        </Stat>
-                        {!!(
+                        </Stat>}
+                    </Column>
+                    <Column textAlign="center" width={90}>
+                      {!!repo.latest_build &&
+                        !!(
                           repo.latest_build.stats.coverage.lines_covered +
                           repo.latest_build.stats.coverage.lines_uncovered
                         ) &&
-                          <Stat>
-                            <CoverageIcon size={14} />
-                            <ObjectCoverage data={repo.latest_build} diff={false} />
-                          </Stat>}
-                      </RepoStats>
-                    : <RepoStats>(no data yet)</RepoStats>}
-                </Link>
-              </RepoItem>
-            );
-          })}
-        </Flex>
+                        <Stat>
+                          <CoverageIcon size={14} />
+                          <ObjectCoverage data={repo.latest_build} diff={false} />
+                        </Stat>}
+                    </Column>
+                  </Row>
+                </RepoLink>
+              );
+            })}
+          </Collapsable>
+        </ResultGrid>
       </Section>
     );
   }
