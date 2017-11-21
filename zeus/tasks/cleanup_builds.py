@@ -16,11 +16,6 @@ def cleanup_builds():
         Artifact.status == Status.queued,
         Artifact.date_created < timezone.now() - timedelta(minutes=15),
     )
-    # HACK(dramer): ensure we dont double process this artifact
-    queryset.update({
-        'status': Status.in_progress,
-    })
-    db.session.flush()
     for result in queryset:
         process_artifact.delay(artifact_id=result.id)
 
