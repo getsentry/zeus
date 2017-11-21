@@ -30,12 +30,16 @@ class UserBuildList extends AsyncPage {
 
 class BuildListBody extends AsyncComponent {
   static propTypes = {
-    buildList: PropTypes.array
+    buildList: PropTypes.array,
+    links: PropTypes.array
   };
 
   fetchData() {
     return new Promise((resolve, reject) => {
-      this.props.loadBuildsForUser();
+      this.props.loadBuildsForUser('me', {
+        per_page: 25,
+        page: this.props.location.query.page || 1
+      });
       return resolve();
     });
   }
@@ -59,6 +63,7 @@ export default connect(
       buildList: state.builds.items.filter(build =>
         emailSet.has(build.source.author.email)
       ),
+      links: state.builds.links,
       loading: !state.builds.loaded
     };
   },

@@ -43,13 +43,11 @@ export const loadBuilds = items => {
   };
 };
 
-export const loadBuildsForRepository = (repoFullName, query, emptyState = true) => {
+export const loadBuildsForRepository = (repoFullName, query) => {
   return dispatch => {
-    if (emptyState) {
-      dispatch({
-        type: PRE_LOAD_BUILD_LIST
-      });
-    }
+    dispatch({
+      type: PRE_LOAD_BUILD_LIST
+    });
     api
       .get(`/repos/${repoFullName}/builds`, {
         query
@@ -63,9 +61,9 @@ export const loadBuildsForRepository = (repoFullName, query, emptyState = true) 
   };
 };
 
-export const loadBuildsForUser = (userID = 'me', limit = 100) => {
+export const loadBuildsForUser = (userID = 'me', query) => {
   return dispatch => {
-    api.get(`/users/${userID}/builds`, {query: {per_page: limit}}).then(items => {
+    api.get(`/users/${userID}/builds`, {query}).then(items => {
       dispatch({
         type: LOAD_BUILD_LIST,
         items

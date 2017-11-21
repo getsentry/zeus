@@ -34,14 +34,10 @@ class BuildListBody extends AsyncComponent {
     repo: PropTypes.object.isRequired
   };
 
-  fetchData(refresh) {
+  fetchData() {
     return new Promise((resolve, reject) => {
       let {repo} = this.context;
-      this.props.loadBuildsForRepository(
-        repo.full_name,
-        this.props.location.query,
-        !refresh
-      );
+      this.props.loadBuildsForRepository(repo.full_name, this.props.location.query);
       return resolve();
     });
   }

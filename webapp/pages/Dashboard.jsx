@@ -4,13 +4,14 @@ import styled from 'styled-components';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
+import ViewAllIcon from 'react-icons/lib/md/input';
+
 import {loadBuildsForUser} from '../actions/builds';
 import {subscribe} from '../decorators/stream';
 
 import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
 import BuildList from '../components/BuildList';
-import {ButtonLink} from '../components/Button';
 import Collapsable from '../components/Collapsable';
 import Layout from '../components/Layout';
 import ObjectCoverage from '../components/ObjectCoverage';
@@ -98,7 +99,7 @@ class BuildListSection extends AsyncComponent {
 
   fetchData() {
     return new Promise((resolve, reject) => {
-      this.props.loadBuildsForUser('me', 10);
+      this.props.loadBuildsForUser('me', {per_page: 10});
       return resolve();
     });
   }
@@ -111,12 +112,9 @@ class BuildListSection extends AsyncComponent {
       <Section>
         <SectionHeading>
           Your Builds
-          <ButtonLink
-            to="/builds"
-            size="xs"
-            style={{marginLeft: 10, verticalAlign: 'text-bottom'}}>
-            &middot; &middot; &middot;
-          </ButtonLink>
+          <Link to="/builds" style={{marginLeft: 10}}>
+            <ViewAllIcon size={18} style={{verticalAlign: 'text-bottom'}} />
+          </Link>
         </SectionHeading>
         <BuildList
           params={this.props.params}
