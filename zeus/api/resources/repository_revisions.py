@@ -33,7 +33,7 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
         parent = request.args.get('parent')
 
         vcs_log = list(vcs.log(
-            limit=50,
+            limit=min(int(request.args.get('per_page', 50)), 50),
             parent=parent,
             branch=branch,
         ))
