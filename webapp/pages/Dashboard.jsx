@@ -4,9 +4,6 @@ import styled from 'styled-components';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
-import InProgressIcon from 'react-icons/lib/md/av-timer';
-import CoverageIcon from 'react-icons/lib/md/blur-linear';
-
 import {loadBuildsForUser} from '../actions/builds';
 import {subscribe} from '../decorators/stream';
 
@@ -28,16 +25,6 @@ const RepoLink = styled(Link)`
 
   &:hover {
     background-color: #f0eff5;
-  }
-`;
-
-const RepoName = styled.div`font-weight: 500;`;
-
-const Stat = styled.div`
-  color: #666;
-
-  svg {
-    margin-right: 5px;
   }
 `;
 
@@ -76,7 +63,7 @@ class RepoListSection extends AsyncComponent {
                 <RepoLink to={repo.full_name} key={repo.id}>
                   <Row>
                     <Column>
-                      <RepoName>{`${repo.owner_name} / ${repo.name}`}</RepoName>
+                      <strong>{`${repo.owner_name} / ${repo.name}`}</strong>
                     </Column>
                     <Column textAlign="center" width={90}>
                       {!!repo.latest_build &&
@@ -84,17 +71,10 @@ class RepoListSection extends AsyncComponent {
                           repo.latest_build.stats.coverage.lines_covered +
                           repo.latest_build.stats.coverage.lines_uncovered
                         ) &&
-                        <Stat>
-                          <CoverageIcon size={14} />
-                          <ObjectCoverage data={repo.latest_build} diff={false} />
-                        </Stat>}
+                        <ObjectCoverage data={repo.latest_build} diff={false} />}
                     </Column>
                     <Column textAlign="center" width={90}>
-                      {!!repo.latest_build &&
-                        <Stat>
-                          <InProgressIcon size={14} />
-                          <ObjectDuration data={repo.latest_build} />
-                        </Stat>}
+                      {!!repo.latest_build && <ObjectDuration data={repo.latest_build} />}
                     </Column>
                   </Row>
                 </RepoLink>
