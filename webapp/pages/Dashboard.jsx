@@ -50,10 +50,10 @@ class RepoListSection extends AsyncComponent {
         <ResultGrid>
           <Header>
             <Column>Repository</Column>
-            <Column textAlign="center" width={90}>
+            <Column textAlign="center" width={90} hide="sm">
               Coverage
             </Column>
-            <Column textAlign="center" width={90}>
+            <Column textAlign="center" width={90} hide="sm">
               Duration
             </Column>
           </Header>
@@ -65,7 +65,7 @@ class RepoListSection extends AsyncComponent {
                     <Column>
                       <strong>{`${repo.owner_name} / ${repo.name}`}</strong>
                     </Column>
-                    <Column textAlign="center" width={90}>
+                    <Column textAlign="center" width={90} hide="sm">
                       {!!repo.latest_build &&
                         !!(
                           repo.latest_build.stats.coverage.lines_covered +
@@ -73,7 +73,7 @@ class RepoListSection extends AsyncComponent {
                         ) &&
                         <ObjectCoverage data={repo.latest_build} diff={false} />}
                     </Column>
-                    <Column textAlign="center" width={90}>
+                    <Column textAlign="center" width={90} hide="sm">
                       {!!repo.latest_build && <ObjectDuration data={repo.latest_build} />}
                     </Column>
                   </Row>

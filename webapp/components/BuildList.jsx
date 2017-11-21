@@ -17,13 +17,13 @@ export default class BuildList extends Component {
       <ResultGrid>
         <Header>
           <Column>Build</Column>
-          <Column width={90} textAlign="center">
+          <Column width={90} textAlign="center" hide="sm">
             Coverage
           </Column>
-          <Column width={90} textAlign="center">
+          <Column width={90} textAlign="center" hide="sm">
             Duration
           </Column>
-          <Column width={150} textAlign="right">
+          <Column width={150} textAlign="right" hide="sm">
             When
           </Column>
         </Header>

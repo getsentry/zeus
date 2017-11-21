@@ -60,13 +60,13 @@ export default class BuildListItem extends Component {
               </Box>
             </Flex>
           </Column>
-          <Column width={90} textAlign="center">
+          <Column width={90} textAlign="center" hide="sm">
             <ObjectCoverage data={build} />
           </Column>
-          <Column width={90} textAlign="center">
+          <Column width={90} textAlign="center" hide="sm">
             <ObjectDuration data={build} short={true} />
           </Column>
-          <Column width={150} textAlign="right">
+          <Column width={150} textAlign="right" hide="sm">
             <TimeSince date={this.props.date || build.created_at} />
           </Column>
         </Row>

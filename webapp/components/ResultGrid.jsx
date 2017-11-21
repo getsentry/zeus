@@ -2,6 +2,8 @@ import React from 'react';
 import {Flex, Box} from 'grid-styled';
 import styled from 'styled-components';
 
+import media from '../utils/media';
+
 export const ResultGrid = styled.div`
   background: #fff;
   border-radius: 3px;
@@ -24,7 +26,7 @@ export const ResultGrid = styled.div`
   }
 `;
 
-export const Column = props => {
+export const Column = styled(props => {
   let params = {...props};
   if (!params.width) {
     params.flex = 1;
@@ -34,7 +36,10 @@ export const Column = props => {
     params.style = {...(params.style || {}), textAlign: params.textAlign};
   }
   return <Box {...params} />;
-};
+})`
+  overflow: hidden;
+  ${props => props.hide && media[props.hide]`display: none`};
+`;
 
 export const Header = styled(props => {
   let params = {...props};
