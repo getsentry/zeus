@@ -5,6 +5,7 @@ from zeus.artifacts import manager as default_manager
 from zeus.config import celery, db
 from zeus.constants import Result
 from zeus.models import Artifact, Job, Status
+from zeus.utils import timezone
 
 from .aggregate_job_stats import aggregate_build_stats_for_job
 
@@ -23,6 +24,7 @@ def process_artifact(artifact_id, manager=None, force=False, **kwargs):
         return
 
     artifact.status = Status.in_progress
+    artifact.date_started = timezone.now()
     db.session.add(artifact)
     db.session.flush()
 
@@ -55,6 +57,7 @@ def process_artifact(artifact_id, manager=None, force=False, **kwargs):
             'Skipping artifact processing (%s) due to missing file', artifact_id)
 
     artifact.status = Status.finished
+    artifact.date_finished = timezone.now()
     db.session.add(artifact)
     db.session.commit()
 

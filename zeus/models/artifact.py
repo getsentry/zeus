@@ -5,6 +5,7 @@ from zeus.config import db
 from zeus.constants import Status
 from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
 from zeus.db.types import Enum, File, FileData, GUID
+from zeus.utils import timezone
 
 
 class Artifact(RepositoryBoundMixin, StandardAttributes, db.Model):
@@ -22,6 +23,11 @@ class Artifact(RepositoryBoundMixin, StandardAttributes, db.Model):
         default=lambda: FileData({}, default_path='artifacts')
     )
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
+    date_started = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
+    date_updated = db.Column(db.TIMESTAMP(
+        timezone=True), nullable=True, onupdate=timezone.now)
+    date_finished = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
+
     job = db.relationship('Job', innerjoin=True, uselist=False)
     testcase = db.relationship('TestCase', uselist=False)
 

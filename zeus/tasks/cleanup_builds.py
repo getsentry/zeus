@@ -13,8 +13,8 @@ from .process_artifact import process_artifact
 def cleanup_builds():
     # find any artifacts which seemingly are stuck (not enqueued)
     queryset = Artifact.query.unrestricted_unsafe().filter(
-        Artifact.status == Status.queued,
-        Artifact.date_created < timezone.now() - timedelta(minutes=15),
+        Artifact.status != Status.finished,
+        Artifact.date_updated < timezone.now() - timedelta(minutes=15),
     )
     for result in queryset:
         process_artifact.delay(artifact_id=result.id)
