@@ -10,6 +10,13 @@ body {
   margin: 0;
 }
 
+pre,
+code {
+  font-size: 16px;
+  font-family: 'Rubik', Helvetica, sans-serif;
+  font-weight: 400;
+}
+
 a {
   text-decoration: none;
   color: #7b6be6;
@@ -40,7 +47,8 @@ h6,
 p,
 table,
 form,
-blockquote {
+blockquote,
+pre {
   margin: 0 0 20px 0;
 }
 

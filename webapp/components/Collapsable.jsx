@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import ResultGridRow from './ResultGridRow';
+import {Column, Row} from './ResultGrid';
 
 export default class Collapsable extends Component {
   static propTypes = {
@@ -37,9 +37,11 @@ export default class Collapsable extends Component {
         {children}
         {collapsed &&
           <ExpandLink onClick={() => this.setState({collapsed: false})}>
-            <ResultGridRow style={{color: 'inherit'}}>
-              Show {totalChildren - visibleChildren} other item(s)
-            </ResultGridRow>
+            <Row style={{color: 'inherit'}}>
+              <Column>
+                Show {totalChildren - visibleChildren} other item(s)
+              </Column>
+            </Row>
           </ExpandLink>}
       </div>
     );

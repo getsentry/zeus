@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import Gravatar from 'react-gravatar';
 
 import ArtifactsList from '../components/ArtifactsList';
 import AsyncPage from '../components/AsyncPage';
+import Button from '../components/Button';
 import CoverageSummary from '../components/CoverageSummary';
 import JobList from '../components/JobList';
 import Section from '../components/Section';
@@ -10,6 +13,25 @@ import SectionHeading from '../components/SectionHeading';
 import SectionSubheading from '../components/SectionSubheading';
 import StyleViolationList from '../components/StyleViolationList';
 import TestList from '../components/TestList';
+import TimeSince from '../components/TimeSince';
+
+const RevisionSection = styled(Section)`
+  border: 2px solid #eee;
+  padding: 10px;
+`;
+
+const RevisionMessage = styled.pre`margin-bottom: 10px;`;
+
+const RevisionAuthor = styled.div`
+  font-size: 0.9em;
+  color: #666;
+
+  img {
+    display: inline-block;
+    vertical-align: text-bottom;
+    border-radius: 2px;
+  }
+`;
 
 export default class BuildOverviewBase extends AsyncPage {
   static contextTypes = {
@@ -38,32 +60,53 @@ export default class BuildOverviewBase extends AsyncPage {
       job => job.result == 'failed' && job.allow_failure
     );
     let unallowedFailures = this.state.jobList.filter(job => !job.allow_failure);
+    let revision = this.context.build.source.revision;
+    let {repo} = this.context;
     return (
-      <Section>
+      <div>
+        <RevisionSection>
+          {repo.provider === 'gh' &&
+            <div style={{float: 'right'}}>
+              <Button
+                size="small"
+                type="light"
+                href={`https://github.com/${repo.owner_name}/${repo.name}/commit/${revision.sha}`}>
+                View on GitHub
+              </Button>
+            </div>}
+          <RevisionMessage>
+            {revision.message}
+          </RevisionMessage>
+          <RevisionAuthor>
+            <Gravatar email={revision.author.email} size={16} />{' '}
+            <strong>{revision.author.name}</strong> committed{' '}
+            <TimeSince date={revision.committed_at} />
+          </RevisionAuthor>
+        </RevisionSection>
         {!!this.state.testFailures.length &&
-          <div>
+          <Section>
             <SectionHeading>Failing Tests</SectionHeading>
             <TestList
               testList={this.state.testFailures}
               params={this.props.params}
               collapsable={true}
             />
-          </div>}
+          </Section>}
         {!!this.state.diffCoverage.length &&
-          <div>
+          <Section>
             <SectionHeading>Coverage</SectionHeading>
             <CoverageSummary coverage={this.state.diffCoverage} collapsable={true} />
-          </div>}
+          </Section>}
         {!!this.state.violationList.length &&
-          <div>
+          <Section>
             <SectionHeading>Style Violations</SectionHeading>
             <StyleViolationList
               violationList={this.state.violationList}
               params={this.props.params}
               collapsable={true}
             />
-          </div>}
-        <div>
+          </Section>}
+        <Section>
           <SectionHeading>
             Jobs
             {!!failingJobs.length &&
@@ -80,13 +123,13 @@ export default class BuildOverviewBase extends AsyncPage {
               <SectionSubheading>Allowed Failures</SectionSubheading>
               <JobList build={this.context.build} jobList={allowedFailures} />
             </div>}
-        </div>
+        </Section>
         {!!this.state.artifacts.length &&
-          <div>
+          <Section>
             <SectionHeading>Artifacts</SectionHeading>
             <ArtifactsList artifacts={this.state.artifacts} collapsable={true} />
-          </div>}
-      </Section>
+          </Section>}
+      </div>
     );
   }
 }

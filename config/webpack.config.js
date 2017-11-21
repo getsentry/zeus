@@ -125,6 +125,7 @@ function getEntry() {
     'classnames',
     'lodash',
     'react',
+    'react-gravatar',
     'react-dom',
     'react-document-title',
     'react-loadable',

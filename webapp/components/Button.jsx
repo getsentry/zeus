@@ -25,6 +25,12 @@ export const ButtonLink = styled(Link)`
           color: #7b6be6;
           border-color: #7b6be6;
         `;
+      case 'light':
+        return css`
+          background: #fff;
+          color: #666;
+          border-color: #eee;
+        `;
       default:
         return css`
           background: #fff;
@@ -89,6 +95,12 @@ export default styled.a`
           background: #fff;
           color: #7b6be6;
           border-color: #7b6be6;
+        `;
+      case 'light':
+        return css`
+          background: #fff;
+          color: #999;
+          border-color: #eee;
         `;
       default:
         return css`
