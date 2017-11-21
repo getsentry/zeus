@@ -22,7 +22,7 @@ import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
 
 const RepoItem = styled.div`
-  width: 33%;
+  width: 32%;
   padding: 5px;
 
   a {
