@@ -20,10 +20,19 @@ const RevisionSection = styled(Section)`
   padding: 10px;
 `;
 
-const RevisionMessage = styled.pre`margin-bottom: 10px;`;
+const RevisionSubject = styled.pre`
+  margin-bottom: 10px;
+  font-weight: 500;
+  font-size: 0.9em;
+`;
+
+const RevisionMessage = styled.pre`
+  margin-bottom: 20px;
+  font-size: 0.8em;
+`;
 
 const RevisionAuthor = styled.div`
-  font-size: 0.9em;
+  font-size: 0.8em;
   color: #666;
 
   img {
@@ -62,6 +71,7 @@ export default class BuildOverviewBase extends AsyncPage {
     let unallowedFailures = this.state.jobList.filter(job => !job.allow_failure);
     let revision = this.context.build.source.revision;
     let {repo} = this.context;
+    let [revisionSubject, revisionMessage] = revision.message.split('\n', 1);
     return (
       <div>
         <RevisionSection>
@@ -74,9 +84,13 @@ export default class BuildOverviewBase extends AsyncPage {
                 View on GitHub
               </Button>
             </div>}
-          <RevisionMessage>
-            {revision.message}
-          </RevisionMessage>
+          <RevisionSubject>
+            {revisionSubject}
+          </RevisionSubject>
+          {revisionMessage &&
+            <RevisionMessage>
+              {revisionMessage}
+            </RevisionMessage>}
           <RevisionAuthor>
             <Gravatar email={revision.author.email} size={16} />{' '}
             <strong>{revision.author.name}</strong> committed{' '}
