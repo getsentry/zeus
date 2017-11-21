@@ -13,7 +13,6 @@ import TabbedNavItem from '../components/TabbedNavItem';
 import TimeSince from '../components/TimeSince';
 
 import MdClock from 'react-icons/lib/md/access-time';
-import MdPerson from 'react-icons/lib/md/person';
 
 export default class BuildDetailsBase extends AsyncPage {
   static contextTypes = {
@@ -70,7 +69,6 @@ export default class BuildDetailsBase extends AsyncPage {
                   </span>}
             </Time>
             <Author>
-              <MdPerson size="16" style={{marginRight: 5}} />
               <ObjectAuthor data={build} />
             </Author>
             <Commit>

@@ -1,6 +1,22 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import idx from 'idx';
+import Gravatar from 'react-gravatar';
+import MdPerson from 'react-icons/lib/md/person';
+
+const Avatar = styled.span`
+  img {
+    border-radius: 2px;
+  }
+
+  img,
+  svg {
+    margin-right: 5px;
+    display: inline-block;
+    vertical-align: text-top;
+  }
+`;
 
 export default class ObjectAuthor extends Component {
   static propTypes = {
@@ -13,7 +29,12 @@ export default class ObjectAuthor extends Component {
     if (!author) return null;
     return (
       <span>
-        {author.email || author.name}
+        <Avatar>
+          {author.email
+            ? <Gravatar email={author.email} size={16} />
+            : <MdPerson size="16" />}
+        </Avatar>
+        {author.name || author.email.split('@', 1)[0]}
       </span>
     );
   }
