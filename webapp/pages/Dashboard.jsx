@@ -24,7 +24,6 @@ import SectionHeading from '../components/SectionHeading';
 const RepoItem = styled.div`
   width: 33%;
   padding: 5px;
-  flex-grow: 1;
 
   a {
     display: block;
@@ -83,34 +82,47 @@ class RepoListSection extends AsyncComponent {
   };
 
   renderBody() {
+    if (!this.props.repoList.length) {
+      return (
+        <Section>
+          <p>
+            {"Looks like you haven't yet setup and repositories. "}
+            <Link to="/settings/github/repos">Add a repository</Link> to get started.
+          </p>
+        </Section>
+      );
+    }
+
     return (
-      <Flex>
-        {this.props.repoList.map(repo => {
-          return (
-            <RepoItem key={repo.id} width="33%" p={5}>
-              <Link to={repo.full_name}>
-                <RepoName>{`${repo.owner_name} / ${repo.name}`}</RepoName>
-                {repo.latest_build
-                  ? <RepoStats>
-                      <Stat>
-                        <InProgressIcon size={14} />
-                        <ObjectDuration data={repo.latest_build} />
-                      </Stat>
-                      {!!(
-                        repo.latest_build.stats.coverage.lines_covered +
-                        repo.latest_build.stats.coverage.lines_uncovered
-                      ) &&
+      <Section>
+        <Flex>
+          {this.props.repoList.map(repo => {
+            return (
+              <RepoItem key={repo.id} width="33%" p={5}>
+                <Link to={repo.full_name}>
+                  <RepoName>{`${repo.owner_name} / ${repo.name}`}</RepoName>
+                  {repo.latest_build
+                    ? <RepoStats>
                         <Stat>
-                          <CoverageIcon size={14} />
-                          <ObjectCoverage data={repo.latest_build} diff={false} />
-                        </Stat>}
-                    </RepoStats>
-                  : <RepoStats>(no data yet)</RepoStats>}
-              </Link>
-            </RepoItem>
-          );
-        })}
-      </Flex>
+                          <InProgressIcon size={14} />
+                          <ObjectDuration data={repo.latest_build} />
+                        </Stat>
+                        {!!(
+                          repo.latest_build.stats.coverage.lines_covered +
+                          repo.latest_build.stats.coverage.lines_uncovered
+                        ) &&
+                          <Stat>
+                            <CoverageIcon size={14} />
+                            <ObjectCoverage data={repo.latest_build} diff={false} />
+                          </Stat>}
+                      </RepoStats>
+                    : <RepoStats>(no data yet)</RepoStats>}
+                </Link>
+              </RepoItem>
+            );
+          })}
+        </Flex>
+      </Section>
     );
   }
 }
@@ -132,13 +144,27 @@ class BuildListSection extends AsyncComponent {
   }
 
   renderBody() {
+    if (!this.props.buildList.length) {
+      return null;
+    }
     return (
-      <BuildList
-        params={this.props.params}
-        buildList={this.props.buildList}
-        includeAuthor={false}
-        includeRepo={true}
-      />
+      <Section>
+        <SectionHeading>
+          Your Builds
+          <ButtonLink
+            to="/builds"
+            size="xs"
+            style={{marginLeft: 10, verticalAlign: 'text-bottom'}}>
+            &middot; &middot; &middot;
+          </ButtonLink>
+        </SectionHeading>
+        <BuildList
+          params={this.props.params}
+          buildList={this.props.buildList}
+          includeAuthor={false}
+          includeRepo={true}
+        />
+      </Section>
     );
   }
 }
@@ -164,30 +190,8 @@ export default class Dashboard extends AsyncPage {
   renderBody() {
     return (
       <Layout>
-        <Section>
-          <SectionHeading>
-            Repositories
-            <ButtonLink
-              to="/settings/github/repos"
-              size="xs"
-              style={{marginLeft: 10, verticalAlign: 'text-bottom'}}>
-              &middot; &middot; &middot;
-            </ButtonLink>
-          </SectionHeading>
-          <WrappedRepoList {...this.props} />
-        </Section>
-        <Section>
-          <SectionHeading>
-            Your Builds
-            <ButtonLink
-              to="/builds"
-              size="xs"
-              style={{marginLeft: 10, verticalAlign: 'text-bottom'}}>
-              &middot; &middot; &middot;
-            </ButtonLink>
-          </SectionHeading>
-          <WrappedBuildList {...this.props} />
-        </Section>
+        <WrappedRepoList {...this.props} />
+        <WrappedBuildList {...this.props} />
       </Layout>
     );
   }
