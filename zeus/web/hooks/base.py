@@ -3,6 +3,7 @@ from flask.views import View
 from sqlalchemy.orm import joinedload
 
 from zeus import auth
+from zeus.config import nplusone
 from zeus.exceptions import ApiError
 from zeus.models import Hook
 
@@ -15,9 +16,10 @@ class BaseHook(View):
     def dispatch_request(self, hook_id, signature=None, *args, **kwargs) -> Response:
         current_app.logger.info('received webhook id=%s', hook_id)
 
-        hook = Hook.query.unrestricted_unsafe().options(
-            joinedload('repository'),
-        ).get(hook_id)
+        with nplusone.ignore('eager_load'):
+            hook = Hook.query.unrestricted_unsafe().options(
+                joinedload('repository'),
+            ).get(hook_id)
         if not self.public and not hook.is_valid_signature(signature):
             current_app.logger.warn('invalid webhook signature id=%s', hook_id)
             return '', 403

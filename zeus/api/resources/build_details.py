@@ -1,6 +1,6 @@
 from sqlalchemy.orm import joinedload
 
-from zeus.config import db
+from zeus.config import db, nplusone
 from zeus.models import Build, ItemStat, Source
 from zeus.pubsub.utils import publish
 
@@ -18,8 +18,9 @@ class BuildDetailsResource(BaseBuildResource):
         """
         Return a build.
         """
-        build.source = Source.query.options(joinedload('revision'),
-                                            joinedload('patch')).get(build.source_id)
+        with nplusone.ignore('eager_load'):
+            build.source = Source.query.options(joinedload('revision'),
+                                                joinedload('patch')).get(build.source_id)
         build.stats = list(ItemStat.query.filter(ItemStat.item_id == build.id))
         return self.respond_with_schema(build_schema, build)
 

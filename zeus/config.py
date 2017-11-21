@@ -7,11 +7,13 @@ import tempfile
 from datetime import timedelta
 from flask import Flask
 from flask_alembic import Alembic
+
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 
 from zeus.utils.celery import Celery
+from zeus.utils.nplusone import NPlusOne
 from zeus.utils.redis import Redis
 from zeus.utils.ssl import SSL
 
@@ -26,6 +28,7 @@ alembic = Alembic()
 celery = Celery()
 db = SQLAlchemy()
 mail = Mail()
+nplusone = NPlusOne()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.ERROR, wrap_wsgi=True)
 ssl = SSL()
@@ -239,6 +242,7 @@ def configure_db(app):
 
     alembic.init_app(app)
     db.init_app(app)
+    nplusone.init_app(app)
 
     @event.listens_for(mapper, "init")
     def instant_defaults_listener(target, args, kwargs):

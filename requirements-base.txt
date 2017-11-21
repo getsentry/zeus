@@ -19,6 +19,7 @@ idna>=2.5,<2.6
 itsdangerous>=0.24,<0.25
 lxml==3.8.0
 marshmallow==2.13.5
+nplusone==0.8.1
 oauth2client==3.0.0
 psycopg2==2.7.1
 python-dateutil==2.6.1

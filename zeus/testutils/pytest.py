@@ -27,6 +27,7 @@ def app(request, session_config):
         GITHUB_CLIENT_ID='github.client-id',
         GITHUB_CLIENT_SECRET='github.client-secret',
         MAIL_SUPPRESS_SEND=True,
+        NPLUSONE_RAISE=True,
     )
     app.testing = True
     yield app
