@@ -2,13 +2,14 @@ from marshmallow import Schema
 from flask import current_app, jsonify, request, Response
 from flask.views import View
 from time import sleep
+from urllib.parse import quote
 
 from zeus import auth
 from zeus.exceptions import ApiUnauthorized
 
 from ..authentication import ApiTokenAuthentication, SessionAuthentication
 
-LINK_HEADER = '<{uri}&page={page}>; rel="{name}"'
+LINK_HEADER = '<{uri}&page={page}>; rel="{name}" page="{page}"'
 
 
 class Resource(View):
@@ -105,14 +106,25 @@ class Resource(View):
         if per_page > max_per_page:
             per_page = max_per_page
 
+        querystring = u'&'.join(
+            u'{0}={1}'.format(quote(k), quote(v))
+            for k, v in request.args.items()
+            if k != 'page'
+        )
+        base_url = request.url.split('?', 1)[0]
+        if querystring:
+            base_url = '{0}?{1}'.format(base_url, querystring)
+        else:
+            base_url = base_url + '?'
+
         links = [LINK_HEADER.format(
-            uri=request.url,
+            uri=base_url,
             name='next',
             page=page + 1,
         )]
         if page > 1:
             links.append(LINK_HEADER.format(
-                uri=request.url,
+                uri=base_url,
                 name='previous',
                 page=page - 1,
             ))
