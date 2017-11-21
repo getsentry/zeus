@@ -80,13 +80,6 @@ class RepoListSection extends AsyncComponent {
                     </Column>
                     <Column textAlign="center" width={90}>
                       {!!repo.latest_build &&
-                        <Stat>
-                          <InProgressIcon size={14} />
-                          <ObjectDuration data={repo.latest_build} />
-                        </Stat>}
-                    </Column>
-                    <Column textAlign="center" width={90}>
-                      {!!repo.latest_build &&
                         !!(
                           repo.latest_build.stats.coverage.lines_covered +
                           repo.latest_build.stats.coverage.lines_uncovered
@@ -94,6 +87,13 @@ class RepoListSection extends AsyncComponent {
                         <Stat>
                           <CoverageIcon size={14} />
                           <ObjectCoverage data={repo.latest_build} diff={false} />
+                        </Stat>}
+                    </Column>
+                    <Column textAlign="center" width={90}>
+                      {!!repo.latest_build &&
+                        <Stat>
+                          <InProgressIcon size={14} />
+                          <ObjectDuration data={repo.latest_build} />
                         </Stat>}
                     </Column>
                   </Row>
