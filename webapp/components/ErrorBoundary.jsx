@@ -23,7 +23,7 @@ export default class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     this.setState({error});
-    if (error.constructor === Error && window.Raven) {
+    if (window.Raven) {
       window.Raven.captureException(error, {extra: errorInfo});
       window.Raven.lastEventId() && window.Raven.showReportDialog();
     }
