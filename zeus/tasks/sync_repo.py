@@ -8,7 +8,7 @@ from zeus.utils import timezone
 
 
 # TODO(dcramer): a lot of this code is shared with import_repo
-@celery.task(max_retries=None, autoretry_for=(Exception,))
+@celery.task(max_retries=None, autoretry_for=(Exception,), acks_late=True)
 def sync_repo(repo_id, max_log_passes=10):
     auth.set_current_tenant(auth.Tenant(repository_ids=[repo_id]))
 
