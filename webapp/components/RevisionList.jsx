@@ -16,13 +16,13 @@ export default class RevisionList extends Component {
       <ResultGrid>
         <Header>
           <Column>Revision</Column>
-          <Column width={90} textAlign="center">
+          <Column width={90} textAlign="center" hide="sm">
             Coverage
           </Column>
-          <Column width={90} textAlign="center">
+          <Column width={90} textAlign="center" hide="sm">
             Duration
           </Column>
-          <Column width={150} textAlign="right">
+          <Column width={150} textAlign="right" hide="sm">
             Commit Date
           </Column>
         </Header>

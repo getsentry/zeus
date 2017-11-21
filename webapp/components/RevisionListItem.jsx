@@ -61,9 +61,9 @@ export default class RevisionListItem extends Component {
               </Box>
             </Flex>
           </Column>
-          <Column width={90} textAlign="center" />
-          <Column width={90} textAlign="center" />
-          <Column width={150} textAlign="right">
+          <Column width={90} textAlign="center" hide="sm" />
+          <Column width={90} textAlign="center" hide="sm" />
+          <Column width={150} textAlign="right" hide="sm">
             <TimeSince date={revision.committed_at || revision.created_at} />
           </Column>
         </Row>
