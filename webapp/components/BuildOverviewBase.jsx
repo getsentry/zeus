@@ -92,9 +92,15 @@ export default class BuildOverviewBase extends AsyncPage {
               {revisionMessage}
             </RevisionMessage>}
           <RevisionAuthor>
-            <Gravatar email={revision.author.email} size={16} />{' '}
-            <strong>{revision.author.name}</strong> committed{' '}
-            <TimeSince date={revision.committed_at} />
+            {revision.author
+              ? <span>
+                  <Gravatar email={revision.author.email} size={16} />{' '}
+                  <strong>{revision.author.name}</strong>
+                </span>
+              : <strong>
+                  <em>Unknown Author</em>
+                </strong>}{' '}
+            committed <TimeSince date={revision.committed_at} />
           </RevisionAuthor>
         </RevisionSection>
         {!!this.state.testFailures.length &&
