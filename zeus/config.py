@@ -275,7 +275,8 @@ def configure_webpack(app):
 
     def get_asset(path):
         assets = app.extensions['webpack']['assets']
-        if assets is None:
+        # in debug we read in this file each request
+        if assets is None or app.debug:
             try:
                 with open(app.config['WEBPACK_MANIFEST_PATH']) as fp:
                     assets = json.load(fp)

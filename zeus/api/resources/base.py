@@ -92,10 +92,18 @@ class Resource(View):
             return self.error('invalid schema supplied')
         return self.respond(result.data, status)
 
-    def paginate_with_schema(self, schema: Schema, query, per_page: int=100) -> Response:
+    def paginate_with_schema(self, schema: Schema, query,
+                             default_per_page: int=100, max_per_page: int=None) -> Response:
         page = int(request.args.get('page', 1))
         if not (page > 0):
             page = 1
+
+        if max_per_page is None:
+            max_per_page = default_per_page
+
+        per_page = int(request.args.get('per_page', default_per_page))
+        if per_page > max_per_page:
+            per_page = max_per_page
 
         links = [LINK_HEADER.format(
             uri=request.url,

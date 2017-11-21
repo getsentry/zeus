@@ -10,6 +10,7 @@ import BuildDiff from './pages/BuildDiff';
 import BuildOverview from './pages/BuildOverview';
 import BuildStyleViolationList from './pages/BuildStyleViolationList';
 import BuildTestList from './pages/BuildTestList';
+import Dashboard from './pages/Dashboard';
 import OwnerDetails from './pages/OwnerDetails';
 import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
@@ -58,7 +59,7 @@ const AsyncTokenSettings = Loadable({
 
 export default (
   <Route path="/" component={App}>
-    <IndexRedirect to="/builds" />
+    <IndexRoute component={requireAuth(Dashboard)} />
     <Route path="/settings" component={requireAuth(AsyncSettings)}>
       <IndexRedirect to="/settings/account" />
       <Route path="account" component={AsyncAccountSettings} />

@@ -63,9 +63,9 @@ export const loadBuildsForRepository = (repoFullName, query, emptyState = true) 
   };
 };
 
-export const loadBuildsForUser = (userID = 'me') => {
+export const loadBuildsForUser = (userID = 'me', limit = 100) => {
   return dispatch => {
-    api.get(`/users/${userID}/builds`).then(items => {
+    api.get(`/users/${userID}/builds`, {query: {per_page: limit}}).then(items => {
       dispatch({
         type: LOAD_BUILD_LIST,
         items
