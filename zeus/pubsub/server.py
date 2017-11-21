@@ -128,7 +128,7 @@ async def stream(request):
 
         await resp.prepare(request)
 
-        loop.create_task(ping(loop, resp, client_guid))
+        # loop.create_task(ping(loop, resp, client_guid))
 
         # resp.write(b'retry: 100\r\n\r\n')
 
