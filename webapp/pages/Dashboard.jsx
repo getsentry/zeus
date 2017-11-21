@@ -95,7 +95,7 @@ class RepoListSection extends AsyncComponent {
 
     return (
       <Section>
-        <Flex>
+        <Flex wrap>
           {this.props.repoList.map(repo => {
             return (
               <RepoItem key={repo.id} width="33%" p={5}>
