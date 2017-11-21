@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Gravatar from 'react-gravatar';
 
 import ArtifactsList from '../components/ArtifactsList';
 import AsyncPage from '../components/AsyncPage';
 import Button from '../components/Button';
 import CoverageSummary from '../components/CoverageSummary';
 import JobList from '../components/JobList';
+import ObjectAuthor from '../components/ObjectAuthor';
 import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
 import SectionSubheading from '../components/SectionSubheading';
@@ -93,10 +93,7 @@ export default class BuildOverviewBase extends AsyncPage {
             </RevisionMessage>}
           <RevisionAuthor>
             {revision.author
-              ? <span>
-                  <Gravatar email={revision.author.email} size={16} />{' '}
-                  <strong>{revision.author.name}</strong>
-                </span>
+              ? <ObjectAuthor data={revision} />
               : <strong>
                   <em>Unknown Author</em>
                 </strong>}{' '}
