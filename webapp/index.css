@@ -12,7 +12,6 @@ body {
 
 a {
   text-decoration: none;
-  transition: .1s linear color;
   color: #7b6be6;
 }
 

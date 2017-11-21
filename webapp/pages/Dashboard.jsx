@@ -1,7 +1,12 @@
 import React from 'react';
 import {Link} from 'react-router';
+import {Flex} from 'grid-styled';
+import styled from 'styled-components';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+
+import InProgressIcon from 'react-icons/lib/md/av-timer';
+import CoverageIcon from 'react-icons/lib/md/blur-linear';
 
 import {loadBuildsForUser} from '../actions/builds';
 import {subscribe} from '../decorators/stream';
@@ -11,8 +16,66 @@ import AsyncComponent from '../components/AsyncComponent';
 import BuildList from '../components/BuildList';
 import {ButtonLink} from '../components/Button';
 import Layout from '../components/Layout';
+import ObjectCoverage from '../components/ObjectCoverage';
+import ObjectDuration from '../components/ObjectDuration';
 import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
+
+const RepoItem = styled.div`
+  width: 33%;
+  padding: 5px;
+  flex-grow: 1;
+
+  a {
+    display: block;
+    text-align: center;
+    padding: 5px;
+    border: 2px solid #111;
+    color: #111;
+    border-radius: 3px;
+    overflow: hidden;
+
+    svg {
+      align-items: center;
+      display: inline-block;
+      margin-right: 5px;
+      vertical-align: text-bottom !important;
+    }
+
+    &:hover {
+      border-color: #7b6be6;
+      background-color: #7b6be6;
+      color: #fff;
+
+      div {
+        color: #fff;
+      }
+    }
+  }
+`;
+
+const RepoName = styled.div`
+  font-weight: 400;
+  margin-bottom: 5px;
+  white-space: nowrap;
+`;
+
+const RepoStats = styled.div`
+  font-size: 0.8em;
+  color: #666;
+`;
+
+const Stat = styled.span`
+  &:last-child:after {
+    display: none;
+  }
+
+  &:after {
+    content: ' ';
+    display: inline-block;
+    margin: 0 5px;
+  }
+`;
 
 class RepoListSection extends AsyncComponent {
   static propTypes = {
@@ -21,15 +84,33 @@ class RepoListSection extends AsyncComponent {
 
   renderBody() {
     return (
-      <ul>
+      <Flex>
         {this.props.repoList.map(repo => {
           return (
-            <li key={repo.id}>
-              <Link to={repo.full_name}>{`${repo.owner_name} / ${repo.name}`}</Link>
-            </li>
+            <RepoItem key={repo.id} width="33%" p={5}>
+              <Link to={repo.full_name}>
+                <RepoName>{`${repo.owner_name} / ${repo.name}`}</RepoName>
+                {repo.latest_build
+                  ? <RepoStats>
+                      <Stat>
+                        <InProgressIcon size={14} />
+                        <ObjectDuration data={repo.latest_build} />
+                      </Stat>
+                      {!!(
+                        repo.latest_build.stats.coverage.lines_covered +
+                        repo.latest_build.stats.coverage.lines_uncovered
+                      ) &&
+                        <Stat>
+                          <CoverageIcon size={14} />
+                          <ObjectCoverage data={repo.latest_build} diff={false} />
+                        </Stat>}
+                    </RepoStats>
+                  : <RepoStats>(no data yet)</RepoStats>}
+              </Link>
+            </RepoItem>
           );
         })}
-      </ul>
+      </Flex>
     );
   }
 }
