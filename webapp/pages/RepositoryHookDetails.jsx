@@ -19,10 +19,10 @@ const generateTravisConfig = publicHookBase => {
     on_cancel: always
     on_error: always
 after_success:
-  - npm install @zeus-ci/cli
+  - npm install -g @zeus-ci/cli
   - zeus upload -t "mime/type" path/to/artifact
 after_failure:
-  - npm install @zeus-ci/cli
+  - npm install -g @zeus-ci/cli
   - zeus upload -t "mime/type" path/to/artifact`;
 };
 
