@@ -17,6 +17,12 @@ def cleanup_builds():
         Artifact.date_updated < timezone.now() - timedelta(minutes=15),
     )
     for result in queryset:
+        Artifact.query.unrestricted_unsafe().filter(
+            Artifact.status != Status.finished,
+            Artifact.id == result.id,
+        ).update({
+            'date_updated': timezone.now(),
+        })
         process_artifact.delay(artifact_id=result.id)
 
     # first we timeout any jobs which have been sitting for far too long
@@ -26,6 +32,7 @@ def cleanup_builds():
     ).update({
         'status': Status.finished,
         'result': Result.errored,
+        'date_updated': timezone.now(),
         'date_finished': timezone.now(),
     })
     db.session.commit()
