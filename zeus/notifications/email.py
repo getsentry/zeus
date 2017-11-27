@@ -97,7 +97,8 @@ def build_message(build: Build) -> Message:
     ).first()
     assert revision
 
-    job_list = list(Job.query.filter(Job.build_id == build.id))
+    job_list = sorted(Job.query.filter(Job.build_id == build.id), key=lambda x: [
+                      x.result != Result.failed, x.number])
     job_ids = [j.id for j in job_list]
 
     recipients = [u.email for u in users]
@@ -162,8 +163,8 @@ def build_message(build: Build) -> Message:
         'job_list': [{
             'number': job.number,
             'result': {
-                'id': str(build.result),
-                'name': str(build.result).title(),
+                'id': str(job.result),
+                'name': str(job.result).title(),
             },
             'url': job.url,
             'label': job.label,
