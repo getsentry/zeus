@@ -23,7 +23,8 @@ def cleanup_builds():
         ).update({
             'date_updated': timezone.now(),
         })
-        process_artifact.delay(artifact_id=result.id)
+        db.session.flush()
+        process_artifact(artifact_id=result.id)
 
     # first we timeout any jobs which have been sitting for far too long
     Job.query.unrestricted_unsafe().filter(
