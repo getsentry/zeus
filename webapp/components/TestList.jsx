@@ -118,8 +118,13 @@ const TestDetailsWrapper = styled.div`
   margin-top: 10px;
   padding: 10px 0 0 25px;
   color: #39364e;
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.4em;
   border-top: 1px solid #dbdae3;
+
+  pre {
+    font-size: inherit;
+  }
 `;
 
 const TestListItemLink = styled.a`
