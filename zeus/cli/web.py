@@ -39,6 +39,7 @@ def web(host, port, processes, threads):
                 '--procname-prefix-spaced=[zeus]',
                 '--module=zeus.app:app',
                 '--die-on-term',
+                '--wsgi-manage-chunked-input',
             ]
         ),
     ]
