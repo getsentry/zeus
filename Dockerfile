@@ -91,6 +91,8 @@ RUN pip install -r requirements-dev.txt
 COPY requirements-test.txt /usr/src/zeus/
 RUN pip install -r requirements-test.txt
 
+RUN pip install -e git+https://github.com/pallets/werkzeug.git@8eb665a94aea9d9b56371663075818ca2546e152#egg=werkzeug
+
 COPY yarn.lock /usr/src/zeus/
 COPY package.json /usr/src/zeus/
 RUN yarn install --production --pure-lockfile --ignore-optional \
