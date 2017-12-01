@@ -3,6 +3,7 @@ from flask_mail import Message, sanitize_address
 from sqlalchemy.orm import undefer
 from typing import List
 
+from zeus import auth
 from zeus.config import db, mail
 from zeus.constants import Result
 from zeus.models import (
@@ -50,7 +51,7 @@ def send_email_notification(build: Build):
     mail.send(msg)
 
 
-def build_message(build: Build) -> Message:
+def build_message(build: Build, force=False) -> Message:
     author = Author.query.join(
         Source, Source.author_id == Author.id,
     ).filter(
@@ -63,11 +64,13 @@ def build_message(build: Build) -> Message:
         return
 
     users = find_linked_accounts(build)
-    if not users:
+    if not users and not force:
         current_app.logger.info('mail.no-linked-accounts', extra={
             'build_id': build.id,
         })
         return
+    elif not users:
+        users = [auth.get_current_user()]
 
     # filter it down to the users that have notifications enabled
     user_options = dict(

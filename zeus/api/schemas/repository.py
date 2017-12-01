@@ -62,7 +62,7 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
     ))
 
     return {
-        b.repository_id: b for b in Build.query.filter(
+        b.repository_id: b for b in Build.query.unrestricted_unsafe().filter(
             Build.id.in_(build_map.values()),
         ).options(
             joinedload('source'),

@@ -203,8 +203,8 @@
             </g>
           </svg>
         </td>
-        <td>{{ test.name }} {% if test.mesage %}
-          <pre class="output">{{ violation.message }}</pre> {% endif %}
+        <td>{{ test.name }} {% if test.message %}
+          <pre class="output">{{ test.message }}</pre> {% endif %}
         </td>
       </tr>
       {% endfor %} {% if failing_tests_count > failing_tests|length %}

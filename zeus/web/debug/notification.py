@@ -2,6 +2,7 @@ from flask import redirect, render_template, request
 from jinja2 import Markup
 
 from zeus import auth
+from zeus.constants import Result
 from zeus.models import Build
 from zeus.notifications.email import build_message
 
@@ -33,8 +34,11 @@ def debug_notification():
         auth.bind_redirect_target(request.path)
         return redirect('/login')
 
-    build = Build.query.order_by(Build.date_created.desc()).limit(1).first()
+    build = Build.query.filter(
+        Build.result == Result.failed
+    ).order_by(Build.date_created.desc()).limit(1).first()
     assert build
-    msg = build_message(build)
+    msg = build_message(build, force=True)
+    assert msg
     preview = MailPreview(msg)
     return preview.render()

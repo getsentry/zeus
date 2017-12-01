@@ -1,0 +1,36 @@
+------------------------------------------
+Build {{ build.result.name }}
+------------------------------------------
+
+{{ build.label }}
+{{ uri }}
+
+==========================================
+Commit
+==========================================
+{{ revision.short_sha }} by {{ author.email }} on {{ date_created.strftime('%Y-%m-%d') }}
+{{ revision.message }}
+{% if failing_tests_count -%}
+==========================================
+Failing Tests -- {{ failing_tests_count }} total
+==========================================
+{% for test in failing_tests -%}
+- {{ test.name }} {% if test.message %}
+  {{ test.message }}{% endif %}
+{% endfor %}{% endif %}
+{% if style_violations_count -%}
+==========================================
+Style Violations -- {{ style_violations_count }} total
+==========================================
+{% for violation in style_violations -%}
+- {{ violation.filename }}
+  {{ violation.message }}
+{% endfor %}{% endif %}
+{% if job_list -%}
+==========================================
+Jobs{% if job_failure_count %} -- {{ job_failure_count }} failed{% endif %}
+==========================================
+{% for job in job_list -%}
+- {{ job.result.name }} - #{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif %}{% if job.url %}
+  {{ job.url }}{% endif %}
+{% endfor %}{% endif %}
