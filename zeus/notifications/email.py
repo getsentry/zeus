@@ -1,5 +1,6 @@
 from flask import current_app, render_template
 from flask_mail import Message, sanitize_address
+from sqlalchemy.orm import undefer
 from typing import List
 
 from zeus.config import db, mail
@@ -111,7 +112,7 @@ def build_message(build: Build) -> Message:
     )
 
     if job_ids:
-        failing_tests_query = TestCase.query.filter(
+        failing_tests_query = TestCase.query.options(undefer('message')).filter(
             TestCase.job_id.in_(job_ids),
             TestCase.result == Result.failed,
         )
