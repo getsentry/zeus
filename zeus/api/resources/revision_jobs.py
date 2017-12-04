@@ -16,6 +16,8 @@ class RevisionJobsResource(BaseRevisionResource):
         Return a list of jobs for a given revision.
         """
         build = fetch_build_for_revision(revision.repository, revision)
+        if not build:
+            return self.respond(status=404)
         build_ids = [original.id for original in build.original]
         query = Job.query.options(
             subqueryload_all('stats'),

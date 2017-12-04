@@ -17,6 +17,8 @@ class RevisionTestsResource(BaseRevisionResource):
         Return a list of test cases for a given revision.
         """
         build = fetch_build_for_revision(revision.repository, revision)
+        if not build:
+            return self.respond(status=404)
         build_ids = [original.id for original in build.original]
         query = TestCase.query.options(contains_eager('job')).join(
             Job,

@@ -92,5 +92,4 @@ def fetch_build_for_revision(repo, revision):
     builds = fetch_builds_for_revisions(revision.repository, [revision])
     if len(builds) < 1:
         return None
-    else:
-        return builds[0][1]
+    return builds[0][1]

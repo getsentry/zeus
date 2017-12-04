@@ -24,6 +24,8 @@ class RevisionArtifactsResource(BaseRevisionResource):
         Return all artifacts of all builds in a revision.
         """
         build = fetch_build_for_revision(revision.repository, revision)
+        if not build:
+            return self.respond(status=404)
         build_ids = [original.id for original in build.original]
 
         query = Artifact.query.options(
