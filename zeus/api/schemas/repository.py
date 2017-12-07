@@ -40,6 +40,9 @@ class RepositorySchema(Schema):
 
 def get_latest_builds(repo_list: List[Repository], result: Result):
     # TODO(dcramer): this should find the 'last build in [default branch]'
+    if not repo_list:
+        return {}
+
     build_query = db.session.query(
         Build.id,
     ).join(
@@ -60,6 +63,9 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
     ).filter(
         Repository.id.in_(r.id for r in repo_list),
     ))
+
+    if not build_map:
+        return {}
 
     return {
         b.repository_id: b for b in Build.query.unrestricted_unsafe().filter(
