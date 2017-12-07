@@ -12,7 +12,7 @@ class FileStorageCache(FileStorage):
         _cache[filename] = fp.read()
 
     def url_for(self, filename, expire=300):
-        raise NotImplementedError
+        return 'https://example.com/artifacts/{}'.format(filename)
 
     def get_file(self, filename):
         return BytesIO(_cache[filename])

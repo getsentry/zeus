@@ -28,7 +28,7 @@ class ArtifactSchema(Schema):
             obj.job.build.source.repository.name,
             obj.job.build.number,
             obj.job.number,
-            obj.name
+            obj.id
         )
 
     @post_load
