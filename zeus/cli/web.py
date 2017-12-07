@@ -39,12 +39,15 @@ def web(host, port, processes, threads):
                 '--procname-prefix-spaced=[zeus]',
                 '--module=zeus.app:app',
                 '--die-on-term',
-                '--wsgi-manage-chunked-input',
+                # XXX(dcramer): this is disabled as our version of uwsgi doesnt
+                # know what it means
+                # '--wsgi-manage-chunked-input',
             ]
         ),
     ]
 
-    cwd = os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
+    cwd = os.path.realpath(os.path.join(
+        os.path.dirname(__file__), os.pardir, os.pardir))
 
     manager = Manager()
     for name, cmd in daemons:
