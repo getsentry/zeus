@@ -31,8 +31,14 @@ class Login extends Component {
     return (
       <Modal title="Login">
         <p>To continue you will need to first authenticate using your GitHub account.</p>
-        <p style={{textAlign: 'center', marginBottom: 0}}>
+        <p style={{textAlign: 'center'}}>
           <GitHubLoginButton next={idx(this.context.router, _ => _.query.next)} />
+        </p>
+        <p style={{textAlign: 'center', marginBottom: 0}}>
+          <small>
+            Zeus asks for both public and private permissions, however we will never
+            import any of your code without your explicit consent.
+          </small>
         </p>
       </Modal>
     );

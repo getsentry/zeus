@@ -1,5 +1,7 @@
 from flask import Blueprint
 
+from zeus.constants import GITHUB_DEFAULT_SCOPES
+
 from . import hooks as h
 from . import views as v
 
@@ -11,16 +13,8 @@ app.add_url_rule(
     view_func=v.GitHubAuthView.as_view(
         'github-auth',
         authorized_url='web.github-complete',
-        scopes=('user:email', 'read:org', 'public_repo')
+        scopes=GITHUB_DEFAULT_SCOPES,
     ),
-)
-app.add_url_rule(
-    '/auth/github/upgrade',
-    view_func=v.GitHubAuthView.as_view(
-        'github-upgrade',
-        authorized_url='web.github-complete',
-        scopes=('user:email', 'read:org', 'repo')
-    )
 )
 app.add_url_rule(
     '/auth/github/complete',
