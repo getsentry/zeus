@@ -8,7 +8,7 @@ celery==4.0.2
 celery-redbeat>=0.11.0,<0.12.0
 cssselect>=1.0.1,<1.1.0
 cssutils>=1.0.2,<1.1.0
-cryptography==1.9
+cryptography>=2.1.4,<2.2.0
 flask==0.12.2
 flask-alembic==2.0.1
 flask-mail>=0.9.1,<0.10.0
