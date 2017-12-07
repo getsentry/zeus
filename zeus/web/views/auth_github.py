@@ -5,7 +5,9 @@ from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
 from zeus.config import db
-from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI, USER_AGENT
+from zeus.constants import (
+    GITHUB_AUTH_URI, GITHUB_DEFAULT_SCOPES, GITHUB_TOKEN_URI, USER_AGENT
+)
 from zeus.models import (
     Email, Identity, Repository, RepositoryAccess, RepositoryProvider, User
 )
@@ -13,7 +15,7 @@ from zeus.utils.github import GitHubClient
 from zeus.vcs.providers.github import GitHubRepositoryProvider
 
 
-def get_auth_flow(redirect_uri=None, scopes=('user:email', )):
+def get_auth_flow(redirect_uri=None, scopes=GITHUB_DEFAULT_SCOPES):
     # XXX(dcramer): we have to generate this each request because oauth2client
     # doesn't want you to set redirect_uri as part of the request, which causes
     # a lot of runtime issues.
@@ -29,7 +31,7 @@ def get_auth_flow(redirect_uri=None, scopes=('user:email', )):
 
 
 class GitHubAuthView(MethodView):
-    def __init__(self, authorized_url, scopes=('user:email', )):
+    def __init__(self, authorized_url, scopes=GITHUB_DEFAULT_SCOPES):
         self.authorized_url = authorized_url
         self.scopes = scopes
         super(GitHubAuthView, self).__init__()
