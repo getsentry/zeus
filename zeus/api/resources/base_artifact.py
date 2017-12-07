@@ -1,4 +1,5 @@
 from flask import Response
+from uuid import UUID
 
 from zeus.models import Artifact, Build, Job, Repository, RepositoryProvider
 
@@ -7,7 +8,7 @@ from .base import Resource
 
 class BaseArtifactResource(Resource):
     def dispatch_request(
-        self, provider: str, owner_name: str, repo_name: str, build_number: int, job_number: int, artifact_name: int, *args, **kwargs
+        self, provider: str, owner_name: str, repo_name: str, build_number: int, job_number: int, artifact_id: UUID, *args, **kwargs
     ) -> Response:
         queryset = Artifact.query \
             .join(Job, Job.id == Artifact.job_id) \
@@ -19,7 +20,7 @@ class BaseArtifactResource(Resource):
                 Repository.name == repo_name,
                 Build.number == build_number,
                 Job.number == job_number,
-                Artifact.name == artifact_name,
+                Artifact.id == artifact_id,
             )
 
         if self.select_resurce_for_update():

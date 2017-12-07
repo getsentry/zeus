@@ -141,6 +141,7 @@ def default_job(default_build):
 def default_artifact(default_job):
     return factories.ArtifactFactory(
         job=default_job,
+        name='junit.xml',
     )
 
 
