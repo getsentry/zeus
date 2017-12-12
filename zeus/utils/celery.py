@@ -50,15 +50,20 @@ class Celery(object):
     def _task_prerun(self, task, **kwargs):
         if self.app is None:
             return
-        context = task._flask_context = self.app.test_request_context()
-        context.push()
+        context = task._flask_context = [
+            self.app.app_context(),
+            self.app.test_request_context(),
+        ]
+        for ctx in context:
+            ctx.push()
 
     def _task_postrun(self, task, **kwargs):
         try:
             context = task._flask_context
         except AttributeError:
             return
-        context.pop()
+        for ctx in context:
+            ctx.pop()
 
 
 class EnhancedJSONEncoder(json.JSONEncoder):
