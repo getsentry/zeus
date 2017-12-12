@@ -1,6 +1,7 @@
 import celery
 import json
 
+from celery.signals import task_prerun, task_postrun
 from kombu import serialization
 from kombu.utils.encoding import bytes_t
 from raven.contrib.celery import register_signal, register_logger_signal
@@ -13,16 +14,6 @@ class Celery(object):
         self.app = None
         self.context = None
         self.celery = celery.Celery(__name__)
-
-        TaskBase = self.celery.Task
-
-        class ContextualTask(TaskBase):
-            def __call__(self, *args, **kwargs):
-                with self.flask_app.app_context():
-                    return TaskBase.__call__(self, *args, **kwargs)
-
-        self.celery.Task = ContextualTask
-
         if app:
             self.init_app(app, sentry)
         register_serializer()
@@ -37,7 +28,9 @@ class Celery(object):
         # XXX(dcramer): why the hell am I wasting time trying to make Celery work?
         self.celery.__dict__.update(vars(new_celery))
         self.celery.conf.update(app.config)
-        self.celery.flask_app = app
+
+        task_prerun.connect(self._task_prerun)
+        task_postrun.connect(self._task_postrun)
 
         if sentry:
             register_signal(sentry.client)
@@ -48,6 +41,19 @@ class Celery(object):
 
     def get_celery_app(self):
         return self.celery
+
+    def _task_prerun(self, task, **kwargs):
+        if self.app is None:
+            return
+        context = task._flask_context = self.app.app_context()
+        context.push()
+
+    def _task_postrun(self, task, **kwargs):
+        try:
+            context = task._flask_context
+        except AttributeError:
+            return
+        context.pop()
 
 
 class EnhancedJSONEncoder(json.JSONEncoder):
