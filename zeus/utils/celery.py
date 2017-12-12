@@ -1,7 +1,7 @@
 import celery
 import json
 
-from celery.signals import task_prerun, task_postrun
+from celery.signals import task_postrun, task_prerun, worker_process_init
 from kombu import serialization
 from kombu.utils.encoding import bytes_t
 from raven.contrib.celery import register_signal, register_logger_signal
@@ -29,8 +29,10 @@ class Celery(object):
         self.celery.__dict__.update(vars(new_celery))
         self.celery.conf.update(app.config)
 
-        task_prerun.connect(self._task_prerun)
+        worker_process_init.connect(self._worker_process_init)
+
         task_postrun.connect(self._task_postrun)
+        task_prerun.connect(self._task_prerun)
 
         if sentry:
             register_signal(sentry.client)
@@ -42,10 +44,13 @@ class Celery(object):
     def get_celery_app(self):
         return self.celery
 
+    def _worker_process_init(self, **kwargs):
+        self.app.app_context().push()
+
     def _task_prerun(self, task, **kwargs):
         if self.app is None:
             return
-        context = task._flask_context = self.app.app_context()
+        context = task._flask_context = self.app.test_request_context()
         context.push()
 
     def _task_postrun(self, task, **kwargs):
