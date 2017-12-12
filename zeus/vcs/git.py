@@ -3,7 +3,9 @@ from urllib.parse import urlparse
 
 from zeus.utils.functional import memoize
 
-from .base import Vcs, RevisionResult, BufferParser, CommandError, UnknownRevision
+from .base import (
+    Vcs, RevisionResult, BufferParser, CommandError, InvalidPublicKey, UnknownRevision
+)
 
 LOG_FORMAT = '%H\x01%an <%ae>\x01%at\x01%cn <%ce>\x01%ct\x01%P\x01%B\x02'
 
@@ -89,6 +91,13 @@ class GitVcs(Vcs):
             stderr = e.stderr.decode('utf-8')
             if 'unknown revision or path' in stderr or 'fatal: bad object' in stderr:
                 raise UnknownRevision(
+                    cmd=e.cmd,
+                    retcode=e.retcode,
+                    stdout=e.stdout,
+                    stderr=e.stderr,
+                ) from e
+            if 'Permission denied (publickey)' in stderr:
+                raise InvalidPublicKey(
                     cmd=e.cmd,
                     retcode=e.retcode,
                     stdout=e.stdout,
