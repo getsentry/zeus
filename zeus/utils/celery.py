@@ -21,6 +21,8 @@ class Celery(object):
                 with self.flask_app.app_context():
                     return TaskBase.__call__(self, *args, **kwargs)
 
+        self.celery.Task = ContextualTask
+
         if app:
             self.init_app(app, sentry)
         register_serializer()
