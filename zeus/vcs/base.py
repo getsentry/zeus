@@ -128,6 +128,10 @@ class UnknownRevision(CommandError):
     pass
 
 
+class InvalidPublicKey(CommandError):
+    pass
+
+
 class BufferParser(object):
     def __init__(self, fp, delim):
         self.fp = fp

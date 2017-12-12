@@ -3,8 +3,9 @@ from flask import current_app
 
 from zeus import auth
 from zeus.config import celery, db
-from zeus.models import Repository, RepositoryStatus
+from zeus.models import ItemOption, Repository, RepositoryStatus
 from zeus.utils import timezone
+from zeus.vcs.base import InvalidPublicKey
 
 
 # TODO(dcramer): a lot of this code is shared with import_repo
@@ -34,10 +35,24 @@ def sync_repo(repo_id, max_log_passes=10):
     })
     db.session.commit()
 
-    if vcs.exists():
-        vcs.update()
-    else:
-        vcs.clone()
+    try:
+        if vcs.exists():
+            vcs.update()
+        else:
+            vcs.clone()
+    except InvalidPublicKey:
+        # TODO(dcramer): this is a quick short-circuit for repo syncing, which will
+        # at least prevent workers from endlessly querying repos which were revoked.
+        # Ideally this would be implemented in a larger number of places (maybe via
+        # a context manager?)
+        repo.status = RepositoryStatus.inactive
+        ItemOption.query.filter(
+            ItemOption.item_id == repo.id,
+            ItemOption.name == 'auth.private-key',
+        ).delete()
+        db.session.add(repo)
+        db.session.commit()
+        return
 
     # TODO(dcramer): this doesn't collect commits in non-default branches
     might_have_more = True

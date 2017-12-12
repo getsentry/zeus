@@ -129,7 +129,13 @@ class GitHubRepositoriesResource(Resource):
                 ).first()
                 # it's possible to get here if the "full name" already exists
                 assert repo
+                needs_configured = repo.status == RepositoryStatus.inactive
+                if needs_configured:
+                    repo.status = RepositoryStatus.active
+                    db.session.add(repo)
             else:
+                needs_configured = True
+            if needs_configured:
                 # generate a new private key for use on github
                 key = ssh.generate_key()
                 db.session.add(
