@@ -104,7 +104,8 @@ class TravisWebhookView(BaseHook):
         domain = urlparse(data['url']).netloc
 
         if payload['pull_request']:
-            data['label'] = 'PR #{}'.format(payload['pull_request_number'])
+            data['label'] = 'PR #{} - {}'.format(
+                payload['pull_request_number'], payload['pull_request_title'])
 
         response = upsert_build(
             repository=hook.repository,
