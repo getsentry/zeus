@@ -15,9 +15,10 @@ def worker(cron, log_level):
         '--app=zeus.app:celery',
         'worker',
         '--loglevel={}'.format(log_level),
-        '--without-mingle',
-        '--without-gossip',
-        '--without-heartbeat',
+        # TODO(dcramer): which of these can we kill?
+        # '--without-mingle',
+        # '--without-gossip',
+        # '--without-heartbeat',
         '--max-tasks-per-child=10000',
     ]
     if cron:

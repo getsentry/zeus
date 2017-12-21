@@ -153,7 +153,7 @@ def create_app(_read_config=True, **config):
     app.config['CELERY_IMPORTS'] = ('zeus.tasks', )
     app.config['CELERY_RESULT_BACKEND'] = None
     app.config['CELERY_RESULT_SERIALIZER'] = 'zeus_json'
-    app.config['CELERY_SEND_EVENTS'] = False
+    # app.config['CELERY_SEND_EVENTS'] = False
     app.config['CELERY_TASK_RESULT_EXPIRES'] = 1
     app.config['CELERY_TASK_SERIALIZER'] = 'zeus_json'
     # dont let any task run longer than 5 minutes
@@ -161,7 +161,7 @@ def create_app(_read_config=True, **config):
     # hard kill tasks after 6 minutes
     app.config['CELERY_TASK_TIME_LIMIT'] = 360
     app.config['CELERYD_PREFETCH_MULTIPLIER'] = 1
-    app.config['CELERYD_MAX_TASKS_PER_CHILD'] = 10000
+    # app.config['CELERYD_MAX_TASKS_PER_CHILD'] = 10000
     app.config['CELERYBEAT_SCHEDULE_FILE'] = os.path.join(
         tempfile.gettempdir(), 'zeus-celerybeat')
     app.config['CELERYBEAT_SCHEDULE'] = {
