@@ -40,7 +40,7 @@ drop-db:
 create-db:
 	createdb -E utf-8 zeus
 
-build-docker-iamge:
+build-docker-image:
 	docker build -t zeus .
 
 run-docker-image:
