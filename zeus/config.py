@@ -63,6 +63,9 @@ def create_app(_read_config=True, **config):
             os.environ['DB_USER'],
             os.environ['DB_PASSWORD'],
         )
+        if 'CELERY_BROKER_URL' in os.environ:
+            app.config['CELERY_BROKER_URL'] = os.environ['CELERY_BROKER_URL']
+
         if 'GCS_BUCKET' in os.environ:
             app.config['FILE_STORAGE'] = {
                 'backend': 'zeus.storage.gcs.GoogleCloudStorage',
@@ -91,6 +94,7 @@ def create_app(_read_config=True, **config):
             'backend': 'zeus.storage.base.FileStorage',
             'options': {},
         }
+        app.config['CELERY_BROKER_URL'] = REDIS_URL
 
     app.config.setdefault('MAIL_DEFAULT_SENDER', '{}@localhost'.format(
         os.environ.get('USERNAME', 'root')))
@@ -142,7 +146,7 @@ def create_app(_read_config=True, **config):
 
     app.config['CELERY_ACCEPT_CONTENT'] = ['zeus_json', 'json']
     app.config['CELERY_ACKS_LATE'] = True
-    app.config['CELERY_BROKER_URL'] = app.config['REDIS_URL']
+    app.config.setdefault('CELERY_BROKER_URL', app.config['REDIS_URL'])
     app.config['CELERY_DEFAULT_QUEUE'] = 'default'
     app.config['CELERY_DEFAULT_EXCHANGE'] = 'default'
     app.config['CELERY_DEFAULT_EXCHANGE_TYPE'] = 'direct'
