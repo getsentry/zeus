@@ -83,7 +83,8 @@ export default class BuildDetailsBase extends AsyncPage {
               Tests
               {hasTests
                 ? <Badge>
-                    {build.stats.tests.count.toLocaleString()}
+                    {(build.stats.tests.count_unique || build.stats.tests.count)
+                      .toLocaleString()}
                   </Badge>
                 : null}
             </TabbedNavItem>

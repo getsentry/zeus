@@ -16,6 +16,7 @@ STAT_CHOICES = (
     'builds.total',
     'builds.duration',
     'tests.count',
+    'tests.count_unique',
     'tests.duration',
     'coverage.lines_covered',
     'coverage.lines_uncovered',

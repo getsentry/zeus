@@ -13,8 +13,8 @@ from zeus.utils import timezone
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 
 AGGREGATED_BUILD_STATS = (
-    'tests.count', 'tests.duration', 'tests.failures',
-    'style_violations.count',
+    'tests.count', 'tests.duration', 'tests.failures', 'tests.count_unique',
+    'tests.failures_unique', 'style_violations.count',
 )
 
 
@@ -67,13 +67,19 @@ def aggregate_stat_for_build(build: Build, name: str, func_=func.sum):
     """
     Aggregates a single stat for all jobs the given build.
     """
-
-    # tests.count is unique, so its special cased
-    if name == 'tests.count':
+    if name == 'tests.count_unique':
         value = db.session.query(func.count(TestCase.hash.distinct())).join(
             Job,
             TestCase.job_id == Job.id,
         ).filter(
+            Job.build_id == build.id,
+        ).as_scalar()
+    elif name == 'tests.failures_unique':
+        value = db.session.query(func.count(TestCase.hash.distinct())).join(
+            Job,
+            TestCase.job_id == Job.id,
+        ).filter(
+            TestCase.result == Result.failed,
             Job.build_id == build.id,
         ).as_scalar()
     else:

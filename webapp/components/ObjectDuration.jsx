@@ -48,6 +48,7 @@ export class AggregateDuration extends Component {
   }
 
   getDuration(data) {
+    if (!data) return null;
     return percentile(
       95,
       data

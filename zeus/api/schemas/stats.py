@@ -13,6 +13,8 @@ class TestStatsSchema(Schema):
     count = fields.Integer()
     failures = fields.Integer()
     duration = fields.Number()
+    failures_unique = fields.Integer(allow_none=True)
+    count_unique = fields.Integer(allow_none=True)
 
 
 class StyleViolationsSchema(Schema):

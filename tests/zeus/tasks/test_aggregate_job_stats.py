@@ -30,7 +30,8 @@ def test_finished_job(mocker, db_session, default_source):
     job = factories.JobFactory(build=build, failed=True)
     db_session.add(job)
 
-    mock_send_build_notifications = mocker.patch('zeus.tasks.send_build_notifications.delay')
+    mock_send_build_notifications = mocker.patch(
+        'zeus.tasks.send_build_notifications.delay')
 
     aggregate_build_stats(build.id)
 
@@ -176,45 +177,51 @@ def test_test_stats(mocker, db_session, default_source):
 
     job = factories.JobFactory(build=build, passed=True)
     db_session.add(job)
+    job2 = factories.JobFactory(build=build, passed=True)
+    db_session.add(job2)
 
     db_session.add(factories.TestCaseFactory(
         job=job,
+        name='foo',
         failed=True,
         duration=8,
     ))
     db_session.add(factories.TestCaseFactory(
         job=job,
+        name='bar',
         passed=True,
         duration=2,
     ))
 
+    db_session.add(factories.TestCaseFactory(
+        job=job2,
+        name='bar',
+        failed=True,
+        duration=2,
+    ))
+
     aggregate_build_stats_for_job(job.id)
+    aggregate_build_stats_for_job(job2.id)
     aggregate_build_stats(build.id)
 
     build_stats = {
         i.name: i.value
         for i in ItemStat.query.filter(
             ItemStat.item_id == build.id,
-            ItemStat.name.in_([
-                'tests.count',
-                'tests.duration',
-                'tests.failures',
-            ])
         )
     }
-    assert build_stats['tests.count'] == 2
-    assert build_stats['tests.failures'] == 1
-    assert build_stats['tests.duration'] == 10
+    assert build_stats['tests.count'] == 3
+    assert build_stats['tests.count_unique'] == 2
+    assert build_stats['tests.failures'] == 2
+    assert build_stats['tests.failures_unique'] == 2
+    assert build_stats['tests.duration'] == 12
 
     job_stats = {
         i.name: i.value
         for i in ItemStat.query.filter(
             ItemStat.item_id == job.id,
-            ItemStat.name.in_([
-                'tests.count',
-                'tests.duration',
-                'tests.failures',
-            ])
         )
     }
-    assert job_stats == build_stats
+    assert job_stats['tests.count'] == 2
+    assert job_stats['tests.failures'] == 1
+    assert job_stats['tests.duration'] == 10
