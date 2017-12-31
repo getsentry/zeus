@@ -67,14 +67,24 @@ def aggregate_stat_for_build(build: Build, name: str, func_=func.sum):
     """
     Aggregates a single stat for all jobs the given build.
     """
-    value = db.session.query(
-        func.coalesce(func_(ItemStat.value), 0),
-    ).filter(
-        ItemStat.item_id.in_(db.session.query(Job.id).filter(
+
+    # tests.count is unique, so its special cased
+    if name == 'tests.count':
+        value = db.session.query(func.count(TestCase.hash.distinct())).join(
+            Job,
+            TestCase.job_id == Job.id,
+        ).filter(
             Job.build_id == build.id,
-        )),
-        ItemStat.name == name,
-    ).as_scalar()
+        ).as_scalar()
+    else:
+        value = db.session.query(
+            func.coalesce(func_(ItemStat.value), 0),
+        ).filter(
+            ItemStat.item_id.in_(db.session.query(Job.id).filter(
+                Job.build_id == build.id,
+            )),
+            ItemStat.name == name,
+        ).as_scalar()
 
     create_or_update(
         model=ItemStat,
