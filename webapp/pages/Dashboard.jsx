@@ -39,7 +39,7 @@ class RepoListSection extends AsyncComponent {
       return (
         <Section>
           <p>
-            {"Looks like you haven't yet setup and repositories. "}
+            {"Looks like you haven't yet setup any repositories. "}
             <Link to="/settings/github/repos">Add a repository</Link> to get started.
           </p>
         </Section>
