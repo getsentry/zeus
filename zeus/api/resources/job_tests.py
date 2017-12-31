@@ -8,8 +8,9 @@ from zeus.models import Job, TestCase
 from .base_job import BaseJobResource
 from ..schemas import TestCaseSummarySchema
 
-testcase_schema = TestCaseSummarySchema(strict=True)
-testcases_schema = TestCaseSummarySchema(many=True, strict=True)
+testcase_schema = TestCaseSummarySchema(strict=True, exclude=['job'])
+testcases_schema = TestCaseSummarySchema(
+    many=True, strict=True, exclude=['job'])
 
 
 class JobTestsResource(BaseJobResource):
@@ -27,11 +28,13 @@ class JobTestsResource(BaseJobResource):
         result = request.args.get('result')
         if result:
             try:
-                query = query.filter(TestCase.result == getattr(Result, result))
+                query = query.filter(
+                    TestCase.result == getattr(Result, result))
             except AttributeError:
                 raise NotImplementedError
 
-        query = query.order_by((TestCase.result == Result.failed).desc(), TestCase.name.asc())
+        query = query.order_by(
+            (TestCase.result == Result.failed).desc(), TestCase.name.asc())
 
         return self.respond_with_schema(testcases_schema, query)
 
@@ -44,7 +47,8 @@ class JobTestsResource(BaseJobResource):
             return self.respond(result.errors, 403)
         try:
             with db.session.begin_nested():
-                test = TestCase(repository_id=job.repository_id, job_id=job.id, **result.data)
+                test = TestCase(repository_id=job.repository_id,
+                                job_id=job.id, **result.data)
                 db.session.add(test)
             status = 201
         except IntegrityError:

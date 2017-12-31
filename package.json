@@ -38,6 +38,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "object-assign": "4.1.1",
+    "percentile": "^1.2.0",
     "postcss-flexbugs-fixes": "3.0.0",
     "postcss-loader": "2.0.6",
     "prettier": "^1.5.2",

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
 import Section from '../components/Section';
-import TestList from '../components/TestList';
+import AggregateTestList from '../components/AggregateTestList';
 
 export default class BuildTestList extends AsyncPage {
   static contextTypes = {
@@ -21,7 +21,7 @@ export default class BuildTestList extends AsyncPage {
   renderBody() {
     return (
       <Section>
-        <TestList testList={this.state.testList} params={this.props.params} />
+        <AggregateTestList testList={this.state.testList} params={this.props.params} />
       </Section>
     );
   }

@@ -1,17 +1,20 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import percentile from 'percentile';
 
 import Duration from './Duration';
 
 const ONE_SECOND_IN_MS = 1000;
 
-export default class dataDuration extends Component {
+export class AggregateDuration extends Component {
   static propTypes = {
-    data: PropTypes.shape({
-      started_at: PropTypes.string,
-      finished_at: PropTypes.string,
-      duration: PropTypes.number
-    }).isRequired
+    data: PropTypes.arrayOf(
+      PropTypes.shape({
+        started_at: PropTypes.string,
+        finished_at: PropTypes.string,
+        duration: PropTypes.number
+      })
+    ).isRequired
   };
 
   constructor(props, context) {
@@ -45,20 +48,43 @@ export default class dataDuration extends Component {
   }
 
   getDuration(data) {
-    if (!data) data = this.props.data;
-    if (data.duration) return data.duration;
-    if (!data.finished_at) {
-      if (data.started_at) {
-        return new Date().getTime() - new Date(data.started_at).getTime();
-      }
-      return null;
-    }
-    return new Date(data.finished_at).getTime() - new Date(data.started_at).getTime();
+    return percentile(
+      95,
+      data
+        .map(item => {
+          if (!item) return null;
+          if (item.duration) return item.duration;
+          if (!item.finished_at) {
+            if (item.started_at) {
+              return new Date().getTime() - new Date(item.started_at).getTime();
+            }
+            return null;
+          }
+          return (
+            new Date(item.finished_at).getTime() - new Date(item.started_at).getTime()
+          );
+        })
+        .filter(i => i !== null)
+    );
   }
 
   render() {
     let {duration} = this.state;
     if (duration === null) return null;
     return <Duration ms={duration} {...this.props} />;
+  }
+}
+
+export default class ObjectDuration extends Component {
+  static propTypes = {
+    data: PropTypes.shape({
+      started_at: PropTypes.string,
+      finished_at: PropTypes.string,
+      duration: PropTypes.number
+    }).isRequired
+  };
+
+  render() {
+    return <AggregateDuration data={[this.props.data]} />;
   }
 }

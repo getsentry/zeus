@@ -1,5 +1,5 @@
 from flask import Response
-from sqlalchemy.orm import undefer
+from sqlalchemy.orm import joinedload, undefer
 
 from zeus.config import db
 from zeus.models import TestCase
@@ -12,7 +12,10 @@ testcase_schema = TestCaseSchema(strict=True)
 
 class TestDetailsResource(Resource):
     def dispatch_request(self, test_id: str, *args, **kwargs) -> Response:
-        test = TestCase.query.options(undefer('message')).get(test_id)
+        test = TestCase.query.options(
+            undefer('message'),
+            joinedload('job'),
+        ).get(test_id)
         if not test:
             return self.not_found()
 
