@@ -37,10 +37,10 @@ export class AggregateDuration extends Component {
 
   setDurationTicker() {
     let {data} = this.props;
-    if (data.filter(d => !d.finished_at)) {
+    if (data.find(d => !d.finished_at)) {
       this.ticker = setTimeout(() => {
         this.setState({
-          duration: this.getDuration()
+          duration: this.getDuration(data)
         });
         this.setDurationTicker();
       }, ONE_SECOND_IN_MS);
