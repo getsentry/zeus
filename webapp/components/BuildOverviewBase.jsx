@@ -12,7 +12,7 @@ import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
 import SectionSubheading from '../components/SectionSubheading';
 import StyleViolationList from '../components/StyleViolationList';
-import TestList from '../components/TestList';
+import AggregateTestList from '../components/AggregateTestList';
 import TimeSince from '../components/TimeSince';
 
 const RevisionSection = styled(Section)`
@@ -103,7 +103,7 @@ export default class BuildOverviewBase extends AsyncPage {
         {!!this.state.testFailures.length &&
           <Section>
             <SectionHeading>Failing Tests</SectionHeading>
-            <TestList
+            <AggregateTestList
               testList={this.state.testFailures}
               params={this.props.params}
               collapsable={true}
