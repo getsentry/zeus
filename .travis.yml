@@ -24,6 +24,7 @@ script:
   - node_modules/.bin/eslint webapp --format=checkstyle > checkstyle.xml
   - flake8 > flake8.log
   - py.test tests -v --cov . --cov-report="xml:coverage.xml" --junit-xml="junit.xml"
+  - node_modules/.bin/webpack --profile --json > webpack-stats.json
   - yarn test
 after_success:
   - npm install -g @zeus-ci/cli
@@ -31,12 +32,14 @@ after_success:
   - $(npm bin -g)/zeus upload -t "text/xml+coverage" coverage.xml
   - $(npm bin -g)/zeus upload -t "text/xml+checkstyle" checkstyle.xml
   - $(npm bin -g)/zeus upload -t "text/plain+pycodestyle" flake8.log
+  - $(npm bin -g)/zeus upload -t "application/webpack-stats+json" webpack-stats.json
 after_failure:
   - npm install -g @zeus-ci/cli
   - $(npm bin -g)/zeus upload -t "text/xml+xunit" junit.xml
   - $(npm bin -g)/zeus upload -t "text/xml+coverage" coverage.xml
   - $(npm bin -g)/zeus upload -t "text/xml+checkstyle" checkstyle.xml
   - $(npm bin -g)/zeus upload -t "text/plain+pycodestyle" flake8.log
+  - $(npm bin -g)/zeus upload -t "application/webpack-stats+json" webpack-stats.json
 notifications:
   webhooks:
     urls:

@@ -51,6 +51,10 @@ and will grant additional functionality if they're present.
 - text/plain+pycodestyle
 - text/plain+pylint
 
+#### Webpack Stats
+
+- application/webpack-stats+json
+
 ## Contributing
 
 ### Requirements
