@@ -7,14 +7,14 @@ from zeus.config import celery, db, redis
 from zeus.constants import Result, Status
 from zeus.db.utils import create_or_update
 from zeus.models import (Artifact, Build, FailureReason,
-                         FileCoverage, ItemStat, Job, StyleViolation, TestCase)
+                         FileCoverage, ItemStat, Job, StyleViolation, TestCase, WebpackAsset)
 from zeus.tasks.send_build_notifications import send_build_notifications
 from zeus.utils import timezone
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 
 AGGREGATED_BUILD_STATS = (
     'tests.count', 'tests.duration', 'tests.failures', 'tests.count_unique',
-    'tests.failures_unique', 'style_violations.count',
+    'tests.failures_unique', 'style_violations.count', 'webpack.total_asset_size'
 )
 
 
@@ -238,6 +238,23 @@ def record_style_violation_stats(job_id: UUID):
             'value':
             db.session.query(func.count(StyleViolation.id)).filter(
                 StyleViolation.job_id == job_id,
+            ).as_scalar(),
+        }
+    )
+    db.session.flush()
+
+
+def record_webpack_stats(job_id: UUID):
+    create_or_update(
+        ItemStat,
+        where={
+            'item_id': job_id,
+            'name': 'webpack.total_asset_size',
+        },
+        values={
+            'value':
+            db.session.query(func.sum(WebpackAsset.size)).filter(
+                WebpackAsset.job_id == job_id,
             ).as_scalar(),
         }
     )
