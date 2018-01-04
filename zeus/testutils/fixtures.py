@@ -224,6 +224,12 @@ def sample_pylint():
         return fp.read()
 
 
+@pytest.fixture(scope='session')
+def sample_webpack_stats():
+    with open(os.path.join(DATA_FIXTURES, 'webpack-stats.json')) as fp:
+        return fp.read()
+
+
 @pytest.fixture(scope='function')
 def git_repo_config():
     root = '/tmp/zeus-git-test'
