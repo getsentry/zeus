@@ -22,6 +22,8 @@ STAT_CHOICES = (
     'coverage.lines_uncovered',
     'coverage.diff_lines_covered',
     'coverage.diff_lines_uncovered',
+    'style_violations.count',
+    'bundle.total_asset_size',
 )
 
 RESOLUTION_CHOICES = (
