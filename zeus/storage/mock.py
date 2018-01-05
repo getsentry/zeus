@@ -8,6 +8,9 @@ _cache = {}
 class FileStorageCache(FileStorage):
     global _cache
 
+    def delete(self, filename):
+        _cache.pop(filename, None)
+
     def save(self, filename, fp):
         _cache[filename] = fp.read()
 

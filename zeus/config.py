@@ -177,12 +177,18 @@ def create_app(_read_config=True, **config):
             'task': 'zeus.cleanup_builds',
             'schedule': timedelta(minutes=5),
         },
+        'cleanup-artifacts': {
+            'task': 'zeus.cleanup_artifacts',
+            'schedule': timedelta(minutes=60),
+        }
     }
     app.config['REDBEAT_REDIS_URL'] = app.config['REDIS_URL']
 
     app.config['WORKSPACE_ROOT'] = WORKSPACE_ROOT
     app.config['REPO_ROOT'] = os.environ.get(
         'REPO_ROOT', os.path.join(WORKSPACE_ROOT, 'zeus-repos'))
+
+    app.config['ARTIFACT_RETENTION'] = timedelta(days=30)
 
     if _read_config:
         if os.environ.get('ZEUS_CONF'):

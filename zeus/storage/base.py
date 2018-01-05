@@ -2,6 +2,9 @@ class FileStorage(object):
     def __init__(self, path=''):
         self.path = path
 
+    def delete(self, filename):
+        raise NotImplementedError
+
     def save(self, filename, fp):
         raise NotImplementedError
 
