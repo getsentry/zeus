@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FileSize renders bytes 1`] = `
+<span>
+  413 B
+</span>
+`;

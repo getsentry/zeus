@@ -49,24 +49,21 @@ export class AggregateDuration extends Component {
 
   getDuration(data) {
     if (!data) return null;
-    return percentile(
-      95,
-      data
-        .map(item => {
-          if (!item) return null;
-          if (item.duration) return item.duration;
-          if (!item.finished_at) {
-            if (item.started_at) {
-              return new Date().getTime() - new Date(item.started_at).getTime();
-            }
-            return null;
+    let values = data
+      .map(item => {
+        if (!item) return null;
+        if (item.duration) return item.duration;
+        if (!item.finished_at) {
+          if (item.started_at) {
+            return new Date().getTime() - new Date(item.started_at).getTime();
           }
-          return (
-            new Date(item.finished_at).getTime() - new Date(item.started_at).getTime()
-          );
-        })
-        .filter(i => i !== null)
-    );
+          return null;
+        }
+        return new Date(item.finished_at).getTime() - new Date(item.started_at).getTime();
+      })
+      .filter(i => !!i);
+    if (!values.length) return null;
+    return percentile(95, values);
   }
 
   render() {
