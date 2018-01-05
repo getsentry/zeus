@@ -15,6 +15,7 @@ class FileData(Mutable):
             data = {}
 
         self.filename = data.get('filename')
+        self.exists = bool(data and self.filename)
         self.storage = (
             data.get(
                 'storage', default_storage or current_app.config['FILE_STORAGE'])
@@ -23,10 +24,12 @@ class FileData(Mutable):
         self.size = data.get('size', None)
 
     def __repr__(self):
+        if not self.exists:
+            return '<%s: not present>' % (type(self).__name__,)
         return '<%s: filename=%s>' % (type(self).__name__, self.filename)
 
-    def __nonzero__(self):
-        return bool(self.filename)
+    def __bool__(self):
+        return self.exists
 
     def get_storage(self):
         storage = import_string(self.storage['backend'])
@@ -43,6 +46,7 @@ class FileData(Mutable):
     def save(self, fp, filename=None):
         if filename:
             self.filename = filename
+            self.exists = True
         elif self.filename is None:
             raise ValueError('Missing filename')
 
@@ -61,6 +65,13 @@ class FileData(Mutable):
                 self.size = None
 
         self.get_storage().save(self.filename, fp)
+        self.changed()
+
+    def delete(self):
+        self.get_storage().delete(self.filename)
+        self.exists = False
+        self.filename = None
+        self.size = None
         self.changed()
 
     def get_file(self):
@@ -90,12 +101,15 @@ class File(TypeDecorator):
     def process_bind_param(self, value, dialect):
         if value:
             if isinstance(value, FileData):
-                value = {
-                    'filename': value.filename,
-                    'storage': value.storage,
-                    'path': value.path,
-                    'size': value.size,
-                }
+                if not value.exists:
+                    value = {}
+                else:
+                    value = {
+                        'filename': value.filename,
+                        'storage': value.storage,
+                        'path': value.path,
+                        'size': value.size,
+                    }
             return str(json.dumps(value))
 
         return u'{}'

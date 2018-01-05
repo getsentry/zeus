@@ -29,6 +29,10 @@ class GoogleCloudStorage(object):
     def get_file_path(self, filename):
         return '/'.join([self.path.rstrip('/'), filename])
 
+    def delete(self, filename):
+        blob = self.bucket.blob(self.get_file_path(filename))
+        blob.delete()
+
     def save(self, filename, fp):
         blob = self.bucket.blob(self.get_file_path(filename))
         blob.upload_from_file(fp)

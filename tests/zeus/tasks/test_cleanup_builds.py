@@ -9,7 +9,14 @@ from zeus.utils import timezone
 
 def test_cleanup_builds(mocker, db_session):
     job = factories.JobFactory.create(
-        in_progress=True, date_started=timezone.now() - timedelta(minutes=90), date_finished=None)
+        in_progress=True,
+        date_started=timezone.now() - timedelta(minutes=90),
+    )
+
+    build = Build.query.unrestricted_unsafe().get(job.build_id)
+    build.status = Status.in_progress
+    db_session.add(build)
+    db_session.flush()
 
     cleanup_builds()
 

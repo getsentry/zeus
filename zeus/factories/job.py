@@ -17,7 +17,15 @@ faker = Factory.create()
 class JobFactory(ModelFactory):
     id = GUIDFactory()
     label = factory.faker.Faker('sentence')
-    build = factory.SubFactory('zeus.factories.BuildFactory')
+    build = factory.SubFactory(
+        'zeus.factories.BuildFactory',
+        status=factory.SelfAttribute('..status'),
+        result=factory.SelfAttribute('..result'),
+        date_created=factory.SelfAttribute(
+            '..date_created'),
+        date_started=factory.SelfAttribute(
+            '..date_started'),
+        date_finished=factory.SelfAttribute('..date_finished'))
     build_id = factory.SelfAttribute('build.id')
     repository = factory.SelfAttribute('build.repository')
     repository_id = factory.SelfAttribute('repository.id')

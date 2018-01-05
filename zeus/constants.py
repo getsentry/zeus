@@ -9,6 +9,7 @@ class Status(Enum):
     in_progress = 2
     finished = 3
     collecting_results = 4
+    expired = 5  # used for artifacts
 
     def __str__(self):
         return self.name
