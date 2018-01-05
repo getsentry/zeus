@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import Collapsable from './Collapsable';
+import FileSize from './FileSize';
 import {ResultGrid, Column, Header, Row} from './ResultGrid';
 
 export default class ArtifactsList extends Component {
@@ -18,16 +19,6 @@ export default class ArtifactsList extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {collapsable: props.collapsable};
-  }
-
-  humanFileSize(size) {
-    if (size === 0) return '0 B';
-    if (!size) return null;
-
-    let i = Math.floor(Math.log(size) / Math.log(1024));
-    return (
-      (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i]
-    );
   }
 
   render() {
@@ -63,7 +54,7 @@ export default class ArtifactsList extends Component {
                   {artifact.type}
                 </Column>
                 <Column width={90} textAlign="right">
-                  {this.humanFileSize(artifact.file.size)}
+                  <FileSize value={artifact.file.size} />
                 </Column>
               </Row>
             );

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import ArtifactsList from '../components/ArtifactsList';
 import AsyncPage from '../components/AsyncPage';
+import BundleList from '../components/BundleList';
 import Button from '../components/Button';
 import CoverageSummary from '../components/CoverageSummary';
 import JobList from '../components/JobList';
@@ -56,6 +57,7 @@ export default class BuildOverviewBase extends AsyncPage {
       ['jobList', `${endpoint}/jobs`],
       ['violationList', `${endpoint}/style-violations`],
       ['testFailures', `${endpoint}/tests?result=failed`],
+      ['bundleStats', `${endpoint}/bundle-stats`],
       ['diffCoverage', `${endpoint}/file-coverage?diff_only=true`]
     ];
   }
@@ -141,6 +143,11 @@ export default class BuildOverviewBase extends AsyncPage {
               <JobList build={this.context.build} jobList={allowedFailures} />
             </div>}
         </Section>
+        {!!this.state.bundleStats.length &&
+          <Section>
+            <SectionHeading>Bundles</SectionHeading>
+            <BundleList build={this.context.build} bundleList={this.state.bundleStats} />
+          </Section>}
         {!!this.state.artifacts.length &&
           <Section>
             <SectionHeading>Artifacts</SectionHeading>
