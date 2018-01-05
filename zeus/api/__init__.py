@@ -60,6 +60,9 @@ app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/tests', r.BuildTestsResource
 )
 app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/bundle-stats', r.BuildBundleStatsResource
+)
+app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/jobs/<job_number>', r.JobDetailsResource
 )
 app.add_resource(

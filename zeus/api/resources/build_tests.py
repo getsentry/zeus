@@ -1,34 +1,15 @@
-import re
-
 from flask import request
-from sqlalchemy.sql import func
-from sqlalchemy.types import String, TypeDecorator
 from sqlalchemy.dialects.postgresql import array_agg
 
 from zeus.config import db
 from zeus.constants import Result
+from zeus.db.func import array_agg_row
 from zeus.models import Job, Build, TestCase
 
 from .base_build import BaseBuildResource
 from ..schemas import AggregateTestCaseSummarySchema
 
 testcases_schema = AggregateTestCaseSummarySchema(many=True, strict=True)
-
-
-# https://bitbucket.org/zzzeek/sqlalchemy/issues/3729/using-array_agg-around-row-function-does
-class ArrayOfRecord(TypeDecorator):
-    impl = String
-
-    def process_result_value(self, value, dialect):
-        elems = re.match(r"^\{(\".+?\")*\}$", value).group(1)
-        elems = [e for e in re.split(r'"(.*?)",?', elems) if e]
-        return [tuple(
-            re.findall(r'[^\(\),]+', e)
-        ) for e in elems]
-
-
-def array_agg_row(*arg):
-    return func.array_agg(func.row(*arg), type_=ArrayOfRecord)
 
 
 class BuildTestsResource(BaseBuildResource):
