@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {Flex, Box} from 'grid-styled';
 import styled from 'styled-components';
 
 import Collapsable from './Collapsable';
 import FileSize from './FileSize';
-import {ResultGrid, Column, Header, Row} from './ResultGrid';
+import {ResultGrid, Column, Header} from './ResultGrid';
+import ResultGridRow from './ResultGridRow';
 
 class BundleListItem extends Component {
   static propTypes = {
@@ -15,14 +17,37 @@ class BundleListItem extends Component {
     let {bundle} = this.props;
     return (
       <BundleListItemWrapper>
-        <Row>
-          <Column>
-            {bundle.name}
-          </Column>
-          <Column textAlign="right" width={80}>
-            <FileSize value={bundle.assets.map(a => a.size).reduce((a, b) => a + b, 0)} />
-          </Column>
-        </Row>
+        <ResultGridRow>
+          <Flex align="center">
+            <Box flex="1">
+              <strong>
+                {bundle.name}
+              </strong>
+            </Box>
+            <Box width={90} style={{textAlign: 'right'}}>
+              <strong>
+                <FileSize
+                  value={bundle.assets.map(a => a.size).reduce((a, b) => a + b, 0)}
+                />
+              </strong>
+            </Box>
+          </Flex>
+          {!!bundle.assets.length &&
+            <BundleDetailsWrapper>
+              {bundle.assets.map(asset => {
+                return (
+                  <Flex align="center" key={asset.name} className="asset">
+                    <Box flex="1">
+                      {asset.name}
+                    </Box>
+                    <Box width={90} style={{textAlign: 'right'}}>
+                      <FileSize value={asset.size} />
+                    </Box>
+                  </Flex>
+                );
+              })}
+            </BundleDetailsWrapper>}
+        </ResultGridRow>
       </BundleListItemWrapper>
     );
   }
@@ -64,12 +89,14 @@ export default class BundleList extends Component {
   }
 }
 
-const BundleListItemWrapper = styled.div`
-  &.severity-error {
-    background: #ffe9e9;
-  }
+const BundleListItemWrapper = styled.div``;
 
-  &.severity-warning {
-    background: #ffedde;
+const BundleDetailsWrapper = styled.div`
+  color: #666;
+  font-size: 13px;
+  line-height: 1.4em;
+
+  .asset {
+    margin-top: 10px;
   }
 `;

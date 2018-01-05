@@ -10,8 +10,10 @@ from zeus.utils import timezone
 
 class Revision(RepositoryBoundMixin, db.Model):
     sha = db.Column(db.String(40), primary_key=True)
-    author_id = db.Column(GUID, db.ForeignKey('author.id'), index=True, nullable=True)
-    committer_id = db.Column(GUID, db.ForeignKey('author.id'), index=True, nullable=True)
+    author_id = db.Column(GUID, db.ForeignKey(
+        'author.id'), index=True, nullable=True)
+    committer_id = db.Column(GUID, db.ForeignKey(
+        'author.id'), index=True, nullable=True)
     message = db.Column(db.Text, nullable=True)
     parents = db.Column(ARRAY(db.String(40)), nullable=True)
     branches = db.Column(ARRAY(db.String(128)), nullable=True)
