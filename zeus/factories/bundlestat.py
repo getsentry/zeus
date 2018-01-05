@@ -13,7 +13,7 @@ from .types import GUIDFactory
 class BundleEntrypointFactory(ModelFactory):
     id = GUIDFactory()
     name = factory.LazyAttribute(
-        lambda o: faker.word()
+        lambda o: '{}.{}'.format(faker.word(), faker.word())
     )
     job = factory.SubFactory('zeus.factories.JobFactory')
     job_id = factory.SelfAttribute('job.id')
@@ -27,7 +27,8 @@ class BundleEntrypointFactory(ModelFactory):
 class BundleAssetFactory(ModelFactory):
     id = GUIDFactory()
     name = factory.LazyAttribute(
-        lambda o: faker.word()
+        lambda o: '{}/{}/{}.{}'.format(faker.word(),
+                                       faker.word(), faker.word(), faker.word())
     )
     job = factory.SubFactory('zeus.factories.JobFactory')
     job_id = factory.SelfAttribute('job.id')

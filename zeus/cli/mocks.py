@@ -115,7 +115,7 @@ def mock_build(repo: models.Repository, parent_revision: models.Revision=None, u
                         job=job,
                     )
 
-        for n in range(randint(0, 4)):
+        for n in range(randint(0, 2)):
             entrypoint = factories.BundleEntrypointFactory.create(
                 job=job,
             )
