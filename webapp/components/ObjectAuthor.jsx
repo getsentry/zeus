@@ -20,7 +20,18 @@ const Avatar = styled.span`
 
 export default class ObjectAuthor extends Component {
   static propTypes = {
-    data: PropTypes.object.isRequired
+    data: PropTypes.shape({
+      author: PropTypes.shape({
+        name: PropTypes.string,
+        email: PropTypes.email
+      }),
+      source: PropTypes.shape({
+        author: PropTypes.shape({
+          name: PropTypes.string,
+          email: PropTypes.email
+        })
+      })
+    }).isRequired
   };
 
   render() {

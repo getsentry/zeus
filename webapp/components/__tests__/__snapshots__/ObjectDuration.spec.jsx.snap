@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ObjectDuration renders finished 1`] = `
+<span>
+  2m
+</span>
+`;
+
+exports[`ObjectDuration renders in-progress 1`] = `
+<span>
+  6s
+</span>
+`;
+
+exports[`ObjectDuration renders unfinished 1`] = `null`;
