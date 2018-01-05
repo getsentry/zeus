@@ -116,14 +116,14 @@ def mock_build(repo: models.Repository, parent_revision: models.Revision=None, u
                     )
 
         for n in range(randint(0, 2)):
-            entrypoint = factories.BundleEntrypointFactory.create(
+            bundle = factories.BundleFactory.create(
                 job=job,
             )
             for n in range(randint(0, 4)):
-                asset = factories.BundleAssetFactory.create(
+                factories.BundleAssetFactory.create(
+                    bundle=bundle,
                     job=job,
                 )
-                entrypoint.assets.append(asset)
 
         artifact_count = randrange(3) \
             if job.status == Status.finished and job.result == Result.passed \

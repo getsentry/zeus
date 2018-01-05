@@ -11,24 +11,20 @@ def test_build_bundle_stats(
         build=default_build,
     )
 
-    entrypoint1 = factories.BundleEntrypointFactory.create(
+    bundle1 = factories.BundleFactory.create(
         job=job1,
         name='bar',
     )
-    asset1 = factories.BundleAssetFactory.create(
+    factories.BundleAssetFactory.create(
         job=job1,
+        bundle=bundle1,
         name='foo',
         size=50,
     )
-    entrypoint1.assets.append(asset1)
 
-    entrypoint2 = factories.BundleEntrypointFactory.create(
+    factories.BundleFactory.create(
         job=job2,
         name='foo',
-    )
-    entrypoint3 = factories.BundleEntrypointFactory.create(
-        job=job2,
-        name='bar',
     )
     db_session.flush()
 
@@ -40,21 +36,9 @@ def test_build_bundle_stats(
     data = resp.json()
     assert len(data) == 2
     assert data[0]['name'] == 'bar'
-    assert sorted(data[0]['results'], key=lambda x: x['assets']) == [{
-        'id': str(entrypoint3.id),
-        'job_id': str(job2.id),
-        'assets': [],
-    }, {
-        'id': str(entrypoint1.id),
-        'job_id': str(job1.id),
-        'assets': [{
-            'name': 'foo',
-            'size': 50,
-        }],
+    assert data[0]['assets'] == [{
+        'name': 'foo',
+        'size': 50,
     }]
     assert data[1]['name'] == 'foo'
-    assert data[1]['results'] == [{
-        'id': str(entrypoint2.id),
-        'job_id': str(job2.id),
-        'assets': [],
-    }]
+    assert data[1]['assets'] == []

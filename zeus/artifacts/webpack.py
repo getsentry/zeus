@@ -1,7 +1,7 @@
 import json
 
 from zeus.config import db
-from zeus.models import BundleAsset, BundleEntrypoint
+from zeus.models import Bundle, BundleAsset
 
 from .base import ArtifactHandler
 
@@ -14,26 +14,24 @@ class WebpackStatsHandler(ArtifactHandler):
         job = self.job
         data = json.load(fp)
 
-        asset_cache = {}
+        asset_index = {}
         for asset in data['assets']:
-            asset_inst = BundleAsset(
+            asset_index[asset['name']] = asset
+
+        for bundle_name, asset_list in data['assetsByChunkName'].items():
+            bundle_inst = Bundle(
                 job=job,
                 repository_id=job.repository_id,
-                name=asset['name'],
-                size=asset['size'],
-                chunk_names=asset['chunkNames'],
+                name=bundle_name,
             )
-            db.session.add(asset_inst)
-            asset_cache[asset['name']] = asset_inst
-
-        for entrypoint_name, entrypoint in data['entrypoints'].items():
-            entrypoint_inst = BundleEntrypoint(
-                job=job,
-                repository_id=job.repository_id,
-                name=entrypoint_name,
-            )
-            for asset_name in entrypoint['assets']:
-                entrypoint_inst.assets.append(asset_cache[asset_name])
-            db.session.add(entrypoint_inst)
-
+            db.session.add(bundle_inst)
+            for asset_name in asset_list:
+                asset = asset_index[asset_name]
+                db.session.add(BundleAsset(
+                    job=job,
+                    repository_id=job.repository_id,
+                    bundle=bundle_inst,
+                    name=asset['name'],
+                    size=asset['size'],
+                ))
         db.session.flush()

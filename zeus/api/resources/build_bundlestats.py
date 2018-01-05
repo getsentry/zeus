@@ -1,12 +1,12 @@
+from sqlalchemy.orm import subqueryload_all
+
 from zeus.config import db
-from zeus.db.func import array_agg_row
-from zeus.models import Job, Build, BundleEntrypoint
+from zeus.models import Job, Build, Bundle
 
 from .base_build import BaseBuildResource
-from ..schemas import AggregateBundleEntrypointSchema
+from ..schemas import BundleSchema
 
-bundle_entrypoint_schema = AggregateBundleEntrypointSchema(
-    many=True, strict=True)
+bundle_schema = BundleSchema(many=True, strict=True)
 
 
 class BuildBundleStatsResource(BaseBuildResource):
@@ -18,16 +18,12 @@ class BuildBundleStatsResource(BaseBuildResource):
             Job.build_id == build.id,
         ).subquery()
 
-        query = db.session.query(
-            BundleEntrypoint.name,
-            array_agg_row(BundleEntrypoint.id,
-                          BundleEntrypoint.job_id).label('results'),
-        ).filter(
-            BundleEntrypoint.job_id.in_(job_ids),
-        ).group_by(BundleEntrypoint.name)
-
-        query = query.order_by(
-            BundleEntrypoint.name.asc(),
+        query = Bundle.query.filter(
+            Bundle.job_id.in_(job_ids),
+        ).options(
+            subqueryload_all(Bundle.assets)
+        ).order_by(
+            Bundle.name.asc(),
         )
 
-        return self.paginate_with_schema(bundle_entrypoint_schema, query)
+        return self.paginate_with_schema(bundle_schema, query)
