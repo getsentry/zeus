@@ -1,0 +1,14 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', 'gcr.io/$PROJECT_ID/zeus']
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '--cache-from', 'gcr.io/$PROJECT_ID/zeus:latest',
+    '-t', 'gcr.io/$PROJECT_ID/zeus:$COMMIT_SHA',
+    '-t', 'gcr.io/$PROJECT_ID/zeus:latest',
+    '.'
+  ]
+images:
+- 'gcr.io/$PROJECT_ID/zeus:$COMMIT_SHA'
+- 'gcr.io/$PROJECT_ID/zeus:latest'
