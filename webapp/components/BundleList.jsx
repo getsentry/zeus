@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import percentile from 'percentile';
 
 import Collapsable from './Collapsable';
 import FileSize from './FileSize';
@@ -12,14 +11,6 @@ class BundleListItem extends Component {
     bundle: PropTypes.object.isRequired
   };
 
-  getSize(data) {
-    if (!data) return null;
-    return percentile(
-      95,
-      data.results.map(item => item.assets.map(a => a.size).reduce((a, b) => a + b, 0))
-    );
-  }
-
   render() {
     let {bundle} = this.props;
     return (
@@ -29,7 +20,7 @@ class BundleListItem extends Component {
             {bundle.name}
           </Column>
           <Column textAlign="right" width={80}>
-            <FileSize value={this.getSize(bundle)} />
+            <FileSize value={bundle.assets.map(a => a.size).reduce((a, b) => a + b, 0)} />
           </Column>
         </Row>
       </BundleListItemWrapper>
