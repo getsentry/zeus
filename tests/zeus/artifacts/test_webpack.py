@@ -1,7 +1,7 @@
 from io import BytesIO
 
 from zeus.artifacts.webpack import WebpackStatsHandler
-from zeus.models import BundleAsset, BundleEntrypoint
+from zeus.models import Bundle
 
 
 def test_result_generation(sample_webpack_stats, default_job):
@@ -10,33 +10,17 @@ def test_result_generation(sample_webpack_stats, default_job):
     handler = WebpackStatsHandler(default_job)
     handler.process(fp)
 
-    results = list(BundleEntrypoint.query.unrestricted_unsafe().filter(
-        BundleEntrypoint.job_id == default_job.id,
-    ).order_by(BundleEntrypoint.name.asc()))
+    results = list(Bundle.query.unrestricted_unsafe().filter(
+        Bundle.job_id == default_job.id,
+    ).order_by(Bundle.name.asc()))
 
     assert len(results) == 3
 
     r1 = results[0]
     assert r1.name == 'app'
-    assert [a.name for a in r1.assets] == [
-        'js/vendor.5bdbbccf.js',
-        'js/vendor.5bdbbccf.js.map',
-        'js/app.5bdbbccf.js',
-        'js/app.5bdbbccf.js.map'
-    ]
-
-    results = list(BundleAsset.query.unrestricted_unsafe().filter(
-        BundleAsset.job_id == default_job.id,
-    ).order_by(BundleAsset.name.asc()))
-
-    assert len(results) == 15
-
-    r1 = results[0]
-    assert r1.name == 'asset-manifest.json'
-    assert r1.size == 730
-    assert r1.chunk_names == []
-
-    r2 = results[1]
-    assert r2.name == 'js/0.5bdbbccf.chunk.js'
-    assert r2.size == 31143
-    assert r2.chunk_names == []
+    asset_list = list(r1.assets)
+    assert len(asset_list) == 2
+    assert asset_list[0].name == 'js/app.5bdbbccf.js'
+    assert asset_list[0].size == 1100428
+    assert asset_list[1].name == 'js/app.5bdbbccf.js.map'
+    assert asset_list[1].size == 791795

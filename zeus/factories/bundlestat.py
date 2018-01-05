@@ -10,7 +10,7 @@ from .base import ModelFactory
 from .types import GUIDFactory
 
 
-class BundleEntrypointFactory(ModelFactory):
+class BundleFactory(ModelFactory):
     id = GUIDFactory()
     name = factory.LazyAttribute(
         lambda o: '{}.{}'.format(faker.word(), faker.word())
@@ -21,7 +21,7 @@ class BundleEntrypointFactory(ModelFactory):
     repository_id = factory.SelfAttribute('repository.id')
 
     class Meta:
-        model = models.BundleEntrypoint
+        model = models.Bundle
 
 
 class BundleAssetFactory(ModelFactory):
