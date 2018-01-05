@@ -7,14 +7,14 @@ from zeus.config import celery, db, redis
 from zeus.constants import Result, Status
 from zeus.db.utils import create_or_update
 from zeus.models import (Artifact, Build, FailureReason,
-                         FileCoverage, ItemStat, Job, StyleViolation, TestCase, WebpackAsset)
+                         FileCoverage, ItemStat, Job, StyleViolation, TestCase, BundleAsset)
 from zeus.tasks.send_build_notifications import send_build_notifications
 from zeus.utils import timezone
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 
 AGGREGATED_BUILD_STATS = (
     'tests.count', 'tests.duration', 'tests.failures', 'tests.count_unique',
-    'tests.failures_unique', 'style_violations.count', 'webpack.total_asset_size'
+    'tests.failures_unique', 'style_violations.count', 'bundle.total_asset_size'
 )
 
 
@@ -54,6 +54,7 @@ def aggregate_build_stats_for_job(job_id: UUID):
         if job.status == Status.finished:
             record_test_stats(job.id)
             record_style_violation_stats(job.id)
+            record_bundle_stats(job.id)
             record_failure_reasons(job)
 
     lock_key = 'aggstatsbuild:{build_id}'.format(
@@ -236,7 +237,7 @@ def record_style_violation_stats(job_id: UUID):
         },
         values={
             'value':
-            db.session.query(func.count(StyleViolation.id)).filter(
+            db.session.query(func.coalesce(func.count(StyleViolation.id), 0)).filter(
                 StyleViolation.job_id == job_id,
             ).as_scalar(),
         }
@@ -244,17 +245,17 @@ def record_style_violation_stats(job_id: UUID):
     db.session.flush()
 
 
-def record_webpack_stats(job_id: UUID):
+def record_bundle_stats(job_id: UUID):
     create_or_update(
         ItemStat,
         where={
             'item_id': job_id,
-            'name': 'webpack.total_asset_size',
+            'name': 'bundle.total_asset_size',
         },
         values={
             'value':
-            db.session.query(func.sum(WebpackAsset.size)).filter(
-                WebpackAsset.job_id == job_id,
+            db.session.query(func.coalesce(func.sum(BundleAsset.size), 0)).filter(
+                BundleAsset.job_id == job_id,
             ).as_scalar(),
         }
     )
