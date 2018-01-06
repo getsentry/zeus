@@ -138,7 +138,9 @@ class CoveredFile extends Component {
             })}
           </td>
           <td>
-            <SyntaxHighlighter style={{padding: 0}}>
+            <SyntaxHighlighter
+              style={{padding: 0}}
+              lang={result.coverage.filename.split('.').reverse()[0]}>
               {result.file_source}
             </SyntaxHighlighter>
           </td>
