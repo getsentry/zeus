@@ -27,7 +27,7 @@ def get_job_label(job: dict) -> str:
         )
     return '{}: {}'.format(
         job_config['language'],
-        job_config[job['language']],
+        job_config[job_config['language']],
     )
 
 
