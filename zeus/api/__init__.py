@@ -45,6 +45,10 @@ app.add_resource(
     r.BuildFileCoverageResource
 )
 app.add_resource(
+    '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/file-coverage-tree',
+    r.BuildFileCoverageTreeResource
+)
+app.add_resource(
     '/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/artifacts',
     r.BuildArtifactsResource
 )
