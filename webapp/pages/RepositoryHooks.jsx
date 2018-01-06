@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
-import Button from '../components/Button';
+import {ButtonLink} from '../components/Button';
 import {ResultGrid, Column, Header, Row} from '../components/ResultGrid';
 import SectionHeading from '../components/SectionHeading';
 import TimeSince from '../components/TimeSince';
@@ -22,29 +22,6 @@ class RepositoryHooks extends AsyncPage {
     return [['hookList', `/repos/${repo.full_name}/hooks`]];
   }
 
-  createHook = e => {
-    let {repo} = this.context;
-    let indicator = this.props.addIndicator('Saving changes..', 'loading');
-
-    // eslint-disable-next-line
-    const provider = window.prompt('Please enter a service name', 'travis');
-    if (!provider) return;
-
-    this.api
-      .post(`/repos/${repo.full_name}/hooks`, {
-        data: {provider}
-      })
-      .then(hook => {
-        this.props.removeIndicator(indicator);
-        this.context.router.push(`/${repo.full_name}/settings/hooks/${hook.id}`);
-      })
-      .catch(error => {
-        this.props.addIndicator('An error occurred.', 'error', 5000);
-        this.props.removeIndicator(indicator);
-        throw error;
-      });
-  };
-
   renderBody() {
     let repo = this.context.repo;
     let {hookList} = this.state;
@@ -52,9 +29,12 @@ class RepositoryHooks extends AsyncPage {
       <div>
         <div>
           <div style={{float: 'right', marginTop: -5}}>
-            <Button onClick={this.createHook} type="primary" size="small">
+            <ButtonLink
+              to={`/${repo.full_name}/settings/hooks/create`}
+              type="primary"
+              size="small">
               Create Hook
-            </Button>
+            </ButtonLink>
           </div>
           <SectionHeading>Hooks</SectionHeading>
         </div>
@@ -85,7 +65,16 @@ class RepositoryHooks extends AsyncPage {
           ) : (
             <Row>
               <Column>
-                {"You haven't registered any hooks for this repository yet."}
+                <p>
+                  Hooks lets you easily upsert build information into Zeus. They&apos;re a
+                  set of credentials that are bound to this repository.
+                </p>
+                <p>
+                  To get started with Zeus, you&apos;ll likely want to{' '}
+                  <Link to={`/${repo.full_name}/settings/hooks/create`}>
+                    create a new hook
+                  </Link>.
+                </p>
               </Column>
             </Row>
           )}

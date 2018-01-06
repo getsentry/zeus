@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+
 window.TestStubs = {
   // react-router's 'router' context
   router: () => ({

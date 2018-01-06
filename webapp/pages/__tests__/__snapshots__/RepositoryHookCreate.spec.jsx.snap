@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RepositoryHookCreate renders 1`] = `
+<div>
+  <div>
+    <div>
+      <div
+        class="sc-htpNat gIExTH"
+      >
+        Create Hook
+      </div>
+    </div>
+    <p>
+      Hooks lets you easily upsert build information into Zeus. They're a set of credentials that are bound to this repository. Once you've created the hook, it can be used to submit build and job information, as well as to upload artifacts (for example, via 
+      <a
+        href="https://github.com/getsentry/zeus-cli"
+      >
+        zeus-cli
+      </a>
+      ).
+    </p>
+    <p>
+      To create a new hook, select a provider:
+    </p>
+    <p>
+      <a
+        class="sc-bwzfXH brrNfG"
+      >
+        Travis CI
+      </a>
+       
+      <a
+        class="sc-bwzfXH brrNfG"
+      >
+        Custom
+      </a>
+    </p>
+  </div>
+</div>
+`;

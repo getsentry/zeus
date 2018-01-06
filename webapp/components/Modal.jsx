@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import {Logo} from '../assets/Logo';
 
-export default class CalloutBox extends Component {
+export default class Modal extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     subtext: PropTypes.string,
@@ -29,14 +29,10 @@ export default class CalloutBox extends Component {
             borderRadius: '4px',
             padding: 20
           }}>
-          {this.props.subtext
-            ? <h1 style={{opacity: 0.2, float: 'right'}}>
-                {this.props.subtext}
-              </h1>
-            : null}
-          <h1>
-            {this.props.title}
-          </h1>
+          {this.props.subtext ? (
+            <h1 style={{opacity: 0.2, float: 'right'}}>{this.props.subtext}</h1>
+          ) : null}
+          <h1>{this.props.title}</h1>
           {this.props.children}
         </div>
         <div

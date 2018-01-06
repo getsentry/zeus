@@ -16,6 +16,7 @@ import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
 import RepositoryFileCoverage from './pages/RepositoryFileCoverage';
 import RepositoryHooks from './pages/RepositoryHooks';
+import RepositoryHookCreate from './pages/RepositoryHookCreate';
 import RepositoryHookDetails from './pages/RepositoryHookDetails';
 import RepositoryRevisionList from './pages/RepositoryRevisionList';
 import RepositorySettingsLayout from './pages/RepositorySettingsLayout';
@@ -80,6 +81,7 @@ export default (
       <Route path="settings" component={RepositorySettingsLayout}>
         <IndexRoute component={RepositorySettings} />
         <Route path="hooks" component={RepositoryHooks} />
+        <Route path="hooks/create" component={RepositoryHookCreate} />
         <Route path="hooks/:hookId" component={RepositoryHookDetails} />
       </Route>
       <Route path="tests" component={RepositoryTests}>
