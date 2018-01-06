@@ -10,11 +10,11 @@ repos:
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
 -   repo: git://github.com/getsentry/pre-commit-hooks
-    sha: daa33dd69ff71affa95250287272471c1f5f0995
+    sha: f3237d2d65af81d435c49dee3593dc8f03d23c2d
     hooks:
     -   id: prettier
 -   repo: git://github.com/getsentry/pre-commit-hooks
-    sha: daa33dd69ff71affa95250287272471c1f5f0995
+    sha: f3237d2d65af81d435c49dee3593dc8f03d23c2d
     hooks:
     -   id: eslint
 -   repo: git://github.com/pre-commit/pre-commit-hooks

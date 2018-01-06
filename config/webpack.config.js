@@ -124,6 +124,8 @@ function getEntry() {
   entry.vendor = [
     'classnames',
     'lodash',
+    'marked',
+    'moment',
     'react',
     'react-gravatar',
     'react-dom',

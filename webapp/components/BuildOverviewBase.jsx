@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import marked from 'marked';
 
 import ArtifactsList from '../components/ArtifactsList';
 import AsyncPage from '../components/AsyncPage';
@@ -27,9 +28,38 @@ const RevisionSubject = styled.pre`
   font-size: 0.9em;
 `;
 
-const RevisionMessage = styled.pre`
-  margin-bottom: 20px;
+const RevisionMessage = styled.div`
   font-size: 0.8em;
+  margin-bottom: 12px;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  ul,
+  ol,
+  blockquote,
+  pre {
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: 110%;
+  }
+
+  h2,
+  h3 {
+    font-size: 100%;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-size: 90%;
+  }
 `;
 
 const RevisionAuthor = styled.div`
@@ -98,7 +128,13 @@ export default class BuildOverviewBase extends AsyncPage {
             </div>
           )}
           <RevisionSubject>{revisionSubject}</RevisionSubject>
-          {revisionMessage && <RevisionMessage>{revisionMessage}</RevisionMessage>}
+          {revisionMessage && (
+            <RevisionMessage
+              dangerouslySetInnerHTML={{
+                __html: marked(revisionMessage)
+              }}
+            />
+          )}
           <RevisionAuthor>
             {revision.author ? (
               <ObjectAuthor data={revision} />

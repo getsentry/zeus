@@ -40,6 +40,7 @@
     "jest": "20.0.4",
     "jest-junit": "^3.4.1",
     "lodash": "^4.17.4",
+    "marked": "^0.3.9",
     "mockdate": "^2.0.2",
     "moment": "^2.18.1",
     "object-assign": "4.1.1",
