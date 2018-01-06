@@ -79,7 +79,7 @@ const FileWithCoverageTable = styled.table`
     background-color: #f05b5b !important;
   }
 
-  .line-u {
+  .line-n {
     background-color: #eee !important;
   }
 
