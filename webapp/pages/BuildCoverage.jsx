@@ -234,15 +234,19 @@ export default class BuildCoverageTree extends AsyncPage {
     return (
       <Section>
         <CoveredSummary>
-          <Tree>
-            {result.trail.map(crumb => {
-              return (
-                <Leaf to={{pathname: path, query: {parent: crumb.path}}} key={crumb.path}>
-                  {crumb.name}
-                </Leaf>
-              );
-            })}
-          </Tree>{' '}
+          {!!result.trail.length && (
+            <Tree>
+              {result.trail.map(crumb => {
+                return (
+                  <Leaf
+                    to={{pathname: path, query: {parent: crumb.path}}}
+                    key={crumb.path}>
+                    {crumb.name}
+                  </Leaf>
+                );
+              })}
+            </Tree>
+          )}
           <CoveredStats>{`${pctCovered}% lines covered (${linesCovered} / ${linesTotal})`}</CoveredStats>
         </CoveredSummary>
         {result.is_leaf ? (
