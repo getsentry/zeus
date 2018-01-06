@@ -11,10 +11,6 @@ export default class RepositoryTests extends AsyncPage {
     repo: PropTypes.object.isRequired
   };
 
-  getTitle() {
-    return this.context.repo.name;
-  }
-
   renderBody() {
     let {repo} = this.context;
     let basePath = `/${repo.full_name}`;

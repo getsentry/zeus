@@ -18,6 +18,8 @@ export default class BuildDetails extends BuildDetailsBase {
   }
 
   getTitle() {
-    return 'Build Details';
+    let {repo} = this.context;
+    let {buildNumber} = this.props.params;
+    return `${repo.owner_name}/${repo.name}#${buildNumber}`;
   }
 }

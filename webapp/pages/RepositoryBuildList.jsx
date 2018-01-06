@@ -15,10 +15,6 @@ class RepositoryBuildList extends AsyncPage {
     repo: PropTypes.object.isRequired
   };
 
-  getTitle() {
-    return this.context.repo.name;
-  }
-
   renderBody() {
     return <BuildListBody {...this.props} />;
   }
