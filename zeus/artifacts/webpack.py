@@ -26,6 +26,9 @@ class WebpackStatsHandler(ArtifactHandler):
             )
             db.session.add(bundle_inst)
             for asset_name in asset_list:
+                # dont track sourcemaps
+                if asset_name.endswith('.map'):
+                    continue
                 asset = asset_index[asset_name]
                 db.session.add(BundleAsset(
                     job=job,

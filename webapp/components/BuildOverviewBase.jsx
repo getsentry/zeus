@@ -73,36 +73,44 @@ export default class BuildOverviewBase extends AsyncPage {
     let unallowedFailures = this.state.jobList.filter(job => !job.allow_failure);
     let revision = this.context.build.source.revision;
     let {repo} = this.context;
-    let [revisionSubject, revisionMessage] = revision.message.split('\n', 2);
+    let revisionBits = revision.message.split('\n');
+    let revisionSubject = revisionBits[0];
+    let revisionMessage =
+      revisionBits.length > 1
+        ? revisionBits
+            .slice(1)
+            .join('\n')
+            .replace(/^\s+|\s+$/g, '')
+        : null;
     return (
       <div>
         <RevisionSection>
-          {repo.provider === 'gh' &&
+          {repo.provider === 'gh' && (
             <div style={{float: 'right'}}>
               <Button
                 size="small"
                 type="light"
-                href={`https://github.com/${repo.owner_name}/${repo.name}/commit/${revision.sha}`}>
+                href={`https://github.com/${repo.owner_name}/${repo.name}/commit/${
+                  revision.sha
+                }`}>
                 View on GitHub
               </Button>
-            </div>}
-          <RevisionSubject>
-            {revisionSubject}
-          </RevisionSubject>
-          {revisionMessage &&
-            <RevisionMessage>
-              {revisionMessage}
-            </RevisionMessage>}
+            </div>
+          )}
+          <RevisionSubject>{revisionSubject}</RevisionSubject>
+          {revisionMessage && <RevisionMessage>{revisionMessage}</RevisionMessage>}
           <RevisionAuthor>
-            {revision.author
-              ? <ObjectAuthor data={revision} />
-              : <strong>
-                  <em>Unknown Author</em>
-                </strong>}{' '}
+            {revision.author ? (
+              <ObjectAuthor data={revision} />
+            ) : (
+              <strong>
+                <em>Unknown Author</em>
+              </strong>
+            )}{' '}
             committed <TimeSince date={revision.committed_at} />
           </RevisionAuthor>
         </RevisionSection>
-        {!!this.state.testFailures.length &&
+        {!!this.state.testFailures.length && (
           <Section>
             <SectionHeading>Failing Tests</SectionHeading>
             <AggregateTestList
@@ -110,13 +118,15 @@ export default class BuildOverviewBase extends AsyncPage {
               params={this.props.params}
               collapsable={true}
             />
-          </Section>}
-        {!!this.state.diffCoverage.length &&
+          </Section>
+        )}
+        {!!this.state.diffCoverage.length && (
           <Section>
             <SectionHeading>Coverage</SectionHeading>
             <CoverageSummary coverage={this.state.diffCoverage} collapsable={true} />
-          </Section>}
-        {!!this.state.violationList.length &&
+          </Section>
+        )}
+        {!!this.state.violationList.length && (
           <Section>
             <SectionHeading>Style Violations</SectionHeading>
             <StyleViolationList
@@ -124,35 +134,37 @@ export default class BuildOverviewBase extends AsyncPage {
               params={this.props.params}
               collapsable={true}
             />
-          </Section>}
+          </Section>
+        )}
         <Section>
           <SectionHeading>
             Jobs
-            {!!failingJobs.length &&
-              <small>
-                {' '}&mdash; {failingJobs.length} failed
-              </small>}
+            {!!failingJobs.length && <small> &mdash; {failingJobs.length} failed</small>}
           </SectionHeading>
-          {!!unallowedFailures.length &&
+          {!!unallowedFailures.length && (
             <div>
               <JobList build={this.context.build} jobList={unallowedFailures} />
-            </div>}
-          {!!allowedFailures.length &&
+            </div>
+          )}
+          {!!allowedFailures.length && (
             <div>
               <SectionSubheading>Allowed Failures</SectionSubheading>
               <JobList build={this.context.build} jobList={allowedFailures} />
-            </div>}
+            </div>
+          )}
         </Section>
-        {!!this.state.bundleStats.length &&
+        {!!this.state.bundleStats.length && (
           <Section>
             <SectionHeading>Bundles</SectionHeading>
             <BundleList build={this.context.build} bundleList={this.state.bundleStats} />
-          </Section>}
-        {!!this.state.artifacts.length &&
+          </Section>
+        )}
+        {!!this.state.artifacts.length && (
           <Section>
             <SectionHeading>Artifacts</SectionHeading>
             <ArtifactsList artifacts={this.state.artifacts} collapsable={true} />
-          </Section>}
+          </Section>
+        )}
       </div>
     );
   }
