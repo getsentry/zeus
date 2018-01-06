@@ -61,7 +61,13 @@ $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" coverage.xml
 
 #### Webpack Stats
 
-- application/x-webpack-stats+json
+Webpack stats can be generated with:
+
+```bash
+webpack --profile --json > webpack-stats.json
+```
+
+They should be submitted with the ``application/x-webpack-stats+json`` type.
 
 ## Contributing
 
