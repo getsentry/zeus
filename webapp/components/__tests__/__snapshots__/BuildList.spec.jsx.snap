@@ -1,0 +1,146 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BuildList renders 1`] = `
+<div
+  class="sc-bZQynM fHbQJ"
+>
+  <div
+    class="sc-htoDjs CJFOY ResultGrid-Header sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+  >
+    <div
+      class="sc-gzVnrw jBvblj ResultGrid-Column sc-bdVaJa kYmYWE"
+    >
+      Build
+    </div>
+    <div
+      class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa jfzzVE"
+      style="text-align:center"
+      width="90"
+    >
+      Coverage
+    </div>
+    <div
+      class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa jfzzVE"
+      style="text-align:center"
+      width="90"
+    >
+      Duration
+    </div>
+    <div
+      class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa bNDigs"
+      style="text-align:right"
+      width="150"
+    >
+      When
+    </div>
+  </div>
+  <div>
+    <a
+      class="sc-bxivhb kSSmoi"
+    >
+      <div
+        class="sc-dnqmqq bLWiHU ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+      >
+        <div
+          class="sc-gzVnrw jBvblj ResultGrid-Column sc-bdVaJa kYmYWE"
+        >
+          <div
+            class="sc-htpNat eLQHN sc-bdVaJa iHZvIS"
+          >
+            <div
+              class="sc-bdVaJa hGSMoE"
+              width="15"
+            >
+              <div
+                class="sc-EHOje hJNzZA"
+                result="passed"
+              >
+                <svg
+                  fill="currentColor"
+                  height="16"
+                  preserveAspectRatio="xMidYMid meet"
+                  style="vertical-align:middle"
+                  viewBox="0 0 40 40"
+                  width="16"
+                >
+                  <g>
+                    <path
+                      d="m16.6 28.4l15-15-2.3-2.5-12.7 12.7-5.9-5.9-2.3 2.3z m3.4-25c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
+                    />
+                  </g>
+                </svg>
+              </div>
+            </div>
+            <div
+              class="sc-bdVaJa kYmYWE"
+              style="min-width:0"
+            >
+              <div
+                class="sc-iwsKbI hSUBot"
+              >
+                fix: Remove break-word behavior on coverage
+              </div>
+              <div
+                class="sc-jTzLTM ihWNxQ"
+              >
+                <div
+                  class="sc-gqjmRU fKhbCo sc-gZMcBi bDPlgE"
+                >
+                  eff634a
+                </div>
+                <div
+                  class="sc-gZMcBi bDPlgE"
+                >
+                  <span>
+                    <span
+                      class="sc-ifAKCX gQVWpv"
+                    >
+                      <img
+                        alt="Gravatar for dcramer@gmail.com"
+                        class="react-gravatar"
+                        height="16"
+                        src="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=16"
+                        srcset="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=32 2x"
+                        width="16"
+                      />
+                    </span>
+                    David Cramer
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa jfzzVE"
+          style="text-align:center"
+          width="90"
+        >
+          <span />
+        </div>
+        <div
+          class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa jfzzVE"
+          style="text-align:center"
+          width="90"
+        >
+          <span>
+            4m
+          </span>
+        </div>
+        <div
+          class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa bNDigs"
+          style="text-align:right"
+          width="150"
+        >
+          <time
+            datetime="2018-01-06T16:07:16.830Z"
+            title="January 6, 2018 11:07 AM "
+          >
+            in 3 months
+          </time>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+`;
