@@ -8,11 +8,14 @@ from subprocess import check_call, check_output
 from zeus import factories, models
 from zeus.utils import timezone
 
-DATA_FIXTURES = os.path.join(os.path.dirname(
-    __file__), os.pardir, os.pardir, 'tests', 'fixtures')
-
 RepoConfig = namedtuple(
     'RepoConfig', ['url', 'path', 'remote_path', 'commits'])
+
+
+@pytest.fixture(scope='session')
+def fixture_path():
+    return os.path.join(os.path.dirname(
+        __file__), os.pardir, os.pardir, 'tests', 'fixtures')
 
 
 @pytest.fixture(scope='function')
@@ -177,56 +180,56 @@ def default_hook(default_repo):
 
 
 @pytest.fixture(scope='session')
-def sample_xunit():
-    with open(os.path.join(DATA_FIXTURES, 'sample-xunit.xml')) as fp:
+def sample_xunit(fixture_path):
+    with open(os.path.join(fixture_path, 'sample-xunit.xml')) as fp:
         return fp.read()
 
 
 @pytest.fixture(scope='session')
-def sample_xunit_with_artifacts():
-    with open(os.path.join(DATA_FIXTURES, 'sample-xunit-with-artifacts.xml')) as fp:
+def sample_xunit_with_artifacts(fixture_path):
+    with open(os.path.join(fixture_path, 'sample-xunit-with-artifacts.xml')) as fp:
         return fp.read()
 
 
 @pytest.fixture(scope='session')
-def sample_cobertura():
-    with open(os.path.join(DATA_FIXTURES, 'sample-cobertura.xml')) as fp:
+def sample_cobertura(fixture_path):
+    with open(os.path.join(fixture_path, 'sample-cobertura.xml')) as fp:
         return fp.read()
 
 
 @pytest.fixture(scope='session')
-def sample_jacoco():
-    with open(os.path.join(DATA_FIXTURES, 'sample-jacoco.xml')) as fp:
+def sample_jacoco(fixture_path):
+    with open(os.path.join(fixture_path, 'sample-jacoco.xml')) as fp:
         return fp.read()
 
 
 @pytest.fixture(scope='session')
-def sample_diff():
-    with open(os.path.join(DATA_FIXTURES, 'sample.diff')) as fp:
+def sample_diff(fixture_path):
+    with open(os.path.join(fixture_path, 'sample.diff')) as fp:
         return fp.read()
 
 
 @pytest.fixture(scope='session')
-def sample_checkstyle():
-    with open(os.path.join(DATA_FIXTURES, 'sample-checkstyle.xml')) as fp:
+def sample_checkstyle(fixture_path):
+    with open(os.path.join(fixture_path, 'sample-checkstyle.xml')) as fp:
         return fp.read()
 
 
 @pytest.fixture(scope='session')
-def sample_pep8():
-    with open(os.path.join(DATA_FIXTURES, 'sample-pep8.txt')) as fp:
+def sample_pep8(fixture_path):
+    with open(os.path.join(fixture_path, 'sample-pep8.txt')) as fp:
         return fp.read()
 
 
 @pytest.fixture(scope='session')
-def sample_pylint():
-    with open(os.path.join(DATA_FIXTURES, 'sample-pylint.txt')) as fp:
+def sample_pylint(fixture_path):
+    with open(os.path.join(fixture_path, 'sample-pylint.txt')) as fp:
         return fp.read()
 
 
 @pytest.fixture(scope='session')
-def sample_webpack_stats():
-    with open(os.path.join(DATA_FIXTURES, 'webpack-stats.json')) as fp:
+def sample_webpack_stats(fixture_path):
+    with open(os.path.join(fixture_path, 'webpack-stats.json')) as fp:
         return fp.read()
 
 
