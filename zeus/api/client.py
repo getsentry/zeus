@@ -23,6 +23,7 @@ class APIClient(object):
         data: dict=None,
         files: Mapping[str, BinaryIO]=None,
         json: dict=None,
+        params: dict=None,
         request=None,
         tenant=True,
     ) -> Response:
@@ -33,6 +34,7 @@ class APIClient(object):
             data = request.data
             files = request.files
             json = None
+            params = request.args
 
         if tenant is True:
             tenant = auth.get_current_tenant()
@@ -55,6 +57,7 @@ class APIClient(object):
         with current_app.test_client() as client:
             response = client.open(
                 path='/api/{}'.format(path.lstrip('/')),
+                query_string=params,
                 method=method,
                 content_type=content_type,
                 data=data,

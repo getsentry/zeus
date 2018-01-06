@@ -6,6 +6,9 @@ from zeus.models import Build, Repository, TestCase, Job, Source
 from zeus.utils.trees import build_tree
 
 from .base_repository import BaseRepositoryResource
+from ..schemas import BuildSchema
+
+build_schema = BuildSchema(strict=True)
 
 
 class RepositoryTestTreeResource(BaseRepositoryResource):
@@ -92,6 +95,7 @@ class RepositoryTestTreeResource(BaseRepositoryResource):
             trail = []
 
         return {
+            'build': build_schema.dump(latest_build).data,
             'entries': results,
             'trail': trail,
         }

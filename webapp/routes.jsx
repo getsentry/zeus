@@ -14,6 +14,7 @@ import Dashboard from './pages/Dashboard';
 import OwnerDetails from './pages/OwnerDetails';
 import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
+import RepositoryFileCoverage from './pages/RepositoryFileCoverage';
 import RepositoryHooks from './pages/RepositoryHooks';
 import RepositoryHookDetails from './pages/RepositoryHookDetails';
 import RepositoryRevisionList from './pages/RepositoryRevisionList';
@@ -74,6 +75,7 @@ export default (
       component={requireAuth(RepositoryDetails)}>
       <IndexRoute component={requireAuth(RepositoryRevisionList)} />
       <Route path="builds" component={RepositoryBuildList} />
+      <Route path="coverage" component={RepositoryFileCoverage} />
       <Route path="stats" component={RepositoryStats} />
       <Route path="settings" component={RepositorySettingsLayout}>
         <IndexRoute component={RepositorySettings} />
