@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TimeSince renders 24 hour clock 1`] = `
+<time
+  datetime="2017-10-14T23:41:20.000Z"
+  title="October 15 2017 01:41:20 "
+>
+  2 days ago
+</time>
+`;
+
+exports[`TimeSince renders default 1`] = `
+<time
+  datetime="2017-10-14T23:41:20.000Z"
+  title="October 15, 2017 1:41 AM "
+>
+  2 days ago
+</time>
+`;
