@@ -104,7 +104,7 @@
               "master"
             ]
           },
-          "env": "TEST_SUITE=integration",
+          "env": ["TEST_SUITE=integration"],
           "cache": {
             "pip": true,
             "directories": [

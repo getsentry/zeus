@@ -23,7 +23,7 @@ def get_job_label(job: dict) -> str:
     language_version = job_config.get(language)
     out = []
     if job_config.get('env'):
-        out.append(job_config['env'])
+        out.append(' '.join(job_config['env']))
     if language and language_version:
         out.append('{}: {}'.format(language, language_version))
     else:
