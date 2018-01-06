@@ -18,6 +18,30 @@ export default class ObjectResult extends Component {
     })
   };
 
+  getIcon(result, status) {
+    switch (status) {
+      case 'queued':
+        return <QueuedIcon size="16" />;
+      case 'in_progress':
+        return <InProgressIcon size="16" />;
+      default:
+        if (status === 'finished' && result === 'unknown')
+          return <UnknownIcon size="16" />;
+        switch (result) {
+          case 'passed':
+            return <PassedIcon size="16" />;
+          case 'aborted':
+            return <AbortedIcon size="16" />;
+          case 'failed':
+            return <FailedIcon size="16" />;
+          case 'errored':
+            return <ErroredIcon size="16" />;
+          default:
+            return null;
+        }
+    }
+  }
+
   render() {
     if (!this.props.data) {
       return null;
@@ -25,13 +49,7 @@ export default class ObjectResult extends Component {
     let {result, status} = this.props.data;
     return (
       <ResultIcon status={status} result={result}>
-        {status == 'queued' && <QueuedIcon size="16" />}
-        {status == 'in_progress' && <InProgressIcon size="16" />}
-        {result == 'passed' && <PassedIcon size="16" />}
-        {result == 'aborted' && <AbortedIcon size="16" />}
-        {result == 'failed' && <FailedIcon size="16" />}
-        {result == 'errored' && <ErroredIcon size="16" />}
-        {status == 'finished' && result === 'unknown' && <UnknownIcon size="16" />}
+        {this.getIcon(result, status)}
       </ResultIcon>
     );
   }
@@ -46,7 +64,7 @@ export const ResultIcon = styled.div`
       case 'passed':
         return css`
           svg {
-            color: #76D392;
+            color: #76d392;
           }
         `;
       case 'errored':
@@ -66,7 +84,7 @@ export const ResultIcon = styled.div`
       default:
         return css`
           svg {
-            color: #BFBFCB;
+            color: #bfbfcb;
           }
         `;
     }
