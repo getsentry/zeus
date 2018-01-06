@@ -3,332 +3,902 @@
 exports[`Diff renders 1`] = `
 <pre
   class="diff"
-  style="display:block;overflow-x:auto;padding:0.5em;background:#F0F0F0;color:#444"
+  style="display:block;overflow-x:auto;padding:0;color:#383a42;background:#ffffff"
 >
   <code>
-    diff -r 3142efbcdcdb -r 28720876f4a2 ci/run_with_retries.py
-
+    diff -r 
     <span
-      style="color:#888888"
+      style="color:#986801"
     >
-      --- a/ci/run_with_retries.py	Sun May 04 19:51:19 2014 -0700
+      3142
+    </span>
+    efbcdcdb -r 
+    <span
+      style="color:#986801"
+    >
+      28720876
+    </span>
+    f4a2 ci/run_with_retries.py
+--- a/ci/run_with_retries.py	Sun May 
+    <span
+      style="color:#986801"
+    >
+      04
+    </span>
+     
+    <span
+      style="color:#986801"
+    >
+      19
+    </span>
+    :
+    <span
+      style="color:#986801"
+    >
+      51
+    </span>
+    :
+    <span
+      style="color:#986801"
+    >
+      19
+    </span>
+     
+    <span
+      style="color:#986801"
+    >
+      2014
+    </span>
+     
+    <span
+      style="color:#986801"
+    >
+      -0700
+    </span>
+    
++++ b/ci/run_with_retries.py	Mon May 
+    <span
+      style="color:#986801"
+    >
+      05
+    </span>
+     
+    <span
+      style="color:#986801"
+    >
+      22
+    </span>
+    :
+    <span
+      style="color:#986801"
+    >
+      27
+    </span>
+    :
+    <span
+      style="color:#986801"
+    >
+      56
+    </span>
+     
+    <span
+      style="color:#986801"
+    >
+      2014
+    </span>
+     +
+    <span
+      style="color:#986801"
+    >
+      0000
     </span>
     
 
     <span
-      style="color:#888888"
-    >
-      +++ b/ci/run_with_retries.py	Mon May 05 22:27:56 2014 +0000
-    </span>
-    
-
-    <span
-      style="color:#1f7199"
+      style="color:#4078f2"
     >
       @@ -1,4 +1,5 @@
     </span>
     
- #!/usr/bin/env python
-
+ 
     <span
-      style="color:#397300"
+      style="color:#a0a1a7;font-style:italic"
     >
-      +import argparse
+      #!/usr/bin/env python
     </span>
     
- import os
- import sys
- import subprocess
++
+    <span
+      style="color:#a626a4"
+    >
+      import
+    </span>
+     argparse
+ 
+    <span
+      style="color:#a626a4"
+    >
+      import
+    </span>
+     os
+ 
+    <span
+      style="color:#a626a4"
+    >
+      import
+    </span>
+     sys
+ 
+    <span
+      style="color:#a626a4"
+    >
+      import
+    </span>
+     subprocess
 
     <span
-      style="color:#1f7199"
+      style="color:#4078f2"
     >
       @@ -41,7 +42,7 @@
     </span>
     
-     return [testcase for testcase in root if testcase_status(testcase) in ('failure', 'error')]
-
-
-
+     
     <span
-      style="color:#880000"
+      style="color:#a626a4"
     >
-      -def run(files):
+      return
+    </span>
+     [testcase 
+    <span
+      style="color:#a626a4"
+    >
+      for
+    </span>
+     testcase 
+    <span
+      style="color:#a626a4"
+    >
+      in
+    </span>
+     root 
+    <span
+      style="color:#a626a4"
+    >
+      if
+    </span>
+     testcase_status(testcase) 
+    <span
+      style="color:#a626a4"
+    >
+      in
+    </span>
+     (
+    <span
+      style="color:#50a14f"
+    >
+      'failure'
+    </span>
+    , 
+    <span
+      style="color:#50a14f"
+    >
+      'error'
+    </span>
+    )]
+
+
+-
+    <span>
+      <span
+        style="color:#a626a4"
+      >
+        def
+      </span>
+       
+      <span
+        style="color:#4078f2"
+      >
+        run
+      </span>
+      <span>
+        (files)
+      </span>
+      :
     </span>
     
-
-    <span
-      style="color:#397300"
-    >
-      +def run(files, cwd):
++
+    <span>
+      <span
+        style="color:#a626a4"
+      >
+        def
+      </span>
+       
+      <span
+        style="color:#4078f2"
+      >
+        run
+      </span>
+      <span>
+        (files, cwd)
+      </span>
+      :
     </span>
     
      cmd = COVERAGE_COMMAND_LINE % PYTEST_COMMAND_LINE
-     cmd = "%s %s" % (cmd % FINAL_JUNIT_XML_FILE, files)
-     write_out("Running command: %s" % cmd)
+     cmd = 
+    <span
+      style="color:#50a14f"
+    >
+      "%s %s"
+    </span>
+     % (cmd % FINAL_JUNIT_XML_FILE, files)
+     write_out(
+    <span
+      style="color:#50a14f"
+    >
+      "Running command: %s"
+    </span>
+     % cmd)
 
     <span
-      style="color:#1f7199"
+      style="color:#4078f2"
     >
       @@ -49,6 +50,16 @@
     </span>
     
-     write_out("Generating coverage.xml")
+     write_out(
+    <span
+      style="color:#50a14f"
+    >
+      "Generating coverage.xml"
+    </span>
+    )
      run_streaming_out(COVERAGE_XML_COMMAND_LINE)
 
-
++    new_file_text = 
     <span
-      style="color:#397300"
+      style="color:#50a14f"
     >
-      +    new_file_text = ""
+      ""
+    </span>
+    
++    
+    <span
+      style="color:#a626a4"
+    >
+      if
+    </span>
+     os.path.isfile(
+    <span
+      style="color:#50a14f"
+    >
+      '%s/coverage.xml'
+    </span>
+     % os.getcwd()):
++        write_out(
+    <span
+      style="color:#50a14f"
+    >
+      "Replacing all paths in coverage.xml with repo paths."
+    </span>
+    )
++        
+    <span
+      style="color:#a626a4"
+    >
+      with
+    </span>
+     open(
+    <span
+      style="color:#50a14f"
+    >
+      '%s/coverage.xml'
+    </span>
+     % os.getcwd(), 
+    <span
+      style="color:#50a14f"
+    >
+      'r'
+    </span>
+    ) 
+    <span
+      style="color:#a626a4"
+    >
+      as
+    </span>
+     f:
++            file_text = f.read()
++            new_file_text = file_text.replace(
+    <span
+      style="color:#50a14f"
+    >
+      "filename='"
+    </span>
+    , 
+    <span
+      style="color:#50a14f"
+    >
+      "filename='%s"
+    </span>
+     % cwd)
++
++        
+    <span
+      style="color:#a626a4"
+    >
+      with
+    </span>
+     open(
+    <span
+      style="color:#50a14f"
+    >
+      '%s/coverage.xml'
+    </span>
+     % os.getcwd(), 
+    <span
+      style="color:#50a14f"
+    >
+      'w'
+    </span>
+    ) 
+    <span
+      style="color:#a626a4"
+    >
+      as
+    </span>
+     f:
++            f.write(new_file_text)
++
+     
+    <span
+      style="color:#a626a4"
+    >
+      if
+    </span>
+     junit_xml 
+    <span
+      style="color:#a626a4"
+    >
+      is
+    </span>
+     
+    <span
+      style="color:#a626a4"
+    >
+      None
+    </span>
+    :
+         
+    <span
+      style="color:#a0a1a7;font-style:italic"
+    >
+      # rerun original command, hence rerunning all tests.
+    </span>
+    
+         
+    <span
+      style="color:#a0a1a7;font-style:italic"
+    >
+      # this may be caused by a timeout.
     </span>
     
 
     <span
-      style="color:#397300"
-    >
-      +    if os.path.isfile('%s/coverage.xml' % os.getcwd()):
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +        write_out("Replacing all paths in coverage.xml with repo paths.")
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +        with open('%s/coverage.xml' % os.getcwd(), 'r') as f:
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +            file_text = f.read()
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +            new_file_text = file_text.replace("filename='", "filename='%s" % cwd)
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +        with open('%s/coverage.xml' % os.getcwd(), 'w') as f:
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +            f.write(new_file_text)
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +
-    </span>
-    
-     if junit_xml is None:
-         # rerun original command, hence rerunning all tests.
-         # this may be caused by a timeout.
-
-    <span
-      style="color:#1f7199"
+      style="color:#4078f2"
     >
       @@ -171,5 +182,10 @@
     </span>
     
-     if os.path.isfile(test_file):
-         subprocess.Popen("rm %s" % test_file, shell=True)
-
-
+     
     <span
-      style="color:#880000"
+      style="color:#a626a4"
     >
-      -    files_args = ' '.join(sys.argv[1:])
+      if
+    </span>
+     os.path.isfile(test_file):
+         subprocess.Popen(
+    <span
+      style="color:#50a14f"
+    >
+      "rm %s"
+    </span>
+     % test_file, shell=
+    <span
+      style="color:#a626a4"
+    >
+      True
+    </span>
+    )
+
+-    files_args = 
+    <span
+      style="color:#50a14f"
+    >
+      ' '
+    </span>
+    .join(sys.argv[
+    <span
+      style="color:#986801"
+    >
+      1
+    </span>
+    :])
+-    run(files_args)
++    parser = argparse.ArgumentParser(description=
+    <span
+      style="color:#50a14f"
+    >
+      'Run the tests with retries'
+    </span>
+    )
++    parser.add_argument(
+    <span
+      style="color:#50a14f"
+    >
+      'filenames'
+    </span>
+    , metavar=
+    <span
+      style="color:#50a14f"
+    >
+      'filename'
+    </span>
+    , nargs=
+    <span
+      style="color:#50a14f"
+    >
+      '*'
+    </span>
+    , help=
+    <span
+      style="color:#50a14f"
+    >
+      "Files to run on"
+    </span>
+    )
++    parser.add_argument(
+    <span
+      style="color:#50a14f"
+    >
+      '--cwd'
+    </span>
+    , dest=
+    <span
+      style="color:#50a14f"
+    >
+      'cwd'
+    </span>
+    , help=
+    <span
+      style="color:#50a14f"
+    >
+      "path inside the repo to the cwd"
+    </span>
+    )
++
++    args = parser.parse_args()
++    files_args = 
+    <span
+      style="color:#50a14f"
+    >
+      ' '
+    </span>
+    .join(args.filenames)
++    run(files_args, args.cwd)
+diff -r 
+    <span
+      style="color:#986801"
+    >
+      3142
+    </span>
+    efbcdcdb -r 
+    <span
+      style="color:#986801"
+    >
+      28720876
+    </span>
+    f4a2 ci/server-collect
+--- a/ci/server-collect	Sun May 
+    <span
+      style="color:#986801"
+    >
+      04
+    </span>
+     
+    <span
+      style="color:#986801"
+    >
+      19
+    </span>
+    :
+    <span
+      style="color:#986801"
+    >
+      51
+    </span>
+    :
+    <span
+      style="color:#986801"
+    >
+      19
+    </span>
+     
+    <span
+      style="color:#986801"
+    >
+      2014
+    </span>
+     
+    <span
+      style="color:#986801"
+    >
+      -0700
+    </span>
+    
++++ b/ci/server-collect	Mon May 
+    <span
+      style="color:#986801"
+    >
+      05
+    </span>
+     
+    <span
+      style="color:#986801"
+    >
+      22
+    </span>
+    :
+    <span
+      style="color:#986801"
+    >
+      27
+    </span>
+    :
+    <span
+      style="color:#986801"
+    >
+      56
+    </span>
+     
+    <span
+      style="color:#986801"
+    >
+      2014
+    </span>
+     +
+    <span
+      style="color:#986801"
+    >
+      0000
     </span>
     
 
     <span
-      style="color:#880000"
-    >
-      -    run(files_args)
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +    parser = argparse.ArgumentParser(description='Run the tests with retries')
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +    parser.add_argument('filenames', metavar='filename', nargs='*', help="Files to run on")
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +    parser.add_argument('--cwd', dest='cwd', help="path inside the repo to the cwd")
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +    args = parser.parse_args()
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +    files_args = ' '.join(args.filenames)
-    </span>
-    
-
-    <span
-      style="color:#397300"
-    >
-      +    run(files_args, args.cwd)
-    </span>
-    
-diff -r 3142efbcdcdb -r 28720876f4a2 ci/server-collect
-
-    <span
-      style="color:#888888"
-    >
-      --- a/ci/server-collect	Sun May 04 19:51:19 2014 -0700
-    </span>
-    
-
-    <span
-      style="color:#888888"
-    >
-      +++ b/ci/server-collect	Mon May 05 22:27:56 2014 +0000
-    </span>
-    
-
-    <span
-      style="color:#1f7199"
+      style="color:#4078f2"
     >
       @@ -21,14 +21,14 @@
     </span>
     
-         'name': 'blockserver',
-         'cwd': 'blockserver',
-         'path': 'blockserver',
-
+         
     <span
-      style="color:#880000"
+      style="color:#50a14f"
     >
-      -        'exec': pytest_command_line,
+      'name'
     </span>
-    
-
+    : 
     <span
-      style="color:#397300"
+      style="color:#50a14f"
     >
-      +        'exec': pytest_command_line + ' --cwd blockserver/',
+      'blockserver'
     </span>
-    
-         'xunit': 'tests.xml',
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'cwd'
+    </span>
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'blockserver'
+    </span>
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'path'
+    </span>
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'blockserver'
+    </span>
+    ,
+-        
+    <span
+      style="color:#50a14f"
+    >
+      'exec'
+    </span>
+    : pytest_command_line,
++        
+    <span
+      style="color:#50a14f"
+    >
+      'exec'
+    </span>
+    : pytest_command_line + 
+    <span
+      style="color:#50a14f"
+    >
+      ' --cwd blockserver/'
+    </span>
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'xunit'
+    </span>
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'tests.xml'
+    </span>
+    ,
      },
-     'metaserver': {
-         'name': 'metaserver',
-         'cwd': 'metaserver',
-         'path': 'metaserver',
-
+     
     <span
-      style="color:#880000"
+      style="color:#50a14f"
     >
-      -        'exec': pytest_command_line,
+      'metaserver'
     </span>
-    
-
+    : {
+         
     <span
-      style="color:#397300"
+      style="color:#50a14f"
     >
-      +        'exec': pytest_command_line + ' --cwd metaserver/',
+      'name'
     </span>
-    
-         'xunit': 'tests.xml',
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'metaserver'
+    </span>
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'cwd'
+    </span>
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'metaserver'
+    </span>
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'path'
+    </span>
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'metaserver'
+    </span>
+    ,
+-        
+    <span
+      style="color:#50a14f"
+    >
+      'exec'
+    </span>
+    : pytest_command_line,
++        
+    <span
+      style="color:#50a14f"
+    >
+      'exec'
+    </span>
+    : pytest_command_line + 
+    <span
+      style="color:#50a14f"
+    >
+      ' --cwd metaserver/'
+    </span>
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'xunit'
+    </span>
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'tests.xml'
+    </span>
+    ,
      },
-     'dropbox': {
+     
+    <span
+      style="color:#50a14f"
+    >
+      'dropbox'
+    </span>
+    : {
 
     <span
-      style="color:#1f7199"
+      style="color:#4078f2"
     >
       @@ -36,14 +36,14 @@
     </span>
     
-         'cwd': 'dropbox_tests',
-         'path': 'dropbox/tests',
-         'keep_path': 1,
-
+         
     <span
-      style="color:#880000"
+      style="color:#50a14f"
     >
-      -        'exec': pytest_command_line,
+      'cwd'
     </span>
-    
-
+    : 
     <span
-      style="color:#397300"
+      style="color:#50a14f"
     >
-      +        'exec': pytest_command_line + ' --cwd dropbox/',
+      'dropbox_tests'
     </span>
-    
-         'xunit': 'tests.xml',
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'path'
+    </span>
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'dropbox/tests'
+    </span>
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'keep_path'
+    </span>
+    : 
+    <span
+      style="color:#986801"
+    >
+      1
+    </span>
+    ,
+-        
+    <span
+      style="color:#50a14f"
+    >
+      'exec'
+    </span>
+    : pytest_command_line,
++        
+    <span
+      style="color:#50a14f"
+    >
+      'exec'
+    </span>
+    : pytest_command_line + 
+    <span
+      style="color:#50a14f"
+    >
+      ' --cwd dropbox/'
+    </span>
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'xunit'
+    </span>
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'tests.xml'
+    </span>
+    ,
      },
-     'shortserver': {
-         'name': 'shortserver',
-         'cwd': 'shortserver',
-         'path': 'shortserver',
-
+     
     <span
-      style="color:#880000"
+      style="color:#50a14f"
     >
-      -        'exec': pytest_command_line,
+      'shortserver'
     </span>
-    
-
+    : {
+         
     <span
-      style="color:#397300"
+      style="color:#50a14f"
     >
-      +        'exec': pytest_command_line + ' --cwd shortserver/',
+      'name'
     </span>
-    
-         'xunit': 'tests.xml',
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'shortserver'
+    </span>
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'cwd'
+    </span>
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'shortserver'
+    </span>
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'path'
+    </span>
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'shortserver'
+    </span>
+    ,
+-        
+    <span
+      style="color:#50a14f"
+    >
+      'exec'
+    </span>
+    : pytest_command_line,
++        
+    <span
+      style="color:#50a14f"
+    >
+      'exec'
+    </span>
+    : pytest_command_line + 
+    <span
+      style="color:#50a14f"
+    >
+      ' --cwd shortserver/'
+    </span>
+    ,
+         
+    <span
+      style="color:#50a14f"
+    >
+      'xunit'
+    </span>
+    : 
+    <span
+      style="color:#50a14f"
+    >
+      'tests.xml'
+    </span>
+    ,
      },
  }
   </code>
