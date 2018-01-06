@@ -16,6 +16,15 @@ from .base import cli
 build_schema = BuildSchema(strict=True)
 
 
+def find_files_in_repo(repo):
+    vcs = repo.get_vcs()
+    vcs.ensure()
+    result = [b for b in vcs.run(
+        ['ls-tree', '-r', '--name-only', 'master']).split('\n') if b.endswith(('.py', '.js', 'jsx'))]
+    assert result
+    return result
+
+
 def mock_single_repository(user_ids=()):
     repo = factories.RepositoryFactory.build(
         status=models.RepositoryStatus.active,
@@ -62,7 +71,8 @@ def mock_author(repo: models.Repository, user_id) -> models.Author:
     )
 
 
-def mock_build(repo: models.Repository, parent_revision: models.Revision=None, user_ids=()):
+def mock_build(repo: models.Repository, parent_revision: models.Revision=None,
+               user_ids=(), file_list=()):
     if user_ids and randint(0, 1) == 0:
         chosen_user_id = choice(user_ids)
         author = mock_author(repo, chosen_user_id)
@@ -88,9 +98,18 @@ def mock_build(repo: models.Repository, parent_revision: models.Revision=None, u
     publish('builds', 'build.create', result.data)
     click.echo('Created {!r}'.format(build))
 
+    # we need to find some filenames for the repo
+    if file_list is None:
+        file_list = find_files_in_repo(repo)
+
     for n in range(randint(0, 50)):
-        factories.FileCoverageFactory.create(
-            build=build, in_diff=randint(0, 5) == 0)
+        try:
+            with db.session.begin_nested():
+                factories.FileCoverageFactory.create(
+                    filename=choice(file_list),
+                    build=build, in_diff=randint(0, 5) == 0)
+        except IntegrityError:
+            continue
 
     for n in range(1, 4):
         has_failure = randint(0, 2) == 0
@@ -153,9 +172,12 @@ def load_all():
     user_ids = [u for u, in db.session.query(models.User.id)]
     for n in range(3):
         repo = mock_single_repository(user_ids=user_ids)
+        file_list = find_files_in_repo(repo)
+
         parent_revision = None
         for n in range(10):
-            build = mock_build(repo, parent_revision, user_ids=user_ids)
+            build = mock_build(repo, parent_revision,
+                               user_ids=user_ids, file_list=file_list)
             parent_revision = build.source.revision
 
 
@@ -163,7 +185,9 @@ def load_all():
 def stream():
     user_ids = [u for u, in db.session.query(models.User.id)]
     repo = mock_single_repository(user_ids=user_ids)
+    file_list = find_files_in_repo(repo)
     parent_revision = None
     while True:
-        build = mock_build(repo, parent_revision, user_ids=user_ids)
+        build = mock_build(repo, parent_revision,
+                           user_ids=user_ids, file_list=file_list)
         parent_revision = build.source.revision

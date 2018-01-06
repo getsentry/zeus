@@ -1,14 +1,45 @@
 from flask import request
 
-from zeus.models import Build, FileCoverage
+from zeus.models import Build, FileCoverage, Source
 from zeus.utils.trees import build_tree
 
 from .base_build import BaseBuildResource
+from ..schemas import FileCoverageSchema
 
 SEPERATOR = '/'
 
+filecoverage_schema = FileCoverageSchema(many=False, strict=True)
+
 
 class BuildFileCoverageTreeResource(BaseBuildResource):
+    def _get_leaf(self, build: Build, coverage: FileCoverage):
+        # TODO(dcramer): support patches
+        source = Source.query.options(
+            # joinedload('patch'),
+            # undefer('patch.diff'),
+        ).get(build.source_id)
+
+        file_source = None
+        vcs = build.repository.get_vcs()
+        if vcs:
+            try:
+                file_source = vcs.show(source.revision_sha, coverage.filename)
+            except Exception:
+                pass
+
+        return {
+            'is_leaf': True,
+            'entries': [{
+                'name': coverage.filename,
+                'path': coverage.filename,
+                'lines_covered': coverage.lines_covered,
+                'lines_uncovered': coverage.lines_uncovered,
+                'is_leaf': True
+            }],
+            'coverage': filecoverage_schema.dump(coverage).data,
+            'file_source': file_source,
+        }
+
     def get(self, build: Build):
         """
         Return a tree of coverage for the given build.
@@ -27,7 +58,12 @@ class BuildFileCoverageTreeResource(BaseBuildResource):
 
         coverage_list = list(query)
 
-        if coverage_list:
+        is_leaf = len(
+            coverage_list) == 1 and coverage_list[0].filename == parent
+
+        if is_leaf:
+            response = self._get_leaf(build, coverage_list[0])
+        elif coverage_list:
             groups = build_tree(
                 [f.filename for f in coverage_list],
                 sep=SEPERATOR,
@@ -38,6 +74,8 @@ class BuildFileCoverageTreeResource(BaseBuildResource):
             results = []
             for group in groups:
                 lines_covered, lines_uncovered = 0, 0
+                is_leaf = len(
+                    coverage_list) == 1 and coverage_list[0].filename == group
                 for coverage in coverage_list:
                     if coverage.filename == group or coverage.filename.startswith(
                             group + SEPERATOR):
@@ -53,25 +91,32 @@ class BuildFileCoverageTreeResource(BaseBuildResource):
                     'path': group,
                     'lines_covered': lines_covered,
                     'lines_uncovered': lines_uncovered,
+                    'is_leaf': is_leaf
                 }
                 results.append(data)
 
             results.sort(key=lambda x: x['name'])
-
-            trail = []
-            context = []
-            if parent:
-                for chunk in parent.split(SEPERATOR):
-                    context.append(chunk)
-                    trail.append({
-                        'path': SEPERATOR.join(context),
-                        'name': chunk,
-                    })
+            response = {
+                'is_leaf': False,
+                'entries': results,
+            }
         else:
-            results = []
-            trail = []
+            response = {
+                'is_leaf': False,
+                'entries': [],
+            }
 
-        return {
-            'entries': results,
+        trail = []
+        context = []
+        if parent:
+            for chunk in parent.split(SEPERATOR):
+                context.append(chunk)
+                trail.append({
+                    'path': SEPERATOR.join(context),
+                    'name': chunk,
+                })
+
+        response.update({
             'trail': trail,
-        }
+        })
+        return response

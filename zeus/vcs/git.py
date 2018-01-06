@@ -111,7 +111,8 @@ class GitVcs(Vcs):
     def update(self):
         self.run(['fetch', '--all', '-p'])
 
-    def log(self, parent=None, branch=None, author=None, offset=0, limit=100):
+    def log(self, parent=None, branch=None, author=None,
+            offset=0, limit=100, update_if_exists=False):
         """ Gets the commit log for the repository.
 
         Each revision returned includes all the branches with which this commit
@@ -142,7 +143,7 @@ class GitVcs(Vcs):
             cmd.append(parent)
 
         try:
-            self.ensure()
+            self.ensure(update_if_exists=update_if_exists)
             result = self.run(cmd)
         except CommandError as cmd_error:
             err_msg = cmd_error.stderr
@@ -178,9 +179,15 @@ class GitVcs(Vcs):
                 message=message,
             )
 
-    def export(self, sha) -> str:
+    def export(self, sha, update_if_exists=False) -> str:
         cmd = ['diff', '%s^..%s' % (sha, sha)]
-        self.ensure()
+        self.ensure(update_if_exists=update_if_exists)
+        result = self.run(cmd)
+        return result
+
+    def show(self, sha, filename, update_if_exists=False) -> str:
+        cmd = ['show', '{}:{}'.format(sha, filename)]
+        self.ensure(update_if_exists=update_if_exists)
         result = self.run(cmd)
         return result
 

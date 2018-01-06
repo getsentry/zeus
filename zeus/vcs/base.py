@@ -242,6 +242,15 @@ class Vcs(object):
         raise NotImplementedError
 
     def export(self, sha: str) -> str:
+        """
+        Show the changes (as a diff) in ``sha``.
+        """
+        raise NotImplementedError
+
+    def show(self, sha: str, filename: str) -> str:
+        """
+        Show the contents of the ``filename`` at ``sha``.
+        """
         raise NotImplementedError
 
     def get_default_branch(self) -> str:

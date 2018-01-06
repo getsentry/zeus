@@ -188,3 +188,16 @@ def test_get_known_branches(git_repo_config, vcs):
     branches = vcs.get_known_branches()
     assert len(branches) == 2
     assert 'test_branch' in branches
+
+
+def test_show(git_repo_config, vcs):
+    check_call(
+        'cd %s && echo "bar" > BAZ && git add BAZ && git commit -m "bazzy"' % git_repo_config.remote_path, shell=True
+    )
+
+    vcs.clone()
+    vcs.update()
+    revisions = list(vcs.log())
+
+    result = vcs.show(revisions[0].sha, 'BAZ')
+    assert result == 'bar\n'

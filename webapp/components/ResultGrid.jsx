@@ -21,7 +21,7 @@ export const ResultGrid = styled.div`
     text-align: left;
   }
 
-  .ResultGrid-row:last-child .ResultGrid-Column {
+  .ResultGrid-Row:last-child .ResultGrid-Column {
     border-bottom: 0;
   }
 `;
