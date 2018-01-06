@@ -19,16 +19,16 @@ from zeus.web.hooks.base import BaseHook
 
 def get_job_label(job: dict) -> str:
     job_config = job['config']
+    language = job_config['language']
+    language_version = job_config.get(language)
+    out = []
     if job_config.get('env'):
-        return '{} - {}: {}'.format(
-            job_config['env'],
-            job_config['language'],
-            job_config[job_config['language']],
-        )
-    return '{}: {}'.format(
-        job_config['language'],
-        job_config[job_config['language']],
-    )
+        out.append(job_config['env'])
+    if language and language_version:
+        out.append('{}: {}'.format(language, language_version))
+    else:
+        out.append(language)
+    return ' - '.join(out)
 
 
 def get_result(state: str) -> str:
