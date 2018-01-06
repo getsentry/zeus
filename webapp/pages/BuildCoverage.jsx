@@ -76,7 +76,7 @@ const FileWithCoverageTable = styled.table`
   }
 
   .line-u {
-    background-color: #ffe9e9 !important;
+    background-color: #f05b5b !important;
   }
 
   td {
