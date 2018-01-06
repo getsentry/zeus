@@ -76,6 +76,35 @@ describe('ObjectResult', () => {
     expect(tree).toMatchSnapshot();
   });
 
+  it('renders finished aborted', () => {
+    const tree = render(
+      <ObjectResult
+        data={{
+          status: 'finished',
+          result: 'aborted'
+        }}
+      />
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('handles unknown', () => {
+    const tree = render(
+      <ObjectResult
+        data={{
+          status: 'unknown',
+          result: 'unknown'
+        }}
+      />
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('handles empty data', () => {
+    const tree = render(<ObjectResult data={null} />);
+    expect(tree).toMatchSnapshot();
+  });
+
   it('renders size', () => {
     const tree = render(
       <ObjectResult
