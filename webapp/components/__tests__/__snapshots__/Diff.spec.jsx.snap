@@ -1,0 +1,336 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Diff renders 1`] = `
+<pre
+  class="diff"
+  style="display:block;overflow-x:auto;padding:0.5em;background:#F0F0F0;color:#444"
+>
+  <code>
+    diff -r 3142efbcdcdb -r 28720876f4a2 ci/run_with_retries.py
+    
+    <span
+      style="color:#888888"
+    >
+      --- a/ci/run_with_retries.py	Sun May 04 19:51:19 2014 -0700
+    </span>
+    
+    
+    <span
+      style="color:#888888"
+    >
+      +++ b/ci/run_with_retries.py	Mon May 05 22:27:56 2014 +0000
+    </span>
+    
+    
+    <span
+      style="color:#1f7199"
+    >
+      @@ -1,4 +1,5 @@
+    </span>
+    
+     #!/usr/bin/env python
+    
+    <span
+      style="color:#397300"
+    >
+      +import argparse
+    </span>
+    
+     import os
+     import sys
+     import subprocess
+    
+    <span
+      style="color:#1f7199"
+    >
+      @@ -41,7 +42,7 @@
+    </span>
+    
+         return [testcase for testcase in root if testcase_status(testcase) in ('failure', 'error')]
+    
+    
+    
+    <span
+      style="color:#880000"
+    >
+      -def run(files):
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +def run(files, cwd):
+    </span>
+    
+         cmd = COVERAGE_COMMAND_LINE % PYTEST_COMMAND_LINE
+         cmd = "%s %s" % (cmd % FINAL_JUNIT_XML_FILE, files)
+         write_out("Running command: %s" % cmd)
+    
+    <span
+      style="color:#1f7199"
+    >
+      @@ -49,6 +50,16 @@
+    </span>
+    
+         write_out("Generating coverage.xml")
+         run_streaming_out(COVERAGE_XML_COMMAND_LINE)
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +    new_file_text = ""
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +    if os.path.isfile('%s/coverage.xml' % os.getcwd()):
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +        write_out("Replacing all paths in coverage.xml with repo paths.")
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +        with open('%s/coverage.xml' % os.getcwd(), 'r') as f:
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +            file_text = f.read()
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +            new_file_text = file_text.replace("filename='", "filename='%s" % cwd)
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +        with open('%s/coverage.xml' % os.getcwd(), 'w') as f:
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +            f.write(new_file_text)
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +
+    </span>
+    
+         if junit_xml is None:
+             # rerun original command, hence rerunning all tests.
+             # this may be caused by a timeout.
+    
+    <span
+      style="color:#1f7199"
+    >
+      @@ -171,5 +182,10 @@
+    </span>
+    
+         if os.path.isfile(test_file):
+             subprocess.Popen("rm %s" % test_file, shell=True)
+    
+    
+    <span
+      style="color:#880000"
+    >
+      -    files_args = ' '.join(sys.argv[1:])
+    </span>
+    
+    
+    <span
+      style="color:#880000"
+    >
+      -    run(files_args)
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +    parser = argparse.ArgumentParser(description='Run the tests with retries')
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +    parser.add_argument('filenames', metavar='filename', nargs='*', help="Files to run on")
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +    parser.add_argument('--cwd', dest='cwd', help="path inside the repo to the cwd")
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +    args = parser.parse_args()
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +    files_args = ' '.join(args.filenames)
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +    run(files_args, args.cwd)
+    </span>
+    
+    diff -r 3142efbcdcdb -r 28720876f4a2 ci/server-collect
+    
+    <span
+      style="color:#888888"
+    >
+      --- a/ci/server-collect	Sun May 04 19:51:19 2014 -0700
+    </span>
+    
+    
+    <span
+      style="color:#888888"
+    >
+      +++ b/ci/server-collect	Mon May 05 22:27:56 2014 +0000
+    </span>
+    
+    
+    <span
+      style="color:#1f7199"
+    >
+      @@ -21,14 +21,14 @@
+    </span>
+    
+             'name': 'blockserver',
+             'cwd': 'blockserver',
+             'path': 'blockserver',
+    
+    <span
+      style="color:#880000"
+    >
+      -        'exec': pytest_command_line,
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +        'exec': pytest_command_line + ' --cwd blockserver/',
+    </span>
+    
+             'xunit': 'tests.xml',
+         },
+         'metaserver': {
+             'name': 'metaserver',
+             'cwd': 'metaserver',
+             'path': 'metaserver',
+    
+    <span
+      style="color:#880000"
+    >
+      -        'exec': pytest_command_line,
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +        'exec': pytest_command_line + ' --cwd metaserver/',
+    </span>
+    
+             'xunit': 'tests.xml',
+         },
+         'dropbox': {
+    
+    <span
+      style="color:#1f7199"
+    >
+      @@ -36,14 +36,14 @@
+    </span>
+    
+             'cwd': 'dropbox_tests',
+             'path': 'dropbox/tests',
+             'keep_path': 1,
+    
+    <span
+      style="color:#880000"
+    >
+      -        'exec': pytest_command_line,
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +        'exec': pytest_command_line + ' --cwd dropbox/',
+    </span>
+    
+             'xunit': 'tests.xml',
+         },
+         'shortserver': {
+             'name': 'shortserver',
+             'cwd': 'shortserver',
+             'path': 'shortserver',
+    
+    <span
+      style="color:#880000"
+    >
+      -        'exec': pytest_command_line,
+    </span>
+    
+    
+    <span
+      style="color:#397300"
+    >
+      +        'exec': pytest_command_line + ' --cwd shortserver/',
+    </span>
+    
+             'xunit': 'tests.xml',
+         },
+     }
+  </code>
+</pre>
+`;
