@@ -161,7 +161,7 @@ class CoveredTree extends Component {
       <StyledResultGrid>
         <StyledHeader>
           <Column />
-          <Column width={180} textAlign="right">
+          <Column width={250} textAlign="right">
             Lines
           </Column>
         </StyledHeader>
@@ -187,8 +187,10 @@ class CoveredTree extends Component {
                   </Link>
                 )}
               </StyledColumn>
-              <StyledColumn width={90} textAlign="right">{`${pctCovered}%`}</StyledColumn>
-              <StyledColumn width={90} textAlign="right">
+              <StyledColumn
+                width={120}
+                textAlign="right">{`${pctCovered}%`}</StyledColumn>
+              <StyledColumn width={120} textAlign="right">
                 {`${entry.lines_covered.toLocaleString()} / ${totalLines}`}
               </StyledColumn>
             </StyledRow>
