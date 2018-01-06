@@ -125,7 +125,7 @@
   "jest-junit": {
     "ancestorSeparator": " › ",
     "classNameTemplate": "{classname}",
-    "titleTemplate": "{classname}",
+    "titleTemplate": "{title}",
     "usePathForSuiteName": true
   },
   "babel": {
