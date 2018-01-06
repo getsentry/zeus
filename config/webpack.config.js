@@ -50,12 +50,12 @@ function getPlugins() {
   !isProd && plugins.push(new WatchMissingNodeModulesPlugin(paths.appNodeModules));
 
   // optimize out highlight.js languages we dont need
-  plugins.push(
-    new webpack.ContextReplacementPlugin(
-      /highlight\.js\/lib\/languages$/,
-      new RegExp(`^./(${['diff'].join('|')})$`)
-    )
-  );
+  // plugins.push(
+  //   new webpack.ContextReplacementPlugin(
+  //     /highlight\.js\/lib\/languages$/,
+  //     new RegExp(`^./(${['diff'].join('|')})$`)
+  //   )
+  // );
 
   // Moment.js is an extremely popular library that bundles large locale files
   // by default due to how Webpack interprets its code. This is a practical

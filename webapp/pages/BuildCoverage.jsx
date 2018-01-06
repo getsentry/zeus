@@ -2,11 +2,11 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import styled from 'styled-components';
-import SyntaxHighlighter from 'react-syntax-highlighter';
 
 import AsyncPage from '../components/AsyncPage';
 import Section from '../components/Section';
 import {ResultGrid, Column, Header, Row} from '../components/ResultGrid';
+import SyntaxHighlight from '../components/SyntaxHighlight';
 
 const Tree = styled.div`
   margin-bottom: 20px;
@@ -138,11 +138,9 @@ class CoveredFile extends Component {
             })}
           </td>
           <td>
-            <SyntaxHighlighter
-              style={{padding: 0}}
-              lang={result.coverage.filename.split('.').reverse()[0]}>
+            <SyntaxHighlight style={{padding: 0}} filename={result.coverage.filename}>
               {result.file_source}
-            </SyntaxHighlighter>
+            </SyntaxHighlight>
           </td>
         </tr>
       </FileWithCoverageTable>
