@@ -34,6 +34,14 @@ Some quick caveats:
 While you can upload any kind of Artifact to zeus (e.g. ``.html`` output), the platform has knowledge of certain types
 and will grant additional functionality if they're present.
 
+The recommended way to support artifacts is to configure a post-build step (on both failure and success) to do something similar to the following:
+
+```bash
+npm install -g @zeus-ci/cli
+$(npm bin -g)/zeus upload -t "text/xml+xunit" jest.junit.xml
+$(npm bin -g)/zeus upload -t "text/xml+coverage" coverage.xml
+```
+
 #### Code Coverage
 
 - text/xml+coverage
