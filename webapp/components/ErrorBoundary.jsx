@@ -5,7 +5,6 @@ import idx from 'idx';
 
 import IdentityNeedsUpgradeError from './IdentityNeedsUpgradeError';
 import InternalError from './InternalError';
-import Login from './Login';
 import NetworkError from './NetworkError';
 import NotFoundError from './NotFoundError';
 import * as errors from '../errors';
@@ -47,8 +46,11 @@ export default class ErrorBoundary extends Component {
               />
             );
           } else if (error.code === 401) {
-            // TOOD(dcramer): we need to bind next, and likely just redirect to the login view
-            return <Login />;
+            // XXX(dcramer): we can't seem to render <Login> here as error boundary doesn't recover
+            window.location.href = `/login/?next=${encodeURIComponent(
+              window.location.pathname
+            )}`;
+            return null;
           }
           return <InternalError error={error} />;
         case errors.NetworkError:
