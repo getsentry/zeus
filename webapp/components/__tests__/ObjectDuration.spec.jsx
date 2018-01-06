@@ -20,7 +20,7 @@ describe('ObjectDuration', () => {
     const tree = render(
       <ObjectDuration
         data={{
-          started_at: '2017-10-17T04:41:26',
+          started_at: '2017-10-17T04:41:26Z',
           finished_at: null
         }}
       />
@@ -32,8 +32,8 @@ describe('ObjectDuration', () => {
     const tree = render(
       <ObjectDuration
         data={{
-          started_at: '2017-10-17T04:41:20',
-          finished_at: '2017-10-17T04:43:31'
+          started_at: '2017-10-17T04:41:20Z',
+          finished_at: '2017-10-17T04:43:31Z'
         }}
       />
     );

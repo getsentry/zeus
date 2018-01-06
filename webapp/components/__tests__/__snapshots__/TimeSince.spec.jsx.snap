@@ -3,7 +3,7 @@
 exports[`TimeSince renders 24 hour clock 1`] = `
 <time
   datetime="2017-10-15T01:41:20.000Z"
-  title="October 15 2017 03:41:20 "
+  title="October 14 2017 21:41:20 "
 >
   2 days ago
 </time>
@@ -12,7 +12,7 @@ exports[`TimeSince renders 24 hour clock 1`] = `
 exports[`TimeSince renders default 1`] = `
 <time
   datetime="2017-10-15T01:41:20.000Z"
-  title="October 15, 2017 3:41 AM "
+  title="October 14, 2017 9:41 PM "
 >
   2 days ago
 </time>
