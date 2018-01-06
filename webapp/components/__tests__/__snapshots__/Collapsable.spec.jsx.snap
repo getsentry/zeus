@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Collapsable renders collapsed 1`] = `
+<div>
+  <div>
+    1
+  </div>
+  <div>
+    2
+  </div>
+  <a
+    class="sc-gzVnrw fAqkiO"
+  >
+    <div
+      class="sc-bZQynM kdaNqr ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+      style="color:inherit"
+    >
+      <div
+        class="sc-ifAKCX gVDkew ResultGrid-Column sc-bdVaJa kYmYWE"
+      >
+        Show 2 other item(s)
+      </div>
+    </div>
+  </a>
+</div>
+`;

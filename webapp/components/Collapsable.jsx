@@ -28,21 +28,20 @@ export default class Collapsable extends Component {
     if (totalChildren <= maxVisible) {
       collapsed = false;
     } else if (collapsed) {
-      children = children.slice(0, 5);
-      visibleChildren = 5;
+      visibleChildren = Math.min(5, maxVisible);
+      children = children.slice(0, visibleChildren);
     }
 
     return (
       <div>
         {children}
-        {collapsed &&
+        {collapsed && (
           <ExpandLink onClick={() => this.setState({collapsed: false})}>
             <Row style={{color: 'inherit'}}>
-              <Column>
-                Show {totalChildren - visibleChildren} other item(s)
-              </Column>
+              <Column>Show {totalChildren - visibleChildren} other item(s)</Column>
             </Row>
-          </ExpandLink>}
+          </ExpandLink>
+        )}
       </div>
     );
   }
