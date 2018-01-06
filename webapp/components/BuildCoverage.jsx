@@ -47,6 +47,7 @@ const FileWithCoverageTable = styled.table`
     margin-bottom: 0;
     padding: 0: !important;
     background: #fff !important;
+    white-space: pre !important;
     overflow-wrap: normal !important;
     word-wrap: normal !important;
   }
