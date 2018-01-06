@@ -9,7 +9,7 @@ from ..client import api_client
 from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema
 
-build_schema = BuildSchema(strict=True)
+build_schema = BuildSchema(strict=True, exclude=['repository'])
 
 
 class RepositoryFileCoverageTreeResource(BaseRepositoryResource):

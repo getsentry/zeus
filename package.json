@@ -96,7 +96,8 @@
     "setupFiles": [
       "<rootDir>/config/polyfills.js",
       "<rootDir>/config/jest/date.js",
-      "<rootDir>/config/jest/enzyme.js"
+      "<rootDir>/config/jest/enzyme.js",
+      "<rootDir>/config/jest/testStubs.js"
     ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

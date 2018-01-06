@@ -1,0 +1,329 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BuildCoverage renders with build 1`] = `
+<div
+  class="sc-bdVaJa dJIVuV"
+>
+  <div
+    class="sc-iwsKbI iGcGwU sc-bdVaJa dJIVuV"
+  >
+    <div
+      class="sc-gZMcBi jtErZf"
+    >
+      <p>
+        Data from 
+        <a>
+          getsentry/zeus#650
+        </a>
+      </p>
+      <p>
+        66% lines covered (6127 / 9187)
+      </p>
+    </div>
+  </div>
+  <div
+    class="sc-gqjmRU hnZXkc sc-ifAKCX kLhjKP"
+  >
+    <div
+      class="sc-VigVT dwUuvj sc-bZQynM dtqgRq ResultGrid-Header sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      />
+      <div
+        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH fgSvmL"
+        style="text-align:right"
+        width="250"
+      >
+        Lines
+      </div>
+    </div>
+    <div
+      class="good sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      >
+        <a>
+          conftest.py
+        </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        100%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        1 / 1
+      </div>
+    </div>
+    <div
+      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      >
+        <a>
+          setup.py
+        </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        0%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        0 / 8
+      </div>
+    </div>
+    <div
+      class="warn sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      >
+        <a>
+          tests/zeus
+        </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        99%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        1,528 / 1530
+      </div>
+    </div>
+    <div
+      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      >
+        <a>
+          webapp
+        </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        6%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        125 / 1840
+      </div>
+    </div>
+    <div
+      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      >
+        <a>
+          zeus
+        </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        77%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        4,473 / 5808
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BuildCoverage renders without build 1`] = `
+<div
+  class="sc-bdVaJa dJIVuV"
+>
+  <div
+    class="sc-iwsKbI iGcGwU sc-bdVaJa dJIVuV"
+  >
+    <div
+      class="sc-gZMcBi jtErZf"
+    >
+      <p>
+        66% lines covered (6127 / 9187)
+      </p>
+    </div>
+  </div>
+  <div
+    class="sc-gqjmRU hnZXkc sc-ifAKCX kLhjKP"
+  >
+    <div
+      class="sc-VigVT dwUuvj sc-bZQynM dtqgRq ResultGrid-Header sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      />
+      <div
+        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH fgSvmL"
+        style="text-align:right"
+        width="250"
+      >
+        Lines
+      </div>
+    </div>
+    <div
+      class="good sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      >
+        <a>
+          conftest.py
+        </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        100%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        1 / 1
+      </div>
+    </div>
+    <div
+      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      >
+        <a>
+          setup.py
+        </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        0%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        0 / 8
+      </div>
+    </div>
+    <div
+      class="warn sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      >
+        <a>
+          tests/zeus
+        </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        99%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        1,528 / 1530
+      </div>
+    </div>
+    <div
+      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      >
+        <a>
+          webapp
+        </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        6%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        125 / 1840
+      </div>
+    </div>
+    <div
+      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+    >
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+      >
+        <a>
+          zeus
+        </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        77%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        4,473 / 5808
+      </div>
+    </div>
+  </div>
+</div>
+`;

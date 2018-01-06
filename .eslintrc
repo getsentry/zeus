@@ -10,6 +10,9 @@
       "jsx": true
     }
   },
+  "globals": {
+    "TestStubs": true
+  },
   "plugins": [
     "babel",
     "react"
