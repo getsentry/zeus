@@ -24,10 +24,9 @@ if (auth) {
   }
 }
 
-import {registerLanguage} from 'react-syntax-highlighter/dist/light';
-import diff from 'react-syntax-highlighter/dist/languages/diff';
-
-registerLanguage('diff', diff);
+// import {registerLanguage} from 'react-syntax-highlighter/dist/light';
+// import diff from 'react-syntax-highlighter/dist/languages/diff';
+// registerLanguage('diff', diff);
 
 render(
   <Provider store={store}>
