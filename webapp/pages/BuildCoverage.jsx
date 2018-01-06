@@ -41,7 +41,7 @@ const StyledRow = styled(Row)`
   padding: 0;
 
   &.good {
-    background-color: #76d392;
+    background-color: #e2f5e7;
   }
 
   &.warn {
@@ -90,7 +90,7 @@ const FileWithCoverageTable = styled.table`
   }
 
   tr > td:nth-child(2) {
-    width: 15px;
+    width: 20px;
   }
 
   tr > td:nth-child(3) {
@@ -138,7 +138,9 @@ class CoveredFile extends Component {
             })}
           </td>
           <td>
-            <SyntaxHighlighter>{result.file_source}</SyntaxHighlighter>
+            <SyntaxHighlighter style={{padding: 0}}>
+              {result.file_source}
+            </SyntaxHighlighter>
           </td>
         </tr>
       </FileWithCoverageTable>
