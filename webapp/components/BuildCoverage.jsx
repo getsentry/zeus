@@ -47,6 +47,8 @@ const FileWithCoverageTable = styled.table`
     margin-bottom: 0;
     padding: 0: !important;
     background: #fff !important;
+    overflow-wrap: normal !important;
+    word-wrap: normal !important;
   }
 
   .line-c {
@@ -111,7 +113,7 @@ class CoveredFile extends Component {
             })}
           </td>
           <td>
-            <SyntaxHighlight style={{padding: 0}} filename={result.coverage.filename}>
+            <SyntaxHighlight filename={result.coverage.filename}>
               {result.file_source}
             </SyntaxHighlight>
           </td>
