@@ -17,6 +17,20 @@ from zeus.models import Build
 from zeus.web.hooks.base import BaseHook
 
 
+def get_job_label(job: dict) -> str:
+    job_config = job['config']
+    if job_config.get('env'):
+        return '{} - {}: {}'.format(
+            job_config['env'],
+            job_config['language'],
+            job_config[job_config['language']],
+        )
+    return '{}: {}'.format(
+        job_config['language'],
+        job_config[job['language']],
+    )
+
+
 def get_result(state: str) -> str:
     return {
         'pending': 'in_progress',
@@ -123,6 +137,7 @@ class TravisWebhookView(BaseHook):
                     'status': 'finished' if job_payload['status'] is not None else 'in_progress',
                     'result': get_result(job_payload['state']),
                     'allow_failure': bool(job_payload['allow_failure']),
+                    'label': get_job_label(job_payload),
                     'url': 'https://{domain}/{owner}/{name}/jobs/{job_id}'.format(
                         domain=domain,
                         owner=payload['repository']['owner_name'],

@@ -1,3 +1,6 @@
+import os
+import pytest
+
 from base64 import b64encode
 
 from zeus import factories
@@ -28,176 +31,13 @@ CONFIG_RESPONSE = b"""
 }
 """
 
-EXAMPLE = b"""{
-  "id": 288639281,
-  "number": "2843",
-  "config": {
-    "sudo": false,
-    "dist": "trusty",
-    "language": "python",
-    "python": [
-      "3.5.2"
-    ],
-    "branches": {
-      "only": [
-        "master"
-      ]
-    },
-    "cache": {
-      "pip": true,
-      "directories": [
-        "vendor/bundle",
-        "node_modules"
-      ]
-    },
-    "deploy": {
-      "provider": "heroku",
-      "api_key": {
-        "secure": "hylw2GIHMvZKOKX3uPSaLEzVrUGEA9mzGEA0s4zK37W9HJCTnvAcmgRCwOkRuC4L7R4Zshdh/CGORNnBBgh1xx5JGYwkdnqtjHuUQmWEXCusrIURu/iEBNSsZZEPK7zBuwqMHj2yRm64JfbTDJsku3xdoA5Z8XJG5AMJGKLFgUQ="
-      },
-      "app": "docs-travis-ci-com",
-      "skip_cleanup": true,
-      "true": {
-        "branch": [
-          "master"
-        ]
-      }
-    },
-    "notifications": {
-      "slack": {
-        "rooms": {
-          "secure": "LPNgf0Ra6Vu6I7XuK7tcnyFWJg+becx1RfAR35feWK81sru8TyuldQIt7uAKMA8tqFTP8j1Af7iz7UDokbCCfDNCX1GxdAWgXs+UKpwhO89nsidHAsCkW2lWSEM0E3xtOJDyNFoauiHxBKGKUsApJTnf39H+EW9tWrqN5W2sZg8="
-        },
-        "on_success": "never"
-      },
-      "webhooks": "https://docs.travis-ci.com/update_webhook_payload_doc"
-    },
-    "install": [
-      "rvm use 2.3.1 --install",
-      "bundle install --deployment"
-    ],
-    "script": [
-      "bundle exec rake test"
-    ],
-    ".result": "configured",
-    "global_env": [
-      "PATH=$HOME/.local/user/bin:$PATH"
-    ],
-    "group": "stable"
-  },
-  "type": "cron",
-  "state": "passed",
-  "status": 0,
-  "result": 0,
-  "status_message": "Passed",
-  "result_message": "Passed",
-  "started_at": "2017-10-16T16:08:56Z",
-  "finished_at": "2017-10-16T16:12:35Z",
-  "duration": 219,
-  "build_url": "https://travis-ci.org/travis-ci/docs-travis-ci-com/builds/288639281",
-  "commit_id": 84531696,
-  "commit": "d79e3a6ff0cada29d731ed93de203f76a81d02c0",
-  "base_commit": "d79e3a6ff0cada29d731ed93de203f76a81d02c0",
-  "head_commit": null,
-  "branch": "master",
-  "message": "Merge pull request #1389 from christopher-dG/patch-1\\n\\nJulia: Refer to PkgDev's generate instead of Pkg's",
-  "compare_url": "https://github.com/travis-ci/docs-travis-ci-com/compare/eb58bd2fac2e339d0339689d9eb7290246805a1d...d79e3a6ff0cada29d731ed93de203f76a81d02c0",
-  "committed_at": "2017-10-16T14:56:34Z",
-  "author_name": "Plaindocs",
-  "author_email": "lykoszine@gmail.com",
-  "committer_name": "GitHub",
-  "committer_email": "noreply@github.com",
-  "pull_request": false,
-  "pull_request_number": null,
-  "pull_request_title": null,
-  "tag": null,
-  "repository": {
-    "id": 1771959,
-    "name": "docs-travis-ci-com",
-    "owner_name": "travis-ci",
-    "url": "http://docs.travis-ci.com"
-  },
-  "matrix": [
-    {
-      "id": 288639284,
-      "repository_id": 1771959,
-      "parent_id": 288639281,
-      "number": "2843.1",
-      "state": "passed",
-      "config": {
-        "sudo": false,
-        "dist": "trusty",
-        "language": "python",
-        "python": "3.5.2",
-        "branches": {
-          "only": [
-            "master"
-          ]
-        },
-        "cache": {
-          "pip": true,
-          "directories": [
-            "vendor/bundle",
-            "node_modules"
-          ]
-        },
-        "notifications": {
-          "slack": {
-            "rooms": {
-              "secure": "LPNgf0Ra6Vu6I7XuK7tcnyFWJg+becx1RfAR35feWK81sru8TyuldQIt7uAKMA8tqFTP8j1Af7iz7UDokbCCfDNCX1GxdAWgXs+UKpwhO89nsidHAsCkW2lWSEM0E3xtOJDyNFoauiHxBKGKUsApJTnf39H+EW9tWrqN5W2sZg8="
-            },
-            "on_success": "never"
-          },
-          "webhooks": "https://docs.travis-ci.com/update_webhook_payload_doc"
-        },
-        "install": [
-          "rvm use 2.3.1 --install",
-          "bundle install --deployment"
-        ],
-        "script": [
-          "bundle exec rake test"
-        ],
-        ".result": "configured",
-        "global_env": [
-          "PATH=$HOME/.local/user/bin:$PATH"
-        ],
-        "group": "stable",
-        "os": "linux",
-        "addons": {
-          "deploy": {
-            "provider": "heroku",
-            "api_key": {
-              "secure": "hylw2GIHMvZKOKX3uPSaLEzVrUGEA9mzGEA0s4zK37W9HJCTnvAcmgRCwOkRuC4L7R4Zshdh/CGORNnBBgh1xx5JGYwkdnqtjHuUQmWEXCusrIURu/iEBNSsZZEPK7zBuwqMHj2yRm64JfbTDJsku3xdoA5Z8XJG5AMJGKLFgUQ="
-            },
-            "app": "docs-travis-ci-com",
-            "skip_cleanup": true,
-            "true": {
-              "branch": [
-                "master"
-              ]
-            }
-          }
-        }
-      },
-      "status": 0,
-      "result": 0,
-      "commit": "d79e3a6ff0cada29d731ed93de203f76a81d02c0",
-      "branch": "master",
-      "message": "Merge pull request #1389 from christopher-dG/patch-1\\n\\nJulia: Refer to PkgDev's generate instead of Pkg's",
-      "compare_url": "https://github.com/travis-ci/docs-travis-ci-com/compare/eb58bd2fac2e339d0339689d9eb7290246805a1d...d79e3a6ff0cada29d731ed93de203f76a81d02c0",
-      "started_at": null,
-      "finished_at": null,
-      "committed_at": "2017-10-16T14:56:34Z",
-      "author_name": "Plaindocs",
-      "author_email": "lykoszine@gmail.com",
-      "committer_name": "GitHub",
-      "committer_email": "noreply@github.com",
-      "allow_failure": true
-    }
-  ]
-}"""
-
 UNSET = object()
+
+
+@pytest.fixture(scope='session')
+def sample_travis_build_commit(fixture_path):
+    with open(os.path.join(fixture_path, 'travis-build-commit.json'), 'rb') as fp:
+        return fp.read()
 
 
 def make_signature(payload, private_key) -> bytes:
@@ -246,7 +86,7 @@ def test_missing_signature(client, default_repo, default_hook):
 
 
 def test_queued_build(client, default_repo, default_hook, default_revision,
-                      private_key, public_key_bytes, mocker, responses):
+                      sample_travis_build_commit, private_key, public_key_bytes, mocker, responses):
     responses.add(responses.GET, 'https://api.travis-ci.org/config',
                   get_config_response(public_key_bytes))
 
@@ -257,8 +97,8 @@ def test_queued_build(client, default_repo, default_hook, default_revision,
 
     mock_identify_revision.return_value = default_revision
 
-    resp = post_request(client, default_hook, EXAMPLE,
-                        public_key_bytes, make_signature(EXAMPLE, private_key))
+    resp = post_request(client, default_hook, sample_travis_build_commit,
+                        public_key_bytes, make_signature(sample_travis_build_commit, private_key))
     assert resp.status_code == 200, repr(resp.data)
 
     build = Build.query.unrestricted_unsafe().filter(
@@ -281,4 +121,5 @@ def test_queued_build(client, default_repo, default_hook, default_revision,
     assert job.status == Status.finished
     assert job.result == Result.passed
     assert job.allow_failure
+    assert job.label == 'TEST_SUITE=integration - python: 3.5.2'
     assert job.url == 'https://travis-ci.org/travis-ci/docs-travis-ci-com/jobs/288639284'
