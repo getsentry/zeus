@@ -43,15 +43,10 @@ class TestDetails extends Component {
     return (
       <TestDetailsWrapper>
         <h5>
-          <ObjectResult data={testDetails} /> on Job #{testDetails.job.number}
-          {testDetails.job.label &&
-            <span>
-              {' '}&mdash; {testDetails.job.label}
-            </span>}
+          <ObjectResult data={testDetails} size={12} /> Job #{testDetails.job.number}
+          {testDetails.job.label && <span> &mdash; {testDetails.job.label}</span>}
         </h5>
-        <pre style={{margin: 0}}>
-          {testDetails.message || <em>no output captured</em>}
-        </pre>
+        <pre>{testDetails.message || <em>no output captured</em>}</pre>
       </TestDetailsWrapper>
     );
   }
@@ -81,12 +76,13 @@ class TestListItem extends Component {
               <AggregateDuration data={test.runs} />
             </Box>
           </Flex>
-          {this.state.expanded &&
+          {this.state.expanded && (
             <div>
-              {test.runs.map(run =>
+              {test.runs.map(run => (
                 <TestDetails test={run} params={params} key={run.id} />
-              )}
-            </div>}
+              ))}
+            </div>
+          )}
         </ResultGridRow>
       </TestListItemLink>
     );
@@ -133,10 +129,18 @@ const TestDetailsWrapper = styled.div`
   color: #39364e;
   font-size: 13px;
   line-height: 1.4em;
-  border-top: 1px solid #dbdae3;
+  border-top: 1px solid #eee;
 
   pre {
     font-size: inherit;
+    margin: 0;
+    background: #f9f9f9;
+    padding: 5px;
+    border-radius: 4px;
+  }
+
+  h5 {
+    margin-bottom: 5px;
   }
 `;
 

@@ -75,4 +75,17 @@ describe('ObjectResult', () => {
     );
     expect(tree).toMatchSnapshot();
   });
+
+  it('renders size', () => {
+    const tree = render(
+      <ObjectResult
+        data={{
+          status: 'finished',
+          result: 'passed'
+        }}
+        size={12}
+      />
+    );
+    expect(tree).toMatchSnapshot();
+  });
 });

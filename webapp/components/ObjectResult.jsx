@@ -15,27 +15,33 @@ export default class ObjectResult extends Component {
     data: PropTypes.shape({
       result: PropTypes.string.isRequired,
       status: PropTypes.string
-    })
+    }),
+    size: PropTypes.number
+  };
+
+  static defaultProps = {
+    size: 16
   };
 
   getIcon(result, status) {
+    let {size} = this.props;
     switch (status) {
       case 'queued':
-        return <QueuedIcon size="16" />;
+        return <QueuedIcon size={size} />;
       case 'in_progress':
-        return <InProgressIcon size="16" />;
+        return <InProgressIcon size={size} />;
       default:
         if (status === 'finished' && result === 'unknown')
-          return <UnknownIcon size="16" />;
+          return <UnknownIcon size={size} />;
         switch (result) {
           case 'passed':
-            return <PassedIcon size="16" />;
+            return <PassedIcon size={size} />;
           case 'aborted':
-            return <AbortedIcon size="16" />;
+            return <AbortedIcon size={size} />;
           case 'failed':
-            return <FailedIcon size="16" />;
+            return <FailedIcon size={size} />;
           case 'errored':
-            return <ErroredIcon size="16" />;
+            return <ErroredIcon size={size} />;
           default:
             return null;
         }
