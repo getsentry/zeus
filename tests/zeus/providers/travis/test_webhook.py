@@ -121,5 +121,5 @@ def test_queued_build(client, default_repo, default_hook, default_revision,
     assert job.status == Status.finished
     assert job.result == Result.passed
     assert job.allow_failure
-    assert job.label == 'TEST_SUITE=integration - python: 3.5.2'
+    assert job.label == 'python: 3.5.2 - TEST_SUITE=integration'
     assert job.url == 'https://travis-ci.org/travis-ci/docs-travis-ci-com/jobs/288639284'
