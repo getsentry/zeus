@@ -19,8 +19,6 @@ def test_result_generation(sample_webpack_stats, default_job):
     r1 = results[0]
     assert r1.name == 'app'
     asset_list = list(r1.assets)
-    assert len(asset_list) == 2
+    assert len(asset_list) == 1
     assert asset_list[0].name == 'js/app.5bdbbccf.js'
     assert asset_list[0].size == 1100428
-    assert asset_list[1].name == 'js/app.5bdbbccf.js.map'
-    assert asset_list[1].size == 791795
