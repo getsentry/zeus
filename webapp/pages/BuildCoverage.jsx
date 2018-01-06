@@ -79,6 +79,10 @@ const FileWithCoverageTable = styled.table`
     background-color: #f05b5b !important;
   }
 
+  .line-u {
+    background-color: #eee !important;
+  }
+
   td {
     vertical-align: top;
     font-size: 14px !important;
