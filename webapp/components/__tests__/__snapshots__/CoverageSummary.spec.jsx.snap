@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CoverageSummary renders 1`] = `
+<div
+  class="sc-bxivhb kakZqJ"
+>
+  <div
+    class="sc-EHOje bxhrCT ResultGrid-Header sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+  >
+    <div
+      class="sc-ifAKCX gVDkew ResultGrid-Column sc-bdVaJa kYmYWE"
+    >
+      File
+    </div>
+    <div
+      class="sc-ifAKCX gVDkew ResultGrid-Column sc-bdVaJa hQjYIB"
+      style="text-align:right"
+      width="80"
+    >
+      Diff
+    </div>
+    <div
+      class="sc-ifAKCX gVDkew ResultGrid-Column sc-bdVaJa hQjYIB"
+      style="text-align:right"
+      width="80"
+    >
+      Overall
+    </div>
+  </div>
+  <div>
+    <div
+      class="sc-bZQynM kdaNqr ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+    >
+      <div
+        class="sc-ifAKCX gVDkew ResultGrid-Column sc-bdVaJa kYmYWE"
+      >
+        <a>
+          webapp/components/Collapsable.jsx
+        </a>
+      </div>
+      <div
+        class="sc-ifAKCX gVDkew ResultGrid-Column sc-bdVaJa hQjYIB"
+        style="text-align:right"
+        width="80"
+      >
+        100%
+      </div>
+      <div
+        class="sc-ifAKCX gVDkew ResultGrid-Column sc-bdVaJa hQjYIB"
+        style="text-align:right"
+        width="80"
+      >
+        85.7%
+      </div>
+    </div>
+  </div>
+</div>
+`;

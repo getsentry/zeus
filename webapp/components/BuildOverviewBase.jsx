@@ -102,7 +102,7 @@ export default class BuildOverviewBase extends AsyncPage {
     );
     let unallowedFailures = this.state.jobList.filter(job => !job.allow_failure);
     let revision = this.context.build.source.revision;
-    let {repo} = this.context;
+    let {build, repo} = this.context;
     let revisionBits = revision.message.split('\n');
     let revisionSubject = revisionBits[0];
     let revisionMessage =
@@ -159,7 +159,12 @@ export default class BuildOverviewBase extends AsyncPage {
         {!!this.state.diffCoverage.length && (
           <Section>
             <SectionHeading>Coverage</SectionHeading>
-            <CoverageSummary coverage={this.state.diffCoverage} collapsable={true} />
+            <CoverageSummary
+              repo={repo}
+              build={build}
+              coverage={this.state.diffCoverage}
+              collapsable={true}
+            />
           </Section>
         )}
         {!!this.state.violationList.length && (
