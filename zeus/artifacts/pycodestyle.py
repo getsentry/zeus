@@ -18,7 +18,7 @@ SEVERITY_MAP = {
 
 class PyCodeStyleHandler(ArtifactHandler):
     supported_types = frozenset(
-        ['text/plain+pep8', 'text/plain+pycodestyle'])
+        ['text/x-pep8', 'text/x-pycodestyle', 'text/plain+pep8', 'text/plain+pycodestyle'])
 
     def process(self, fp):
         job = self.job

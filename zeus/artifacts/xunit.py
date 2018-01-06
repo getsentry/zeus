@@ -8,7 +8,8 @@ from .base import ArtifactHandler
 
 
 class XunitHandler(ArtifactHandler):
-    supported_types = frozenset(['text/xml+xunit', 'text/xml+junit', 'text/xml+bitten'])
+    supported_types = frozenset(['application/x-xunit+xml', 'application/x-junit+xml',
+                                 'application/x-bitten+xml', 'text/xml+xunit', 'text/xml+junit', 'text/xml+bitten'])
 
     def process(self, fp):
         test_list = self.get_tests(fp)

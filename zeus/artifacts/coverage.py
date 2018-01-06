@@ -11,7 +11,8 @@ from .base import ArtifactHandler
 
 
 class CoverageHandler(ArtifactHandler):
-    supported_types = frozenset(['text/xml+coverage'])
+    supported_types = frozenset(
+        ['application/x-coverage+xml', 'application/x-cobertura+xml', 'text/xml+coverage'])
 
     def process(self, fp):
         results = self.get_coverage(fp)

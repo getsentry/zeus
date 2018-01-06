@@ -38,30 +38,30 @@ The recommended way to support artifacts is to configure a post-build step (on b
 
 ```bash
 npm install -g @zeus-ci/cli
-$(npm bin -g)/zeus upload -t "text/xml+xunit" jest.junit.xml
-$(npm bin -g)/zeus upload -t "text/xml+coverage" coverage.xml
+$(npm bin -g)/zeus upload -t "application/x-junit+xml" jest.junit.xml
+$(npm bin -g)/zeus upload -t "application/x-cobertura+xml" coverage.xml
 ```
 
 #### Code Coverage
 
-- text/xml+coverage
+- application/x-cobertura+xml
 
 #### xUnit
 
-- text/xml+bitten
-- text/xml+junit
-- text/xml+xunit
+- application/x-bitten+xml
+- application/x-junit+xml
+- application/x-xunit+xml
 
 #### Style Checks
 
-- text/xml+checkstyle
-- text/plain+pep8
-- text/plain+pycodestyle
-- text/plain+pylint
+- application/x-checkstyle+xml
+- text/x-pep8
+- text/x-pycodestyle
+- test/x-pylint
 
 #### Webpack Stats
 
-- application/webpack-stats+json
+- application/x-webpack-stats+json
 
 ## Contributing
 

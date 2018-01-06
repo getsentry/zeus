@@ -8,7 +8,7 @@ from .base import ArtifactHandler
 
 class WebpackStatsHandler(ArtifactHandler):
     supported_types = frozenset(
-        ['application/webpack-stats+json'])
+        ['application/x-webpack-stats+json', 'application/webpack-stats+json'])
 
     def process(self, fp):
         job = self.job

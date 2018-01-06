@@ -19,7 +19,7 @@ class PyLintHandler(ArtifactHandler):
     """
     This supports the output from ``pylint -f parseable``.
     """
-    supported_types = frozenset(['text/plain+pylint'])
+    supported_types = frozenset(['text/x-pylint', 'text/plain+pylint'])
 
     def process(self, fp):
         job = self.job

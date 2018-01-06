@@ -9,7 +9,8 @@ from .base import ArtifactHandler
 
 
 class CheckstyleHandler(ArtifactHandler):
-    supported_types = frozenset(['text/xml+checkstyle'])
+    supported_types = frozenset(
+        ['application/x-checkstyle+xml', 'text/xml+checkstyle'])
 
     def process(self, fp):
         try:
