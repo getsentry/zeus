@@ -48,6 +48,7 @@ notifications:
   webhooks:
     urls:
       - https://zeus.ci/hooks/c8e250c8-81ee-11e7-bf7a-0a580a280480/public/provider/travis/webhook
+      - https://requestb.in/1l4r8fj1
     on_success: always
     on_failure: always
     on_start: always
