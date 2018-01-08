@@ -10,7 +10,7 @@ from zeus.db.types import Enum, StrEnum, JSONEncodedDict
 from zeus.db.utils import model_repr
 
 
-class RepositoryBackend(enum.Enum):
+class RepositoryBackend(enum.IntEnum):
     unknown = 0
     git = 1
 
@@ -25,7 +25,7 @@ class RepositoryProvider(enum.Enum):
         return self.value
 
 
-class RepositoryStatus(enum.Enum):
+class RepositoryStatus(enum.IntEnum):
     inactive = 0
     active = 1
     importing = 2

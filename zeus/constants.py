@@ -1,9 +1,9 @@
 import zeus
 
-from enum import Enum
+from enum import IntEnum
 
 
-class Status(Enum):
+class Status(IntEnum):
     unknown = 0
     queued = 1
     in_progress = 2
@@ -15,7 +15,7 @@ class Status(Enum):
         return self.name
 
 
-class Result(Enum):
+class Result(IntEnum):
     unknown = 0
     aborted = 5
     passed = 1
@@ -27,7 +27,7 @@ class Result(Enum):
         return self.name
 
 
-class Severity(Enum):
+class Severity(IntEnum):
     unknown = 0
     ignore = 1
     info = 2
