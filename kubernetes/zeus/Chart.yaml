@@ -1,0 +1,9 @@
+name: zeus-gcp
+version: 0.1.0
+description: Zeus CI
+home: https://zeus.ci
+sources:
+  - https://github.com/getsentry/zeus-gcp
+maintainers: # (optional)
+  - name: David Cramer
+    email: dcramer@gmail.com
