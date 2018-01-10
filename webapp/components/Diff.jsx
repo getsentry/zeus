@@ -8,10 +8,6 @@ export default class Diff extends Component {
   };
 
   render() {
-    return (
-      <SyntaxHighlight language="diff" className="diff">
-        {this.props.diff}
-      </SyntaxHighlight>
-    );
+    return <SyntaxHighlight lang="diff">{this.props.diff}</SyntaxHighlight>;
   }
 }

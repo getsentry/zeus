@@ -2,7 +2,7 @@
 
 exports[`Diff renders 1`] = `
 <pre
-  class="diff"
+  lang="diff"
   style="display:block;overflow-x:auto;padding:0;color:#383a42;background:#ffffff"
 >
   <code>
