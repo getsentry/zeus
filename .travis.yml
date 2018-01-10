@@ -28,21 +28,21 @@ script:
   - JEST_JUNIT_OUTPUT=jest.junit.xml yarn test -- --ci --testResultsProcessor="jest-junit"
 after_success:
   - npm install -g @zeus-ci/cli
-  - $(npm bin -g)/zeus upload -t "text/xml+xunit" pytest.junit.xml
-  - $(npm bin -g)/zeus upload -t "text/xml+xunit" jest.junit.xml
-  - $(npm bin -g)/zeus upload -t "text/xml+coverage" coverage.xml
-  - $(npm bin -g)/zeus upload -t "text/xml+coverage" coverage/cobertura-coverage.xml
-  - $(npm bin -g)/zeus upload -t "text/xml+checkstyle" checkstyle.xml
-  - $(npm bin -g)/zeus upload -t "text/plain+pycodestyle" flake8.log
+  - $(npm bin -g)/zeus upload -t "application/x-junit+xml" pytest.junit.xml
+  - $(npm bin -g)/zeus upload -t "application/x-junit+xml" jest.junit.xml
+  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" coverage.xml
+  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" coverage/cobertura-coverage.xml
+  - $(npm bin -g)/zeus upload -t "application/x-checkstyle+xml" checkstyle.xml
+  - $(npm bin -g)/zeus upload -t "text/x-pycodestyle" flake8.log
   - $(npm bin -g)/zeus upload -t "application/webpack-stats+json" webpack-stats.json
 after_failure:
   - npm install -g @zeus-ci/cli
-  - $(npm bin -g)/zeus upload -t "text/xml+xunit" pytest.junit.xml
-  - $(npm bin -g)/zeus upload -t "text/xml+xunit" jest.junit.xml
-  - $(npm bin -g)/zeus upload -t "text/xml+coverage" coverage.xml
-  - $(npm bin -g)/zeus upload -t "text/xml+coverage" coverage/cobertura-coverage.xml
-  - $(npm bin -g)/zeus upload -t "text/xml+checkstyle" checkstyle.xml
-  - $(npm bin -g)/zeus upload -t "text/plain+pycodestyle" flake8.log
+  - $(npm bin -g)/zeus upload -t "application/x-junit+xml" pytest.junit.xml
+  - $(npm bin -g)/zeus upload -t "application/x-junit+xml" jest.junit.xml
+  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" coverage.xml
+  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" coverage/cobertura-coverage.xml
+  - $(npm bin -g)/zeus upload -t "application/x-checkstyle+xml" checkstyle.xml
+  - $(npm bin -g)/zeus upload -t "text/x-pycodestyle" flake8.log
   - $(npm bin -g)/zeus upload -t "application/webpack-stats+json" webpack-stats.json
 notifications:
   webhooks:
