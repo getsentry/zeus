@@ -1,0 +1,20 @@
+prometheus:
+  server:
+    ingress:
+      ## If true, Prometheus server Ingress will be created
+      ##
+      enabled: true
+
+      ## Prometheus server Ingress hostnames
+      ## Must be provided if Ingress is enabled
+      ##
+      hosts:
+        - prometheus.zeus.ci
+
+      ## Prometheus server Ingress TLS configuration
+      ## Secrets must be manually created in the namespace
+      ##
+      tls:
+        - secretName: prometheus-server-tls
+          hosts:
+            - prometheus.zeus.ci

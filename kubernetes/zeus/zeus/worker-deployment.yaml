@@ -1,0 +1,143 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: default
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  minReadySeconds: 5
+  revisionHistoryLimit: 10
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: zeus
+        image: gcr.io/zeus-176020/zeus:latest
+        imagePullPolicy: Always
+        args: ["zeus", "worker", "--cron"]
+        env:
+        - name: GC_PROJECT
+          value: zeus-176020
+        - name: GCS_BUCKET
+          value: 'artifacts.zeus-176020.appspot.com'
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: cloudsql-db-credentials
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cloudsql-db-credentials
+              key: password
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: sentry
+              key: dsn
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: zeus
+              key: secret-key
+        - name: GITHUB_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: github
+              key: client-id
+        - name: GITHUB_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: github
+              key: client-secret
+        - name: DOMAIN
+          value: zeus.ci
+        - name: GET_HOSTS_FROM
+          value: env
+        - name: REPO_ROOT
+          value: '/mnt/repo-cache'
+        - name: MAIL_SERVER
+          value: 'smtp.mailgun.org'
+        - name: MAIL_PORT
+          value: '2525'
+        - name: MAIL_USE_TLS
+          value: '1'
+        - name: MAIL_USE_SSL
+          value: '0'
+        - name: MAIL_USERNAME
+          value: 'postmaster@mg.zeus.ci'
+        - name: MAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mail
+              key: password
+        - name: MAIL_DEFAULT_SENDER
+          value: 'noreply@mg.zeus.ci'
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: '/var/run/secret/cloud.google.com/service-account.json'
+        - name: ALLOWED_ORIGINS
+          value: 'updates.zeus.ci,zeus.ci'
+        - name: CELERY_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: queue
+              key: broker_url
+        readinessProbe:
+          exec:
+            command:
+            - test
+            - '`ps aux | grep "[z]eus worker"`'
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - test
+            - '`ps aux | grep "[z]eus worker"`'
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        volumeMounts:
+          - name: nfs
+            mountPath: "/mnt/repo-cache"
+          - name: "service-account"
+            mountPath: "/var/run/secret/cloud.google.com"
+        resources:
+          requests:
+            cpu: 2
+          limits:
+            cpu: 4
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.09
+        command: ["/cloud_sql_proxy", "--dir=/cloudsql",
+                  "-instances=zeus-176020:us-central1:zeus-prod-06947e6=tcp:5432",
+                  "-credential_file=/secrets/cloudsql/credentials.json"]
+        volumeMounts:
+          - name: cloudsql-instance-credentials
+            mountPath: /secrets/cloudsql
+            readOnly: true
+          - name: ssl-certs
+            mountPath: /etc/ssl/certs
+          - name: cloudsql
+            mountPath: /cloudsql
+      volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+        - name: cloudsql
+          emptyDir:
+        - name: nfs
+          persistentVolumeClaim:
+            claimName: nfs
+        - name: service-account
+          secret:
+            secretName: "zeus-service-account"

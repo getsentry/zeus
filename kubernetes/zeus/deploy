@@ -1,0 +1,51 @@
+#!/bin/bash -eu
+
+. ./config
+
+update_repo
+bind_version
+
+echo "> Deploying ${VERSION:0:7}"
+
+gcloud container images describe ${IMAGE}:${VERSION}
+
+# TODO(dcramer): upload sourcemaps
+if [[ ! -x $SENTRY_API_TOKEN ]]; then
+    curl https://sentry.io/api/0/organizations/sentry/releases/ \
+      -X POST \
+      -H "Authorization: Bearer ${SENTRY_API_TOKEN}" \
+      -H 'Content-Type: application/json' \
+      -d "
+      {
+        \"version\": \"${VERSION}\",
+        \"refs\": [{
+            \"repository\":\"getsentry/zeus\",
+            \"commit\":\"${VERSION}\"
+        }],
+        \"projects\":[\"zeus\"]
+      }
+      "
+fi
+
+kubectl set image deploy/web zeus=${IMAGE}:${VERSION} --record
+kubectl set image deploy/pubsub zeus=${IMAGE}:${VERSION} --record
+kubectl set image deploy/worker zeus=${IMAGE}:${VERSION} --record
+# kubectl rolling-update web --image=${IMAGE}:${VERSION} --image-pull-policy="IfNotPresent" --container=zeus
+# kubectl rolling-update worker --image=${IMAGE}:${VERSION} --image-pull-policy="IfNotPresent" --container=zeus
+
+kubectl rollout status deployments web
+kubectl rollout status deployments pubsub
+kubectl rollout status deployments worker
+
+if [[ ! -x $SENTRY_API_TOKEN ]]; then
+    curl https://sentry.io/api/0/organizations/sentry/releases/${VERSION}/deploys/ \
+      -X POST \
+      -H "Authorization: Bearer ${SENTRY_API_TOKEN}" \
+      -H 'Content-Type: application/json' \
+      -d '
+      {
+        "environment": "production",
+        "name": "zeus"
+      }
+      '
+fi
