@@ -24,8 +24,8 @@ const RevisionSection = styled(Section)`
 
 const RevisionSubject = styled.pre`
   margin-bottom: 10px;
-  font-weight: 500;
-  font-size: 0.9em;
+  font-weight: bold;
+  font-size: 0.8em;
 `;
 
 const RevisionMessage = styled.div`
