@@ -22,6 +22,7 @@ class EnumField(Field):
             return None
         if isinstance(value, self.enum):
             return value
-        elif value.startswith('_') or not getattr(self.enum, value):
+        try:
+            return self.enum[value]
+        except KeyError:
             raise ValidationError('Not a valid choice.')
-        return getattr(self.enum, value)
