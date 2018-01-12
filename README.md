@@ -29,6 +29,8 @@ Some quick caveats:
 - travis-ci.com and GitHub Enterprise are not yet supported.
 - Notifications will only be triggered for users which have authenticated against Zeus.
 
+If you want to use Zeus with a build system that's not currently supported, see the details on "Hooks" in the documentation.
+
 ### Supported Artifact Types
 
 While you can upload any kind of Artifact to zeus (e.g. ``.html`` output), the platform has knowledge of certain types
@@ -228,3 +230,28 @@ This will look for a Build object with the following characteristics:
 - `repository_id={Hook.repository_id}`
 
 If a match is found, it will be updated with the given API parameters. If it isn't found, it will be created.
+
+For example, if you were to publish job details from Travis without using the native webhooks:
+
+```shell
+#!/bin/bash -eu
+if [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
+    BUILD_LABEL="PR #${TRAVIS_PULL_REQUEST}"
+else
+    BUILD_LABEL=""
+fi
+
+# ensure the build exists
+curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER \
+    -X POST \
+    -H 'Content-Type: application/json' \
+    -d "{\"label\": \"${BUILD_LABEL}\", \"ref\": \"$TRAVIS_COMMIT\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/builds/${TRAVIS_BUILD_ID}\"}"
+
+# upsert current job details
+curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER/jobs/$TRAVIS_JOB_NUMBER \
+    -X POST \
+    -H 'Content-Type: application/json' \
+    -d "{\"status\": \"$1\", \"result\": \"$2\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/jobs/${TRAVIS_JOB_ID}\", \"allow_failure\": ${TRAVIS_ALLOW_FAILURE}}"
+```
+
+Form there you can submit artifacts using ``zeus-cli`` and it's standard mechanisms.
