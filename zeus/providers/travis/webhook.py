@@ -94,7 +94,7 @@ class TravisWebhookView(BaseHook):
                 'travis.webhook-invalid-signature', exc_info=True)
             return Response(status=400)
 
-        domain = (hook.data or {}).get('domain', 'api.travis-ci.org')
+        domain = (hook.config or {}).get('domain', 'api.travis-ci.org')
         public_key = get_travis_public_key(domain)
         try:
             verify_signature(public_key, signature, payload.encode('utf-8'))

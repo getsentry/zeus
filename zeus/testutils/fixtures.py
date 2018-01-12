@@ -176,6 +176,7 @@ def default_api_token():
 def default_hook(default_repo):
     return factories.HookFactory(
         repository=default_repo,
+        travis_com=True,
     )
 
 
