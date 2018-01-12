@@ -23,7 +23,7 @@ def test_repo_hook_create(client, default_login, default_source, default_repo, d
     resp = client.post(
         '/api/repos/{}/hooks'.format(default_repo.get_full_name()),
         json={
-            'provider': 'travis-ci',
+            'provider': 'travis',
         }
     )
     assert resp.status_code == 200, repr(resp.data)
@@ -31,5 +31,28 @@ def test_repo_hook_create(client, default_login, default_source, default_repo, d
     hook = Hook.query.unrestricted_unsafe().get(resp.json()['id'])
     assert hook
     assert hook.repository_id == default_repo.id
-    assert hook.provider == 'travis-ci'
+    assert hook.provider == 'travis'
     assert hook.token
+
+
+def test_repo_hook_create_schema(client, default_login, default_source,
+                                 default_repo, default_repo_access):
+    resp = client.post(
+        '/api/repos/{}/hooks'.format(default_repo.get_full_name()),
+        json={
+            'provider': 'travis',
+            'config': {
+                'domain': 'api.travis-ci.org',
+            }
+        }
+    )
+    assert resp.status_code == 200, repr(resp.data)
+
+    hook = Hook.query.unrestricted_unsafe().get(resp.json()['id'])
+    assert hook
+    assert hook.repository_id == default_repo.id
+    assert hook.provider == 'travis'
+    assert hook.token
+    assert hook.config == {
+        'domain': 'api.travis-ci.org',
+    }

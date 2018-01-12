@@ -13,3 +13,42 @@ def test_hook_delete(client, default_login, default_hook, default_repo, default_
     assert resp.status_code == 204
 
     assert not Hook.query.get(default_hook.id)
+
+
+def test_hook_update(client, default_login, default_hook, default_repo, default_repo_access):
+    resp = client.put(
+        '/api/hooks/{}'.format(default_hook.id),
+        json={
+            'provider': 'travis',
+            'config': {
+                'domain': 'api.travis-ci.org',
+            }
+        }
+    )
+    assert resp.status_code == 200, repr(resp.data)
+
+    hook = Hook.query.unrestricted_unsafe().get(resp.json()['id'])
+    assert hook.repository_id == default_repo.id
+    assert hook.provider == 'travis'
+    assert hook.config == {
+        'domain': 'api.travis-ci.org',
+    }
+
+
+def test_hook_update_without_config(
+        client, default_login, default_hook, default_repo, default_repo_access):
+    resp = client.put(
+        '/api/hooks/{}'.format(default_hook.id),
+        json={
+            'provider': 'travis',
+        }
+    )
+    assert resp.status_code == 200, repr(resp.data)
+
+    hook = Hook.query.unrestricted_unsafe().get(resp.json()['id'])
+    assert hook.repository_id == default_repo.id
+    assert hook.provider == 'travis'
+    # we're ensuring that the config doesnt get overwritten by the defaults
+    assert hook.config == {
+        'domain': 'api.travis-ci.com',
+    }

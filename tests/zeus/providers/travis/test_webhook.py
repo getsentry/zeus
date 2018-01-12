@@ -87,7 +87,7 @@ def test_missing_signature(client, default_repo, default_hook):
 
 def test_queued_build(client, default_repo, default_hook, default_revision,
                       sample_travis_build_commit, private_key, public_key_bytes, mocker, responses):
-    responses.add(responses.GET, 'https://api.travis-ci.org/config',
+    responses.add(responses.GET, 'https://api.travis-ci.com/config',
                   get_config_response(public_key_bytes))
 
     source = factories.SourceFactory.create(revision=default_revision)
