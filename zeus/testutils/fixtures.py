@@ -229,6 +229,12 @@ def sample_pylint(fixture_path):
 
 
 @pytest.fixture(scope='session')
+def sample_gotest(fixture_path):
+    with open(os.path.join(fixture_path, 'sample-gotest.json')) as fp:
+        return fp.read()
+
+
+@pytest.fixture(scope='session')
 def sample_webpack_stats(fixture_path):
     with open(os.path.join(fixture_path, 'webpack-stats.json')) as fp:
         return fp.read()

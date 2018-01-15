@@ -1,0 +1,17 @@
+{"Time":"2018-01-15T23:33:17.191475136+02:00","Action":"run","Package":"golang.org/x/sync/syncmap","Test":"TestMapMatchesRWMutex"}
+{"Time":"2018-01-15T23:33:17.19173721+02:00","Action":"output","Package":"golang.org/x/sync/syncmap","Test":"TestMapMatchesRWMutex","Output":"=== RUN   TestMapMatchesRWMutex\n"}
+{"Time":"2018-01-15T23:33:17.197200611+02:00","Action":"output","Package":"golang.org/x/sync/syncmap","Test":"TestMapMatchesRWMutex","Output":"--- PASS: TestMapMatchesRWMutex (0.01s)\n"}
+{"Time":"2018-01-15T23:33:17.197234575+02:00","Action":"pass","Package":"golang.org/x/sync/syncmap","Test":"TestMapMatchesRWMutex","Elapsed":0.01}
+{"Time":"2018-01-15T23:33:17.197257215+02:00","Action":"run","Package":"golang.org/x/sync/syncmap","Test":"TestMapMatchesDeepCopy"}
+{"Time":"2018-01-15T23:33:17.197268073+02:00","Action":"output","Package":"golang.org/x/sync/syncmap","Test":"TestMapMatchesDeepCopy","Output":"=== RUN   TestMapMatchesDeepCopy\n"}
+{"Time":"2018-01-15T23:33:17.205282906+02:00","Action":"output","Package":"golang.org/x/sync/syncmap","Test":"TestMapMatchesDeepCopy","Output":"--- PASS: TestMapMatchesDeepCopy (0.01s)\n"}
+{"Time":"2018-01-15T23:33:17.205331187+02:00","Action":"pass","Package":"golang.org/x/sync/syncmap","Test":"TestMapMatchesDeepCopy","Elapsed":0.01}
+{"Time":"2018-01-15T23:33:17.205346162+02:00","Action":"run","Package":"golang.org/x/sync/syncmap","Test":"TestConcurrentRange"}
+{"Time":"2018-01-15T23:33:17.205356304+02:00","Action":"output","Package":"golang.org/x/sync/syncmap","Test":"TestConcurrentRange","Output":"=== RUN   TestConcurrentRange\n"}
+{"Time":"2018-01-15T23:33:17.206151523+02:00","Action":"output","Package":"golang.org/x/sync/syncmap","Test":"TestConcurrentRange","Output":"--- FAIL: TestConcurrentRange (0.00s)\n"}
+{"Time":"2018-01-15T23:33:17.206180842+02:00","Action":"output","Package":"golang.org/x/sync/syncmap","Test":"TestConcurrentRange","Output":"\tmap_test.go:169: Range visited 1024 elements of 1024-element Map\n"}
+{"Time":"2018-01-15T23:33:17.206194909+02:00","Action":"fail","Package":"golang.org/x/sync/syncmap","Test":"TestConcurrentRange","Elapsed":0}
+{"Time":"2018-01-15T23:33:17.206216521+02:00","Action":"output","Package":"golang.org/x/sync/syncmap","Output":"FAIL\n"}
+{"Time":"2018-01-15T23:33:17.207362125+02:00","Action":"output","Package":"golang.org/x/sync/syncmap","Output":"exit status 1\n"}
+{"Time":"2018-01-15T23:33:17.207389986+02:00","Action":"output","Package":"golang.org/x/sync/syncmap","Output":"FAIL\tgolang.org/x/sync/syncmap\t0.022s\n"}
+{"Time":"2018-01-15T23:33:17.207407778+02:00","Action":"fail","Package":"golang.org/x/sync/syncmap","Elapsed":0.022}
