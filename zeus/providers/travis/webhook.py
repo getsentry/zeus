@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from flask import current_app, request, Response
 from urllib.parse import urlparse
 
-from zeus.api.utils.upserts import upsert_build, upsert_job
+from zeus.api.utils.upserts import upsert_build, upsert_change_request, upsert_job
 from zeus.config import redis
 from zeus.constants import USER_AGENT
 from zeus.models import Build
@@ -94,8 +94,8 @@ class TravisWebhookView(BaseHook):
                 'travis.webhook-invalid-signature', exc_info=True)
             return Response(status=400)
 
-        domain = (hook.config or {}).get('domain', 'api.travis-ci.org')
-        public_key = get_travis_public_key(domain)
+        api_domain = (hook.config or {}).get('domain', 'api.travis-ci.org')
+        public_key = get_travis_public_key(api_domain)
         try:
             verify_signature(public_key, signature, payload.encode('utf-8'))
         except InvalidSignature:
@@ -120,6 +120,17 @@ class TravisWebhookView(BaseHook):
         if payload['pull_request']:
             data['label'] = 'PR #{} - {}'.format(
                 payload['pull_request_number'], payload['pull_request_title'])
+
+            upsert_change_request(
+                repository=hook.repository,
+                provider='github',
+                external_id=str(payload['pull_request_number']),
+                data={
+                    'parent_revision_sha': payload['base_commit'],
+                    'head_revision_sha': payload['head_commit'],
+                    'message': payload['pull_request_title'],
+                }
+            )
 
         response = upsert_build(
             repository=hook.repository,

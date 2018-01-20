@@ -7,6 +7,7 @@
         "donjayamanne.python",
         "dbaeumer.vscode-eslint",
         "lextudio.restructuredtext",
-        "PeterJausovec.vscode-docker"
+        "PeterJausovec.vscode-docker",
+        "DavidAnson.vscode-markdownlint"
     ]
 }

@@ -65,8 +65,7 @@ def test_repo_build_create_missing_revision(
     client, default_login, default_revision, default_source, default_repo, default_repo_access, mocker
 ):
     mock_identify_revision = mocker.patch(
-        'zeus.api.resources.repository_builds.identify_revision')
-
+        'zeus.utils.revisions.identify_revision')
     mock_identify_revision.return_value = default_revision
 
     resp = client.post(

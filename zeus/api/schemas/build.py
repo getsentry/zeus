@@ -1,8 +1,8 @@
 from marshmallow import Schema, fields
 
-from .fields import ResultField, StatusField
+from .fields import ResultField, RevisionRefField, StatusField
 from .repository import RepositorySchema
-from .source import SourceSummarySchema
+from .source import SourceSchema
 from .stats import StatsSchema
 
 
@@ -15,7 +15,8 @@ class BuildSchema(Schema):
     finished_at = fields.DateTime(attribute="date_finished", dump_only=True)
     status = StatusField(dump_only=True)
     result = ResultField(dump_only=True)
-    source = fields.Nested(SourceSummarySchema(), dump_only=True)
+    source = fields.Nested(SourceSchema(
+        exclude=['diff']), dump_only=True)
     stats = fields.Nested(StatsSchema(), dump_only=True)
     provider = fields.Str(dump_only=True)
     external_id = fields.Str(dump_only=True)
@@ -27,7 +28,7 @@ class BuildSchema(Schema):
 class BuildCreateSchema(Schema):
     # label is only required if they're specifying a source with a patch (which they cant do yet)
     label = fields.Str(required=False)
-    ref = fields.Str()
     provider = fields.Str()
     external_id = fields.Str()
     url = fields.Str(allow_none=True)
+    ref = RevisionRefField(required=True)

@@ -1,49 +1,17 @@
-from flask import current_app, request
+from flask import request
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Email, Repository, Revision, Source
+from zeus.models import Author, Build, Email, Repository, Source
 from zeus.pubsub.utils import publish
-from zeus.vcs.base import UnknownRevision
 
 from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema, BuildCreateSchema
 
-build_create_schema = BuildCreateSchema(strict=True)
 build_schema = BuildSchema(strict=True)
 builds_schema = BuildSchema(many=True, strict=True)
-
-
-def identify_revision(repository, treeish):
-    """
-    Attempt to transform a a commit-like reference into a valid revision.
-    """
-    # try to find it from the database first
-    if len(treeish) == 40:
-        revision = Revision.query.filter(
-            Revision.repository_id == repository.id,
-            Revision.sha == treeish,
-        ).first()
-        if revision:
-            return revision
-
-    vcs = repository.get_vcs()
-    if not vcs:
-        return
-
-    vcs.ensure(update_if_exists=False)
-
-    try:
-        commit = next(vcs.log(parent=treeish, limit=1))
-    except UnknownRevision:
-        vcs.update()
-        commit = next(vcs.log(parent=treeish, limit=1))
-
-    revision, _ = commit.save(repository)
-
-    return revision
 
 
 class RepositoryBuildsResource(BaseRepositoryResource):
@@ -86,20 +54,11 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         """
         Create a new build.
         """
-        result = self.schema_from_request(build_create_schema, partial=True)
+        schema = BuildCreateSchema(strict=True, context={'repository': repo})
+        result = self.schema_from_request(schema, partial=True)
         if result.errors:
             return self.respond(result.errors, 403)
         data = result.data
-
-        ref = data.pop('ref', None)
-        if ref is None:
-            return self.error('missing ref')
-
-        try:
-            revision = identify_revision(repo, ref)
-        except UnknownRevision:
-            current_app.logger.warn('invalid ref received', exc_info=True)
-            return self.error('unable to find a revision matching ref')
 
         # TODO(dcramer): only if we create a source via a patch will we need the author
         # author_data = data.pop('author')
@@ -117,8 +76,9 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         # TODO(dcramer): need to handle patch case yet
         source = Source.query.options(
             joinedload('author'),
+            joinedload('revision'),
         ).filter(
-            Source.revision_sha == revision.sha,
+            Source.revision_sha == data.pop('ref'),
             Source.repository_id == repo.id,
         ).first()
 
