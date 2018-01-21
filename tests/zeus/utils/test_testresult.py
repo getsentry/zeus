@@ -1,7 +1,7 @@
 from base64 import b64encode
 
 from zeus import auth
-from zeus.constants import Result
+from zeus.constants import Permission, Result
 from zeus.models import Artifact, ItemStat, TestCase as ZeusTestCase
 from zeus.utils.testresult import (
     TestResult as ZeusTestResult, TestResultManager as ZeusTestResultManager
@@ -9,7 +9,8 @@ from zeus.utils.testresult import (
 
 
 def test_full(default_job):
-    auth.set_current_tenant(auth.Tenant(repository_ids=[default_job.repository_id]))
+    auth.set_current_tenant(auth.Tenant(
+        access={default_job.repository_id: Permission.read}))
 
     results = [
         ZeusTestResult(
@@ -57,7 +58,8 @@ def test_full(default_job):
     assert testcase_list[1].duration == 156
 
     artifacts = list(
-        Artifact.query.unrestricted_unsafe().filter(Artifact.testcase_id == testcase_list[1].id)
+        Artifact.query.unrestricted_unsafe().filter(
+            Artifact.testcase_id == testcase_list[1].id)
     )
     assert len(artifacts) == 1
     assert artifacts[0].file.get_file().read() == b'sample content'

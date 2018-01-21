@@ -1,6 +1,6 @@
 import zeus
 
-from enum import IntEnum
+from enum import IntEnum, IntFlag
 
 
 class Status(IntEnum):
@@ -38,6 +38,15 @@ class Severity(IntEnum):
         return self.name
 
 
+class Permission(IntFlag):
+    read = 1
+    write = 3
+    admin = 7
+
+    def __str__(self):
+        return self.name
+
+
 STATUS_PRIORITY = (
     Status.in_progress,
     Status.queued,
@@ -53,6 +62,14 @@ RESULT_PRIORITY = (
     Result.passed,
     Result.skipped,
 )
+
+PERMISSION_MAP = {
+    'GET': Permission.read,
+    'POST': Permission.write,
+    'PUT': Permission.write,
+    'DELETE': Permission.admin,
+}
+
 
 GITHUB_AUTH_URI = 'https://github.com/login/oauth/authorize'
 GITHUB_TOKEN_URI = 'https://github.com/login/oauth/access_token'

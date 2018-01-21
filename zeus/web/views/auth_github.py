@@ -171,14 +171,22 @@ def grant_access_to_existing_repos(user):
             ))
         )
         for repo in matching_repos:
-            if provider.has_access(auth.get_current_user(), repo):
+            permission = provider.get_permission(auth.get_current_user(), repo)
+            if permission:
                 try:
                     with db.session.begin_nested():
                         db.session.add(RepositoryAccess(
                             repository_id=repo.id,
                             user_id=user.id,
+                            permission=permission,
                         ))
                         db.session.flush()
                 except IntegrityError:
                     pass
+            else:
+                # revoke permissions
+                RepositoryAccess.query.filter(
+                    repository_id=repo.id,
+                    user_id=user.id,
+                ).delete()
             db.session.commit()

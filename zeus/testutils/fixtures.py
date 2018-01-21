@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from subprocess import check_call, check_output
 
 from zeus import factories, models
+from zeus.constants import Permission
 from zeus.utils import timezone
 
 RepoConfig = namedtuple(
@@ -70,6 +71,7 @@ def default_repo_access(db_session, default_repo, default_user):
     access = models.RepositoryAccess(
         user_id=default_user.id,
         repository_id=default_repo.id,
+        permission=Permission.admin,
     )
     db_session.add(access)
     db_session.commit()

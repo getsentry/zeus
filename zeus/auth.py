@@ -5,10 +5,12 @@ from datetime import datetime
 from flask import current_app, g, request, session
 from itsdangerous import BadSignature, JSONWebSignatureSerializer
 from sqlalchemy.orm import joinedload
-from typing import List, Optional
+from typing import Mapping, Optional
 from urllib.parse import urlparse, urljoin
+from uuid import UUID
 
 from zeus.config import db
+from zeus.constants import Permission
 from zeus.exceptions import AuthenticationFailed
 from zeus.models import (
     ApiToken, ApiTokenRepositoryAccess, Repository, RepositoryAccess, RepositoryApiToken, User, UserApiToken
@@ -17,11 +19,23 @@ from zeus.utils import timezone
 
 
 class Tenant(object):
-    def __init__(self, repository_ids: Optional[str]=None):
-        self.repository_ids = repository_ids or []
+    def __init__(self, access: Optional[Mapping[UUID, Optional[Permission]]]=None):
+        self.access = access or {}
 
     def __repr__(self):
         return '<{} repository_ids={}>'.format(type(self).__name__, self.repository_ids)
+
+    @cached_property
+    def repository_ids(self):
+        return list(self.access.keys())
+
+    def has_permission(self, repository_id: UUID, permission: Permission=None):
+        if permission is None:
+            return repository_id in self.access
+        access = self.access.get(repository_id)
+        if not access:
+            return False
+        return permission in access
 
     @classmethod
     def from_user(cls, user: User):
@@ -32,11 +46,13 @@ class Tenant(object):
         return UserTenant(user_id=user.id)
 
     @classmethod
-    def from_repository(cls, repository: Repository):
+    def from_repository(cls, repository: Repository, permission: Optional[Permission]=None):
         if not repository:
             return cls()
 
-        return RepositoryTenant(repository_id=repository.id)
+        return RepositoryTenant(access={
+            repository.id: permission,
+        })
 
     @classmethod
     def from_api_token(cls, token: ApiToken):
@@ -54,16 +70,16 @@ class ApiTokenTenant(Tenant):
         return '<{} token_id={}>'.format(type(self).__name__, self.token_id)
 
     @cached_property
-    def repository_ids(self) -> List:
+    def access(self) -> Mapping[UUID, Permission]:
         if not self.token_id:
             return None
 
-        return [
-            r[0]
-            for r in db.session.query(ApiTokenRepositoryAccess.repository_id).filter(
-                ApiTokenRepositoryAccess.apitoken_id == self.token_id,
-            )
-        ]
+        return dict(db.session.query(
+            ApiTokenRepositoryAccess.repository_id,
+            ApiTokenRepositoryAccess.permission,
+        ).filter(
+            ApiTokenRepositoryAccess.apitoken_id == self.token_id,
+        ))
 
 
 class UserTenant(Tenant):
@@ -74,31 +90,33 @@ class UserTenant(Tenant):
         return '<{} user_id={}>'.format(type(self).__name__, self.user_id)
 
     @cached_property
-    def repository_ids(self) -> List:
+    def access(self) -> Mapping[UUID, Permission]:
         if not self.user_id:
             return None
 
-        return [
-            r[0]
-            for r in db.session.query(RepositoryAccess.repository_id).filter(
-                RepositoryAccess.user_id == self.user_id,
-            )
-        ]
+        return dict(db.session.query(
+            RepositoryAccess.repository_id,
+            RepositoryAccess.permission,
+        ).filter(
+            RepositoryAccess.user_id == self.user_id,
+        ))
 
 
 class RepositoryTenant(Tenant):
-    def __init__(self, repository_id: str):
+    def __init__(self, repository_id: str, permission: Optional[Permission]=None):
         self.repository_id = repository_id
+        self.permission = permission
 
     def __repr__(self):
-        return '<{} repository_id={}>'.format(type(self).__name__, self.repository_id)
+        return '<{} repository_id={} permisison={}>'.format(
+            type(self).__name__, self.repository_id, self.permission)
 
     @cached_property
-    def repository_ids(self) -> List:
+    def access(self) -> Mapping[UUID, Permission]:
         if not self.repository_id:
             return None
 
-        return [self.repository_id]
+        return {self.repository_id: self.permission}
 
 
 def get_tenant_from_token():

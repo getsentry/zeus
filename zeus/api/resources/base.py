@@ -19,6 +19,8 @@ class Resource(View):
 
     auth_required = True
 
+    permission_overrides = {}
+
     def is_mutation(self) -> bool:
         return request.method in ('DELETE', 'PATCH', 'POST', 'PUT')
 

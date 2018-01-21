@@ -4,7 +4,7 @@ from oauth2client.client import OAuth2Credentials
 from urllib.parse import parse_qs
 
 from zeus import factories
-from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI
+from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI, Permission
 from zeus.models import Email, Identity, RepositoryAccess, User
 
 
@@ -18,7 +18,8 @@ def test_login(client):
     assert qs['redirect_uri'] == ['http://localhost/auth/github/complete']
     assert qs['access_type'] == ['offline']
     assert qs['response_type'] == ['code']
-    assert sorted(qs['scope'][0].split(',')) == ['read:org', 'repo', 'user:email']
+    assert sorted(qs['scope'][0].split(',')) == [
+        'read:org', 'repo', 'user:email']
 
 
 def test_login_complete(client, db_session, mocker, responses):
@@ -175,6 +176,9 @@ def test_login_complete_automatic_repo_access(client, mocker, db_session, respon
         'https://api.github.com/user/orgs',
         json=[{
             'login': default_repo.owner_name,
+            'permissions': {
+                'admin': True
+            }
         }],
     )
     responses.add(
@@ -236,12 +240,12 @@ def test_login_complete_automatic_repo_access(client, mocker, db_session, respon
     }
     assert identity.scopes == ['user:email', 'read:org']
 
-    assert db_session.query(
-        RepositoryAccess.query.filter(
-            RepositoryAccess.repository_id == default_repo.id,
-            RepositoryAccess.user_id == user.id
-        ).exists()
-    ).scalar()
+    access = RepositoryAccess.query.filter(
+        RepositoryAccess.repository_id == default_repo.id,
+        RepositoryAccess.user_id == user.id
+    ).first()
+    assert access
+    assert access.permission == Permission.admin
 
 
 def test_login_complete_existing_user_no_identity(client, db_session, mocker, responses):

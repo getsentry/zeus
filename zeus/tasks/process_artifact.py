@@ -27,8 +27,8 @@ def process_artifact(artifact_id, manager=None, force=False, **kwargs):
     db.session.add(artifact)
     db.session.flush()
 
-    auth.set_current_tenant(auth.Tenant(
-        repository_ids=[artifact.repository_id]))
+    auth.set_current_tenant(auth.RepositoryTenant(
+        repository_id=artifact.repository_id))
 
     job = Job.query.get(artifact.job_id)
 

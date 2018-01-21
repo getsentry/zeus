@@ -1,6 +1,8 @@
-from flask import Response
+from flask import request, Response
 from sqlalchemy.orm import contains_eager
 
+from zeus import auth
+from zeus.constants import PERMISSION_MAP
 from zeus.models import Build, Repository, RepositoryProvider
 
 from .base import Resource
@@ -27,4 +29,7 @@ class BaseBuildResource(Resource):
         build = queryset.first()
         if not build:
             return self.not_found()
+        tenant = auth.get_current_tenant()
+        if not tenant.has_permission(build.repository_id, PERMISSION_MAP[request.method]):
+            return self.error('permission denied', 400)
         return Resource.dispatch_request(self, build, *args, **kwargs)

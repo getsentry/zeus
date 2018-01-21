@@ -1,4 +1,5 @@
 from zeus.config import db
+from zeus.constants import Permission
 from zeus.models import Hook, Repository
 
 from .base_repository import BaseRepositoryResource
@@ -9,6 +10,10 @@ hooks_schema = HookSchema(many=True, strict=True)
 
 
 class RepositoryHooksResource(BaseRepositoryResource):
+    permission_overrides = {
+        'POST': Permission.admin,
+    }
+
     def select_resurce_for_update(self):
         return False
 

@@ -1,6 +1,8 @@
-from flask import Response
+from flask import request, Response
 from sqlalchemy.orm import contains_eager
 
+from zeus import auth
+from zeus.constants import PERMISSION_MAP
 from zeus.models import ChangeRequest, Repository, RepositoryProvider
 
 from .base import Resource
@@ -24,7 +26,10 @@ class BaseChangeRequestResource(Resource):
             queryset = queryset.options(
                 contains_eager('repository'),
             )
-        build = queryset.first()
-        if not build:
+        cr = queryset.first()
+        if not cr:
             return self.not_found()
-        return Resource.dispatch_request(self, build, *args, **kwargs)
+        tenant = auth.get_current_tenant()
+        if not tenant.has_permission(cr.repository_id, PERMISSION_MAP[request.method]):
+            return self.error('permission denied', 400)
+        return Resource.dispatch_request(self, cr, *args, **kwargs)

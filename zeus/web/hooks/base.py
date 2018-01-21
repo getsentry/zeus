@@ -4,6 +4,7 @@ from sqlalchemy.orm import joinedload
 
 from zeus import auth
 from zeus.config import nplusone
+from zeus.constants import Permission
 from zeus.exceptions import ApiError
 from zeus.models import Hook
 
@@ -31,8 +32,10 @@ class BaseHook(View):
                 'invalid webhook method id=%s, method=%s', hook_id, request.method)
             return self.respond({'message': 'resource not found'}, 405)
 
-        auth.set_current_tenant(auth.Tenant(
-            repository_ids=[hook.repository_id]))
+        auth.set_current_tenant(auth.RepositoryTenant(
+            repository_id=hook.repository_id,
+            permission=Permission.admin,
+        ))
 
         try:
             resp = method(hook, *args, **kwargs)
