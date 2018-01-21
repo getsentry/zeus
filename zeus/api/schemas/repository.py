@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, pre_dump
+from marshmallow import Schema, fields, post_load, pre_dump
 from sqlalchemy.orm import joinedload, subqueryload_all
 from typing import List
 
@@ -11,17 +11,19 @@ from .fields import EnumField
 
 class RepositorySchema(Schema):
     id = fields.UUID(dump_only=True)
-    owner_name = fields.Str()
-    name = fields.Str()
-    url = fields.Str()
-    provider = fields.Str()
-    backend = EnumField(RepositoryBackend)
+    owner_name = fields.Str(dump_only=True)
+    name = fields.Str(dump_only=True)
+    url = fields.Str(dump_only=True)
+    provider = fields.Str(dump_only=True)
+    backend = EnumField(RepositoryBackend, dump_only=True)
     created_at = fields.DateTime(
         attribute='date_created',
         dump_only=True,
     )
-    full_name = fields.Method('get_full_name')
-    latest_build = fields.Nested('BuildSchema', exclude=('repository',))
+    full_name = fields.Method('get_full_name', dump_only=True)
+    latest_build = fields.Nested(
+        'BuildSchema', exclude=('repository',), dump_only=True)
+    public = fields.Bool()
 
     @pre_dump(pass_many=True)
     def process_latest_build(self, data, many):
@@ -33,6 +35,17 @@ class RepositorySchema(Schema):
             latest_builds = get_latest_builds([data], Result.passed)
             data.latest_build = latest_builds.get(data.id)
         return data
+
+    @post_load
+    def make_instance(self, data):
+        if self.context.get('repository'):
+            obj = self.context['repository']
+            for key, value in data.items():
+                if getattr(obj, key) != value:
+                    setattr(obj, key, value)
+        else:
+            obj = Repository(**data)
+        return obj
 
     def get_full_name(self, obj):
         return '{}/{}/{}'.format(obj.provider, obj.owner_name, obj.name)
