@@ -29,7 +29,7 @@ def ssh_connect(args, repository):
         click.echo('Unable to find repository', err=True)
         sys.exit(1)
 
-    auth.set_current_tenant(auth.RepositoryTenant(repository.id))
+    auth.set_current_tenant(auth.RepositoryTenant(repo.id))
 
     options = dict(
         db.session.query(ItemOption.name, ItemOption.value).filter(
