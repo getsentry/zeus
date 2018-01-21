@@ -37,8 +37,9 @@ def aggregate_build_stats_for_job(job_id: UUID):
         if not job:
             raise ValueError
 
-        auth.set_current_tenant(auth.Tenant(
-            repository_ids=[job.repository_id]))
+        auth.set_current_tenant(auth.RepositoryTenant(
+            repository_id=job.repository_id,
+        ))
 
         # we need to handle the race between when the mutations were made to <Job> and
         # when the only remaining artifact may have finished processing
@@ -280,8 +281,8 @@ def aggregate_build_stats(build_id: UUID):
             raise ValueError(
                 'Unable to find build with id = {}'.format(build_id))
 
-        auth.set_current_tenant(auth.Tenant(
-            repository_ids=[build.repository_id]))
+        auth.set_current_tenant(auth.RepositoryTenant(
+            repository_id=build.repository_id))
 
         record_coverage_stats(build.id)
 

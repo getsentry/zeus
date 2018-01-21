@@ -4,6 +4,7 @@ from hashlib import md5
 from typing import List
 
 from zeus.config import redis
+from zeus.constants import Permission
 from zeus.exceptions import ApiError, ApiUnauthorized, IdentityNeedsUpgrade
 from zeus.models import Identity, Repository, User
 from zeus.utils.github import GitHubClient
@@ -38,7 +39,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
         github, identity = get_github_client(user)
         response = github.get('/user/orgs')
         return [{
-            'name': r['login'],
+            'name': r['login']
         } for r in response]
 
     def get_repos_for_owner(self, user: User, owner_name: str,
@@ -94,12 +95,22 @@ class GitHubRepositoryProvider(RepositoryProvider):
             }
         )
 
+    def get_permission(self, user: User, repo: Repository) -> bool:
+        try:
+            repo = self.get_repo(user, *repo.data['full_name'].split('/', 1))
+        except ApiError as exc:
+            if exc.code == 404:
+                return None
+            raise
+        return Permission.admin if repo['admin'] else Permission.read
+
     def has_access(self, user: User, repo: Repository) -> bool:
         try:
             self.get_repo(user, *repo.data['full_name'].split('/', 1))
         except ApiError as exc:
             if exc.code == 404:
                 return False
+            raise
         return True
 
 

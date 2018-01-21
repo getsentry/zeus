@@ -3,12 +3,14 @@ from flask import current_app
 
 from zeus import auth
 from zeus.config import celery, db
+from zeus.constants import Permission
 from zeus.models import Repository, RepositoryStatus
 
 
 @celery.task(max_retries=None, autoretry_for=(Exception,))
 def import_repo(repo_id, parent=None):
-    auth.set_current_tenant(auth.Tenant(repository_ids=[repo_id]))
+    auth.set_current_tenant(auth.Tenant(
+        access={repo_id: Permission.admin}))
 
     repo = Repository.query.get(repo_id)
     if not repo:
@@ -17,7 +19,8 @@ def import_repo(repo_id, parent=None):
 
     vcs = repo.get_vcs()
     if vcs is None:
-        current_app.logger.warning('Repository %s has no VCS backend set', repo.id)
+        current_app.logger.warning(
+            'Repository %s has no VCS backend set', repo.id)
         return
 
     if repo.status == RepositoryStatus.inactive:

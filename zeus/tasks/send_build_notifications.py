@@ -14,8 +14,8 @@ def send_build_notifications(build_id: UUID):
     if not build:
         raise ValueError('Unable to find build with id = {}'.format(build_id))
 
-    auth.set_current_tenant(auth.Tenant(
-        repository_ids=[build.repository_id]))
+    auth.set_current_tenant(auth.RepositoryTenant(
+        repository_id=build.repository_id))
 
     # double check that the build is still finished and only send when
     # its failing

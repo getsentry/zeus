@@ -1,5 +1,7 @@
-from flask import Response
+from flask import request, Response
 
+from zeus import auth
+from zeus.constants import PERMISSION_MAP
 from zeus.models import Repository, RepositoryProvider, Revision
 
 from .base import Resource
@@ -19,4 +21,7 @@ class BaseRevisionResource(Resource):
         revision = queryset.first()
         if not revision:
             return self.not_found()
+        tenant = auth.get_current_tenant()
+        if not tenant.has_permission(revision.repository_id, PERMISSION_MAP[request.method]):
+            return self.error('permission denied', 400)
         return Resource.dispatch_request(self, revision, *args, **kwargs)
