@@ -11,6 +11,7 @@ import BuildOverview from './pages/BuildOverview';
 import BuildStyleViolationList from './pages/BuildStyleViolationList';
 import BuildTestList from './pages/BuildTestList';
 import Dashboard from './pages/Dashboard';
+import DashboardOrWelcome from './pages/DashboardOrWelcome';
 import OwnerDetails from './pages/OwnerDetails';
 import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
@@ -32,6 +33,7 @@ import RevisionDiff from './pages/RevisionDiff';
 import RevisionOverview from './pages/RevisionOverview';
 import RevisionTestList from './pages/RevisionTestList';
 import UserBuildList from './pages/UserBuildList';
+import Welcome from './pages/Welcome';
 
 import Login from './components/Login';
 import NotFoundError from './components/NotFoundError';
@@ -61,7 +63,9 @@ const AsyncTokenSettings = Loadable({
 
 export default (
   <Route path="/" component={App}>
-    <IndexRoute component={requireAuth(Dashboard)} />
+    <IndexRoute component={DashboardOrWelcome} />
+    <Route path="/welcome" component={Welcome} />
+    <Route path="/dashboard" component={requireAuth(Dashboard)} />
     <Route path="/settings" component={requireAuth(AsyncSettings)}>
       <IndexRedirect to="/settings/account" />
       <Route path="account" component={AsyncAccountSettings} />
