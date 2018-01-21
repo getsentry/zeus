@@ -17,6 +17,10 @@ code {
   font-weight: 400;
 }
 
+img {
+  max-width: 100%;
+}
+
 a {
   text-decoration: none;
   color: #7b6be6;
