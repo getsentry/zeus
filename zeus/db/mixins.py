@@ -69,7 +69,6 @@ class RepositoryBoundQuery(db.Query):
                         repo_table.c.public == True,  # NOQA
                     ).subquery()
                 ))
-        print(str(self))
         return self
 
     def unrestricted_unsafe(self):
