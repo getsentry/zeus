@@ -15,6 +15,8 @@ from .base import cli
 
 build_schema = BuildSchema(strict=True)
 
+repo_names = ('sentry', 'zeus')
+
 
 def find_files_in_repo(repo):
     vcs = repo.get_vcs()
@@ -29,6 +31,8 @@ def mock_single_repository(user_ids=()):
     repo = factories.RepositoryFactory.build(
         status=models.RepositoryStatus.active,
         github=True,
+        owner_name='getsentry',
+        name=choice(repo_names),
     )
     try:
         with db.session.begin_nested():

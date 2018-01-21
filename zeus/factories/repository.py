@@ -6,16 +6,11 @@ from zeus import models
 from .base import ModelFactory
 from .types import GUIDFactory
 
-orgs = ('getsentry',)
-
-names = ('sentry', 'zeus', 'raven-python',
-         'raven-php', 'raven-ruby', 'raven-js')
-
 
 class RepositoryFactory(ModelFactory):
     id = GUIDFactory()
-    owner_name = factory.Iterator(orgs)
-    name = factory.Iterator(names)
+    owner_name = factory.Faker('word')
+    name = factory.Faker('word')
     url = factory.LazyAttribute(
         lambda o: 'git@github.com:%s/%s.git' % (o.owner_name, o.name, ))
     backend = models.RepositoryBackend.git

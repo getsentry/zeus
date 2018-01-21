@@ -17,7 +17,7 @@ def test_repo_list_without_access(client, default_login, default_repo):
 
 
 def test_repo_list_excludes_public(client, default_login):
-    factories.RepositoryFactory(public=True)
+    factories.RepositoryFactory(name='public', public=True)
     resp = client.get('/api/repos')
     assert resp.status_code == 200
     data = resp.json()

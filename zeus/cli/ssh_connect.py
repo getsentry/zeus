@@ -7,7 +7,6 @@ from tempfile import NamedTemporaryFile
 
 from zeus import auth
 from zeus.config import db
-from zeus.constants import Permission
 from zeus.models import ItemOption, Repository, RepositoryProvider
 
 from .base import cli
@@ -30,8 +29,7 @@ def ssh_connect(args, repository):
         click.echo('Unable to find repository', err=True)
         sys.exit(1)
 
-    auth.set_current_tenant(auth.Tenant(
-        access={repository.id: Permission.admin}))
+    auth.set_current_tenant(auth.RepositoryTenant(repository.id))
 
     options = dict(
         db.session.query(ItemOption.name, ItemOption.value).filter(
