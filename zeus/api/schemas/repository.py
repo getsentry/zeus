@@ -2,7 +2,6 @@ from marshmallow import Schema, fields, post_load, pre_dump
 from sqlalchemy.orm import joinedload, subqueryload_all
 from typing import List
 
-from zeus import auth
 from zeus.config import db
 from zeus.constants import Permission, Result, Status
 from zeus.models import Build, Repository, RepositoryAccess, RepositoryBackend, Source
@@ -29,7 +28,7 @@ class RepositorySchema(Schema):
 
     @pre_dump(pass_many=True)
     def process_permission(self, data, many):
-        user = auth.get_current_user()
+        user = self.context.get('user')
         if not user:
             return data
 
