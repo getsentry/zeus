@@ -1,6 +1,5 @@
 import React from 'react';
 import {Link} from 'react-router';
-import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
@@ -9,9 +8,7 @@ import {ResultGrid, Column, Header, Row} from '../components/ResultGrid';
 import SectionHeading from '../components/SectionHeading';
 import TimeSince from '../components/TimeSince';
 
-import {addIndicator, removeIndicator} from '../actions/indicators';
-
-class RepositoryHooks extends AsyncPage {
+export default class RepositoryHooks extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
     repo: PropTypes.object.isRequired
@@ -38,8 +35,8 @@ class RepositoryHooks extends AsyncPage {
           </div>
           <SectionHeading>Hooks</SectionHeading>
         </div>
-        <ResultGrid>
-          {hookList.length ? (
+        {hookList.length ? (
+          <ResultGrid>
             <div>
               <Header>
                 <Column>ID</Column>
@@ -62,29 +59,22 @@ class RepositoryHooks extends AsyncPage {
                 );
               })}
             </div>
-          ) : (
-            <Row>
-              <Column>
-                <p>
-                  Hooks lets you easily upsert build information into Zeus. They&apos;re a
-                  set of credentials that are bound to this repository.
-                </p>
-                <p>
-                  To get started with Zeus, you&apos;ll likely want to{' '}
-                  <Link to={`/${repo.full_name}/settings/hooks/create`}>
-                    create a new hook
-                  </Link>.
-                </p>
-              </Column>
-            </Row>
-          )}
-        </ResultGrid>
+          </ResultGrid>
+        ) : (
+          <div>
+            <p>
+              Hooks lets you easily upsert build information into Zeus. They&apos;re a set
+              of credentials that are bound to this repository.
+            </p>
+            <p>
+              To get started with Zeus, you&apos;ll likely want to{' '}
+              <Link to={`/${repo.full_name}/settings/hooks/create`}>
+                create a new hook
+              </Link>.
+            </p>
+          </div>
+        )}
       </div>
     );
   }
 }
-
-export default connect(null, {
-  addIndicator,
-  removeIndicator
-})(RepositoryHooks);
