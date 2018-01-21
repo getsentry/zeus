@@ -1,8 +1,8 @@
 import enum
 import os.path
-import sqlalchemy
 
 from flask import current_app
+from sqlalchemy import or_
 
 from zeus.config import db
 from zeus.db.mixins import StandardAttributes
@@ -59,12 +59,17 @@ class RepositoryAccessBoundQuery(db.Query):
 
         mzero = self._mapper_zero()
         if mzero is not None:
+            cls = mzero.class_
             tenant = get_current_tenant()
             if tenant.repository_ids:
-                return self.enable_assertions(False
-                                              ).filter(mzero.class_.id.in_(tenant.repository_ids))
+                return self.enable_assertions(False).filter(or_(
+                    cls.id.in_(tenant.repository_ids),
+                    cls.public == True  # NOQA
+                ))
             else:
-                return self.enable_assertions(False).filter(sqlalchemy.sql.false())
+                return self.enable_assertions(False).filter(
+                    cls.public == True,  # NOQA
+                )
         return self
 
     def unrestricted_unsafe(self):
@@ -90,6 +95,7 @@ class Repository(StandardAttributes, db.Model):
     provider = db.Column(StrEnum(RepositoryProvider), nullable=False)
     external_id = db.Column(db.String(64))
     data = db.Column(JSONEncodedDict, nullable=True)
+    public = db.Column(db.Boolean, default=False, nullable=False)
     last_update = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     last_update_attempt = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
 
