@@ -1,25 +1,61 @@
 import React from 'react';
-import {Link} from 'react-router';
-import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 
 import AsyncPage from '../components/AsyncPage';
+import Label from '../components/Label';
+import Section from '../components/Section';
+import SectionHeading from '../components/SectionHeading';
 
-export default class RepositorySettings extends AsyncPage {
-  static contextTypes = {
-    ...AsyncPage.contextTypes,
-    repo: PropTypes.object.isRequired
+import {addIndicator, removeIndicator} from '../actions/indicators';
+
+class RepositorySettings extends AsyncPage {
+  getEndpoint() {
+    let {provider, ownerName, repoName} = this.props.params;
+    return `/repos/${provider}/${ownerName}/${repoName}`;
+  }
+
+  getEndpoints() {
+    return [['repo', this.getEndpoint()]];
+  }
+
+  togglePublic = e => {
+    let {repo} = this.state;
+    let indicator = this.props.addIndicator('Saving changes..', 'loading');
+    this.api
+      .put(this.getEndpoint(), {
+        data: {
+          public: !repo.public
+        }
+      })
+      .then(result => {
+        this.props.removeIndicator(indicator);
+        this.props.addIndicator('Changes saved!', 'success', 5000);
+        this.setState({repo: result});
+      })
+      .catch(error => {
+        this.props.addIndicator('An error occurred.', 'error', 5000);
+        this.props.removeIndicator(indicator);
+        throw error;
+      });
   };
 
   renderBody() {
-    let {repo} = this.context;
+    let {repo} = this.state;
     return (
       <div>
-        <ul>
-          <li>
-            <Link to={`/${repo.full_name}/settings/hooks`}>Hooks</Link>
-          </li>
-        </ul>
+        <SectionHeading>Settings</SectionHeading>
+        <Section>
+          <Label>
+            <input type="checkbox" checked={repo.public} onChange={this.togglePublic} />{' '}
+            {'Allow any authenticated user read-access to this repository in Zeus'}
+          </Label>
+        </Section>
       </div>
     );
   }
 }
+
+export default connect(null, {
+  addIndicator,
+  removeIndicator
+})(RepositorySettings);
