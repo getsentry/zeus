@@ -1,6 +1,5 @@
-import sqlalchemy
-
 from secrets import token_hex
+from sqlalchemy import or_
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.sql import func
 
@@ -51,12 +50,26 @@ class RepositoryBoundQuery(db.Query):
         mzero = self._mapper_zero()
         if mzero is not None:
             tenant = get_current_tenant()
+            cls = mzero.class_
+            repo_table = db.metadata.tables['repository']
             if tenant.repository_ids:
                 return self.enable_assertions(False).filter(
-                    mzero.class_.repository_id.in_(tenant.repository_ids)
+                    or_(
+                        cls.repository_id.in_(tenant.repository_ids),
+                        cls.repository_id.in_(
+                            db.Query(repo_table.c.id).filter(
+                                repo_table.c.public == True,  # NOQA
+                            ).subquery()
+                        )
+                    )
                 )
             else:
-                return self.enable_assertions(False).filter(sqlalchemy.sql.false())
+                return self.enable_assertions(False).filter(cls.repository_id.in_(
+                    db.Query(repo_table.c.id).filter(
+                        repo_table.c.public == True,  # NOQA
+                    ).subquery()
+                ))
+        print(str(self))
         return self
 
     def unrestricted_unsafe(self):

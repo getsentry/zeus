@@ -8,7 +8,8 @@ from .types import GUIDFactory
 
 orgs = ('getsentry',)
 
-names = ('sentry', 'zeus', 'raven-python', 'raven-php', 'raven-ruby', 'raven-js')
+names = ('sentry', 'zeus', 'raven-python',
+         'raven-php', 'raven-ruby', 'raven-js')
 
 
 class RepositoryFactory(ModelFactory):
@@ -22,6 +23,7 @@ class RepositoryFactory(ModelFactory):
     provider = models.RepositoryProvider.github
     external_id = factory.LazyAttribute(
         lambda o: '{}/{}'.format(o.owner_name, o.name))
+    public = False
 
     class Meta:
         model = models.Repository
