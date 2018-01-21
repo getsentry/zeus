@@ -11,6 +11,9 @@ hooks_schema = HookSchema(many=True, strict=True)
 
 class RepositoryHooksResource(BaseRepositoryResource):
     permission_overrides = {
+        'DELETE': Permission.admin,
+        'GET': Permission.admin,
+        'PUT': Permission.admin,
         'POST': Permission.admin,
     }
 

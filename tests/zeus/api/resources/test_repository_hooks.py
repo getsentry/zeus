@@ -13,6 +13,13 @@ def test_repo_hook_list(client, default_login, default_hook, default_repo, defau
     assert data[0]['public_uri']
 
 
+def test_cannot_list_hooks_without_admin(
+        client, default_login, default_repo, default_repo_write_access):
+    resp = client.get(
+        '/api/repos/{}/hooks'.format(default_repo.get_full_name()))
+    assert resp.status_code == 400
+
+
 def test_repo_hook_list_without_access(client, default_login, default_build, default_repo):
     resp = client.get(
         '/api/repos/{}/hooks'.format(default_repo.get_full_name()))
@@ -33,6 +40,17 @@ def test_repo_hook_create(client, default_login, default_source, default_repo, d
     assert hook.repository_id == default_repo.id
     assert hook.provider == 'travis'
     assert hook.token
+
+
+def test_cannot_create_hooks_without_admin(
+        client, default_login, default_repo, default_repo_write_access):
+    resp = client.post(
+        '/api/repos/{}/hooks'.format(default_repo.get_full_name()),
+        json={
+            'provider': 'travis',
+        }
+    )
+    assert resp.status_code == 400
 
 
 def test_repo_hook_create_schema(client, default_login, default_source,

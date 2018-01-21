@@ -1,35 +1,23 @@
 from zeus.config import db
 from zeus.models import Hook
 
-from .base import Resource
+from .base_hook import BaseHookResource
 from ..schemas import HookSchema
 
 hook_schema = HookSchema(strict=True)
 
-UNSET = object()
 
-
-class HookDetailsResource(Resource):
-    def get(self, hook_id: str):
+class HookDetailsResource(BaseHookResource):
+    def get(self, hook: Hook):
         """
         Return a hook.
         """
-        hook = Hook.query.filter(
-            Hook.id == hook_id,
-        ).first()
-        if not hook:
-            return self.not_found()
         return self.respond_with_schema(hook_schema, hook)
 
-    def put(self, hook_id: str):
+    def put(self, hook: Hook):
         """
         Update a hook.
         """
-        hook = Hook.query.filter(
-            Hook.id == hook_id,
-        ).first()
-        if not hook:
-            return self.not_found()
         hook_schema = HookSchema(strict=True, context={'hook': hook})
         result = self.schema_from_request(
             hook_schema, partial=True)
@@ -40,15 +28,10 @@ class HookDetailsResource(Resource):
             db.session.commit()
         return self.respond_with_schema(hook_schema, hook)
 
-    def delete(self, hook_id: str):
+    def delete(self, hook: Hook):
         """
         Delete a hook.
         """
-        hook = Hook.query.filter(
-            Hook.id == hook_id,
-        ).first()
-        if not hook:
-            return self.not_found()
         db.session.delete(hook)
         db.session.commit()
         return self.respond(status=204)
