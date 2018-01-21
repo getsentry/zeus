@@ -80,6 +80,19 @@ def default_repo_access(db_session, default_repo, default_user):
 
 
 @pytest.fixture(scope='function')
+def default_repo_write_access(db_session, default_repo, default_user):
+    access = models.RepositoryAccess(
+        user_id=default_user.id,
+        repository_id=default_repo.id,
+        permission=Permission.write,
+    )
+    db_session.add(access)
+    db_session.commit()
+
+    return access
+
+
+@pytest.fixture(scope='function')
 def default_author(default_repo, default_user):
     return factories.AuthorFactory(
         repository=default_repo,
