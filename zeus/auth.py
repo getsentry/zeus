@@ -29,10 +29,13 @@ class Tenant(object):
     def repository_ids(self):
         return list(self.access.keys())
 
+    def get_permission(self, repository_id: UUID):
+        return self.access.get(repository_id)
+
     def has_permission(self, repository_id: UUID, permission: Permission=None):
         if permission is None:
             return repository_id in self.access
-        access = self.access.get(repository_id)
+        access = self.get_permission(repository_id)
         if not access:
             return False
         return permission in access

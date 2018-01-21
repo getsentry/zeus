@@ -2,9 +2,10 @@ from marshmallow import Schema, fields, post_load, pre_dump
 from sqlalchemy.orm import joinedload, subqueryload_all
 from typing import List
 
+from zeus import auth
 from zeus.config import db
-from zeus.constants import Result, Status
-from zeus.models import Build, Repository, RepositoryBackend, Source
+from zeus.constants import Permission, Result, Status
+from zeus.models import Build, Repository, RepositoryAccess, RepositoryBackend, Source
 
 from .fields import EnumField
 
@@ -24,6 +25,29 @@ class RepositorySchema(Schema):
     latest_build = fields.Nested(
         'BuildSchema', exclude=('repository',), dump_only=True)
     public = fields.Bool()
+    permission = EnumField(Permission, allow_none=True, dump_only=True)
+
+    @pre_dump(pass_many=True)
+    def process_permission(self, data, many):
+        user = auth.get_current_user()
+        if not user:
+            return data
+
+        if not many:
+            items = [data]
+        else:
+            items = data
+
+        access = dict(db.session.query(
+            RepositoryAccess.repository_id,
+            RepositoryAccess.permission,
+        ).filter(
+            RepositoryAccess.user_id == user.id,
+            RepositoryAccess.repository_id.in_([i.id for i in items])
+        ))
+        for item in items:
+            item.permission = access.get(item.id)
+        return data
 
     @pre_dump(pass_many=True)
     def process_latest_build(self, data, many):
