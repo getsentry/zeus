@@ -54,7 +54,7 @@ class GitHubRepositoriesResource(Resource):
 
         return [
             {
-                'name': r['name'],
+                'name': r['config']['full_name'],
                 'admin': r['admin'],
                 'active': str(r['id']) in active_repo_ids,
             } for r in repo_list
