@@ -1,7 +1,7 @@
-from sqlalchemy.exc import IntegrityError
 from uuid import UUID
 
 from zeus.config import celery, db
+from zeus.db.utils import create_or_update
 from zeus.models import Repository, RepositoryAccess, RepositoryProvider, User
 from zeus.vcs.providers.github import GitHubRepositoryProvider
 
@@ -23,46 +23,40 @@ def remove_access_to_owner_repos(user_id: UUID, owner_name: str, *filters):
 
 
 def sync_repos_for_owner(provider: GitHubRepositoryProvider, user: User, owner_name: str):
-    repos = provider.get_repos_for_owner(user, owner_name)
+    repo_permissions = {
+        r['name']: r['permission']
+        for r in provider.get_repos_for_owner(user, owner_name)
+    }
 
-    if not repos:
+    if not repo_permissions:
         remove_access_to_owner_repos(user.id, owner_name)
         return
 
     # first clear any access to repos which are no longer part of the organization
     remove_access_to_owner_repos(
-        user.id, owner_name, ~Repository.name.in_([r['name'] for r in repos]))
+        user.id, owner_name, ~Repository.name.in_(repo_permissions.keys()))
 
     # now identify any repos which might need access granted or updated
     matches = list(Repository.query.unrestricted_unsafe().filter(
         Repository.provider == RepositoryProvider.github,
         Repository.owner_name == owner_name,
-        Repository.name.in_([r['name'] for r in repos])
+        Repository.name.in_(repo_permissions.keys())
     ))
 
     for repo in matches:
-        permission = provider.get_permission(user, repo)
+        permission = repo_permissions.get(repo.name)
         if permission:
-            try:
-                with db.session.begin_nested():
-                    db.session.add(RepositoryAccess(
-                        repository_id=repo.id,
-                        user_id=user.id,
-                        permission=permission,
-                    ))
-                    db.session.flush()
-            except IntegrityError:
-                RepositoryAccess.query.filter(
-                    repository_id=repo.id,
-                    user_id=user.id,
-                ).update({
-                    'permission': permission,
-                })
+            create_or_update(RepositoryAccess, where={
+                'repository_id': repo.id,
+                'user_id': user.id,
+            }, values={
+                'permission': permission,
+            })
         else:
             # revoke permissions -- this path shouldnt really get hit
             RepositoryAccess.query.filter(
-                repository_id=repo.id,
-                user_id=user.id,
+                RepositoryAccess.repository_id == repo.id,
+                RepositoryAccess.user_id == user.id,
             ).delete()
 
 
