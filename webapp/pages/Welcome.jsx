@@ -19,6 +19,7 @@ after_failure:
 notifications:
   webhooks:
     urls:
+      # NOTE: This URL will be generated for your repository, so make sure you use the correct one!
       - https://zeus.ci/hooks/9c238278-feee-11e7-8d56-784f4374a3b4/public/provider/travis/webhook
     on_success: always
     on_failure: always
@@ -53,14 +54,30 @@ export default class Welcome extends Component {
             <Section>
               <h3>Setup is Easy</h3>
               <ol>
-                <li>You&apos;ll login to Zeus using your GitHub credentials</li>
+                <li>
+                  You&apos;ll login to Zeus using your GitHub credentials<br />
+                  <small>
+                    We ask for a lot of permissions, not because we&apos;re untrustworty,
+                    but because the GitHub API makes it hard to do otherwise
+                  </small>
+                </li>
                 <li>
                   Add a repository in Zeus via{' '}
                   <strong>Settings &rsaquo; Repositories</strong>
+                  <br />
+                  <small>
+                    We&apos;ll keep a copy of the repository securely on servers using an
+                    automatically provisioned SSH key
+                  </small>
                 </li>
                 <li>
                   Within your repository, create a new Travis-bound hook via{' '}
                   <strong>Settings &rsaquo; Hooks</strong>
+                  <br />
+                  <small>
+                    If you&apos;re not using Travis you can still use Zeus, it&apos;ll
+                    just be a bit more work
+                  </small>
                 </li>
                 <li>
                   Configure your build via <code>.travis.yml</code> to push results to
