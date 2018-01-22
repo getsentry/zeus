@@ -84,7 +84,9 @@ def test_list_github_repos(client, default_login, default_user, default_identity
     assert len(data) == 1
     assert data[0]['name'] == 'getsentry/zeus'
     assert not data[0]['active']
-    assert data[0]['permission'] == 'admin'
+    assert data[0]['permissions']['admin']
+    assert data[0]['permissions']['read']
+    assert data[0]['permissions']['write']
 
 
 def test_list_github_active_repo_within_scope(

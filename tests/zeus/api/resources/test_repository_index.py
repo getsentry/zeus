@@ -7,7 +7,9 @@ def test_repo_list(client, default_login, default_repo, default_repo_access):
     data = resp.json()
     assert len(data) == 1
     assert data[0]['id'] == str(default_repo.id)
-    assert data[0]['permission'] == 'admin'
+    assert data[0]['permissions']['admin']
+    assert data[0]['permissions']['read']
+    assert data[0]['permissions']['write']
 
 
 def test_repo_list_without_access(client, default_login, default_repo):
