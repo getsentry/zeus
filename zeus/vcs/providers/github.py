@@ -171,4 +171,7 @@ class GitHubCache(object):
             )
         else:
             result = json.loads(result)
+            for i in result:
+                # we need to coerce permission back into our Permission enum
+                i['permission'] = Permission(i['permission'])
         return sorted(result, key=lambda x: x['full_name'])
