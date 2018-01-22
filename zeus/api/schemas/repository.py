@@ -9,6 +9,12 @@ from zeus.models import Build, Repository, RepositoryAccess, RepositoryBackend, 
 from .fields import EnumField
 
 
+class PermissionSchema(Schema):
+    read = fields.Bool()
+    write = fields.Bool()
+    admin = fields.Bool()
+
+
 class RepositorySchema(Schema):
     id = fields.UUID(dump_only=True)
     owner_name = fields.Str(dump_only=True)
@@ -24,7 +30,8 @@ class RepositorySchema(Schema):
     latest_build = fields.Nested(
         'BuildSchema', exclude=('repository',), dump_only=True)
     public = fields.Bool()
-    permission = EnumField(Permission, allow_none=True, dump_only=True)
+    permissions = fields.Nested(
+        PermissionSchema, allow_none=True, dump_only=True)
 
     @pre_dump(pass_many=True)
     def process_permission(self, data, many):
@@ -45,7 +52,12 @@ class RepositorySchema(Schema):
             RepositoryAccess.repository_id.in_([i.id for i in items])
         ))
         for item in items:
-            item.permission = access.get(item.id)
+            permission = access.get(item.id) or Permission.none
+            item.permissions = {
+                'read': Permission.read in permission,
+                'write': Permission.write in permission,
+                'admin': Permission.admin in permission,
+            }
         return data
 
     @pre_dump(pass_many=True)

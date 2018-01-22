@@ -36,7 +36,7 @@ class GitHubRepoItem extends Component {
       );
     }
 
-    let props = repo.admin || {
+    let props = repo.permissions.admin || {
       disabled: true,
       onClick: null,
       title: 'You need administrator privileges to activate this repository'

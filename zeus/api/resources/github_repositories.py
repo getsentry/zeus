@@ -56,7 +56,11 @@ class GitHubRepositoriesResource(Resource):
         return [
             {
                 'name': r['config']['full_name'],
-                'permission': r['permission'].name,
+                'permissions': {
+                    'read': Permission.read in r['permission'],
+                    'write': Permission.write in r['permission'],
+                    'admin': Permission.admin in r['permission'],
+                },
                 'active': str(r['id']) in active_repo_ids,
             } for r in repo_list
         ]

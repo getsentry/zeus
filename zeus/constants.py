@@ -39,6 +39,7 @@ class Severity(IntEnum):
 
 
 class Permission(IntFlag):
+    none = 0
     read = 1
     write = 3
     admin = 7
