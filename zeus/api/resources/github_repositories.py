@@ -169,6 +169,7 @@ class GitHubRepositoriesResource(Resource):
                 db.session.add(RepositoryAccess(
                     repository_id=repo.id,
                     user_id=user.id,
+                    permission=repo_data['permission'],
                 ))
                 db.session.flush()
         except IntegrityError:

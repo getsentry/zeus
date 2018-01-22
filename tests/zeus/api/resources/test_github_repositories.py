@@ -1,5 +1,6 @@
 import responses
 
+from zeus.constants import Permission
 from zeus.models import Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider
 
 REPO_DETAILS_RESPONSE = """{
@@ -66,6 +67,7 @@ def test_new_repository_github(client, mocker, default_login, default_user, defa
         RepositoryAccess.repository_id == repo.id))
     assert len(access) == 1
     assert access[0].user_id == default_user.id
+    assert access[0].permission == Permission.admin
 
     mock_import_repo.asset_called_once_with(repo_id=repo.id)
 
