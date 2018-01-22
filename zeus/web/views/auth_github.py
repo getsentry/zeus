@@ -182,7 +182,12 @@ def grant_access_to_existing_repos(user):
                         ))
                         db.session.flush()
                 except IntegrityError:
-                    pass
+                    RepositoryAccess.query.filter(
+                        repository_id=repo.id,
+                        user_id=user.id,
+                    ).update({
+                        'permission': permission,
+                    })
             else:
                 # revoke permissions
                 RepositoryAccess.query.filter(
