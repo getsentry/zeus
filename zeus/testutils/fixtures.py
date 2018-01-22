@@ -222,6 +222,12 @@ def sample_cobertura(fixture_path):
 
 
 @pytest.fixture(scope='session')
+def sample_clover(fixture_path):
+    with open(os.path.join(fixture_path, 'sample-clover.xml')) as fp:
+        return fp.read()
+
+
+@pytest.fixture(scope='session')
 def sample_jacoco(fixture_path):
     with open(os.path.join(fixture_path, 'sample-jacoco.xml')) as fp:
         return fp.read()

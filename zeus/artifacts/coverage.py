@@ -11,8 +11,12 @@ from .base import ArtifactHandler
 
 
 class CoverageHandler(ArtifactHandler):
-    supported_types = frozenset(
-        ['application/x-coverage+xml', 'application/x-cobertura+xml', 'text/xml+coverage'])
+    supported_types = frozenset([
+        'application/x-clover+xml'
+        'application/x-coverage+xml',
+        'application/x-cobertura+xml',
+        'text/xml+coverage',
+    ])
 
     def process(self, fp):
         results = self.get_coverage(fp)
@@ -137,11 +141,58 @@ class CoverageHandler(ArtifactHandler):
         """
         root = etree.fromstring(fp.read())
 
+        if root.tag == 'coverage' and root.get('clover'):
+            return self.get_clover_coverage(root)
         if root.tag == 'coverage':
             return self.get_cobertura_coverage(root)
         elif root.tag == 'report':
             return self.get_jacoco_coverage(root)
         raise NotImplementedError('Unsupported coverage format')
+
+    def get_clover_coverage(self, root):
+        job = self.job
+
+        results = []
+        for node in root.iter('file'):
+            filename = node.get('name')
+            if not filename:
+                self.logger.warn(
+                    'Unable to determine filename for node: %s', node)
+                continue
+
+            file_coverage = []
+            lineno = 0
+            for line in node.iterchildren('line'):
+                type_ = line.get('type')
+                if type_ == 'cond':
+                    hits = int(line.get('falsecount')) + \
+                        int(line.get('truecount'))
+                elif type_ in ('method', 'stmt'):
+                    hits = int(line.get('count'))
+                else:
+                    raise NotImplementedError(
+                        'Unknown line type: {}'.format(type_))
+                number = int(line.get('num'))
+                if lineno < number - 1:
+                    for lineno in range(lineno, number - 1):
+                        file_coverage.append('N')
+                if hits > 0:
+                    file_coverage.append('C')
+                else:
+                    file_coverage.append('U')
+                lineno = number
+
+            result = FileCoverage(
+                build_id=job.build_id,
+                repository_id=job.repository_id,
+                filename=filename,
+                data=''.join(file_coverage),
+            )
+            self.add_file_stats(result)
+
+            results.append(result)
+
+        return results
 
     def get_cobertura_coverage(self, root):
         job = self.job

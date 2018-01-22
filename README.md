@@ -46,6 +46,7 @@ $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" coverage.xml
 
 #### Code Coverage
 
+- application/x-clover+xml
 - application/x-cobertura+xml
 
 #### xUnit
