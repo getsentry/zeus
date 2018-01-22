@@ -18,12 +18,10 @@ const generateTravisConfig = publicHookBase => {
     on_start: always
     on_cancel: always
     on_error: always
-after_success:
+after_script:
   - npm install -g @zeus-ci/cli
   - zeus upload -t "mime/type" path/to/artifact
-after_failure:
-  - npm install -g @zeus-ci/cli
-  - zeus upload -t "mime/type" path/to/artifact`;
+`;
 };
 
 export default class RepositoryHookDetails extends AsyncPage {
