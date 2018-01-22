@@ -184,22 +184,6 @@ def test_login_complete_automatic_repo_access(client, mocker, db_session, respon
 
     responses.add(
         responses.GET,
-        'https://api.github.com/repos/{}'.format(
-            default_repo.data['full_name'],
-        ),
-        json={
-            'id': default_repo.external_id,
-            'full_name': default_repo.data['full_name'],
-            'clone_url': 'https://github.com/{}.git'.format(default_repo.data['full_name']),
-            'ssh_url': 'git@github.com:getsentry/zeus.git',
-            'permissions': {
-                'admin': True
-            }
-        },
-    )
-
-    responses.add(
-        responses.GET,
         'https://api.github.com/orgs/{}/repos'.format(
             default_repo.owner_name,
         ),

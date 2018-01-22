@@ -59,7 +59,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
                 'id': repo_data['id'],
                 'owner_name': owner_name,
                 'name': repo_name,
-                'admin': repo_data.get('admin', False),
+                'permission': repo_data['permission'],
                 'url': repo_data['ssh_url'],
                 'config': {
                     'full_name': repo_data['full_name']
@@ -86,7 +86,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
             'owner_name': owner_name,
             'name': repo_name,
             'url': repo_data['ssh_url'],
-            'admin': repo_data['permissions'].get('admin', False),
+            'permission': Permission.admin if repo_data['permissions'].get('admin', False) else Permission.read,
             'config': {
                 'full_name': repo_data['full_name']
             }
@@ -110,7 +110,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
             if exc.code == 404:
                 return None
             raise
-        return Permission.admin if repo['admin'] else Permission.read
+        return repo['permission']
 
     def has_access(self, user: User, repo: Repository) -> bool:
         try:
@@ -161,7 +161,7 @@ class GitHubCache(object):
                     'id': r['id'],
                     'ssh_url': r['ssh_url'],
                     'full_name': r['full_name'],
-                    'admin': r['permissions'].get('admin', False),
+                    'permission': Permission.admin if r['permissions'].get('admin', False) else Permission.read,
                 } for r in response])
                 has_results = bool(response)
                 if has_results:

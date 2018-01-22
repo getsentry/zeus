@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
 from zeus.config import db, redis
+from zeus.constants import Permission
 from zeus.exceptions import IdentityNeedsUpgrade
 from zeus.models import (
     ItemOption, Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider,
@@ -55,7 +56,7 @@ class GitHubRepositoriesResource(Resource):
         return [
             {
                 'name': r['config']['full_name'],
-                'admin': r['admin'],
+                'permission': r['permission'],
                 'active': str(r['id']) in active_repo_ids,
             } for r in repo_list
         ]
@@ -96,7 +97,7 @@ class GitHubRepositoriesResource(Resource):
                 }, 401
             )
 
-        if not repo_data['admin']:
+        if Permission.admin not in repo_data['permission']:
             return self.respond({
                 'message': 'Insufficient permissions to activate repository',
             }, 403)
