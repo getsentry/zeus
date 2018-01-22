@@ -41,6 +41,28 @@ def test_jacoco_result_generation(default_build, default_job, sample_jacoco):
     assert r1.data == 'NNNNCCCCNNCCUU'
 
 
+def test_clover_result_generation(default_build, default_job, sample_clover):
+    fp = BytesIO(sample_clover.encode('utf-8'))
+
+    handler = CoverageHandler(default_job)
+    results = handler.get_coverage(fp)
+
+    assert len(results) == 2
+
+    r1 = results[0]
+    assert type(r1) == FileCoverage
+    assert r1.build_id == default_build.id
+    assert r1.repository_id == default_build.repository_id
+    assert r1.filename == 'C:\local\maven\helpers\hudson\clover\src\main\java\hudson\plugins\clover\CloverBuildAction.java'
+    assert r1.data == ''
+    r2 = results[1]
+    assert type(r2) == FileCoverage
+    assert r2.filename == 'C:\local\maven\helpers\hudson\clover\src\main\java\hudson\plugins\clover\CloverCoverageParser.java'
+    assert r2.build_id == default_build.id
+    assert r2.repository_id == default_build.repository_id
+    assert r2.data == 'NNNNNNNNNNNNNNNCCCUUUNU'
+
+
 def test_process(mocker, default_build, default_job):
     get_coverage = mocker.patch.object(CoverageHandler, 'get_coverage')
     process_diff = mocker.patch.object(CoverageHandler, 'process_diff')

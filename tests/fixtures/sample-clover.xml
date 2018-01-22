@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1183450300322" clover="1.3.13">
+   <project timestamp="1183450141125" name="Maven Cloverreport">
+      <metrics classes="5" methods="10" conditionals="2" files="4" packages="1" coveredstatements="2" loc="137" ncloc="70" coveredmethods="1" coveredconditionals="1" statements="18" coveredelements="4" elements="30"/>
+      <package name="hudson.plugins.clover">
+         <metrics conditionals="2" methods="10" classes="5" files="4" ncloc="70" coveredstatements="2" coveredmethods="1" coveredconditionals="1" statements="18" loc="137" coveredelements="4" elements="30"/>
+         <file name="C:\local\maven\helpers\hudson\clover\src\main\java\hudson\plugins\clover\CloverBuildAction.java">
+            <class name="CloverBuildAction">
+               <metrics conditionals="0" methods="0" coveredstatements="0" coveredmethods="0" coveredconditionals="0" statements="0" coveredelements="0" elements="0"/>
+            </class>
+            <metrics conditionals="0" methods="0" classes="1" ncloc="3" coveredstatements="0" coveredmethods="0" coveredconditionals="0" statements="0" loc="10" coveredelements="0" elements="0"/>
+         </file>
+         <file name="C:\local\maven\helpers\hudson\clover\src\main\java\hudson\plugins\clover\CloverCoverageParser.java">
+            <class name="CloverCoverageParser">
+               <metrics conditionals="2" methods="1" coveredstatements="2" coveredmethods="1" coveredconditionals="1" statements="6" coveredelements="4" elements="9"/>
+            </class>
+            <metrics conditionals="2" methods="1" classes="1" ncloc="16" coveredstatements="2" coveredmethods="1" coveredconditionals="1" statements="6" loc="25" coveredelements="4" elements="9"/>
+            <line num="16" count="1" type="method"/>
+            <line num="17" count="1" type="stmt"/>
+            <line num="17" falsecount="0" type="cond" truecount="1"/>
+            <line num="18" count="0" type="stmt"/>
+            <line num="19" count="0" type="stmt"/>
+            <line num="20" count="0" type="stmt"/>
+            <line num="22" count="0" type="stmt"/>
+         </file>
+      </package>
+   </project>
+</coverage>
