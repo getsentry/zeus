@@ -9,10 +9,10 @@ from zeus.constants import (
     GITHUB_AUTH_URI, GITHUB_DEFAULT_SCOPES, GITHUB_TOKEN_URI, USER_AGENT
 )
 from zeus.models import (
-    Email, Identity, Repository, RepositoryAccess, RepositoryProvider, User
+    Email, Identity, User
 )
+from zeus.tasks import sync_github_access
 from zeus.utils.github import GitHubClient
-from zeus.vcs.providers.github import GitHubRepositoryProvider
 
 
 def get_auth_flow(redirect_uri=None, scopes=GITHUB_DEFAULT_SCOPES):
@@ -101,6 +101,7 @@ class GitHubCompleteView(MethodView):
                 )
                 db.session.add(identity)
             user_id = user.id
+            new_user = True
         except IntegrityError:
             # if that fails, assume the identity exists
             identity = Identity.query.filter(
@@ -129,7 +130,7 @@ class GitHubCompleteView(MethodView):
                 identity.scopes = scopes
                 db.session.add(identity)
                 user_id = identity.user_id
-
+            new_user = False
         db.session.flush()
 
         for email in email_list:
@@ -149,49 +150,11 @@ class GitHubCompleteView(MethodView):
         # Note: this is enforced in zeus.auth
         auth.login_user(user_id)
 
-        # now lets try to update the repos they have access to based on whats
-        # enabled
         user = auth.get_current_user()
-        grant_access_to_existing_repos(user)
+        if new_user:
+            # update synchronously so the new user has a better experience
+            sync_github_access(user_id=user.id)
+        else:
+            sync_github_access.delay(user_id=user.id)
 
         return redirect(auth.get_redirect_target(clear=True) or '/')
-
-
-def grant_access_to_existing_repos(user):
-    provider = GitHubRepositoryProvider(cache=True)
-    owner_list = [o['name'] for o in provider.get_owners(user)]
-    if owner_list:
-        matching_repos = Repository.query.unrestricted_unsafe().filter(
-            Repository.provider == RepositoryProvider.github,
-            Repository.owner_name.in_(owner_list),
-            ~Repository.id.in_(db.session.query(
-                RepositoryAccess.repository_id,
-            ).filter(
-                RepositoryAccess.user_id == user.id,
-            ))
-        )
-        for repo in matching_repos:
-            permission = provider.get_permission(auth.get_current_user(), repo)
-            if permission:
-                try:
-                    with db.session.begin_nested():
-                        db.session.add(RepositoryAccess(
-                            repository_id=repo.id,
-                            user_id=user.id,
-                            permission=permission,
-                        ))
-                        db.session.flush()
-                except IntegrityError:
-                    RepositoryAccess.query.filter(
-                        repository_id=repo.id,
-                        user_id=user.id,
-                    ).update({
-                        'permission': permission,
-                    })
-            else:
-                # revoke permissions
-                RepositoryAccess.query.filter(
-                    repository_id=repo.id,
-                    user_id=user.id,
-                ).delete()
-            db.session.commit()

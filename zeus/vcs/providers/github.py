@@ -51,13 +51,21 @@ class GitHubRepositoryProvider(RepositoryProvider):
 
         cache = GitHubCache(user=user, client=github,
                             scopes=identity.scopes)
-        return [
-            {
-                'id': r['id'],
-                'name': r['full_name'],
-                'admin': r.get('admin', False),
-            } for r in cache.get_repos(owner_name, no_cache=not self.cache)
-        ]
+
+        results = []
+        for repo_data in cache.get_repos(owner_name, no_cache=not self.cache):
+            owner_name, repo_name = repo_data['full_name'].split('/', 1)
+            results.append({
+                'id': repo_data['id'],
+                'owner_name': owner_name,
+                'name': repo_name,
+                'admin': repo_data.get('admin', False),
+                'url': repo_data['ssh_url'],
+                'config': {
+                    'full_name': repo_data['full_name']
+                }
+            })
+        return results
 
     def get_repo(self, user: User, owner_name: str, repo_name: str) -> dict:
         github, identity = get_github_client(user)
@@ -115,6 +123,8 @@ class GitHubRepositoryProvider(RepositoryProvider):
 
 
 class GitHubCache(object):
+    version = 4
+
     def __init__(self, user: User, client: GitHubClient=None, scopes=()):
         self.user = user
         self.scopes = scopes
@@ -124,7 +134,8 @@ class GitHubCache(object):
             self.client = client
 
     def get_repos(self, owner, no_cache=False):
-        cache_key = 'gh:3:repos:{}:{}:{}'.format(
+        cache_key = 'gh:{}:repos:{}:{}:{}'.format(
+            self.version,
             md5(self.client.token.encode('utf')).hexdigest(),
             md5(b','.join(s.encode('utf') for s in self.scopes)).hexdigest(),
             md5(owner.encode('utf-8')).hexdigest() if owner else '',
@@ -148,6 +159,7 @@ class GitHubCache(object):
                 response = self.client.get(endpoint, params=params)
                 result.extend([{
                     'id': r['id'],
+                    'ssh_url': r['ssh_url'],
                     'full_name': r['full_name'],
                     'admin': r['permissions'].get('admin', False),
                 } for r in response])

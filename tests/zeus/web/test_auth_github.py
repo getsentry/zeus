@@ -181,6 +181,7 @@ def test_login_complete_automatic_repo_access(client, mocker, db_session, respon
             }
         }],
     )
+
     responses.add(
         responses.GET,
         'https://api.github.com/repos/{}'.format(
@@ -195,6 +196,23 @@ def test_login_complete_automatic_repo_access(client, mocker, db_session, respon
                 'admin': True
             }
         },
+    )
+
+    responses.add(
+        responses.GET,
+        'https://api.github.com/orgs/{}/repos'.format(
+            default_repo.owner_name,
+        ),
+        json=[{
+            'id': default_repo.external_id,
+            'name': default_repo.name,
+            'full_name': default_repo.data['full_name'],
+            'clone_url': 'https://github.com/{}.git'.format(default_repo.data['full_name']),
+            'ssh_url': 'git@github.com:getsentry/zeus.git',
+            'permissions': {
+                'admin': True
+            }
+        }],
     )
 
     access_token = 'b' * 40
@@ -261,7 +279,7 @@ def test_login_complete_existing_user_no_identity(client, db_session, mocker, re
         match_querystring=True,
         json={"id": 1, "login": "test", "email": "foo@example.com"}
     )
-    responses.add(responses.GET, 'https://api.github.com/user/orgs', json=[])
+    # responses.add(responses.GET, 'https://api.github.com/user/orgs', json=[])
     responses.add(
         'GET',
         'https://api.github.com/user/emails',
@@ -337,7 +355,7 @@ def test_login_complete_existing_identity(client, db_session, mocker, responses)
         match_querystring=True,
         json={"id": 1, "login": "test", "email": "foo@example.com"}
     )
-    responses.add(responses.GET, 'https://api.github.com/user/orgs', json=[])
+    # responses.add(responses.GET, 'https://api.github.com/user/orgs', json=[])
     responses.add(
         'GET',
         'https://api.github.com/user/emails',
