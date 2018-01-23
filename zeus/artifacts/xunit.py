@@ -113,7 +113,8 @@ class XunitHandler(ArtifactHandler):
                 TestResult(
                     job=job,
                     name=attrs['name'],
-                    package=attrs.get('classname') or None,
+                    package=attrs.get('classname') or attrs.get(
+                        'class') or None,
                     duration=duration,
                     result=result,
                     message=message,
