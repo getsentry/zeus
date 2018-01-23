@@ -128,10 +128,8 @@ class TravisWebhookView(BaseHook):
                     provider='github',
                     external_id=str(payload['pull_request_number']),
                     data={
-                        # TODO(dcramer): can't figure out what these are at a glance (no docs)
-                        # so need to cpature real payloads and debug
-                        'parent_revision_sha': payload['commit'],
-                        # 'head_revision_sha': payload['head_commit'],
+                        'parent_revision_sha': payload['base_commit'],
+                        'head_revision_sha': payload['head_commit'],
                         'message': payload['pull_request_title'],
                     }
                 )

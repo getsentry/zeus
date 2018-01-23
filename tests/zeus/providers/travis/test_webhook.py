@@ -152,7 +152,7 @@ def test_pull_request(client, default_repo, default_hook, default_revision,
     assert cr
     assert cr.message == 'The title of the pull request'
     assert cr.parent_revision_sha == source.revision_sha
-    # assert cr.head_revision_sha == source.revision_sha
+    assert cr.head_revision_sha == source.revision_sha
 
     build = Build.query.unrestricted_unsafe().filter(
         Build.provider == 'travis',
