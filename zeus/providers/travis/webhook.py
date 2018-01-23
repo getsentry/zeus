@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 from zeus.api.utils.upserts import upsert_build, upsert_change_request, upsert_job
 from zeus.config import redis
 from zeus.constants import USER_AGENT
+from zeus.exceptions import ApiError
 from zeus.models import Build
 from zeus.web.hooks.base import BaseHook
 
@@ -117,49 +118,54 @@ class TravisWebhookView(BaseHook):
 
         domain = urlparse(data['url']).netloc
 
-        if payload['pull_request']:
-            data['label'] = 'PR #{} - {}'.format(
-                payload['pull_request_number'], payload['pull_request_title'])
+        try:
+            if payload['pull_request']:
+                data['label'] = 'PR #{} - {}'.format(
+                    payload['pull_request_number'], payload['pull_request_title'])
 
-            upsert_change_request(
+                upsert_change_request(
+                    repository=hook.repository,
+                    provider='github',
+                    external_id=str(payload['pull_request_number']),
+                    data={
+                        # TODO(dcramer): can't figure out what these are at a glance (no docs)
+                        # so need to cpature real payloads and debug
+                        'parent_revision_sha': payload['commit'],
+                        # 'head_revision_sha': payload['head_commit'],
+                        'message': payload['pull_request_title'],
+                    }
+                )
+
+            response = upsert_build(
                 repository=hook.repository,
-                provider='github',
-                external_id=str(payload['pull_request_number']),
-                data={
-                    # TODO(dcramer): can't figure out what these are at a glance (no docs)
-                    # so need to cpature real payloads and debug
-                    'parent_revision_sha': payload['commit'],
-                    # 'head_revision_sha': payload['head_commit'],
-                    'message': payload['pull_request_title'],
-                }
-            )
-
-        response = upsert_build(
-            repository=hook.repository,
-            provider=hook.provider,
-            external_id=str(payload['id']),
-            data=data,
-        )
-        build = Build.query.get(response.json()['id'])
-        for job_payload in payload['matrix']:
-            upsert_job(
-                build=build,
                 provider=hook.provider,
-                external_id=str(job_payload['id']),
-                data={
-                    'status': 'finished' if job_payload['status'] is not None else 'in_progress',
-                    'result': get_result(job_payload['state']),
-                    'allow_failure': bool(job_payload['allow_failure']),
-                    'label': get_job_label(job_payload),
-                    'url': 'https://{domain}/{owner}/{name}/jobs/{job_id}'.format(
-                        domain=domain,
-                        owner=payload['repository']['owner_name'],
-                        name=payload['repository']['name'],
-                        job_id=job_payload['id'],
-                    ),
-                    'started_at': dateutil.parser.parse(job_payload['started_at']) if job_payload['started_at'] else None,
-                    'finished_at': dateutil.parser.parse(job_payload['finished_at']) if job_payload['finished_at'] else None,
-                }
+                external_id=str(payload['id']),
+                data=data,
             )
+            build = Build.query.get(response.json()['id'])
+            for job_payload in payload['matrix']:
+                upsert_job(
+                    build=build,
+                    provider=hook.provider,
+                    external_id=str(job_payload['id']),
+                    data={
+                        'status': 'finished' if job_payload['status'] is not None else 'in_progress',
+                        'result': get_result(job_payload['state']),
+                        'allow_failure': bool(job_payload['allow_failure']),
+                        'label': get_job_label(job_payload),
+                        'url': 'https://{domain}/{owner}/{name}/jobs/{job_id}'.format(
+                            domain=domain,
+                            owner=payload['repository']['owner_name'],
+                            name=payload['repository']['name'],
+                            job_id=job_payload['id'],
+                        ),
+                        'started_at': dateutil.parser.parse(job_payload['started_at']) if job_payload['started_at'] else None,
+                        'finished_at': dateutil.parser.parse(job_payload['finished_at']) if job_payload['finished_at'] else None,
+                    }
+                )
+        except ApiError:
+            current_app.logger.error(
+                'travis.webhook-unexpected-error', exc_info=True)
+            raise
 
         return Response(status=200)
