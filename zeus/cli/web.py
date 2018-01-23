@@ -31,7 +31,7 @@ def web(host, port, processes, threads):
                 '--buffer-size=32768',
                 '--post-buffering=65536',
                 '--need-app',
-                '--disable-logging',
+                # '--disable-logging',
                 '--thunder-lock',
                 '--vacuum',
                 '--home={}'.format(sys.prefix),
