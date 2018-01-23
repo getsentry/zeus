@@ -14,7 +14,7 @@ testcases_schema = TestCaseSummarySchema(
 
 
 class JobTestsResource(BaseJobResource):
-    def select_resurce_for_update(self):
+    def select_resource_for_update(self):
         return False
 
     def get(self, job: Job):

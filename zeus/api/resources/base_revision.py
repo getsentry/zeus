@@ -16,7 +16,7 @@ class BaseRevisionResource(Resource):
             Repository.name == repo_name,
             Revision.sha == revision_sha,
         )
-        if self.select_resurce_for_update():
+        if self.select_resource_for_update():
             queryset = queryset.with_for_update()
         revision = queryset.first()
         if not revision:

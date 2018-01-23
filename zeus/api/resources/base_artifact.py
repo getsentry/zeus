@@ -25,7 +25,7 @@ class BaseArtifactResource(Resource):
                 Artifact.id == artifact_id,
             )
 
-        if self.select_resurce_for_update():
+        if self.select_resource_for_update():
             queryset = queryset.with_for_update()
         artifact = queryset.first()
         if not artifact:

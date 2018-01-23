@@ -19,7 +19,7 @@ class BaseHookResource(Resource):
         queryset = Hook.query.filter(
             Hook.id == hook_id,
         )
-        if self.select_resurce_for_update():
+        if self.select_resource_for_update():
             queryset = queryset.with_for_update()
         hook = queryset.first()
         if not hook:

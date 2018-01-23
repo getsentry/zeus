@@ -20,7 +20,7 @@ class BaseJobResource(Resource):
             Build.number == build_number,
             Job.number == job_number,
         )
-        if self.select_resurce_for_update():
+        if self.select_resource_for_update():
             queryset = queryset.with_for_update()
         job = queryset.first()
         if not job:

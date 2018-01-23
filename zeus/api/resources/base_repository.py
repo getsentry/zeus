@@ -15,7 +15,7 @@ class BaseRepositoryResource(Resource):
             Repository.owner_name == owner_name,
             Repository.name == repo_name,
         )
-        if self.select_resurce_for_update():
+        if self.select_resource_for_update():
             queryset = queryset.with_for_update()
         repo = queryset.first()
         if not repo:

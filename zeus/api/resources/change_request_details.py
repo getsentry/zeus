@@ -7,7 +7,7 @@ from ..schemas import ChangeRequestSchema
 
 class ChangeRequestDetailsResource(BaseChangeRequestResource):
     def select_resurce_for_update(self):
-        return True
+        return False
 
     def get(self, cr: ChangeRequest):
         schema = ChangeRequestSchema(strict=True)

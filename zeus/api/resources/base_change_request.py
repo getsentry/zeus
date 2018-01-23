@@ -18,7 +18,7 @@ class BaseChangeRequestResource(Resource):
             Repository.name == repo_name,
             ChangeRequest.number == cr_number,
         )
-        if self.select_resurce_for_update():
+        if self.select_resource_for_update():
             queryset = queryset.with_for_update()
         else:
             # HACK(dcramer): we dont want to lock the repo row, so for now just deal

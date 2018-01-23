@@ -15,7 +15,7 @@ builds_schema = BuildSchema(many=True, strict=True)
 
 
 class RepositoryBuildsResource(BaseRepositoryResource):
-    def select_resurce_for_update(self):
+    def select_resource_for_update(self):
         return False
 
     def get(self, repo: Repository):

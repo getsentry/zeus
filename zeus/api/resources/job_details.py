@@ -20,8 +20,11 @@ def has_unprocessed_artifacts(job_id):
 
 
 class JobDetailsResource(BaseJobResource):
-    def select_resurce_for_update(self) -> bool:
-        return self.is_mutation()
+    def select_resource_for_update(self) -> bool:
+        return False
+        # TODO(dcramer): given we include the repository relation, its causing deadlocks
+        # and we realistically dont need to lock that object
+        # return self.is_mutation()
 
     def get(self, job: Job):
         """

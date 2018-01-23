@@ -16,8 +16,8 @@ artifacts_schema = ArtifactWithJobSchema(strict=True, many=True)
 
 
 class RevisionArtifactsResource(BaseRevisionResource):
-    def select_resurce_for_update(self) -> bool:
-        return self.is_mutation()
+    def select_resource_for_update(self) -> bool:
+        return False
 
     def get(self, revision: Revision, repo=None):
         """

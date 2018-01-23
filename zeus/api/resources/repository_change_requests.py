@@ -13,7 +13,7 @@ change_requests_schema = ChangeRequestSchema(many=True, strict=True)
 
 
 class RepositoryChangeRequestsResource(BaseRepositoryResource):
-    def select_resurce_for_update(self):
+    def select_resource_for_update(self):
         return False
 
     def get(self, repo: Repository):

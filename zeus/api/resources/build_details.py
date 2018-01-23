@@ -11,7 +11,7 @@ build_schema = BuildSchema(strict=True)
 
 
 class BuildDetailsResource(BaseBuildResource):
-    def select_resurce_for_update(self) -> bool:
+    def select_resource_for_update(self) -> bool:
         return self.is_mutation()
 
     def get(self, build: Build):
