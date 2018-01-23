@@ -24,7 +24,7 @@ class Resource(View):
     def is_mutation(self) -> bool:
         return request.method in ('DELETE', 'PATCH', 'POST', 'PUT')
 
-    def select_resurce_for_update(self) -> bool:
+    def select_resource_for_update(self) -> bool:
         # should the base resource treat it's query operations as locking
         # and utilize SELECT_FOR_UPDATE?
         # return self.is_mutation()
