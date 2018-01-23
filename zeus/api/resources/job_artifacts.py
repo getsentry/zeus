@@ -13,8 +13,8 @@ from zeus.tasks import process_artifact
 from .base_job import BaseJobResource
 from ..schemas import ArtifactSchema
 
-artifact_schema = ArtifactSchema(strict=True)
-artifacts_schema = ArtifactSchema(strict=True, many=True)
+artifact_schema = ArtifactSchema(strict=True, exclude=('job',))
+artifacts_schema = ArtifactSchema(strict=True, many=True, exclude=('job',))
 
 
 class JobArtifactsResource(BaseJobResource):
