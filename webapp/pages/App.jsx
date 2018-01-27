@@ -19,7 +19,10 @@ class RepositoryContext extends AsyncComponent {
   };
 
   getChildContext() {
-    return {repoList: this.props.repoList};
+    return {
+      ...this.context,
+      repoList: this.props.repoList
+    };
   }
 
   fetchData() {
@@ -60,11 +63,11 @@ class App extends Component {
       <div>
         <Indicators />
         <ErrorBoundary>
-          {!this.props.isAuthenticated === null
-            ? <PageLoadingIndicator />
-            : <AuthedContext>
-                {this.props.children}
-              </AuthedContext>}
+          {!this.props.isAuthenticated === null ? (
+            <PageLoadingIndicator />
+          ) : (
+            <AuthedContext>{this.props.children}</AuthedContext>
+          )}
         </ErrorBoundary>
       </div>
     );

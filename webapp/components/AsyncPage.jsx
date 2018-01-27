@@ -84,8 +84,9 @@ export default class AsyncPage extends Component {
   }
 
   fetchDataForEndpoint(stateKey, endpoint, params) {
-    this.api.request(endpoint, params).then(
-      data => {
+    this.api
+      .request(endpoint, params)
+      .then(data => {
         this.setState(prevState => {
           return {
             [stateKey]: data,
@@ -93,8 +94,8 @@ export default class AsyncPage extends Component {
             loading: prevState.remainingRequests > 1
           };
         });
-      },
-      error => {
+      })
+      .catch(error => {
         this.setState(prevState => {
           return {
             [stateKey]: null,
@@ -107,8 +108,7 @@ export default class AsyncPage extends Component {
             error: true
           };
         });
-      }
-    );
+      });
   }
 
   /**
@@ -144,16 +144,7 @@ export default class AsyncPage extends Component {
 
   render() {
     let title = this.getTitle();
-    if (!title)
-      return (
-        <div>
-          {this.renderContent()}
-        </div>
-      );
-    return (
-      <DocumentTitle title={title}>
-        {this.renderContent()}
-      </DocumentTitle>
-    );
+    if (!title) return <div>{this.renderContent()}</div>;
+    return <DocumentTitle title={title}>{this.renderContent()}</DocumentTitle>;
   }
 }

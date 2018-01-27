@@ -1,4 +1,8 @@
 import sinon from 'sinon';
+import PropTypes from 'prop-types';
+import configureStore from 'redux-mock-store';
+
+const mockStore = configureStore();
 
 window.TestStubs = {
   // react-router's 'router' context
@@ -17,6 +21,43 @@ window.TestStubs = {
     query: {},
     pathame: '/mock-pathname/'
   }),
+
+  routerContext: (location, router) => ({
+    context: {
+      location: location || TestStubs.location(),
+      router: router || TestStubs.router()
+    },
+    childContextTypes: {
+      router: PropTypes.object,
+      location: PropTypes.object
+    }
+  }),
+
+  store: state =>
+    mockStore({
+      auth: {isAuthenticated: null, user: null},
+      ...state
+    }),
+
+  storeContext: store => ({
+    context: {
+      store: store || TestStubs.store()
+    },
+    childContextTypes: {
+      store: PropTypes.object
+    }
+  }),
+
+  standardContext: () => {
+    let result = TestStubs.routerContext();
+    let storeResult = TestStubs.storeContext();
+    result.context = {...result.context, ...storeResult.context};
+    result.childContextTypes = {
+      ...result.childContextTypes,
+      ...storeResult.childContextTypes
+    };
+    return result;
+  },
 
   Build: params => ({
     created_at: '2018-01-06T16:07:16.830829+00:00',
@@ -84,6 +125,11 @@ window.TestStubs = {
     owner_name: 'getsentry',
     provider: 'gh',
     url: 'git@github.com:getsentry/zeus.git',
+    permissions: {
+      admin: true,
+      read: true,
+      write: true
+    },
     ...params
   })
 };
