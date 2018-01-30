@@ -20,7 +20,6 @@ class RepositoryContext extends AsyncComponent {
 
   getChildContext() {
     return {
-      ...this.context,
       repoList: this.props.repoList
     };
   }
