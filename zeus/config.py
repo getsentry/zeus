@@ -7,11 +7,11 @@ import tempfile
 from datetime import timedelta
 from flask import Flask
 from flask_alembic import Alembic
-
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 
+from zeus.debugbar import DebugToolbarExtension
 from zeus.utils.celery import Celery
 from zeus.utils.nplusone import NPlusOne
 from zeus.utils.redis import Redis
@@ -32,6 +32,7 @@ nplusone = NPlusOne()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.ERROR, wrap_wsgi=True)
 ssl = SSL()
+toolbar = DebugToolbarExtension()
 
 
 def with_health_check(app):
@@ -232,6 +233,8 @@ def create_app(_read_config=True, **config):
 
     if app.config['SSL']:
         ssl.init_app(app)
+
+    toolbar.init_app(app)
 
     configure_db(app)
 
