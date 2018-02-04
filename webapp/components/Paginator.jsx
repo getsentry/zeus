@@ -1,59 +1,41 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import Button, {ButtonGroup} from './Button';
+import {ButtonGroup, ButtonLink} from './Button';
 
 export default class Paginator extends React.Component {
   static propTypes = {
     links: PropTypes.object,
-    location: PropTypes.object,
-    onPage: PropTypes.func
+    location: PropTypes.object
   };
 
   static contextTypes = {
     router: PropTypes.object
   };
 
-  onPage(href, page) {
-    if (!!this.props.onPage) return this.props.onPage(href, page);
-    let {location} = this.props;
-    return this.context.router.push({
-      pathname: location.pathname,
-      query: {...location.query, page}
-    });
-  }
-
   render() {
-    let {links} = this.props;
+    let {links, location} = this.props;
 
     if (!links) return null;
 
-    let previousPageClassName = 'btn btn-default btn-lg prev';
-    if (links.previous && links.previous.results === false) {
-      previousPageClassName += ' disabled';
-    }
-
-    let nextPageClassName = 'btn btn-default btn-lg next';
-    if (links.next && links.next.results === false) {
-      nextPageClassName += ' disabled';
-    }
-    console.log(links.next);
+    let hasPrev = links.previous && links.previous.results !== false;
+    let hasNext = links.next && links.next.results !== false;
 
     return (
       <div style={{marginBottom: 20}}>
         <ButtonGroup align="right">
-          <Button
-            onClick={() => this.onPage(links.previous.href, links.previous.page)}
-            className={previousPageClassName}
-            disabled={!links.previous || links.previous.results === false}>
+          <ButtonLink
+            to={
+              hasPrev ? `${location.pathname}?${links.previous.href.split('?')[1]}` : null
+            }
+            disabled={!hasPrev}>
             Previous
-          </Button>
-          <Button
-            onClick={() => this.onPage(links.next.href, links.next.page)}
-            className={nextPageClassName}
-            disabled={!links.next || links.next.results === false}>
+          </ButtonLink>
+          <ButtonLink
+            to={hasNext ? `${location.pathname}?${links.next.href.split('?')[1]}` : null}
+            disabled={!hasNext}>
             Next
-          </Button>
+          </ButtonLink>
         </ButtonGroup>
       </div>
     );

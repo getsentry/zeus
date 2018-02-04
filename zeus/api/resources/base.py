@@ -95,6 +95,19 @@ class Resource(View):
             return self.error('invalid schema supplied')
         return self.respond(result.data, status)
 
+    def build_base_url(self, without=['page']):
+        querystring = u'&'.join(
+            u'{0}={1}'.format(quote(k), quote(v))
+            for k, v in request.args.items()
+            if k not in without
+        )
+        base_url = request.url.split('?', 1)[0]
+        if querystring:
+            base_url = '{0}?{1}'.format(base_url, querystring)
+        else:
+            base_url = base_url + '?'
+        return base_url
+
     def paginate_with_schema(self, schema: Schema, query,
                              default_per_page: int=100, max_per_page: int=None) -> Response:
         page = int(request.args.get('page', 1))
@@ -108,38 +121,38 @@ class Resource(View):
         if per_page > max_per_page:
             per_page = max_per_page
 
-        querystring = u'&'.join(
-            u'{0}={1}'.format(quote(k), quote(v))
-            for k, v in request.args.items()
-            if k != 'page'
-        )
-        base_url = request.url.split('?', 1)[0]
-        if querystring:
-            base_url = '{0}?{1}'.format(base_url, querystring)
-        else:
-            base_url = base_url + '?'
-
         result = list(query.offset((page - 1) * per_page).limit(per_page + 1))
         has_next = len(result) > per_page
         result = result[:per_page]
 
-        has_prev = page > 1
+        response = self.respond_with_schema(schema, result)
+        response.headers['X-Hits'] = query.count()
+        return self.build_paged_response(
+            response,
+            page + 1 if has_next else None,
+            page - 1 if page > 1 else None,
+        )
 
-        links = [LINK_HEADER.format(
-            uri=base_url,
-            name='next',
-            page=page + 1,
-            results='true' if has_next else 'false',
-        )]
-        if page > 1:
+    def build_paged_response(self, response: Response, next_page: int=None,
+                             prev_page: int=None, base_url: str=None) -> Response:
+        if base_url is None:
+            base_url = self.build_base_url(without=['page'])
+
+        links = []
+        if next_page:
+            links.append(LINK_HEADER.format(
+                uri=base_url,
+                name='next',
+                page=next_page,
+                results='true',
+            ))
+        if prev_page:
             links.append(LINK_HEADER.format(
                 uri=base_url,
                 name='previous',
-                page=page - 1,
-                results='true' if has_prev else 'false',
+                page=prev_page,
+                results='true',
             ))
 
-        response = self.respond_with_schema(schema, result)
-        response.headers['X-Hits'] = query.count()
         response.headers['Link'] = ', '.join(links)
         return response

@@ -12,6 +12,8 @@ export const parseLinkHeader = function(header) {
     let match = /<([^>]+)>; rel="([^"]+)"(?: page="([^"]+)")?(?: results="([^"]+)")?/g.exec(
       val
     );
+    if (!match) return;
+
     let hasResults = match[4] === 'true' ? true : match[4] === 'false' ? false : null;
 
     links[match[2]] = {
