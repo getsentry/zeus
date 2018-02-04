@@ -9,15 +9,15 @@ export const parseLinkHeader = function(header) {
     links = {};
 
   header_vals.forEach(val => {
-    let match = /<([^>]+)>; rel="([^"]+)"(?:; results="([^"]+)")?(?:; page="([^"]+)")?/g.exec(
+    let match = /<([^>]+)>; rel="([^"]+)"(?: page="([^"]+)")?(?: results="([^"]+)")?/g.exec(
       val
     );
-    let hasResults = match[3] === 'true' ? true : match[3] === 'false' ? false : null;
+    let hasResults = match[4] === 'true' ? true : match[4] === 'false' ? false : null;
 
     links[match[2]] = {
       href: match[1],
       results: hasResults,
-      page: match[4]
+      page: match[3]
     };
   });
 
@@ -120,7 +120,9 @@ export class Client {
 
   uniqueId() {
     let s4 = () => {
-      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
     };
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   }

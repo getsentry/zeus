@@ -8,6 +8,7 @@ import {subscribe} from '../decorators/stream';
 import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
 import BuildList from '../components/BuildList';
+import Paginator from '../components/Paginator';
 
 class RepositoryBuildList extends AsyncPage {
   static contextTypes = {
@@ -22,7 +23,8 @@ class RepositoryBuildList extends AsyncPage {
 
 class BuildListBody extends AsyncComponent {
   static propTypes = {
-    buildList: PropTypes.array
+    buildList: PropTypes.array,
+    links: PropTypes.object
   };
 
   static contextTypes = {
@@ -39,7 +41,12 @@ class BuildListBody extends AsyncComponent {
   }
 
   renderBody() {
-    return <BuildList params={this.props.params} buildList={this.props.buildList} />;
+    return (
+      <div>
+        <BuildList params={this.props.params} buildList={this.props.buildList} />
+        <Paginator links={this.props.links} {...this.props} />
+      </div>
+    );
   }
 }
 
@@ -50,12 +57,13 @@ const DecoratedRepositoryBuildList = connect(
     buildList: builds.items.filter(
       build => build.repository.full_name === repo.full_name
     ),
+    links: builds.links,
     loading: !builds.loaded
   }),
   {loadBuildsForRepository}
 )(subscribe((props, {repo}) => [`repos:${repo.full_name}:builds`])(RepositoryBuildList));
 
-class RepositoryBuildListWithRepoProp extends Component {
+export default class RepositoryBuildListWithRepoProp extends Component {
   static contextTypes = {
     ...AsyncPage.contextTypes,
     repo: PropTypes.object.isRequired
@@ -65,5 +73,3 @@ class RepositoryBuildListWithRepoProp extends Component {
     return <DecoratedRepositoryBuildList {...this.props} repo={this.context.repo} />;
   }
 }
-
-export default RepositoryBuildListWithRepoProp;

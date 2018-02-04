@@ -9,7 +9,7 @@ from zeus.exceptions import ApiUnauthorized
 
 from ..authentication import ApiTokenAuthentication, SessionAuthentication
 
-LINK_HEADER = '<{uri}&page={page}>; rel="{name}" page="{page}"'
+LINK_HEADER = '<{uri}&page={page}>; rel="{name}" page="{page}" results="{results}"'
 
 
 class Resource(View):
@@ -119,19 +119,25 @@ class Resource(View):
         else:
             base_url = base_url + '?'
 
+        result = list(query.offset((page - 1) * per_page).limit(per_page + 1))
+        has_next = len(result) > per_page
+        result = result[:per_page]
+
+        has_prev = page > 1
+
         links = [LINK_HEADER.format(
             uri=base_url,
             name='next',
             page=page + 1,
+            results='true' if has_next else 'false',
         )]
         if page > 1:
             links.append(LINK_HEADER.format(
                 uri=base_url,
                 name='previous',
                 page=page - 1,
+                results='true' if has_prev else 'false',
             ))
-
-        result = query.offset((page - 1) * per_page).limit(per_page)
 
         response = self.respond_with_schema(schema, result)
         response.headers['X-Hits'] = query.count()

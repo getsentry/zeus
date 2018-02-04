@@ -6,6 +6,7 @@ import {loadRevisionsForRepository} from '../actions/revisions';
 
 import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
+import Paginator from '../components/Paginator';
 import RevisionList from '../components/RevisionList';
 
 class RepositoryRevisionList extends AsyncPage {
@@ -43,11 +44,14 @@ class RevisionListBody extends AsyncComponent {
 
   renderBody() {
     return (
-      <RevisionList
-        params={this.props.params}
-        repo={this.context.repo}
-        revisionList={this.props.revisionList}
-      />
+      <div>
+        <RevisionList
+          params={this.props.params}
+          repo={this.context.repo}
+          revisionList={this.props.revisionList}
+        />
+        <Paginator links={this.props.links} {...this.props} />
+      </div>
     );
   }
 }
@@ -56,6 +60,7 @@ export default connect(
   function(state) {
     return {
       revisionList: state.revisions.items,
+      links: state.revisions.links,
       loading: !state.revisions.loaded
     };
   },

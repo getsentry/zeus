@@ -8,6 +8,7 @@ import {
 
 const initialState = {
   items: [],
+  links: {},
   loaded: false
 };
 
@@ -28,6 +29,7 @@ export default (state = initialState, action = {}) => {
       return {
         ...state,
         items: [...action.items],
+        links: {...action.items.links},
         loaded: true
       };
     case REMOVE_REVISION:
