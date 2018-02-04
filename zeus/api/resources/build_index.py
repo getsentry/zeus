@@ -28,5 +28,5 @@ class BuildIndexResource(Resource):
             subqueryload_all('stats'),
         ).filter(
             Build.repository_id.in_(tenant.repository_ids),
-        ).order_by(Build.date_created.desc()).limit(100)
-        return self.respond_with_schema(builds_schema, query)
+        ).order_by(Build.date_created.desc())
+        return self.paginate_with_schema(builds_schema, query)
