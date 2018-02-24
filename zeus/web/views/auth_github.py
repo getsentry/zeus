@@ -1,33 +1,15 @@
-from flask import current_app, redirect, request, url_for
+from flask import redirect, request, url_for
 from flask.views import MethodView
-from oauth2client.client import FlowExchangeError, OAuth2WebServerFlow
 from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
-from zeus.config import db
-from zeus.constants import (
-    GITHUB_AUTH_URI, GITHUB_DEFAULT_SCOPES, GITHUB_TOKEN_URI, USER_AGENT
-)
+from zeus.config import db, github
+from zeus.constants import GITHUB_DEFAULT_SCOPES
 from zeus.models import (
     Email, Identity, User
 )
 from zeus.tasks import sync_github_access
 from zeus.utils.github import GitHubClient
-
-
-def get_auth_flow(redirect_uri=None, scopes=GITHUB_DEFAULT_SCOPES):
-    # XXX(dcramer): we have to generate this each request because oauth2client
-    # doesn't want you to set redirect_uri as part of the request, which causes
-    # a lot of runtime issues.
-    return OAuth2WebServerFlow(
-        client_id=current_app.config['GITHUB_CLIENT_ID'],
-        client_secret=current_app.config['GITHUB_CLIENT_SECRET'],
-        scope=','.join(scopes),
-        redirect_uri=redirect_uri,
-        user_agent=USER_AGENT,
-        auth_uri=GITHUB_AUTH_URI,
-        token_uri=GITHUB_TOKEN_URI,
-    )
 
 
 class GitHubAuthView(MethodView):
@@ -38,39 +20,41 @@ class GitHubAuthView(MethodView):
 
     def get(self):
         auth.bind_redirect_target()
-        redirect_uri = url_for(self.authorized_url, _external=True)
-        flow = get_auth_flow(redirect_uri=redirect_uri, scopes=self.scopes)
-        auth_uri = flow.step1_get_authorize_url()
-        return redirect(auth_uri)
+        return github.authorize(
+            callback=url_for(self.authorized_url, _external=True),
+            scope=','.join(self.scopes),
+            access_type='offline',
+        )
 
 
 class GitHubCompleteView(MethodView):
     # TODO(dcramer): we dont handle the case where the User row has been deleted,
     # but the identity still exists. It shouldn't happen.
     def get(self):
-        redirect_uri = request.url
-        flow = get_auth_flow(redirect_uri=redirect_uri)
-        try:
-            oauth_response = flow.step2_exchange(request.args['code'])
-        except FlowExchangeError:
-            return redirect('/?auth_error=true')
+        resp = github.authorized_response()
+        if resp is None or resp.get('access_token') is None:
+            return 'Access denied: reason=%s error=%s resp=%s' % (
+                request.args['error'],
+                request.args['error_description'],
+                resp
+            )
 
-        scopes = oauth_response.token_response['scope'].split(',')
+        scopes = resp['scope'].split(',')
 
         if 'user:email' not in scopes:
             raise NotImplementedError
 
         # fetch user details
-        github = GitHubClient(token=oauth_response.access_token)
-        user_data = github.get('/user')
+        client = GitHubClient(token=resp['access_token'])
+        user_data = client.get('/user')
 
         identity_config = {
-            'access_token': oauth_response.access_token,
-            'refresh_token': oauth_response.refresh_token,
+            'access_token': resp['access_token'],
+            'refresh_token': resp.get('refresh_token'),
             'login': user_data['login'],
         }
 
-        email_list = github.get('/user/emails')
+        email_list = client.get('/user/emails')
         email_list.append({
             'email': '{}@users.noreply.github.com'.format(user_data['login']),
             'verified': True,

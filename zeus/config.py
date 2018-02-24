@@ -7,11 +7,12 @@ import tempfile
 from datetime import timedelta
 from flask import Flask
 from flask_alembic import Alembic
-
 from flask_mail import Mail
+from flask_oauthlib.client import OAuth
 from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 
+from zeus.constants import GITHUB_AUTH_URI, GITHUB_DEFAULT_SCOPES, GITHUB_TOKEN_URI
 from zeus.utils.celery import Celery
 from zeus.utils.nplusone import NPlusOne
 from zeus.utils.redis import Redis
@@ -32,6 +33,19 @@ nplusone = NPlusOne()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.ERROR, wrap_wsgi=True)
 ssl = SSL()
+
+oauth = OAuth()
+
+github = oauth.remote_app(
+    'github',
+    request_token_params={'scope': ','.join(GITHUB_DEFAULT_SCOPES)},
+    base_url='https://api.github.com/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url=GITHUB_TOKEN_URI,
+    authorize_url=GITHUB_AUTH_URI,
+    app_key='GITHUB',
+)
 
 
 def with_health_check(app):
@@ -222,6 +236,10 @@ def create_app(_read_config=True, **config):
     if app.config.get('LOG_LEVEL'):
         app.logger.setLevel(getattr(logging, app.config['LOG_LEVEL'].upper()))
 
+    # oauthlib compat
+    app.config['GITHUB_CONSUMER_KEY'] = app.config['GITHUB_CLIENT_ID']
+    app.config['GITHUB_CONSUMER_SECRET'] = app.config['GITHUB_CLIENT_SECRET']
+
     # init sentry first
     sentry.init_app(app)
     # XXX(dcramer): Sentry + Flask + Logging integration is broken
@@ -238,6 +256,8 @@ def create_app(_read_config=True, **config):
     redis.init_app(app)
     mail.init_app(app)
     celery.init_app(app, sentry)
+
+    oauth.init_app(app)
 
     configure_webpack(app)
 
