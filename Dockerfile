@@ -23,6 +23,7 @@ RUN set -x \
         libpq-dev \
         libxml2-dev \
         libxslt-dev \
+        openssl \
         ssh \
     && rm -rf /var/lib/apt/lists/*
 
