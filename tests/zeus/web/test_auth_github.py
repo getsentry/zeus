@@ -1,6 +1,3 @@
-from datetime import datetime
-from flask import current_app
-from oauth2client.client import OAuth2Credentials
 from urllib.parse import parse_qs
 
 from zeus import factories
@@ -16,15 +13,20 @@ def test_login(client):
     qs = parse_qs(querystring)
     assert qs['client_id'] == ['github.client-id']
     assert qs['redirect_uri'] == ['http://localhost/auth/github/complete']
-    assert qs['access_type'] == ['offline']
     assert qs['response_type'] == ['code']
     assert sorted(qs['scope'][0].split(',')) == [
         'read:org', 'repo', 'user:email']
 
 
 def test_login_complete(client, db_session, mocker, responses):
-    mock_step2_exchange = mocker.patch(
-        'zeus.web.views.auth_github.OAuth2WebServerFlow.step2_exchange'
+    responses.add(
+        'POST',
+        GITHUB_TOKEN_URI,
+        json={
+            'token_type': 'bearer',
+            'scope': 'user:email,read:org',
+            'access_token': 'access-token',
+        },
     )
 
     # TOOD(dcramer): ideally we could test the header easily, but responses
@@ -46,27 +48,9 @@ def test_login_complete(client, db_session, mocker, responses):
         ]
     )
 
-    access_token = 'b' * 40
-    refresh_token = 'c' * 40
-
-    mock_step2_exchange.return_value = OAuth2Credentials(
-        access_token,
-        current_app.config['GITHUB_CLIENT_ID'],
-        current_app.config['GITHUB_CLIENT_SECRET'],
-        refresh_token,
-        datetime(2013, 9, 19, 22, 15, 22),
-        GITHUB_TOKEN_URI,
-        'foo/1.0',
-        token_response={
-            'scope': 'user:email,read:org',
-        },
-    )
-
     resp = client.get('/auth/github/complete?code=abc')
 
-    mock_step2_exchange.assert_called_once_with('abc')
-
-    assert resp.status_code == 302
+    assert resp.status_code == 302, repr(resp)
     assert resp.headers['Location'] == 'http://localhost/'
 
     user = User.query.filter(
@@ -84,8 +68,8 @@ def test_login_complete(client, db_session, mocker, responses):
     assert identity.external_id == '1'
     assert identity.scopes == ['user:email', 'read:org']
     assert identity.config == {
-        'access_token': access_token,
-        'refresh_token': refresh_token,
+        'access_token': 'access-token',
+        'refresh_token': None,
         'login': 'test',
     }
 
@@ -101,10 +85,15 @@ def test_login_complete(client, db_session, mocker, responses):
 
 
 def test_login_complete_no_visible_email(client, mocker, responses):
-    mock_step2_exchange = mocker.patch(
-        'zeus.web.views.auth_github.OAuth2WebServerFlow.step2_exchange'
+    responses.add(
+        'POST',
+        GITHUB_TOKEN_URI,
+        json={
+            'token_type': 'bearer',
+            'scope': 'user:email,read:org',
+            'access_token': 'access-token',
+        },
     )
-
     responses.add(responses.GET, 'https://api.github.com/user/orgs', json=[])
 
     # TOOD(dcramer): ideally we could test the header easily, but responses
@@ -122,25 +111,7 @@ def test_login_complete_no_visible_email(client, mocker, responses):
         json=[{"email": "foo@example.com", "verified": True, "primary": True}]
     )
 
-    access_token = 'b' * 40
-    refresh_token = 'c' * 40
-
-    mock_step2_exchange.return_value = OAuth2Credentials(
-        access_token,
-        current_app.config['GITHUB_CLIENT_ID'],
-        current_app.config['GITHUB_CLIENT_SECRET'],
-        refresh_token,
-        datetime(2013, 9, 19, 22, 15, 22),
-        GITHUB_TOKEN_URI,
-        'foo/1.0',
-        token_response={
-            'scope': 'user:email,read:org',
-        },
-    )
-
     resp = client.get('/auth/github/complete?code=abc')
-
-    mock_step2_exchange.assert_called_once_with('abc')
 
     assert resp.status_code == 302
     assert resp.headers['Location'] == 'http://localhost/'
@@ -153,8 +124,14 @@ def test_login_complete_no_visible_email(client, mocker, responses):
 
 
 def test_login_complete_automatic_repo_access(client, mocker, db_session, responses, default_repo):
-    mock_step2_exchange = mocker.patch(
-        'zeus.web.views.auth_github.OAuth2WebServerFlow.step2_exchange'
+    responses.add(
+        'POST',
+        GITHUB_TOKEN_URI,
+        json={
+            'token_type': 'bearer',
+            'scope': 'user:email,read:org',
+            'access_token': 'access-token',
+        },
     )
 
     # TOOD(dcramer): ideally we could test the header easily, but responses
@@ -199,25 +176,7 @@ def test_login_complete_automatic_repo_access(client, mocker, db_session, respon
         }],
     )
 
-    access_token = 'b' * 40
-    refresh_token = 'c' * 40
-
-    mock_step2_exchange.return_value = OAuth2Credentials(
-        access_token,
-        current_app.config['GITHUB_CLIENT_ID'],
-        current_app.config['GITHUB_CLIENT_SECRET'],
-        refresh_token,
-        datetime(2013, 9, 19, 22, 15, 22),
-        GITHUB_TOKEN_URI,
-        'foo/1.0',
-        token_response={
-            'scope': 'user:email,read:org',
-        },
-    )
-
     resp = client.get('/auth/github/complete?code=abc')
-
-    mock_step2_exchange.assert_called_once_with('abc')
 
     assert resp.status_code == 302
     assert resp.headers['Location'] == 'http://localhost/'
@@ -236,8 +195,8 @@ def test_login_complete_automatic_repo_access(client, mocker, db_session, respon
     assert identity.provider == 'github'
     assert identity.external_id == '1'
     assert identity.config == {
-        'access_token': access_token,
-        'refresh_token': refresh_token,
+        'access_token': 'access-token',
+        'refresh_token': None,
         'login': 'test',
     }
     assert identity.scopes == ['user:email', 'read:org']
@@ -251,8 +210,14 @@ def test_login_complete_automatic_repo_access(client, mocker, db_session, respon
 
 
 def test_login_complete_existing_user_no_identity(client, db_session, mocker, responses):
-    mock_step2_exchange = mocker.patch(
-        'zeus.web.views.auth_github.OAuth2WebServerFlow.step2_exchange'
+    responses.add(
+        'POST',
+        GITHUB_TOKEN_URI,
+        json={
+            'token_type': 'bearer',
+            'scope': 'user:email,read:org',
+            'access_token': 'access-token',
+        },
     )
 
     # TOOD(dcramer): ideally we could test the header easily, but responses
@@ -274,29 +239,11 @@ def test_login_complete_existing_user_no_identity(client, db_session, mocker, re
         ]
     )
 
-    access_token = 'b' * 40
-    refresh_token = 'c' * 40
-
-    mock_step2_exchange.return_value = OAuth2Credentials(
-        access_token,
-        current_app.config['GITHUB_CLIENT_ID'],
-        current_app.config['GITHUB_CLIENT_SECRET'],
-        refresh_token,
-        datetime(2013, 9, 19, 22, 15, 22),
-        GITHUB_TOKEN_URI,
-        'foo/1.0',
-        token_response={
-            'scope': 'user:email,read:org',
-        },
-    )
-
     user = factories.UserFactory.create(
         email='foo@example.com',
     )
 
     resp = client.get('/auth/github/complete?code=abc')
-
-    mock_step2_exchange.assert_called_once_with('abc')
 
     assert resp.status_code == 302
     assert resp.headers['Location'] == 'http://localhost/'
@@ -309,8 +256,8 @@ def test_login_complete_existing_user_no_identity(client, db_session, mocker, re
     assert identity.provider == 'github'
     assert identity.external_id == '1'
     assert identity.config == {
-        'access_token': access_token,
-        'refresh_token': refresh_token,
+        'access_token': 'access-token',
+        'refresh_token': None,
         'login': 'test',
     }
     assert identity.scopes == ['user:email', 'read:org']
@@ -327,8 +274,14 @@ def test_login_complete_existing_user_no_identity(client, db_session, mocker, re
 
 
 def test_login_complete_existing_identity(client, db_session, mocker, responses):
-    mock_step2_exchange = mocker.patch(
-        'zeus.web.views.auth_github.OAuth2WebServerFlow.step2_exchange'
+    responses.add(
+        'POST',
+        GITHUB_TOKEN_URI,
+        json={
+            'token_type': 'bearer',
+            'scope': 'user:email,read:org',
+            'access_token': 'access-token',
+        },
     )
 
     # TOOD(dcramer): ideally we could test the header easily, but responses
@@ -350,22 +303,6 @@ def test_login_complete_existing_identity(client, db_session, mocker, responses)
         ]
     )
 
-    access_token = 'b' * 40
-    refresh_token = 'c' * 40
-
-    mock_step2_exchange.return_value = OAuth2Credentials(
-        access_token,
-        current_app.config['GITHUB_CLIENT_ID'],
-        current_app.config['GITHUB_CLIENT_SECRET'],
-        refresh_token,
-        datetime(2013, 9, 19, 22, 15, 22),
-        GITHUB_TOKEN_URI,
-        'foo/1.0',
-        token_response={
-            'scope': 'user:email,read:org',
-        },
-    )
-
     user = factories.UserFactory.create(
         email='foo@example.com',
     )
@@ -376,8 +313,6 @@ def test_login_complete_existing_identity(client, db_session, mocker, responses)
     )
 
     resp = client.get('/auth/github/complete?code=abc')
-
-    mock_step2_exchange.assert_called_once_with('abc')
 
     assert resp.status_code == 302
     assert resp.headers['Location'] == 'http://localhost/'
@@ -390,8 +325,8 @@ def test_login_complete_existing_identity(client, db_session, mocker, responses)
     assert identity.provider == 'github'
     assert identity.external_id == '1'
     assert identity.config == {
-        'access_token': access_token,
-        'refresh_token': refresh_token,
+        'access_token': 'access-token',
+        'refresh_token': None,
         'login': 'test',
     }
     assert identity.scopes == ['user:email', 'read:org']

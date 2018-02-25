@@ -1,15 +1,25 @@
-from flask import redirect, request, url_for
+from flask import current_app, redirect, Response, request, session, url_for
 from flask.views import MethodView
+from requests_oauthlib import OAuth2Session
 from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
-from zeus.config import db, github
-from zeus.constants import GITHUB_DEFAULT_SCOPES
+from zeus.config import db
+from zeus.constants import GITHUB_AUTH_URI, GITHUB_DEFAULT_SCOPES, GITHUB_TOKEN_URI
 from zeus.models import (
     Email, Identity, User
 )
 from zeus.tasks import sync_github_access
 from zeus.utils.github import GitHubClient
+
+
+def get_oauth_session(redirect_uri=None, state=None, scopes=None):
+    return OAuth2Session(
+        client_id=current_app.config['GITHUB_CLIENT_ID'],
+        redirect_uri=redirect_uri,
+        state=state,
+        scope=','.join(sorted(scopes)) if scopes else None,
+    )
 
 
 class GitHubAuthView(MethodView):
@@ -20,27 +30,37 @@ class GitHubAuthView(MethodView):
 
     def get(self):
         auth.bind_redirect_target()
-        return github.authorize(
-            callback=url_for(self.authorized_url, _external=True),
-            scope=','.join(self.scopes),
-            access_type='offline',
+        oauth = get_oauth_session(
+            redirect_uri=url_for(self.authorized_url, _external=True),
+            scopes=self.scopes,
         )
+        authorization_url, state = oauth.authorization_url(GITHUB_AUTH_URI)
+        session['oauth_state'] = state
+        return redirect(authorization_url)
 
 
 class GitHubCompleteView(MethodView):
     # TODO(dcramer): we dont handle the case where the User row has been deleted,
     # but the identity still exists. It shouldn't happen.
     def get(self):
-        resp = github.authorized_response()
+        # TODO(dcramer): handle errors
+        oauth = get_oauth_session(state=session.pop('oauth_state', None))
+        resp = oauth.fetch_token(
+            GITHUB_TOKEN_URI,
+            client_secret=current_app.config['GITHUB_CLIENT_SECRET'],
+            authorization_response=request.url,
+        )
+
         if resp is None or resp.get('access_token') is None:
-            return 'Access denied: reason=%s error=%s resp=%s' % (
+            return Response('Access denied: reason=%s error=%s resp=%s' % (
                 request.args['error'],
                 request.args['error_description'],
                 resp
-            )
+            ))
 
-        scopes = resp['scope'].split(',')
+        assert resp.get('token_type') == 'bearer'
 
+        scopes = resp['scope'][0].split(',')
         if 'user:email' not in scopes:
             raise NotImplementedError
 

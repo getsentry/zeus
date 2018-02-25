@@ -1,6 +1,7 @@
 import json
 import logging
 import raven
+import os
 import sys
 import tempfile
 
@@ -8,22 +9,23 @@ from datetime import timedelta
 from flask import Flask
 from flask_alembic import Alembic
 from flask_mail import Mail
-from flask_oauthlib.client import OAuth
 from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 
-from zeus.constants import GITHUB_AUTH_URI, GITHUB_DEFAULT_SCOPES, GITHUB_TOKEN_URI
 from zeus.utils.celery import Celery
 from zeus.utils.nplusone import NPlusOne
 from zeus.utils.redis import Redis
 from zeus.utils.ssl import SSL
 
-import os
-
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
 WORKSPACE_ROOT = os.path.expanduser(os.environ.get(
     'WORKSPACE_ROOT', '~/.zeus/'))
+
+# Sigh. If only developers would stop having feelings, and use more facts.
+# HTTP (non-SSL) is a valid callback URL for many OAuth2 providers, especially
+# when you're running on localhost.
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 alembic = Alembic()
 celery = Celery()
@@ -33,19 +35,6 @@ nplusone = NPlusOne()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.ERROR, wrap_wsgi=True)
 ssl = SSL()
-
-oauth = OAuth()
-
-github = oauth.remote_app(
-    'github',
-    request_token_params={'scope': ','.join(GITHUB_DEFAULT_SCOPES)},
-    base_url='https://api.github.com/',
-    request_token_url=None,
-    access_token_method='POST',
-    access_token_url=GITHUB_TOKEN_URI,
-    authorize_url=GITHUB_AUTH_URI,
-    app_key='GITHUB',
-)
 
 
 def with_health_check(app):
@@ -256,8 +245,6 @@ def create_app(_read_config=True, **config):
     redis.init_app(app)
     mail.init_app(app)
     celery.init_app(app, sentry)
-
-    oauth.init_app(app)
 
     configure_webpack(app)
 
