@@ -65,7 +65,11 @@ class TestListItem extends Component {
   render() {
     let {params, test} = this.props;
     return (
-      <TestListItemLink onClick={() => this.setState({expanded: !this.state.expanded})}>
+      <TestListItemLink
+        onClick={() =>
+          window.getSelection().toString().length === 0 &&
+          this.setState({expanded: !this.state.expanded})
+        }>
         <ResultGridRow>
           <Flex align="center">
             <Box flex="1">
