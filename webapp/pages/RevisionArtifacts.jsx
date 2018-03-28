@@ -21,9 +21,11 @@ export default class RevisionArtifacts extends AsyncPage {
   renderBody() {
     return (
       <Section>
-        {this.state.artifacts.length
-          ? <ArtifactsList artifacts={this.state.artifacts} />
-          : <em>This build did not produce artifacts.</em>}
+        {this.state.artifacts.length ? (
+          <ArtifactsList build={this.context.build} artifacts={this.state.artifacts} />
+        ) : (
+          <em>This build did not produce artifacts.</em>
+        )}
       </Section>
     );
   }
