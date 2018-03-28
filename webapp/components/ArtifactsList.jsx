@@ -8,6 +8,7 @@ import {ResultGrid, Column, Header, Row} from './ResultGrid';
 export default class ArtifactsList extends Component {
   static propTypes = {
     artifacts: PropTypes.arrayOf(PropTypes.object).isRequired,
+    build: PropTypes.object.isRequired,
     collapsable: PropTypes.bool,
     maxVisible: PropTypes.number
   };
@@ -22,6 +23,7 @@ export default class ArtifactsList extends Component {
   }
 
   render() {
+    let {build} = this.props;
     return (
       <ResultGrid>
         <Header>
@@ -38,17 +40,18 @@ export default class ArtifactsList extends Component {
             return (
               <Row key={artifact.id}>
                 <Column>
-                  {this.props.collapsable
-                    ? artifact.name
-                    : <div>
-                        <a href={artifact.download_url}>
-                          {artifact.name}
-                        </a>
-                        <br />
-                        <small>
-                          {artifact.job.provider} #{artifact.job.number}
-                        </small>
-                      </div>}
+                  {this.props.collapsable ? (
+                    artifact.name
+                  ) : (
+                    <div>
+                      <a href={artifact.download_url}>{artifact.name}</a>
+                      <br />
+                      <small>
+                        #{build.number}.{artifact.job.number}
+                        {artifact.job.label && ` - ${artifact.job.label}`}
+                      </small>
+                    </div>
+                  )}
                 </Column>
                 <Column width={160} textAlign="right">
                   {artifact.type}

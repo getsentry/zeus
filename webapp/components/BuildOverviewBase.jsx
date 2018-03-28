@@ -203,7 +203,11 @@ export default class BuildOverviewBase extends AsyncPage {
         {!!this.state.artifacts.length && (
           <Section>
             <SectionHeading>Artifacts</SectionHeading>
-            <ArtifactsList artifacts={this.state.artifacts} collapsable={true} />
+            <ArtifactsList
+              build={this.context.build}
+              artifacts={this.state.artifacts}
+              collapsable={true}
+            />
           </Section>
         )}
       </div>
