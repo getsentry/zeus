@@ -1,11 +1,12 @@
 from flask import current_app, render_template
 from flask_mail import Message, sanitize_address
 from sqlalchemy.orm import undefer
-from typing import List
+from typing import List, Tuple
+from uuid import UUID
 
 from zeus import auth
 from zeus.config import db, mail
-from zeus.constants import Result
+from zeus.constants import Result, Severity
 from zeus.models import (
     Author, Build, Email, ItemOption, Job, Repository, RepositoryAccess,
     Revision, Source, StyleViolation, TestCase, User
@@ -13,9 +14,9 @@ from zeus.models import (
 from zeus.utils.email import inline_css
 
 
-def find_linked_accounts(build: Build) -> List[User]:
-    return list(User.query.join(
-        Email, Email.user_id == User.id
+def find_linked_emails(build: Build) -> List[Tuple[UUID, str]]:
+    return list(db.session.query(User.id, Email.email).filter(
+        Email.user_id == User.id
     ).join(
         RepositoryAccess, RepositoryAccess.user_id == User.id
     ).join(
@@ -63,27 +64,28 @@ def build_message(build: Build, force=False) -> Message:
         })
         return
 
-    users = find_linked_accounts(build)
-    if not users and not force:
+    emails = find_linked_emails(build)
+    if not emails and not force:
         current_app.logger.info('mail.no-linked-accounts', extra={
             'build_id': build.id,
         })
         return
-    elif not users:
-        users = [auth.get_current_user()]
+    elif not emails:
+        current_user = auth.get_current_user()
+        emails = [[current_user.id, current_user.email]]
 
     # filter it down to the users that have notifications enabled
     user_options = dict(
         db.session.query(ItemOption.item_id, ItemOption.value).filter(
-            ItemOption.item_id.in_([u.id for u in users]),
+            ItemOption.item_id.in_([uid for uid, _ in emails]),
             ItemOption.name == 'mail.notify_author',
         )
     )
-    users = [
-        u for u in users
-        if user_options.get(u.id, '1') == '1'
+    emails = [
+        r for r in emails
+        if user_options.get(r[0], '1') == '1'
     ]
-    if not users:
+    if not emails:
         current_app.logger.info('mail.no-enabed-accounts', extra={
             'build_id': build.id,
         })
@@ -105,7 +107,7 @@ def build_message(build: Build, force=False) -> Message:
                       x.result != Result.failed, x.number])
     job_ids = [j.id for j in job_list]
 
-    recipients = [u.email for u in users]
+    recipients = [r[1] for r in emails]
 
     subject = 'Build {} - {}/{} #{}'.format(
         str(build.result).title(),
@@ -125,7 +127,11 @@ def build_message(build: Build, force=False) -> Message:
 
         style_violations_query = StyleViolation.query.filter(
             StyleViolation.job_id.in_(job_ids),
-        )
+        ).order_by(
+            (StyleViolation.severity == Severity.error).desc(),
+            StyleViolation.filename.asc(),
+            StyleViolation.lineno.asc(),
+            StyleViolation.colno.asc())
         style_violations_count = style_violations_query.count()
         style_violations = style_violations_query.limit(10)
     else:

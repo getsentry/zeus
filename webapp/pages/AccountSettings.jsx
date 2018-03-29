@@ -53,7 +53,9 @@ class AccountSettings extends AsyncPage {
         <SectionHeading>Notifications</SectionHeading>
         <Section>
           <p>
-            {"We'll send notifications to your primary email address."}
+            {
+              "We'll send notifications to email address which is listed on the commit, but only if it's known and verified."
+            }
           </p>
           <Label>
             <input
@@ -75,10 +77,12 @@ class AccountSettings extends AsyncPage {
                 <Column>
                   {email.email}
                   {email.email === user.email && <Badge>Primary</Badge>}
-                  {!email.verified &&
+                  {!email.verified && (
                     <span>
-                      {' '}&mdash; <em>unverified</em>
-                    </span>}
+                      {' '}
+                      &mdash; <em>unverified</em>
+                    </span>
+                  )}
                 </Column>
               </Row>
             );
