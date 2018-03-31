@@ -6,6 +6,7 @@ from zeus.constants import Status, Result
 from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
 from zeus.db.types import Enum, GUID, JSONEncodedDict
 from zeus.db.utils import model_repr
+from zeus.utils import timezone
 
 
 class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
@@ -21,6 +22,13 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     label = db.Column(db.String, nullable=False)
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
     result = db.Column(Enum(Result), nullable=False, default=Result.unknown)
+    date_created = db.Column(
+        db.TIMESTAMP(
+            timezone=True),
+        nullable=False,
+        default=timezone.now,
+        server_default=func.now(),
+        index=True)
     date_started = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     date_finished = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     data = db.Column(JSONEncodedDict, nullable=True)

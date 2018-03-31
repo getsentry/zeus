@@ -96,7 +96,7 @@ class Repository(StandardAttributes, db.Model):
     external_id = db.Column(db.String(64))
     data = db.Column(JSONEncodedDict, nullable=True)
     public = db.Column(db.Boolean, default=False,
-                       server_default='false', nullable=False)
+                       server_default='false', nullable=False, index=True)
     last_update = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     last_update_attempt = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
 
