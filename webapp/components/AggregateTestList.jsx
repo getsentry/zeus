@@ -13,7 +13,8 @@ import {ResultGrid, Column, Header} from './ResultGrid';
 
 class TestDetails extends Component {
   static propTypes = {
-    test: PropTypes.object.isRequired
+    test: PropTypes.object.isRequired,
+    build: PropTypes.object.isRequired
   };
 
   constructor(props, context) {
@@ -38,13 +39,15 @@ class TestDetails extends Component {
 
   // TODO(dcramer): make this more useful
   render() {
+    let {build} = this.props;
     if (this.state.loading) return <TestDetailsWrapper>(loading)</TestDetailsWrapper>;
     let {testDetails} = this.state;
     return (
       <TestDetailsWrapper>
         <h5>
-          <ObjectResult data={testDetails} size={12} /> Job #{testDetails.job.number}
-          {testDetails.job.label && <span> &mdash; {testDetails.job.label}</span>}
+          <ObjectResult data={testDetails} size={12} />
+          #{build.number}.{testDetails.job.number}
+          {testDetails.job.label && ` - ${testDetails.job.label}`}
         </h5>
         <pre>{testDetails.message || <em>no output captured</em>}</pre>
       </TestDetailsWrapper>
@@ -54,7 +57,8 @@ class TestDetails extends Component {
 
 class TestListItem extends Component {
   static propTypes = {
-    test: PropTypes.object.isRequired
+    test: PropTypes.object.isRequired,
+    build: PropTypes.object.isRequired
   };
 
   constructor(props, context) {
@@ -63,7 +67,7 @@ class TestListItem extends Component {
   }
 
   render() {
-    let {params, test} = this.props;
+    let {build, params, test} = this.props;
     return (
       <TestListItemLink
         onClick={() =>
@@ -83,7 +87,7 @@ class TestListItem extends Component {
           {this.state.expanded && (
             <div>
               {test.runs.map(run => (
-                <TestDetails test={run} params={params} key={run.id} />
+                <TestDetails build={build} test={run} params={params} key={run.id} />
               ))}
             </div>
           )}
@@ -95,6 +99,7 @@ class TestListItem extends Component {
 
 export default class AggregateTestList extends Component {
   static propTypes = {
+    build: PropTypes.object.isRequired,
     testList: PropTypes.arrayOf(PropTypes.object).isRequired,
     collapsable: PropTypes.bool,
     maxVisible: PropTypes.number
@@ -118,7 +123,12 @@ export default class AggregateTestList extends Component {
           maxVisible={this.props.maxVisible}>
           {this.props.testList.map(test => {
             return (
-              <TestListItem params={this.props.params} test={test} key={test.name} />
+              <TestListItem
+                build={this.props.build}
+                params={this.props.params}
+                test={test}
+                key={test.name}
+              />
             );
           })}
         </Collapsable>

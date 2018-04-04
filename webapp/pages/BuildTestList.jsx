@@ -21,7 +21,11 @@ export default class BuildTestList extends AsyncPage {
   renderBody() {
     return (
       <Section>
-        <AggregateTestList testList={this.state.testList} params={this.props.params} />
+        <AggregateTestList
+          build={this.context.build}
+          testList={this.state.testList}
+          params={this.props.params}
+        />
       </Section>
     );
   }

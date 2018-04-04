@@ -150,6 +150,7 @@ export default class BuildOverviewBase extends AsyncPage {
           <Section>
             <SectionHeading>Failing Tests</SectionHeading>
             <AggregateTestList
+              build={build}
               testList={this.state.testFailures}
               params={this.props.params}
               collapsable={true}
