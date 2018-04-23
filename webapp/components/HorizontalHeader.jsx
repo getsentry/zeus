@@ -22,11 +22,11 @@ export const HeaderWrapper = styled.div`
   color: #fff;
   padding: 15px 30px;
   height: 60px;
-  box-shadow: inset -5px 0 10px rgba(0, 0, 0, .1);
+  box-shadow: inset -5px 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 export const HeaderLink = styled(Link)`
-  color: #8783A3;
+  color: #8783a3;
   font-weight: 400;
 `;
 

@@ -9,8 +9,7 @@ def identify_revision(repository: Repository, treeish: str):
     # try to find it from the database first
     if len(treeish) == 40:
         revision = Revision.query.filter(
-            Revision.repository_id == repository.id,
-            Revision.sha == treeish,
+            Revision.repository_id == repository.id, Revision.sha == treeish
         ).first()
         if revision:
             return revision

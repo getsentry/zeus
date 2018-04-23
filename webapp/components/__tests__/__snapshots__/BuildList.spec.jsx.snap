@@ -13,21 +13,21 @@ exports[`BuildList renders 1`] = `
       Build
     </div>
     <div
-      class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa jfzzVE"
+      class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
       style="text-align:center"
       width="90"
     >
       Coverage
     </div>
     <div
-      class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa jfzzVE"
+      class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
       style="text-align:center"
       width="90"
     >
       Duration
     </div>
     <div
-      class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa bNDigs"
+      class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa bNDigs"
       style="text-align:right"
       width="150"
     >
@@ -36,7 +36,7 @@ exports[`BuildList renders 1`] = `
   </div>
   <div>
     <a
-      class="sc-bxivhb kSSmoi"
+      class="sc-bxivhb kZeKpR"
     >
       <div
         class="sc-dnqmqq bLWiHU ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
@@ -112,14 +112,14 @@ exports[`BuildList renders 1`] = `
           </div>
         </div>
         <div
-          class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa jfzzVE"
+          class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
           style="text-align:center"
           width="90"
         >
           <span />
         </div>
         <div
-          class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa jfzzVE"
+          class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
           style="text-align:center"
           width="90"
         >
@@ -128,7 +128,7 @@ exports[`BuildList renders 1`] = `
           </span>
         </div>
         <div
-          class="sc-gzVnrw kpDEAk ResultGrid-Column sc-bdVaJa bNDigs"
+          class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa bNDigs"
           style="text-align:right"
           width="150"
         >

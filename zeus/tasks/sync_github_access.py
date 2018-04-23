@@ -11,7 +11,7 @@ def remove_access_to_owner_repos(user_id: UUID, owner_name: str, *filters):
         RepositoryAccess.user_id == user_id,
         RepositoryAccess.repository_id.in_(
             db.session.query(RepositoryAccess.repository_id).join(
-                Repository, Repository.id == RepositoryAccess.repository_id,
+                Repository, Repository.id == RepositoryAccess.repository_id
             ).filter(
                 Repository.provider == RepositoryProvider.github,
                 Repository.owner_name == owner_name,
@@ -19,12 +19,16 @@ def remove_access_to_owner_repos(user_id: UUID, owner_name: str, *filters):
                 *filters
             ).subquery()
         ),
-    ).delete(synchronize_session=False)
+    ).delete(
+        synchronize_session=False
+    )
 
 
-def sync_repos_for_owner(provider: GitHubRepositoryProvider, user: User, owner_name: str):
+def sync_repos_for_owner(
+    provider: GitHubRepositoryProvider, user: User, owner_name: str
+):
     repo_permissions = {
-        r['name']: r['permission']
+        r["name"]: r["permission"]
         for r in provider.get_repos_for_owner(user, owner_name)
     }
 
@@ -34,24 +38,26 @@ def sync_repos_for_owner(provider: GitHubRepositoryProvider, user: User, owner_n
 
     # first clear any access to repos which are no longer part of the organization
     remove_access_to_owner_repos(
-        user.id, owner_name, ~Repository.name.in_(repo_permissions.keys()))
+        user.id, owner_name, ~Repository.name.in_(repo_permissions.keys())
+    )
 
     # now identify any repos which might need access granted or updated
-    matches = list(Repository.query.unrestricted_unsafe().filter(
-        Repository.provider == RepositoryProvider.github,
-        Repository.owner_name == owner_name,
-        Repository.name.in_(repo_permissions.keys())
-    ))
+    matches = list(
+        Repository.query.unrestricted_unsafe().filter(
+            Repository.provider == RepositoryProvider.github,
+            Repository.owner_name == owner_name,
+            Repository.name.in_(repo_permissions.keys()),
+        )
+    )
 
     for repo in matches:
         permission = repo_permissions.get(repo.name)
         if permission:
-            create_or_update(RepositoryAccess, where={
-                'repository_id': repo.id,
-                'user_id': user.id,
-            }, values={
-                'permission': permission,
-            })
+            create_or_update(
+                RepositoryAccess,
+                where={"repository_id": repo.id, "user_id": user.id},
+                values={"permission": permission},
+            )
         else:
             # revoke permissions -- this path shouldnt really get hit
             RepositoryAccess.query.filter(
@@ -67,7 +73,7 @@ def sync_github_access(user_id: UUID):
         return
 
     provider = GitHubRepositoryProvider(cache=True)
-    owner_list = [o['name'] for o in provider.get_owners(user)]
+    owner_list = [o["name"] for o in provider.get_owners(user)]
     # for each owner list, we need to see if there are any matching repos
     if owner_list:
         for owner_name in owner_list:

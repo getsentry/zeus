@@ -9,6 +9,8 @@ class ItemOption(db.Model):
     name = db.Column(db.String(64), nullable=False)
     value = db.Column(db.Text, nullable=False)
 
-    __tablename__ = 'itemoption'
-    __table_args__ = (db.UniqueConstraint('item_id', 'name', name='unq_itemoption_name'), )
-    __repr__ = model_repr('item_id', 'name')
+    __tablename__ = "itemoption"
+    __table_args__ = (
+        db.UniqueConstraint("item_id", "name", name="unq_itemoption_name"),
+    )
+    __repr__ = model_repr("item_id", "name")

@@ -6,7 +6,8 @@ from zeus.utils.functional import memoize
 
 
 class GoogleCloudStorage(object):
-    def __init__(self, path='', project=None, credentials=None, bucket=None):
+
+    def __init__(self, path="", project=None, credentials=None, bucket=None):
         self.path = path
         self.bucket_name = bucket
         self.project = project
@@ -27,7 +28,7 @@ class GoogleCloudStorage(object):
         return client.get_bucket(self.bucket_name)
 
     def get_file_path(self, filename):
-        return '/'.join([self.path.rstrip('/'), filename])
+        return "/".join([self.path.rstrip("/"), filename])
 
     def delete(self, filename):
         blob = self.bucket.blob(self.get_file_path(filename))

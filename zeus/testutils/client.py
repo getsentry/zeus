@@ -36,12 +36,12 @@ class ZeusTestClient(FlaskClient):
         )
 
     def open(self, *args, **kwargs):
-        json_data = kwargs.pop('json', None)
+        json_data = kwargs.pop("json", None)
         if json_data is not None:
-            if 'data' in kwargs:
-                raise ValueError('Use either `json` or `data`, not both.')
+            if "data" in kwargs:
+                raise ValueError("Use either `json` or `data`, not both.")
 
-            if 'content_type' not in kwargs:
-                kwargs['content_type'] = 'application/json'
-            kwargs['data'] = json.dumps(json_data)
+            if "content_type" not in kwargs:
+                kwargs["content_type"] = "application/json"
+            kwargs["data"] = json.dumps(json_data)
         return super(ZeusTestClient, self).open(*args, **kwargs)

@@ -18,10 +18,6 @@ export default class FileSize extends Component {
   }
 
   render() {
-    return (
-      <span>
-        {this.getSize()}
-      </span>
-    );
+    return <span>{this.getSize()}</span>;
   }
 }

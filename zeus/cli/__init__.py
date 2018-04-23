@@ -7,8 +7,10 @@ import_submodules(locals(), __name__, __path__)
 
 def main():
     import os
-    os.environ.setdefault('PYTHONUNBUFFERED', 'true')
-    os.environ.setdefault('FLASK_APP', 'zeus.app')
+
+    os.environ.setdefault("PYTHONUNBUFFERED", "true")
+    os.environ.setdefault("FLASK_APP", "zeus.app")
 
     from .base import cli
+
     cli.main()

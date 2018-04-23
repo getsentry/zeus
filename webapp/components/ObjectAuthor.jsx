@@ -41,9 +41,11 @@ export default class ObjectAuthor extends Component {
     return (
       <span>
         <Avatar>
-          {author.email
-            ? <Gravatar email={author.email} size={16} />
-            : <MdPerson size="16" />}
+          {author.email ? (
+            <Gravatar email={author.email} size={16} />
+          ) : (
+            <MdPerson size="16" />
+          )}
         </Avatar>
         {author.name || author.email.split('@', 1)[0]}
       </span>

@@ -10,17 +10,18 @@ from .base import cli
 
 
 @cli.command()
-@click.option('--host', default='0.0.0.0')
-@click.option('--port', default=8090, type=int)
+@click.option("--host", default="0.0.0.0")
+@click.option("--port", default=8090, type=int)
 def pubsub(host, port):
-    os.environ['PYTHONUNBUFFERED'] = 'true'
+    os.environ["PYTHONUNBUFFERED"] = "true"
 
     import logging
+
     current_app.logger.setLevel(logging.DEBUG)
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(build_server(loop, host, port))
-    print('Pubsub serving on http://{}:{}'.format(host, port))
+    print("Pubsub serving on http://{}:{}".format(host, port))
 
     try:
         loop.run_forever()

@@ -3,7 +3,7 @@ from zeus.config import db
 from sqlalchemy.exc import IntegrityError
 
 
-def try_create(model, where: dict, defaults: dict=None):
+def try_create(model, where: dict, defaults: dict = None):
     if defaults is None:
         defaults = {}
 
@@ -17,6 +17,7 @@ def try_create(model, where: dict, defaults: dict=None):
             db.session.add(instance)
     except IntegrityError:
         return
+
     return instance
 
 
@@ -27,7 +28,7 @@ def try_update(model, where: dict, values: dict):
     return result.rowcount > 0
 
 
-def get_or_create(model, where: dict, defaults: dict=None):
+def get_or_create(model, where: dict, defaults: dict = None):
     if defaults is None:
         defaults = {}
 
@@ -45,12 +46,12 @@ def get_or_create(model, where: dict, defaults: dict=None):
 
     if instance is None:
         # this should never happen unless everything is broken
-        raise Exception('Unable to get or create instance')
+        raise Exception("Unable to get or create instance")
 
     return instance, created
 
 
-def create_or_update(model, where: dict, values: dict=None):
+def create_or_update(model, where: dict, values: dict = None):
     if values is None:
         values = {}
 
@@ -62,7 +63,8 @@ def create_or_update(model, where: dict, values: dict=None):
         if instance is None:
             instance = model.query.filter_by(**where).first()
             if instance is None:
-                raise Exception('Unable to create or update instance')
+                raise Exception("Unable to create or update instance")
+
             update(instance, values)
         else:
             created = True
@@ -72,7 +74,7 @@ def create_or_update(model, where: dict, values: dict=None):
     return instance, created
 
 
-def create_or_get(model, where: dict, values: dict=None):
+def create_or_get(model, where: dict, values: dict = None):
     if values is None:
         values = {}
 
@@ -87,7 +89,7 @@ def create_or_get(model, where: dict, values: dict=None):
             created = True
 
         if instance is None:
-            raise Exception('Unable to get or create instance')
+            raise Exception("Unable to get or create instance")
 
     return instance, created
 
@@ -100,14 +102,14 @@ def update(instance, values: dict):
 
 
 def model_repr(*attrs):
-    if 'id' not in attrs:
-        attrs = ('id', ) + attrs
+    if "id" not in attrs:
+        attrs = ("id",) + attrs
 
     def _repr(self):
         cls = type(self).__name__
 
-        pairs = ('%s=%s' % (a, repr(getattr(self, a, None))) for a in attrs)
+        pairs = ("%s=%s" % (a, repr(getattr(self, a, None))) for a in attrs)
 
-        return u'<%s at 0x%x: %s>' % (cls, id(self), ', '.join(pairs))
+        return u"<%s at 0x%x: %s>" % (cls, id(self), ", ".join(pairs))
 
     return _repr

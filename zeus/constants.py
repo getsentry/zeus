@@ -49,10 +49,7 @@ class Permission(IntFlag):
 
 
 STATUS_PRIORITY = (
-    Status.in_progress,
-    Status.queued,
-    Status.collecting_results,
-    Status.finished,
+    Status.in_progress, Status.queued, Status.collecting_results, Status.finished
 )
 
 RESULT_PRIORITY = (
@@ -65,18 +62,16 @@ RESULT_PRIORITY = (
 )
 
 PERMISSION_MAP = {
-    'GET': Permission.read,
-    'POST': Permission.write,
-    'PUT': Permission.write,
-    'DELETE': Permission.admin,
+    "GET": Permission.read,
+    "POST": Permission.write,
+    "PUT": Permission.write,
+    "DELETE": Permission.admin,
 }
 
 
-GITHUB_AUTH_URI = 'https://github.com/login/oauth/authorize'
-GITHUB_TOKEN_URI = 'https://github.com/login/oauth/access_token'
-GITHUB_DEFAULT_SCOPES = ('user:email', 'repo', 'read:org')
+GITHUB_AUTH_URI = "https://github.com/login/oauth/authorize"
+GITHUB_TOKEN_URI = "https://github.com/login/oauth/access_token"
+GITHUB_DEFAULT_SCOPES = ("user:email", "repo", "read:org")
 
 
-USER_AGENT = 'zeus/{0}'.format(
-    zeus.VERSION,
-)
+USER_AGENT = "zeus/{0}".format(zeus.VERSION)

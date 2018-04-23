@@ -9,6 +9,7 @@ from uuid import UUID
 
 
 class Celery(object):
+
     def __init__(self, app=None, sentry=None):
         # we create the celery immediately as otherwise NOTHING WORKS
         self.app = None
@@ -22,8 +23,8 @@ class Celery(object):
         self.app = app
         new_celery = celery.Celery(
             app.import_name,
-            broker=app.config['CELERY_BROKER_URL'],
-            backend=app.config['CELERY_RESULT_BACKEND'],
+            broker=app.config["CELERY_BROKER_URL"],
+            backend=app.config["CELERY_RESULT_BACKEND"],
         )
         # XXX(dcramer): why the hell am I wasting time trying to make Celery work?
         self.celery.__dict__.update(vars(new_celery))
@@ -50,9 +51,9 @@ class Celery(object):
     def _task_prerun(self, task, **kwargs):
         if self.app is None:
             return
+
         context = task._flask_context = [
-            self.app.app_context(),
-            self.app.test_request_context(),
+            self.app.app_context(), self.app.test_request_context()
         ]
         for ctx in context:
             ctx.push()
@@ -62,24 +63,28 @@ class Celery(object):
             context = task._flask_context
         except AttributeError:
             return
+
         for ctx in context:
             ctx.pop()
 
 
 class EnhancedJSONEncoder(json.JSONEncoder):
+
     def default(self, value):
         if isinstance(value, UUID):
             return str(value)
+
         elif isinstance(value, bytes_t):
             return value.decode()
+
         return value
 
 
 def register_serializer():
     serialization.register(
-        'zeus_json',
+        "zeus_json",
         lambda v: json.dumps(v, cls=EnhancedJSONEncoder),
         json.loads,
-        content_type='application/json',
-        content_encoding='utf-8'
+        content_type="application/json",
+        content_encoding="utf-8",
     )

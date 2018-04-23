@@ -45,9 +45,9 @@ const createMiddleware = () => {
     }
 
     stream = new EventSource(
-      `${window.ZEUS_PUBSUB_ENDPOINT}?token=${config.token}&channels=${window.encodeURIComponent(
-        config.channels.join(',')
-      )}`
+      `${window.ZEUS_PUBSUB_ENDPOINT}?token=${
+        config.token
+      }&channels=${window.encodeURIComponent(config.channels.join(','))}`
     );
 
     console.info(`Opening connection to ${stream.url}`);

@@ -8,9 +8,7 @@ from ..schemas import RepositorySchema
 
 
 class RepositoryDetailsResource(BaseRepositoryResource):
-    permission_overrides = {
-        'PUT': Permission.admin,
-    }
+    permission_overrides = {"PUT": Permission.admin}
 
     def select_resource_for_update(self) -> bool:
         return self.is_mutation()
@@ -19,9 +17,9 @@ class RepositoryDetailsResource(BaseRepositoryResource):
         """
         Return a repository.
         """
-        schema = RepositorySchema(strict=True, context={
-            'user': auth.get_current_user(),
-        })
+        schema = RepositorySchema(
+            strict=True, context={"user": auth.get_current_user()}
+        )
         return self.respond_with_schema(schema, repo)
 
     def put(self, repo: Repository):
@@ -29,7 +27,10 @@ class RepositoryDetailsResource(BaseRepositoryResource):
         Return a repository.
         """
         schema = RepositorySchema(
-            strict=True, partial=True, context={'repository': repo, 'user': auth.get_current_user()})
+            strict=True,
+            partial=True,
+            context={"repository": repo, "user": auth.get_current_user()},
+        )
         result = self.schema_from_request(schema)
         if result.errors:
             return self.respond(result.errors, 403)

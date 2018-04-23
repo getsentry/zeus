@@ -52,28 +52,29 @@ export default class BuildDetailsBase extends AsyncPage {
             </Message>
           </BuildHeader>
           <Meta>
-            {build.status === 'finished' &&
+            {build.status === 'finished' && (
               <DurationWrapper result={build.result}>
                 <ObjectResult data={build} />
                 {build.result} <TimeSince date={build.finished_at} /> in{' '}
                 <ObjectDuration data={build} short={true} />
-              </DurationWrapper>}
+              </DurationWrapper>
+            )}
             <Time>
               <MdClock size="16" style={{marginRight: 5}} />
-              {build.status === 'queued' || build.status === 'unknown'
-                ? <span>
-                    created <TimeSince date={build.created_at} />
-                  </span>
-                : <span>
-                    started <TimeSince date={build.started_at} />
-                  </span>}
+              {build.status === 'queued' || build.status === 'unknown' ? (
+                <span>
+                  created <TimeSince date={build.created_at} />
+                </span>
+              ) : (
+                <span>
+                  started <TimeSince date={build.started_at} />
+                </span>
+              )}
             </Time>
             <Author>
               <ObjectAuthor data={build} />
             </Author>
-            <Commit>
-              {build.source.revision.sha.substr(0, 7)}
-            </Commit>
+            <Commit>{build.source.revision.sha.substr(0, 7)}</Commit>
           </Meta>
           <TabbedNav>
             <TabbedNavItem to={this.getBaseRoute()} onlyActiveOnIndex={true}>
@@ -81,28 +82,27 @@ export default class BuildDetailsBase extends AsyncPage {
             </TabbedNavItem>
             <TabbedNavItem to={`${this.getBaseRoute()}/tests`} disabled={!hasTests}>
               Tests
-              {hasTests
-                ? <Badge>
-                    {(build.stats.tests.count_unique || build.stats.tests.count)
-                      .toLocaleString()}
-                  </Badge>
-                : null}
+              {hasTests ? (
+                <Badge>
+                  {(
+                    build.stats.tests.count_unique || build.stats.tests.count
+                  ).toLocaleString()}
+                </Badge>
+              ) : null}
             </TabbedNavItem>
             <TabbedNavItem to={`${this.getBaseRoute()}/coverage`} disabled={!hasCoverage}>
               Code Coverage
-              {hasCoverage
-                ? <Badge>
-                    <ObjectCoverage data={build} diff={false} />
-                  </Badge>
-                : null}
+              {hasCoverage ? (
+                <Badge>
+                  <ObjectCoverage data={build} diff={false} />
+                </Badge>
+              ) : null}
             </TabbedNavItem>
             <TabbedNavItem to={`${this.getBaseRoute()}/style-violations`}>
               Style Violations
-              {hasStyleViolations
-                ? <Badge>
-                    {build.stats.style_violations.count.toLocaleString()}
-                  </Badge>
-                : null}
+              {hasStyleViolations ? (
+                <Badge>{build.stats.style_violations.count.toLocaleString()}</Badge>
+              ) : null}
             </TabbedNavItem>
             <TabbedNavItem to={`${this.getBaseRoute()}/diff`}>Diff</TabbedNavItem>
             <TabbedNavItem to={`${this.getBaseRoute()}/artifacts`}>
@@ -134,7 +134,9 @@ const Message = styled.div`
   overflow: hidden;
 `;
 
-const Branch = styled.div`font-family: 'Monaco', monospace;`;
+const Branch = styled.div`
+  font-family: 'Monaco', monospace;
+`;
 
 const Meta = styled.div`
   display: flex;

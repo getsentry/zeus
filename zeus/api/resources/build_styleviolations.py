@@ -11,22 +11,23 @@ styleviolation_schema = StyleViolationSchema(many=True, strict=True)
 
 
 class BuildStyleViolationsResource(BaseBuildResource):
+
     def get(self, build: Build):
         """
         Return a list of style violations for a given build.
         """
-        query = StyleViolation.query.options(contains_eager('job')).join(
-            Job,
-            StyleViolation.job_id == Job.id,
+        query = StyleViolation.query.options(contains_eager("job")).join(
+            Job, StyleViolation.job_id == Job.id
         ).filter(
-            Job.build_id == build.id,
+            Job.build_id == build.id
         )
 
-        severity = request.args.get('severity')
+        severity = request.args.get("severity")
         if severity:
             try:
                 query = query.filter(
-                    StyleViolation.severity == getattr(Severity, severity))
+                    StyleViolation.severity == getattr(Severity, severity)
+                )
             except AttributeError:
                 raise NotImplementedError
 
@@ -34,6 +35,7 @@ class BuildStyleViolationsResource(BaseBuildResource):
             (StyleViolation.severity == Severity.error).desc(),
             StyleViolation.filename.asc(),
             StyleViolation.lineno.asc(),
-            StyleViolation.colno.asc())
+            StyleViolation.colno.asc(),
+        )
 
         return self.paginate_with_schema(styleviolation_schema, query)

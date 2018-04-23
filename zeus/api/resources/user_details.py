@@ -10,19 +10,20 @@ user_schema = UserSchema(strict=True)
 
 
 class UserDetailsResource(Resource):
+
     def get(self, user_id: str):
         """
         Return information on a user.
         """
-        if user_id == 'me':
+        if user_id == "me":
             user = auth.get_current_user()
             if not user:
-                return self.error('not authenticated', 401)
+                return self.error("not authenticated", 401)
+
         else:
             raise NotImplementedError
 
-        user.options = list(ItemOption.query.filter(
-            ItemOption.item_id == user.id))
+        user.options = list(ItemOption.query.filter(ItemOption.item_id == user.id))
 
         return self.respond_with_schema(user_schema, user)
 
@@ -30,10 +31,11 @@ class UserDetailsResource(Resource):
         """
         Return information on a user.
         """
-        if user_id == 'me':
+        if user_id == "me":
             user = auth.get_current_user()
             if not user:
-                return self.error('not authenticated', 401)
+                return self.error("not authenticated", 401)
+
         else:
             raise NotImplementedError
 
@@ -41,18 +43,16 @@ class UserDetailsResource(Resource):
         if result.errors:
             return self.respond(result.errors, 403)
 
-        for name, values in result.data.get('options', {}).items():
+        for name, values in result.data.get("options", {}).items():
             for subname, value in values.items():
-                create_or_update(ItemOption, where={
-                    'item_id': user.id,
-                    'name': '{}.{}'.format(name, subname),
-                }, values={
-                    'value': value,
-                })
+                create_or_update(
+                    ItemOption,
+                    where={"item_id": user.id, "name": "{}.{}".format(name, subname)},
+                    values={"value": value},
+                )
 
         db.session.commit()
 
-        user.options = list(ItemOption.query.filter(
-            ItemOption.item_id == user.id))
+        user.options = list(ItemOption.query.filter(ItemOption.item_id == user.id))
 
         return self.respond_with_schema(user_schema, user)

@@ -6,25 +6,19 @@ from zeus.artifacts.manager import Manager
 
 def test_process_behavior_with_filenames(mocker, default_job):
     handler = mocker.Mock()
-    handler.__name__ = 'CoverageHandler'
+    handler.__name__ = "CoverageHandler"
     handler.supported_types = frozenset([])
 
     manager = Manager()
-    manager.register(handler, ['coverage.xml'])
+    manager.register(handler, ["coverage.xml"])
 
-    artifact = factories.ArtifactFactory(
-        job=default_job,
-        name='junit.xml',
-    )
+    artifact = factories.ArtifactFactory(job=default_job, name="junit.xml")
     artifact.file.save(BytesIO(), artifact.name)
     manager.process(artifact)
 
     assert not handler.called
 
-    artifact = factories.ArtifactFactory(
-        job=default_job,
-        name='coverage.xml',
-    )
+    artifact = factories.ArtifactFactory(job=default_job, name="coverage.xml")
     artifact.file.save(BytesIO(), artifact.name)
     manager.process(artifact)
 
@@ -34,25 +28,20 @@ def test_process_behavior_with_filenames(mocker, default_job):
 
 def test_process_behavior_with_types(mocker, default_job):
     handler = mocker.Mock()
-    handler.__name__ = 'CoverageHandler'
-    handler.supported_types = frozenset(['text/xml+coverage'])
+    handler.__name__ = "CoverageHandler"
+    handler.supported_types = frozenset(["text/xml+coverage"])
 
     manager = Manager()
     manager.register(handler, [])
 
-    artifact = factories.ArtifactFactory(
-        job=default_job,
-        name='coverage.xml',
-    )
+    artifact = factories.ArtifactFactory(job=default_job, name="coverage.xml")
     artifact.file.save(BytesIO(), artifact.name)
     manager.process(artifact)
 
     assert not handler.called
 
     artifact = factories.ArtifactFactory(
-        job=default_job,
-        name='coverage.xml',
-        type='text/xml+coverage',
+        job=default_job, name="coverage.xml", type="text/xml+coverage"
     )
     artifact.file.save(BytesIO(), artifact.name)
     manager.process(artifact)

@@ -3,6 +3,7 @@ from fnmatch import fnmatch
 
 
 class Manager(object):
+
     def __init__(self):
         self.handlers = []
 
@@ -28,10 +29,10 @@ class Manager(object):
             handler = cls(job)
             fp = artifact.file.get_file()
             try:
-                current_app.logger.info('artifact.process', extra={
-                    'handler_cls': cls.__name__,
-                    'artifact_id': artifact.id,
-                })
+                current_app.logger.info(
+                    "artifact.process",
+                    extra={"handler_cls": cls.__name__, "artifact_id": artifact.id},
+                )
                 handler.process(fp)
             finally:
                 fp.close()

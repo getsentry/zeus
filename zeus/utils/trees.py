@@ -2,7 +2,9 @@ from collections import defaultdict
 from typing import Dict, List, Set
 
 
-def build_flat_tree(tests: List[str], sep: str='.', min_children: int=1) -> Dict[str, Set[str]]:
+def build_flat_tree(
+    tests: List[str], sep: str = ".", min_children: int = 1
+) -> Dict[str, Set[str]]:
     tree = defaultdict(set)
 
     # Build a mapping of prefix => set(children)
@@ -15,8 +17,9 @@ def build_flat_tree(tests: List[str], sep: str='.', min_children: int=1) -> Dict
     return tree
 
 
-def build_tree(tests: List[str], sep: str='.', min_children: int=1,
-               parent: str='') -> Dict[str, Set[str]]:
+def build_tree(
+    tests: List[str], sep: str = ".", min_children: int = 1, parent: str = ""
+) -> Dict[str, Set[str]]:
     tree = defaultdict(set)
 
     # Build a mapping of prefix => set(children)
@@ -28,7 +31,8 @@ def build_tree(tests: List[str], sep: str='.', min_children: int=1,
 
     # This method expands each node if it has fewer than min_children children.
     # "Expand" here means replacing a node with its children.
-    def expand(node='', sep='.', min_children=1):
+
+    def expand(node="", sep=".", min_children=1):
         # Leave leaf nodes alone.
         if node in tree:
 
@@ -51,4 +55,5 @@ def build_tree(tests: List[str], sep: str='.', min_children: int=1,
 
     if parent:
         return tree[parent]
-    return tree['']
+
+    return tree[""]

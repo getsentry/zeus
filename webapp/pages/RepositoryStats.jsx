@@ -114,9 +114,7 @@ export default class RepositoryStats extends AsyncPage {
             stat['coverage.lines_covered'] + stat['coverage.lines_uncovered'];
           return (
             <Row key={time}>
-              <Column>
-                {moment(time).format('ll')}
-              </Column>
+              <Column>{moment(time).format('ll')}</Column>
               <Column width={100} textAlign="right">
                 {stat['builds.total'].toLocaleString()}
               </Column>
@@ -141,9 +139,11 @@ export default class RepositoryStats extends AsyncPage {
                 {stat['tests.count'].toLocaleString()}
               </Column>
               <Column width={100} textAlign="right">
-                {stat['tests.duration']
-                  ? <Duration ms={stat['tests.duration'] / stat['tests.count']} />
-                  : ''}
+                {stat['tests.duration'] ? (
+                  <Duration ms={stat['tests.duration'] / stat['tests.count']} />
+                ) : (
+                  ''
+                )}
               </Column>
               <Column width={100} textAlign="right">
                 {stat['style_violations.count'].toLocaleString()}

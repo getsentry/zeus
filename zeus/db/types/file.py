@@ -1,4 +1,4 @@
-__all__ = ['File', 'FileData']
+__all__ = ["File", "FileData"]
 
 import json
 
@@ -10,37 +10,39 @@ from zeus.utils.imports import import_string
 
 
 class FileData(Mutable):
+
     def __init__(self, data=None, default_storage=None, default_path=None):
         if data is None:
             data = {}
 
-        self.filename = data.get('filename')
+        self.filename = data.get("filename")
         self.exists = bool(data and self.filename)
         self.storage = (
-            data.get(
-                'storage', default_storage or current_app.config['FILE_STORAGE'])
+            data.get("storage", default_storage or current_app.config["FILE_STORAGE"])
         )
-        self.path = data.get('path', default_path)
-        self.size = data.get('size', None)
+        self.path = data.get("path", default_path)
+        self.size = data.get("size", None)
 
     def __repr__(self):
         if not self.exists:
-            return '<%s: not present>' % (type(self).__name__,)
-        return '<%s: filename=%s>' % (type(self).__name__, self.filename)
+            return "<%s: not present>" % (type(self).__name__,)
+
+        return "<%s: filename=%s>" % (type(self).__name__, self.filename)
 
     def __bool__(self):
         return self.exists
 
     def get_storage(self):
-        storage = import_string(self.storage['backend'])
-        options = self.storage.get('options', {})
+        storage = import_string(self.storage["backend"])
+        options = self.storage.get("options", {})
         if self.path is not None:
-            options['path'] = self.path
+            options["path"] = self.path
         return storage(**options)
 
     def url_for(self, expire=300):
         if self.filename is None:
             return
+
         return self.get_storage().url_for(self.filename, expire=expire)
 
     def save(self, fp, filename=None):
@@ -48,12 +50,12 @@ class FileData(Mutable):
             self.filename = filename
             self.exists = True
         elif self.filename is None:
-            raise ValueError('Missing filename')
+            raise ValueError("Missing filename")
 
         # Flask's FileStorage object might give us an accurate content_length,
         # otherwise we need to seek the underlying file to obtain its size.
         # For in-memory files this will fail, so we just assume None as default
-        if hasattr(fp, 'content_length') and fp.content_length:
+        if hasattr(fp, "content_length") and fp.content_length:
             self.size = fp.content_length
         else:
             try:
@@ -76,7 +78,8 @@ class FileData(Mutable):
 
     def get_file(self):
         if self.filename is None:
-            raise ValueError('Missing filename')
+            raise ValueError("Missing filename")
+
         return self.get_storage().get_file(self.filename)
 
     @classmethod
@@ -89,14 +92,12 @@ class File(TypeDecorator):
 
     python_type = FileData
 
-    def __init__(self, path='', storage=None, *args, **kwargs):
+    def __init__(self, path="", storage=None, *args, **kwargs):
 
         super(File, self).__init__(*args, **kwargs)
 
         self.path = path
-        self.storage = {
-            'storage': storage,
-        }
+        self.storage = {"storage": storage}
 
     def process_bind_param(self, value, dialect):
         if value:
@@ -105,14 +106,14 @@ class File(TypeDecorator):
                     value = {}
                 else:
                     value = {
-                        'filename': value.filename,
-                        'storage': value.storage,
-                        'path': value.path,
-                        'size': value.size,
+                        "filename": value.filename,
+                        "storage": value.storage,
+                        "path": value.path,
+                        "size": value.size,
                     }
             return str(json.dumps(value))
 
-        return u'{}'
+        return u"{}"
 
     def process_result_value(self, value, dialect):
         if value:

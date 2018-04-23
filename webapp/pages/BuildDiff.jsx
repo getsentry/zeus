@@ -21,11 +21,13 @@ export default class BuildDiff extends AsyncPage {
   renderBody() {
     return (
       <Section>
-        {this.state.source.diff
-          ? <Diff diff={this.state.source.diff} />
-          : <Section>
-              <em>No source information was available for this build.</em>
-            </Section>}
+        {this.state.source.diff ? (
+          <Diff diff={this.state.source.diff} />
+        ) : (
+          <Section>
+            <em>No source information was available for this build.</em>
+          </Section>
+        )}
       </Section>
     );
   }

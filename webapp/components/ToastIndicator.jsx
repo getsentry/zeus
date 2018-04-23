@@ -17,9 +17,7 @@ export default class ToastIndicator extends Component {
     return (
       <div className={classNames('toast', this.props.type)}>
         <span className="icon" />
-        <div className="toast-message">
-          {this.props.children}
-        </div>
+        <div className="toast-message">{this.props.children}</div>
       </div>
     );
   }

@@ -15,6 +15,7 @@ builds_schema = BuildSchema(many=True, strict=True)
 
 
 class RepositoryBuildsResource(BaseRepositoryResource):
+
     def select_resource_for_update(self):
         return False
 
@@ -25,26 +26,29 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         user = auth.get_current_user()
 
         query = Build.query.options(
-            contains_eager('source'),
-            joinedload('source').joinedload('author'),
-            joinedload('source').joinedload('revision'),
-            joinedload('source').joinedload('patch'),
-            subqueryload_all('stats'),
+            contains_eager("source"),
+            joinedload("source").joinedload("author"),
+            joinedload("source").joinedload("revision"),
+            joinedload("source").joinedload("patch"),
+            subqueryload_all("stats"),
         ).join(
-            Source,
-            Build.source_id == Source.id,
+            Source, Build.source_id == Source.id
         ).filter(
-            Build.repository_id == repo.id,
-        ).order_by(Build.number.desc())
-        show = request.args.get('show')
-        if show == 'mine':
+            Build.repository_id == repo.id
+        ).order_by(
+            Build.number.desc()
+        )
+        show = request.args.get("show")
+        if show == "mine":
             query = query.filter(
                 Source.author_id.in_(
-                    db.session.query(Author.id).filter(Author.email.in_(
-                        db.session.query(Email.email).filter(
-                            Email.user_id == user.id
+                    db.session.query(Author.id).filter(
+                        Author.email.in_(
+                            db.session.query(Email.email).filter(
+                                Email.user_id == user.id
+                            )
                         )
-                    ))
+                    )
                 )
             )
 
@@ -54,10 +58,11 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         """
         Create a new build.
         """
-        schema = BuildCreateSchema(strict=True, context={'repository': repo})
+        schema = BuildCreateSchema(strict=True, context={"repository": repo})
         result = self.schema_from_request(schema, partial=True)
         if result.errors:
             return self.respond(result.errors, 403)
+
         data = result.data
 
         # TODO(dcramer): only if we create a source via a patch will we need the author
@@ -75,11 +80,9 @@ class RepositoryBuildsResource(BaseRepositoryResource):
 
         # TODO(dcramer): need to handle patch case yet
         source = Source.query.options(
-            joinedload('author'),
-            joinedload('revision'),
+            joinedload("author"), joinedload("revision")
         ).filter(
-            Source.revision_sha == data.pop('ref'),
-            Source.repository_id == repo.id,
+            Source.revision_sha == data.pop("ref"), Source.repository_id == repo.id
         ).first()
 
         build = Build(repository=repo, **data)
@@ -89,10 +92,10 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         build.author = source.author
         if not source.patch_id:
             if not build.label:
-                build.label = source.revision.message.split('\n')[0]
+                build.label = source.revision.message.split("\n")[0]
 
         if not build.label:
-            return self.error('missing build label')
+            return self.error("missing build label")
 
         db.session.add(build)
 
@@ -103,6 +106,6 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             return self.respond(status=422)
 
         result = build_schema.dump(build)
-        assert not result.errors, 'this should never happen'
-        publish('builds', 'build.create', result.data)
+        assert not result.errors, "this should never happen"
+        publish("builds", "build.create", result.data)
         return self.respond(result.data, 200)

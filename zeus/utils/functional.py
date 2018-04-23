@@ -17,6 +17,7 @@ class memoize(object):
     def __get__(self, obj, type=None):
         if obj is None:
             return self
+
         d, n = vars(obj), self.__name__
         if n not in d:
             value = self.func(obj)

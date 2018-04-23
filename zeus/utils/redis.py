@@ -18,14 +18,16 @@ class Redis(object):
             self.init_app(app)
 
     def init_app(self, app):
-        self.redis = redis.from_url(app.config['REDIS_URL'])
+        self.redis = redis.from_url(app.config["REDIS_URL"])
         self.logger = app.logger
 
     def __getattr__(self, name):
         return getattr(self.redis, name)
 
     @contextmanager
-    def lock(self, lock_key: str, timeout: int=3, expire: int=None, nowait: bool=False):
+    def lock(
+        self, lock_key: str, timeout: int = 3, expire: int = None, nowait: bool = False
+    ):
         conn = self.redis
 
         if expire is None:
@@ -37,24 +39,26 @@ class Redis(object):
         got_lock = None
         while not got_lock and attempt < max_attempts:
             pipe = conn.pipeline()
-            pipe.setnx(lock_key, '')
+            pipe.setnx(lock_key, "")
             pipe.expire(lock_key, expire)
             got_lock = pipe.execute()[0]
             if not got_lock:
                 if nowait:
                     break
+
                 sleep(delay)
                 attempt += 1
 
-        self.logger.info('Acquiring lock on %s', lock_key)
+        self.logger.info("Acquiring lock on %s", lock_key)
 
         if not got_lock:
-            raise self.UnableToGetLock('Unable to fetch lock on %s' % (lock_key, ))
+            raise self.UnableToGetLock("Unable to fetch lock on %s" % (lock_key,))
 
         try:
             yield
+
         finally:
-            self.logger.info('Releasing lock on %s', lock_key)
+            self.logger.info("Releasing lock on %s", lock_key)
 
             try:
                 conn.delete(lock_key)

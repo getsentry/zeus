@@ -20,7 +20,7 @@ class ModelFactory(alchemy.SQLAlchemyModelFactory):
         """
         Create an instance of the model, and save it to the database.
         """
-        session = getattr(cls._meta, 'sqlalchemy_session', None) or db.session
+        session = getattr(cls._meta, "sqlalchemy_session", None) or db.session
         session_persistence = cls._meta.sqlalchemy_session_persistence
         if cls._meta.force_flush:
             session_persistence = alchemy.SESSION_PERSISTENCE_FLUSH

@@ -2,25 +2,25 @@ import {Link} from 'react-router';
 import styled from 'styled-components';
 
 const ListItemLink = styled(Link)`
-display: block;
+  display: block;
 
-&:hover {
-  background-color: #F0EFF5;
-}
+  &:hover {
+    background-color: #f0eff5;
+  }
 
-&.${props => props.activeClassName} {
-  color: #fff;
-  background: #7B6BE6;
+  &.${props => props.activeClassName} {
+    color: #fff;
+    background: #7b6be6;
 
-  > div {
-    color: #fff !important;
+    > div {
+      color: #fff !important;
 
-    svg {
-      color: #fff;
-      opacity: .5;
+      svg {
+        color: #fff;
+        opacity: 0.5;
+      }
     }
   }
-}
 `;
 
 ListItemLink.defaultProps = {

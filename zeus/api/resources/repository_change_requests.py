@@ -13,6 +13,7 @@ change_requests_schema = ChangeRequestSchema(many=True, strict=True)
 
 
 class RepositoryChangeRequestsResource(BaseRepositoryResource):
+
     def select_resource_for_update(self):
         return False
 
@@ -23,21 +24,25 @@ class RepositoryChangeRequestsResource(BaseRepositoryResource):
         user = auth.get_current_user()
 
         query = ChangeRequest.query.options(
-            joinedload('head_revision'),
-            joinedload('parent_revision'),
-            joinedload('author'),
+            joinedload("head_revision"),
+            joinedload("parent_revision"),
+            joinedload("author"),
         ).filter(
-            ChangeRequest.repository_id == repo.id,
-        ).order_by(ChangeRequest.number.desc())
-        show = request.args.get('show')
-        if show == 'mine':
+            ChangeRequest.repository_id == repo.id
+        ).order_by(
+            ChangeRequest.number.desc()
+        )
+        show = request.args.get("show")
+        if show == "mine":
             query = query.filter(
                 ChangeRequest.author_id.in_(
-                    db.session.query(Author.id).filter(Author.email.in_(
-                        db.session.query(Email.email).filter(
-                            Email.user_id == user.id
+                    db.session.query(Author.id).filter(
+                        Author.email.in_(
+                            db.session.query(Email.email).filter(
+                                Email.user_id == user.id
+                            )
                         )
-                    ))
+                    )
                 )
             )
 
@@ -47,8 +52,7 @@ class RepositoryChangeRequestsResource(BaseRepositoryResource):
         """
         Create a new change request.
         """
-        schema = ChangeRequestCreateSchema(
-            strict=True, context={'repository': repo})
+        schema = ChangeRequestCreateSchema(strict=True, context={"repository": repo})
         result = self.schema_from_request(schema)
         if result.errors:
             return self.respond(result.errors, 403)
@@ -61,6 +65,7 @@ class RepositoryChangeRequestsResource(BaseRepositoryResource):
             db.session.commit()
         except IntegrityError as exc:
             raise
+
             db.session.rollback()
             return self.respond(status=422)
 

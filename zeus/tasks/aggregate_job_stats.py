@@ -6,19 +6,35 @@ from zeus import auth
 from zeus.config import celery, db, redis
 from zeus.constants import Result, Status
 from zeus.db.utils import create_or_update
-from zeus.models import (Artifact, Build, FailureReason,
-                         FileCoverage, ItemStat, Job, StyleViolation, TestCase, BundleAsset)
+from zeus.models import (
+    Artifact,
+    Build,
+    FailureReason,
+    FileCoverage,
+    ItemStat,
+    Job,
+    StyleViolation,
+    TestCase,
+    BundleAsset,
+)
 from zeus.tasks.send_build_notifications import send_build_notifications
 from zeus.utils import timezone
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 
 AGGREGATED_BUILD_STATS = (
-    'tests.count', 'tests.duration', 'tests.failures', 'tests.count_unique',
-    'tests.failures_unique', 'style_violations.count', 'bundle.total_asset_size'
+    "tests.count",
+    "tests.duration",
+    "tests.failures",
+    "tests.count_unique",
+    "tests.failures_unique",
+    "style_violations.count",
+    "bundle.total_asset_size",
 )
 
 
 # TODO(dcramer): put a lock around this
+
+
 @celery.task(max_retries=None, autoretry_for=(Exception,), acks_late=True)
 def aggregate_build_stats_for_job(job_id: UUID):
     """
@@ -27,23 +43,22 @@ def aggregate_build_stats_for_job(job_id: UUID):
     This should generally be fired upon a job's completion, or
     alternatively it can be used to repair aggregate data.
     """
-    lock_key = 'job:{job_id}'.format(
-        job_id=job_id,
-    )
+    lock_key = "job:{job_id}".format(job_id=job_id)
     with redis.lock(lock_key):
         job = Job.query.unrestricted_unsafe().with_for_update(nowait=True).filter(
-            Job.id == job_id,
+            Job.id == job_id
         ).first()
         if not job:
             raise ValueError
 
-        auth.set_current_tenant(auth.RepositoryTenant(
-            repository_id=job.repository_id,
-        ))
+        auth.set_current_tenant(auth.RepositoryTenant(repository_id=job.repository_id))
 
         # we need to handle the race between when the mutations were made to <Job> and
         # when the only remaining artifact may have finished processing
-        if job.status == Status.collecting_results and not has_unprocessed_artifacts(job.id):
+        if (
+            job.status == Status.collecting_results
+            and not has_unprocessed_artifacts(job.id)
+        ):
             job.status = Status.finished
             if not job.date_finished:
                 job.date_finished = timezone.now()
@@ -58,9 +73,7 @@ def aggregate_build_stats_for_job(job_id: UUID):
             record_bundle_stats(job.id)
             record_failure_reasons(job)
 
-    lock_key = 'aggstatsbuild:{build_id}'.format(
-        build_id=job.build_id.hex,
-    )
+    lock_key = "aggstatsbuild:{build_id}".format(build_id=job.build_id.hex)
     with redis.lock(lock_key):
         aggregate_build_stats.delay(build_id=job.build_id)
 
@@ -69,46 +82,37 @@ def aggregate_stat_for_build(build: Build, name: str, func_=func.sum):
     """
     Aggregates a single stat for all jobs the given build.
     """
-    if name == 'tests.count_unique':
+    if name == "tests.count_unique":
         value = db.session.query(func.count(TestCase.hash.distinct())).join(
-            Job,
-            TestCase.job_id == Job.id,
+            Job, TestCase.job_id == Job.id
         ).filter(
-            Job.build_id == build.id,
+            Job.build_id == build.id
         ).as_scalar()
-    elif name == 'tests.failures_unique':
+    elif name == "tests.failures_unique":
         value = db.session.query(func.count(TestCase.hash.distinct())).join(
-            Job,
-            TestCase.job_id == Job.id,
+            Job, TestCase.job_id == Job.id
         ).filter(
-            TestCase.result == Result.failed,
-            Job.build_id == build.id,
+            TestCase.result == Result.failed, Job.build_id == build.id
         ).as_scalar()
     else:
-        value = db.session.query(
-            func.coalesce(func_(ItemStat.value), 0),
-        ).filter(
-            ItemStat.item_id.in_(db.session.query(Job.id).filter(
-                Job.build_id == build.id,
-            )),
+        value = db.session.query(func.coalesce(func_(ItemStat.value), 0)).filter(
+            ItemStat.item_id.in_(
+                db.session.query(Job.id).filter(Job.build_id == build.id)
+            ),
             ItemStat.name == name,
         ).as_scalar()
 
     create_or_update(
         model=ItemStat,
-        where={
-            'item_id': build.id,
-            'name': name,
-        },
-        values={'value': value},
+        where={"item_id": build.id, "name": name},
+        values={"value": value},
     )
 
 
 def has_unprocessed_artifacts(job_id: UUID):
     return db.session.query(
         Artifact.query.filter(
-            Artifact.status != Status.finished,
-            Artifact.job_id == job_id,
+            Artifact.status != Status.finished, Artifact.job_id == job_id
         ).exists()
     ).scalar()
 
@@ -116,8 +120,7 @@ def has_unprocessed_artifacts(job_id: UUID):
 def record_failure_reasons(job: Job):
     has_failures = db.session.query(
         TestCase.query.filter(
-            TestCase.job_id == job.id,
-            TestCase.result == Result.failed,
+            TestCase.job_id == job.id, TestCase.result == Result.failed
         ).exists()
     ).scalar()
     any_failures = False
@@ -146,43 +149,32 @@ def record_failure_reasons(job: Job):
 def record_test_stats(job_id: UUID):
     create_or_update(
         ItemStat,
-        where={
-            'item_id': job_id,
-            'name': 'tests.count',
-        },
+        where={"item_id": job_id, "name": "tests.count"},
         values={
-            'value':
-            db.session.query(func.count(TestCase.id)).filter(
-                TestCase.job_id == job_id,
-            ).as_scalar(),
-        }
+            "value": db.session.query(func.count(TestCase.id)).filter(
+                TestCase.job_id == job_id
+            ).as_scalar()
+        },
     )
     create_or_update(
         ItemStat,
-        where={
-            'item_id': job_id,
-            'name': 'tests.failures',
-        },
+        where={"item_id": job_id, "name": "tests.failures"},
         values={
-            'value':
-            db.session.query(func.count(TestCase.id)).filter(
-                TestCase.job_id == job_id,
-                TestCase.result == Result.failed,
-            ).as_scalar(),
-        }
+            "value": db.session.query(func.count(TestCase.id)).filter(
+                TestCase.job_id == job_id, TestCase.result == Result.failed
+            ).as_scalar()
+        },
     )
     create_or_update(
         ItemStat,
-        where={
-            'item_id': job_id,
-            'name': 'tests.duration',
-        },
+        where={"item_id": job_id, "name": "tests.duration"},
         values={
-            'value':
-            db.session.query(func.coalesce(func.sum(TestCase.duration), 0)).filter(
-                TestCase.job_id == job_id,
-            ).as_scalar(),
-        }
+            "value": db.session.query(
+                func.coalesce(func.sum(TestCase.duration), 0)
+            ).filter(
+                TestCase.job_id == job_id
+            ).as_scalar()
+        },
     )
     db.session.flush()
 
@@ -192,56 +184,51 @@ def record_coverage_stats(build_id: UUID):
     Aggregates all FileCoverage stats for the given build.
     """
     coverage_stats = db.session.query(
-        func.sum(FileCoverage.lines_covered).label('coverage.lines_covered'),
-        func.sum(FileCoverage.lines_uncovered).label(
-            'coverage.lines_uncovered'),
-        func.sum(FileCoverage.diff_lines_covered).label(
-            'coverage.diff_lines_covered'),
+        func.sum(FileCoverage.lines_covered).label("coverage.lines_covered"),
+        func.sum(FileCoverage.lines_uncovered).label("coverage.lines_uncovered"),
+        func.sum(FileCoverage.diff_lines_covered).label("coverage.diff_lines_covered"),
         func.sum(FileCoverage.diff_lines_uncovered).label(
-            'coverage.diff_lines_uncovered'),
+            "coverage.diff_lines_uncovered"
+        ),
     ).filter(
-        FileCoverage.build_id == build_id,
+        FileCoverage.build_id == build_id
     ).group_by(
-        FileCoverage.build_id,
+        FileCoverage.build_id
     ).first()
 
     # TODO(dcramer): it'd be safer if we did this query within SQL
     stat_list = (
-        'coverage.lines_covered', 'coverage.lines_uncovered', 'coverage.diff_lines_covered',
-        'coverage.diff_lines_uncovered',
+        "coverage.lines_covered",
+        "coverage.lines_uncovered",
+        "coverage.diff_lines_covered",
+        "coverage.diff_lines_uncovered",
     )
     if not any(getattr(coverage_stats, n, None) is not None for n in stat_list):
         ItemStat.query.filter(
-            ItemStat.item_id == build_id,
-            ItemStat.name.in_(stat_list)
-        ).delete(synchronize_session=False)
+            ItemStat.item_id == build_id, ItemStat.name.in_(stat_list)
+        ).delete(
+            synchronize_session=False
+        )
     else:
         for name in stat_list:
             create_or_update(
                 model=ItemStat,
-                where={
-                    'item_id': build_id,
-                    'name': name,
-                },
-                values={
-                    'value': getattr(coverage_stats, name, 0) or 0,
-                },
+                where={"item_id": build_id, "name": name},
+                values={"value": getattr(coverage_stats, name, 0) or 0},
             )
 
 
 def record_style_violation_stats(job_id: UUID):
     create_or_update(
         ItemStat,
-        where={
-            'item_id': job_id,
-            'name': 'style_violations.count',
-        },
+        where={"item_id": job_id, "name": "style_violations.count"},
         values={
-            'value':
-            db.session.query(func.coalesce(func.count(StyleViolation.id), 0)).filter(
-                StyleViolation.job_id == job_id,
-            ).as_scalar(),
-        }
+            "value": db.session.query(
+                func.coalesce(func.count(StyleViolation.id), 0)
+            ).filter(
+                StyleViolation.job_id == job_id
+            ).as_scalar()
+        },
     )
     db.session.flush()
 
@@ -249,22 +236,24 @@ def record_style_violation_stats(job_id: UUID):
 def record_bundle_stats(job_id: UUID):
     create_or_update(
         ItemStat,
-        where={
-            'item_id': job_id,
-            'name': 'bundle.total_asset_size',
-        },
+        where={"item_id": job_id, "name": "bundle.total_asset_size"},
         values={
-            'value':
-            db.session.query(func.coalesce(func.sum(BundleAsset.size), 0)).filter(
-                BundleAsset.job_id == job_id,
-            ).as_scalar(),
-        }
+            "value": db.session.query(
+                func.coalesce(func.sum(BundleAsset.size), 0)
+            ).filter(
+                BundleAsset.job_id == job_id
+            ).as_scalar()
+        },
     )
     db.session.flush()
 
 
-@celery.task(name='zeus.aggregate_build_stats', max_retries=None,
-             autoretry_for=(Exception,), acks_late=True)
+@celery.task(
+    name="zeus.aggregate_build_stats",
+    max_retries=None,
+    autoretry_for=(Exception,),
+    acks_late=True,
+)
 def aggregate_build_stats(build_id: UUID):
     """
     Updates various denormalized / aggregate attributes on Build per its
@@ -272,17 +261,17 @@ def aggregate_build_stats(build_id: UUID):
     the status and result.
     """
     # now we pull in the entirety of the build's data to aggregate state upward
-    lock_key = 'build:{build_id}'.format(
-        build_id=build_id,
-    )
+    lock_key = "build:{build_id}".format(build_id=build_id)
     with redis.lock(lock_key):
-        build = Build.query.unrestricted_unsafe().with_for_update(nowait=True).get(build_id)
+        build = Build.query.unrestricted_unsafe().with_for_update(nowait=True).get(
+            build_id
+        )
         if not build:
-            raise ValueError(
-                'Unable to find build with id = {}'.format(build_id))
+            raise ValueError("Unable to find build with id = {}".format(build_id))
 
-        auth.set_current_tenant(auth.RepositoryTenant(
-            repository_id=build.repository_id))
+        auth.set_current_tenant(
+            auth.RepositoryTenant(repository_id=build.repository_id)
+        )
 
         record_coverage_stats(build.id)
 
@@ -293,11 +282,13 @@ def aggregate_build_stats(build_id: UUID):
 
         # ensure build's dates are reflective of jobs
         build.date_started = safe_agg(
-            min, (j.date_started for j in job_list if j.date_started))
+            min, (j.date_started for j in job_list if j.date_started)
+        )
 
         if is_finished:
             build.date_finished = safe_agg(
-                max, (j.date_finished for j in job_list if j.date_finished))
+                max, (j.date_finished for j in job_list if j.date_finished)
+            )
         else:
             build.date_finished = None
 
@@ -312,7 +303,8 @@ def aggregate_build_stats(build_id: UUID):
                 build.result = Result.passed
             else:
                 build.result = aggregate_result(
-                    (j.result for j in job_list if not j.allow_failure))
+                    (j.result for j in job_list if not j.allow_failure)
+                )
         # we should never get here as long we've got jobs and correct data
         else:
             build.result = Result.unknown

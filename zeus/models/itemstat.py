@@ -9,6 +9,6 @@ class ItemStat(db.Model):
     name = db.Column(db.String(64), nullable=False)
     value = db.Column(db.Integer, nullable=False)
 
-    __tablename__ = 'itemstat'
-    __table_args__ = (db.UniqueConstraint('item_id', 'name', name='unq_itemstat_name'), )
-    __repr__ = model_repr('item_id', 'name')
+    __tablename__ = "itemstat"
+    __table_args__ = (db.UniqueConstraint("item_id", "name", name="unq_itemstat_name"),)
+    __repr__ = model_repr("item_id", "name")

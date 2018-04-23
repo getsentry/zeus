@@ -15,8 +15,7 @@ class BuildSchema(Schema):
     finished_at = fields.DateTime(attribute="date_finished", dump_only=True)
     status = StatusField(dump_only=True)
     result = ResultField(dump_only=True)
-    source = fields.Nested(SourceSchema(
-        exclude=['diff']), dump_only=True)
+    source = fields.Nested(SourceSchema(exclude=["diff"]), dump_only=True)
     stats = fields.Nested(StatsSchema(), dump_only=True)
     provider = fields.Str(dump_only=True)
     external_id = fields.Str(dump_only=True)

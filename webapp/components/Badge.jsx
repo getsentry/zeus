@@ -3,7 +3,7 @@ import styled, {css} from 'styled-components';
 export default styled.span`
   font-size: 65%;
   display: inline-block;
-  padding: .25em .5em;
+  padding: 0.25em 0.5em;
   margin-left: 5px;
   text-transform: uppercase;
   color: #111;
@@ -15,8 +15,8 @@ export default styled.span`
     switch (props.type) {
       case 'error':
         return css`
-        background: #dc3545;
-      `;
+          background: #dc3545;
+        `;
       case 'warning':
         return css`
           background: #ffc107;

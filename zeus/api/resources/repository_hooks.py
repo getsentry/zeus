@@ -11,10 +11,10 @@ hooks_schema = HookSchema(many=True, strict=True)
 
 class RepositoryHooksResource(BaseRepositoryResource):
     permission_overrides = {
-        'DELETE': Permission.admin,
-        'GET': Permission.admin,
-        'PUT': Permission.admin,
-        'POST': Permission.admin,
+        "DELETE": Permission.admin,
+        "GET": Permission.admin,
+        "PUT": Permission.admin,
+        "POST": Permission.admin,
     }
 
     def select_resource_for_update(self):
@@ -24,9 +24,9 @@ class RepositoryHooksResource(BaseRepositoryResource):
         """
         Return a list of hooks for the given repository.
         """
-        query = Hook.query.filter(
-            Hook.repository_id == repo.id,
-        ).order_by(Hook.date_created.desc())
+        query = Hook.query.filter(Hook.repository_id == repo.id).order_by(
+            Hook.date_created.desc()
+        )
 
         return self.paginate_with_schema(hooks_schema, query)
 
@@ -37,6 +37,7 @@ class RepositoryHooksResource(BaseRepositoryResource):
         result = self.schema_from_request(hook_schema)
         if result.errors:
             return self.respond(result.errors, 403)
+
         hook = result.data
         hook.repository = repo
         db.session.add(hook)

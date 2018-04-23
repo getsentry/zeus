@@ -15,12 +15,8 @@ class ViolationListItem extends Component {
     return (
       <ViolationListItemWrapper className={`severity-${violation.severity}`}>
         <Row>
-          <Column>
-            {violation.message}
-          </Column>
-          <Column textAlign="left">
-            {violation.filename}
-          </Column>
+          <Column>{violation.message}</Column>
+          <Column textAlign="left">{violation.filename}</Column>
           <Column textAlign="right" width={80}>
             {violation.lineno !== null ? violation.lineno.toLocaleString() : ''}
           </Column>

@@ -6,6 +6,7 @@ from .base import BaseHook
 
 
 class BuildHook(BaseHook):
+
     def post(self, hook, build_xid):
         return upsert_build(
             repository=hook.repository,

@@ -7,14 +7,16 @@ from zeus.vcs.base import UnknownRevision
 
 
 class RevisionRefField(fields.Str):
+
     def _deserialize(self, value, attr, data):
-        repo = self.context.get('repository')
+        repo = self.context.get("repository")
         if repo:
             try:
                 revision = revisions.identify_revision(repo, value)
             except UnknownRevision as e:
-                current_app.logger.warn('invalid ref received', exc_info=True)
-                raise ValidationError(
-                    'unknown revision: {}'.format(value)) from e
+                current_app.logger.warn("invalid ref received", exc_info=True)
+                raise ValidationError("unknown revision: {}".format(value)) from e
+
             return revision.sha
+
         return value

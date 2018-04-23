@@ -8,8 +8,16 @@ from .base import Resource
 
 
 class BaseJobResource(Resource):
+
     def dispatch_request(
-        self, provider: str, owner_name: str, repo_name: str, build_number: int, job_number: int, *args, **kwargs
+        self,
+        provider: str,
+        owner_name: str,
+        repo_name: str,
+        build_number: int,
+        job_number: int,
+        *args,
+        **kwargs
     ) -> Response:
         queryset = Job.query.join(Build, Build.id == Job.build_id).join(
             Repository, Repository.id == Build.repository_id
@@ -25,7 +33,9 @@ class BaseJobResource(Resource):
         job = queryset.first()
         if not job:
             return self.not_found()
+
         tenant = auth.get_current_tenant()
         if not tenant.has_permission(job.repository_id, PERMISSION_MAP[request.method]):
-            return self.error('permission denied', 400)
+            return self.error("permission denied", 400)
+
         return Resource.dispatch_request(self, job, *args, **kwargs)

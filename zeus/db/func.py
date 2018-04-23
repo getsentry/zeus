@@ -10,7 +10,7 @@ from sqlalchemy.types import String, TypeDecorator
 class ArrayOfRecord(TypeDecorator):
     _array_regexp = re.compile(r"^\{(\".+?\")*\}$")
     _chunk_regexp = re.compile(r'"(.*?)",?')
-    _param_regexp = re.compile(r'[^\(\),]+')
+    _param_regexp = re.compile(r"[^\(\),]+")
 
     impl = String
 

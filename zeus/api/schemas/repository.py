@@ -22,20 +22,15 @@ class RepositorySchema(Schema):
     url = fields.Str(dump_only=True)
     provider = fields.Str(dump_only=True)
     backend = EnumField(RepositoryBackend, dump_only=True)
-    created_at = fields.DateTime(
-        attribute='date_created',
-        dump_only=True,
-    )
-    full_name = fields.Method('get_full_name', dump_only=True)
-    latest_build = fields.Nested(
-        'BuildSchema', exclude=('repository',), dump_only=True)
+    created_at = fields.DateTime(attribute="date_created", dump_only=True)
+    full_name = fields.Method("get_full_name", dump_only=True)
+    latest_build = fields.Nested("BuildSchema", exclude=("repository",), dump_only=True)
     public = fields.Bool()
-    permissions = fields.Nested(
-        PermissionSchema, allow_none=True, dump_only=True)
+    permissions = fields.Nested(PermissionSchema, allow_none=True, dump_only=True)
 
     @pre_dump(pass_many=True)
     def process_permission(self, data, many):
-        user = self.context.get('user')
+        user = self.context.get("user")
         if not user:
             return data
 
@@ -44,19 +39,20 @@ class RepositorySchema(Schema):
         else:
             items = data
 
-        access = dict(db.session.query(
-            RepositoryAccess.repository_id,
-            RepositoryAccess.permission,
-        ).filter(
-            RepositoryAccess.user_id == user.id,
-            RepositoryAccess.repository_id.in_([i.id for i in items])
-        ))
+        access = dict(
+            db.session.query(
+                RepositoryAccess.repository_id, RepositoryAccess.permission
+            ).filter(
+                RepositoryAccess.user_id == user.id,
+                RepositoryAccess.repository_id.in_([i.id for i in items]),
+            )
+        )
         for item in items:
             permission = access.get(item.id) or Permission.none
             item.permissions = {
-                'read': Permission.read in permission,
-                'write': Permission.write in permission,
-                'admin': Permission.admin in permission,
+                "read": Permission.read in permission,
+                "write": Permission.write in permission,
+                "admin": Permission.admin in permission,
             }
         return data
 
@@ -73,8 +69,8 @@ class RepositorySchema(Schema):
 
     @post_load
     def make_instance(self, data):
-        if self.context.get('repository'):
-            obj = self.context['repository']
+        if self.context.get("repository"):
+            obj = self.context["repository"]
             for key, value in data.items():
                 if getattr(obj, key) != value:
                     setattr(obj, key, value)
@@ -83,7 +79,7 @@ class RepositorySchema(Schema):
         return obj
 
     def get_full_name(self, obj):
-        return '{}/{}/{}'.format(obj.provider, obj.owner_name, obj.name)
+        return "{}/{}/{}".format(obj.provider, obj.owner_name, obj.name)
 
 
 def get_latest_builds(repo_list: List[Repository], result: Result):
@@ -91,38 +87,39 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
     if not repo_list:
         return {}
 
-    build_query = db.session.query(
-        Build.id,
-    ).join(
-        Source, Build.source_id == Source.id,
+    build_query = db.session.query(Build.id).join(
+        Source, Build.source_id == Source.id
     ).filter(
         Source.patch_id == None,  # NOQA
         Build.status == Status.finished,
         Build.result == result,
     ).order_by(
-        Build.date_created.desc(),
+        Build.date_created.desc()
     )
 
-    build_map = dict(db.session.query(
-        Repository.id,
-        build_query.filter(
-            Build.repository_id == Repository.id,
-        ).limit(1).as_scalar(),
-    ).filter(
-        Repository.id.in_(r.id for r in repo_list),
-    ))
+    build_map = dict(
+        db.session.query(
+            Repository.id,
+            build_query.filter(Build.repository_id == Repository.id).limit(
+                1
+            ).as_scalar(),
+        ).filter(
+            Repository.id.in_(r.id for r in repo_list)
+        )
+    )
 
     if not build_map:
         return {}
 
     return {
-        b.repository_id: b for b in Build.query.unrestricted_unsafe().filter(
-            Build.id.in_(build_map.values()),
+        b.repository_id: b
+        for b in Build.query.unrestricted_unsafe().filter(
+            Build.id.in_(build_map.values())
         ).options(
-            joinedload('source'),
-            joinedload('source').joinedload('author'),
-            joinedload('source').joinedload('revision'),
-            joinedload('source').joinedload('patch'),
-            subqueryload_all('stats'),
+            joinedload("source"),
+            joinedload("source").joinedload("author"),
+            joinedload("source").joinedload("revision"),
+            joinedload("source").joinedload("patch"),
+            subqueryload_all("stats"),
         )
     }

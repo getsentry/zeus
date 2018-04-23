@@ -5,7 +5,7 @@ const RepositoryNavItem = styled(Link)`
   cursor: pointer;
   float: left;
   font-size: 15px;
-  color: #AAA7BB;
+  color: #aaa7bb;
   padding: 10px 20px;
   border-left: 1px solid #dbdae3;
 
@@ -14,12 +14,12 @@ const RepositoryNavItem = styled(Link)`
   }
 
   &.active {
-    background: #7B6BE6;
+    background: #7b6be6;
     color: #fff;
   }
 
   &.${props => props.activeClassName} {
-    background: #7B6BE6;
+    background: #7b6be6;
     color: #fff;
   }
 `;

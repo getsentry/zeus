@@ -58,7 +58,7 @@ class UnstyledHeader extends Component {
             <Logo size="26" />
           </NavLink>
         </div>
-        {props.isAuthenticated &&
+        {props.isAuthenticated && (
           <div style={{float: 'right'}}>
             <NavLink to="/settings">
               <MdSettings size={24} />
@@ -66,7 +66,8 @@ class UnstyledHeader extends Component {
             <NavLink onClick={props.logout}>
               <MdLogout size={24} />
             </NavLink>
-          </div>}
+          </div>
+        )}
         <Select
           placeholder="Select Repository"
           className="Repo-Selector"

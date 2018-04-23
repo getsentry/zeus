@@ -14,19 +14,25 @@ class ApiToken(StandardAttributes, db.Model):
     An API token.
     """
     access_token = db.Column(
-        db.String(64), default=lambda: ApiToken.generate_token(), unique=True, nullable=False
+        db.String(64),
+        default=lambda: ApiToken.generate_token(),
+        unique=True,
+        nullable=False,
     )
     refresh_token = db.Column(
-        db.String(64), default=lambda: ApiToken.generate_token(), unique=True, nullable=False
+        db.String(64),
+        default=lambda: ApiToken.generate_token(),
+        unique=True,
+        nullable=False,
     )
     expires_at = db.Column(
         db.TIMESTAMP(timezone=True),
         nullable=True,
-        default=lambda: timezone.now() + DEFAULT_EXPIRATION
+        default=lambda: timezone.now() + DEFAULT_EXPIRATION,
     )
 
-    __tablename__ = 'api_token'
-    __repr__ = model_repr('id')
+    __tablename__ = "api_token"
+    __repr__ = model_repr("id")
 
     @classmethod
     def generate_token(cls):

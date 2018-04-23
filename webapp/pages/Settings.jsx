@@ -27,9 +27,7 @@ export default class Settings extends AsyncPage {
           </Nav>
         </Header>
 
-        <Content>
-          {this.renderContent()}
-        </Content>
+        <Content>{this.renderContent()}</Content>
       </div>
     );
   }

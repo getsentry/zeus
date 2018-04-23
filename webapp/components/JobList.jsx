@@ -40,26 +40,19 @@ export default class JobList extends Component {
                   </div>
                   <div>
                     <small>
-                      {job.url &&
-                        <a href={job.url}>
-                          {job.url}
-                        </a>}
+                      {job.url && <a href={job.url}>{job.url}</a>}
                       {job.allow_failure && <Badge type="warning">allowed to fail</Badge>}
                     </small>
                   </div>
                 </div>
               </Column>
               <Column width={80} textAlign="center">
-                {idx(job.stats, _ => _.tests.count) > 0
-                  ? <div>
-                      {job.stats.tests.count.toLocaleString()}
-                    </div>
-                  : null}
-                {idx(job.stats, _ => _.tests.failures) > 0
-                  ? <small>
-                      {job.stats.tests.failures.toLocaleString()} failed
-                    </small>
-                  : null}
+                {idx(job.stats, _ => _.tests.count) > 0 ? (
+                  <div>{job.stats.tests.count.toLocaleString()}</div>
+                ) : null}
+                {idx(job.stats, _ => _.tests.failures) > 0 ? (
+                  <small>{job.stats.tests.failures.toLocaleString()} failed</small>
+                ) : null}
               </Column>
               <Column width={80} textAlign="right">
                 <ObjectDuration data={job} short={true} />

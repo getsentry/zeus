@@ -23,12 +23,13 @@ class ApiError(Exception):
                 self.json = None
         else:
             self.json = None
-        super(ApiError, self).__init__((text or '')[:128])
+        super(ApiError, self).__init__((text or "")[:128])
 
     @classmethod
     def from_response(cls, response):
         if response.status_code == 401:
             return ApiUnauthorized(response.text)
+
         return cls(response.text, response.status_code)
 
 
@@ -37,11 +38,12 @@ class ApiUnauthorized(ApiError):
 
 
 class IdentityNeedsUpgrade(ApiUnauthorized):
+
     def __init__(self, scope, identity):
         ApiUnauthorized.__init__(self)
         self.scope = scope
         self.identity = identity
 
     def get_upgrade_url(self):
-        if self.identity.provider == 'github':
-            return '/auth/github'
+        if self.identity.provider == "github":
+            return "/auth/github"
