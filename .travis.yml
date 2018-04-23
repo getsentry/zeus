@@ -9,7 +9,8 @@ cache:
   yarn: true
   directories:
     - node_modules
-    - $HOME/.cache/pip/wheels
+    - $HOME/.cache/pip
+    - $HOME/.cache/pre-commit
 env:
   global:
     - NODE_ENV=production
