@@ -8,6 +8,7 @@ from marshmallow.exceptions import ValidationError
 from zeus.models import Hook
 from zeus.utils import timezone
 
+from zeus.providers.custom import CustomProvider
 from zeus.providers.travis import TravisProvider
 
 
@@ -17,6 +18,7 @@ ALIASES = {
 
 PROVIDERS = {
     'travis': TravisProvider,
+    'custom': CustomProvider,
 }
 
 
@@ -42,7 +44,7 @@ class HookConfigField(fields.Field):
 class HookSchema(Schema):
     id = fields.UUID(dump_only=True)
     provider = fields.Str(validate=[
-        fields.validate.OneOf(choices=['travis-ci', 'travis'])
+        fields.validate.OneOf(choices=list(set(PROVIDERS.keys()).union(ALIASES.keys())))
     ])
     token = fields.Method('get_token', dump_only=True)
     secret_uri = fields.Method('get_secret_uri', dump_only=True)
