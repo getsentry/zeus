@@ -71,8 +71,7 @@ class RepoListSection extends AsyncComponent {
                         !!(
                           repo.latest_build.stats.coverage.lines_covered +
                           repo.latest_build.stats.coverage.lines_uncovered
-                        ) &&
-                        <ObjectCoverage data={repo.latest_build} diff={false} />}
+                        ) && <ObjectCoverage data={repo.latest_build} diff={false} />}
                     </Column>
                     <Column textAlign="center" width={90} hide="sm">
                       {!!repo.latest_build && <ObjectDuration data={repo.latest_build} />}

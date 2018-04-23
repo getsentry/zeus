@@ -8,16 +8,18 @@ from zeus.db.types import GUID, StrEnum
 
 
 class FailureReason(RepositoryBoundMixin, StandardAttributes, db.Model):
-    __tablename__ = 'failurereason'
-    __table_args__ = (db.UniqueConstraint(
-        'job_id', 'reason', name='unq_failurereason_key'), )
+    __tablename__ = "failurereason"
+    __table_args__ = (
+        db.UniqueConstraint("job_id", "reason", name="unq_failurereason_key"),
+    )
 
     class Reason(enum.Enum):
-        failing_tests = 'failing_tests'
-        missing_tests = 'missing_tests'
+        failing_tests = "failing_tests"
+        missing_tests = "missing_tests"
 
-    job_id = db.Column(GUID, db.ForeignKey(
-        'job.id', ondelete="CASCADE"), nullable=False)
+    job_id = db.Column(
+        GUID, db.ForeignKey("job.id", ondelete="CASCADE"), nullable=False
+    )
     reason = db.Column(StrEnum(Reason), nullable=False)
 
-    job = db.relationship('Job')
+    job = db.relationship("Job")

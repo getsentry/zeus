@@ -8,33 +8,35 @@ from .base import ArtifactHandler
 
 class WebpackStatsHandler(ArtifactHandler):
     supported_types = frozenset(
-        ['application/x-webpack-stats+json', 'application/webpack-stats+json'])
+        ["application/x-webpack-stats+json", "application/webpack-stats+json"]
+    )
 
     def process(self, fp):
         job = self.job
         data = json.load(fp)
 
         asset_index = {}
-        for asset in data['assets']:
-            asset_index[asset['name']] = asset
+        for asset in data["assets"]:
+            asset_index[asset["name"]] = asset
 
-        for bundle_name, asset_list in data['assetsByChunkName'].items():
+        for bundle_name, asset_list in data["assetsByChunkName"].items():
             bundle_inst = Bundle(
-                job=job,
-                repository_id=job.repository_id,
-                name=bundle_name,
+                job=job, repository_id=job.repository_id, name=bundle_name
             )
             db.session.add(bundle_inst)
             for asset_name in asset_list:
                 # dont track sourcemaps
-                if asset_name.endswith('.map'):
+                if asset_name.endswith(".map"):
                     continue
+
                 asset = asset_index[asset_name]
-                db.session.add(BundleAsset(
-                    job=job,
-                    repository_id=job.repository_id,
-                    bundle=bundle_inst,
-                    name=asset['name'],
-                    size=asset['size'],
-                ))
+                db.session.add(
+                    BundleAsset(
+                        job=job,
+                        repository_id=job.repository_id,
+                        bundle=bundle_inst,
+                        name=asset["name"],
+                        size=asset["size"],
+                    )
+                )
         db.session.flush()

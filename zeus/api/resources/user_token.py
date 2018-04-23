@@ -11,17 +11,16 @@ token_schema = TokenSchema(strict=True)
 
 
 class UserTokenResource(Resource):
+
     def get(self):
         """
         Return the API token for the user.
         """
         user = auth.get_current_user()
         if not user:
-            return self.error('not authenticated', 401)
+            return self.error("not authenticated", 401)
 
-        token = UserApiToken.query \
-            .filter(UserApiToken.user == user) \
-            .one_or_none()
+        token = UserApiToken.query.filter(UserApiToken.user == user).one_or_none()
 
         return self.respond_with_schema(token_schema, token)
 
@@ -31,11 +30,9 @@ class UserTokenResource(Resource):
         """
         user = auth.get_current_user()
         if not user:
-            return self.error('not authenticated', 401)
+            return self.error("not authenticated", 401)
 
-        token = UserApiToken.query \
-            .filter(UserApiToken.user == user) \
-            .one_or_none()
+        token = UserApiToken.query.filter(UserApiToken.user == user).one_or_none()
 
         if token:
             token.key = UserApiToken.generate_token()

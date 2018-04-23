@@ -11,6 +11,7 @@ build_schema = BuildSchema(strict=True)
 
 
 class BuildDetailsResource(BaseBuildResource):
+
     def select_resource_for_update(self) -> bool:
         return self.is_mutation()
 
@@ -18,9 +19,12 @@ class BuildDetailsResource(BaseBuildResource):
         """
         Return a build.
         """
-        with nplusone.ignore('eager_load'):
-            build.source = Source.query.options(joinedload('revision'),
-                                                joinedload('patch')).get(build.source_id)
+        with nplusone.ignore("eager_load"):
+            build.source = Source.query.options(
+                joinedload("revision"), joinedload("patch")
+            ).get(
+                build.source_id
+            )
         build.stats = list(ItemStat.query.filter(ItemStat.item_id == build.id))
         return self.respond_with_schema(build_schema, build)
 
@@ -31,6 +35,7 @@ class BuildDetailsResource(BaseBuildResource):
         result = self.schema_from_request(build_schema, partial=True)
         if result.errors:
             return self.respond(result.errors, 403)
+
         for key, value in result.data.items():
             if getattr(build, key) != value:
                 setattr(build, key, value)
@@ -40,6 +45,7 @@ class BuildDetailsResource(BaseBuildResource):
 
         result = build_schema.dump(build)
         if result.errors:
-            return self.error('invalid schema supplied')
-        publish('builds', 'build.update', result.data)
+            return self.error("invalid schema supplied")
+
+        publish("builds", "build.update", result.data)
         return self.respond(result.data, 200)

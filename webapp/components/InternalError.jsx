@@ -32,12 +32,8 @@ export default class InternalError extends Component {
           </li>
         </ul>
         <div style={{fontSize: '0.8em', borderTop: '1px solid #eee', paddingTop: 20}}>
-          <p>
-            {'The exception Zeus reported was:'}
-          </p>
-          <pre>
-            {error.stack}
-          </pre>
+          <p>{'The exception Zeus reported was:'}</p>
+          <pre>{error.stack}</pre>
         </div>
       </Modal>
     );

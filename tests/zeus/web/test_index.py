@@ -1,3 +1,3 @@
 def test_index(client):
-    resp = client.get('/')
+    resp = client.get("/")
     assert resp.status_code == 200

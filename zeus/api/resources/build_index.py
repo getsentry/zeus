@@ -10,6 +10,7 @@ builds_schema = BuildSchema(many=True, strict=True)
 
 
 class BuildIndexResource(Resource):
+
     def get(self):
         """
         Return a list of builds.
@@ -19,14 +20,17 @@ class BuildIndexResource(Resource):
         tenant = auth.get_current_tenant()
         if not tenant.repository_ids:
             return self.respond([])
+
         query = Build.query.options(
-            joinedload('repository'),
-            joinedload('source'),
-            joinedload('source').joinedload('author'),
-            joinedload('source').joinedload('revision'),
-            joinedload('source').joinedload('patch'),
-            subqueryload_all('stats'),
+            joinedload("repository"),
+            joinedload("source"),
+            joinedload("source").joinedload("author"),
+            joinedload("source").joinedload("revision"),
+            joinedload("source").joinedload("patch"),
+            subqueryload_all("stats"),
         ).filter(
-            Build.repository_id.in_(tenant.repository_ids),
-        ).order_by(Build.date_created.desc())
+            Build.repository_id.in_(tenant.repository_ids)
+        ).order_by(
+            Build.date_created.desc()
+        )
         return self.paginate_with_schema(builds_schema, query)

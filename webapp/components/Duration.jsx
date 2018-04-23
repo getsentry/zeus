@@ -46,10 +46,6 @@ export default class Duration extends Component {
   }
 
   render() {
-    return (
-      <span>
-        {this.getDuration()}
-      </span>
-    );
+    return <span>{this.getDuration()}</span>;
   }
 }

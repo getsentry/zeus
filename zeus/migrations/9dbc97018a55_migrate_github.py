@@ -10,19 +10,17 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9dbc97018a55'
-down_revision = 'f8013173ef21'
+revision = "9dbc97018a55"
+down_revision = "f8013173ef21"
 branch_labels = ()
 depends_on = None
 
 
 def upgrade():
     conn = op.get_bind()
-    conn.execute(
-        "update repository set provider = 'gh' where provider = 'github'")
+    conn.execute("update repository set provider = 'gh' where provider = 'github'")
 
 
 def downgrade():
     conn = op.get_bind()
-    conn.execute(
-        "update repository set provider = 'github' where provider = 'gh'")
+    conn.execute("update repository set provider = 'github' where provider = 'gh'")

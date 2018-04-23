@@ -43,19 +43,17 @@ export default class BuildListItem extends Component {
                   {build.label || build.source.revision.message.split('\n')[0]}
                 </Message>
                 <Meta>
-                  {includeRepo
-                    ? <RepoLink to={`/${repo.full_name}`}>
-                        {build.repository.owner_name}/{build.repository.name}
-                      </RepoLink>
-                    : null}
-                  <Commit>
-                    {build.source.revision.sha.substr(0, 7)}
-                  </Commit>
-                  {includeAuthor
-                    ? <Author>
-                        <ObjectAuthor data={build} />
-                      </Author>
-                    : null}
+                  {includeRepo ? (
+                    <RepoLink to={`/${repo.full_name}`}>
+                      {build.repository.owner_name}/{build.repository.name}
+                    </RepoLink>
+                  ) : null}
+                  <Commit>{build.source.revision.sha.substr(0, 7)}</Commit>
+                  {includeAuthor ? (
+                    <Author>
+                      <ObjectAuthor data={build} />
+                    </Author>
+                  ) : null}
                 </Meta>
               </Box>
             </Flex>

@@ -7,7 +7,7 @@ from .base_repository import BaseRepositoryResource
 
 
 class RepositoryBranchesResource(BaseRepositoryResource):
-    cache_key = 'api:1:repobranches:{repo_id}'
+    cache_key = "api:1:repobranches:{repo_id}"
     cache_expire = 60
 
     def get(self, repo: Repository):
@@ -28,4 +28,4 @@ class RepositoryBranchesResource(BaseRepositoryResource):
         else:
             result = json.loads(result)
 
-        return self.respond([{'name': r} for r in result])
+        return self.respond([{"name": r} for r in result])

@@ -20,9 +20,7 @@ class BundleListItem extends Component {
         <ResultGridRow>
           <Flex align="center">
             <Box flex="1">
-              <strong>
-                {bundle.name}
-              </strong>
+              <strong>{bundle.name}</strong>
             </Box>
             <Box width={90} style={{textAlign: 'right'}}>
               <strong>
@@ -32,21 +30,20 @@ class BundleListItem extends Component {
               </strong>
             </Box>
           </Flex>
-          {!!bundle.assets.length &&
+          {!!bundle.assets.length && (
             <BundleDetailsWrapper>
               {bundle.assets.map(asset => {
                 return (
                   <Flex align="center" key={asset.name} className="asset">
-                    <Box flex="1">
-                      {asset.name}
-                    </Box>
+                    <Box flex="1">{asset.name}</Box>
                     <Box width={90} style={{textAlign: 'right'}}>
                       <FileSize value={asset.size} />
                     </Box>
                   </Flex>
                 );
               })}
-            </BundleDetailsWrapper>}
+            </BundleDetailsWrapper>
+          )}
         </ResultGridRow>
       </BundleListItemWrapper>
     );

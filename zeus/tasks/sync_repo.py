@@ -10,31 +10,29 @@ from zeus.vcs.base import InvalidPublicKey
 
 
 # TODO(dcramer): a lot of this code is shared with import_repo
+
+
 @celery.task(max_retries=None, autoretry_for=(Exception,), acks_late=True)
 def sync_repo(repo_id, max_log_passes=10):
-    auth.set_current_tenant(auth.Tenant(
-        access={repo_id: Permission.admin}))
+    auth.set_current_tenant(auth.Tenant(access={repo_id: Permission.admin}))
 
     repo = Repository.query.get(repo_id)
     if not repo:
-        current_app.logger.error('Repository %s not found', repo_id)
+        current_app.logger.error("Repository %s not found", repo_id)
         return
 
     vcs = repo.get_vcs()
     if vcs is None:
-        current_app.logger.warning(
-            'Repository %s has no VCS backend set', repo.id)
+        current_app.logger.warning("Repository %s has no VCS backend set", repo.id)
         return
 
     if repo.status != RepositoryStatus.active:
-        current_app.logger.info('Repository %s is not active', repo.id)
+        current_app.logger.info("Repository %s is not active", repo.id)
         return
 
-    Repository.query.filter(
-        Repository.id == repo.id,
-    ).update({
-        'last_update_attempt': timezone.now(),
-    })
+    Repository.query.filter(Repository.id == repo.id).update(
+        {"last_update_attempt": timezone.now()}
+    )
     db.session.commit()
 
     try:
@@ -49,8 +47,7 @@ def sync_repo(repo_id, max_log_passes=10):
         # a context manager?)
         repo.status = RepositoryStatus.inactive
         ItemOption.query.filter(
-            ItemOption.item_id == repo.id,
-            ItemOption.name == 'auth.private-key',
+            ItemOption.item_id == repo.id, ItemOption.name == "auth.private-key"
         ).delete()
         db.session.add(repo)
         db.session.commit()
@@ -67,16 +64,14 @@ def sync_repo(repo_id, max_log_passes=10):
             if not created:
                 break
 
-            current_app.logger.info('Created revision {}'.format(repo.id))
+            current_app.logger.info("Created revision {}".format(repo.id))
             might_have_more = True
             parent = commit.sha
         max_log_passes -= 1
 
-    Repository.query.filter(
-        Repository.id == repo.id,
-    ).update({
-        'last_update': datetime.now(timezone.utc),
-    })
+    Repository.query.filter(Repository.id == repo.id).update(
+        {"last_update": datetime.now(timezone.utc)}
+    )
     db.session.commit()
 
     # is there more data to sync?

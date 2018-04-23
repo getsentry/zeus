@@ -8,7 +8,7 @@ def test_sync_all_repos(mocker, db_session, default_repo):
     db_session.add(default_repo)
     db_session.flush()
 
-    mock_sync_repo = mocker.patch('zeus.tasks.sync_repo.delay')
+    mock_sync_repo = mocker.patch("zeus.tasks.sync_repo.delay")
 
     sync_all_repos()
 

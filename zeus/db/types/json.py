@@ -1,4 +1,4 @@
-__all__ = ['JSONEncodedDict']
+__all__ = ["JSONEncodedDict"]
 
 import json
 
@@ -9,6 +9,7 @@ from sqlalchemy.types import TypeDecorator, Unicode
 
 
 class MutableDict(Mutable, MutableMapping):
+
     def __init__(self, value):
         self.value = value or {}
 
@@ -41,6 +42,7 @@ class MutableDict(Mutable, MutableMapping):
 
             # this call will raise ValueError
             return Mutable.coerce(key, value)
+
         else:
             return value
 
@@ -54,7 +56,7 @@ class JSONEncodedDict(TypeDecorator):
                 value = value.value
             return str(json.dumps(value))
 
-        return '{}'
+        return "{}"
 
     def process_result_value(self, value, dialect):
         if value:

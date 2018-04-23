@@ -21,28 +21,22 @@ class AuthIndexResource(Resource):
         Return information on the currently authenticated user.
         """
         try:
-            user_response = client.get('/users/me')
+            user_response = client.get("/users/me")
         except ApiError as exc:
             if exc.code == 401:
-                return {
-                    'isAuthenticated': False,
-                }
+                return {"isAuthenticated": False}
 
         user = json.loads(user_response.data)
 
-        identity_list = list(Identity.query.filter(
-            Identity.user_id == user['id'],
-        ))
+        identity_list = list(Identity.query.filter(Identity.user_id == user["id"]))
 
-        email_list = list(Email.query.filter(
-            Email.user_id == user['id'],
-        ))
+        email_list = list(Email.query.filter(Email.user_id == user["id"]))
 
         return {
-            'isAuthenticated': True,
-            'user': user,
-            'emails': emails_schema.dump(email_list).data,
-            'identities': identities_schema.dump(identity_list).data,
+            "isAuthenticated": True,
+            "user": user,
+            "emails": emails_schema.dump(email_list).data,
+            "identities": identities_schema.dump(identity_list).data,
         }
 
     def delete(self):
@@ -51,7 +45,4 @@ class AuthIndexResource(Resource):
         """
         auth.logout()
 
-        return {
-            'isAuthenticated': False,
-            'user': None,
-        }
+        return {"isAuthenticated": False, "user": None}

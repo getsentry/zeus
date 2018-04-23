@@ -40,23 +40,19 @@ export default class RevisionListItem extends Component {
             <Flex>
               <Box width={15} mr={8} />
               <Box flex="1" style={{minWidth: 0}}>
-                <Message>
-                  {revision.message.split('\n')[0]}
-                </Message>
+                <Message>{revision.message.split('\n')[0]}</Message>
                 <Meta>
-                  {includeRepo
-                    ? <RepoLink to={`/${repo.full_name}`}>
-                        {repo.owner_name}/{repo.name}
-                      </RepoLink>
-                    : null}
-                  <Commit>
-                    {revision.sha.substr(0, 7)}
-                  </Commit>
-                  {includeAuthor
-                    ? <Author>
-                        <ObjectAuthor data={revision} />
-                      </Author>
-                    : null}
+                  {includeRepo ? (
+                    <RepoLink to={`/${repo.full_name}`}>
+                      {repo.owner_name}/{repo.name}
+                    </RepoLink>
+                  ) : null}
+                  <Commit>{revision.sha.substr(0, 7)}</Commit>
+                  {includeAuthor ? (
+                    <Author>
+                      <ObjectAuthor data={revision} />
+                    </Author>
+                  ) : null}
                 </Meta>
               </Box>
             </Flex>

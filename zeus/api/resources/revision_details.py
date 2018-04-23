@@ -8,6 +8,7 @@ build_schema = BuildSchema(strict=True)
 
 
 class RevisionDetailsResource(BaseRevisionResource):
+
     def select_resource_for_update(self) -> bool:
         return False
 
@@ -18,4 +19,5 @@ class RevisionDetailsResource(BaseRevisionResource):
         build = fetch_build_for_revision(revision.repository, revision)
         if not build:
             return self.respond(status=404)
+
         return self.respond_with_schema(build_schema, build)

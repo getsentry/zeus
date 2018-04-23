@@ -9,6 +9,7 @@ from zeus.utils import timezone
 
 
 class StandardAttributes(object):
+
     @declared_attr
     def id(cls):
         return db.Column(GUID, primary_key=True, default=GUID.default_value)
@@ -19,11 +20,13 @@ class StandardAttributes(object):
             db.TIMESTAMP(timezone=True),
             default=timezone.now,
             server_default=func.now(),
-            nullable=False
+            nullable=False,
         )
 
 
 # https://bitbucket.org/zzzeek/sqlalchemy/wiki/UsageRecipes/PreFilteredQuery
+
+
 class RepositoryBoundQuery(db.Query):
     current_constrained = True
 
@@ -51,24 +54,28 @@ class RepositoryBoundQuery(db.Query):
         if mzero is not None:
             tenant = get_current_tenant()
             cls = mzero.class_
-            repo_table = db.metadata.tables['repository']
+            repo_table = db.metadata.tables["repository"]
             if tenant.repository_ids:
                 return self.enable_assertions(False).filter(
                     or_(
                         cls.repository_id.in_(tenant.repository_ids),
                         cls.repository_id.in_(
                             db.Query(repo_table.c.id).filter(
-                                repo_table.c.public == True,  # NOQA
+                                repo_table.c.public == True  # NOQA
                             ).subquery()
-                        )
+                        ),
                     )
                 )
+
             else:
-                return self.enable_assertions(False).filter(cls.repository_id.in_(
-                    db.Query(repo_table.c.id).filter(
-                        repo_table.c.public == True,  # NOQA
-                    ).subquery()
-                ))
+                return self.enable_assertions(False).filter(
+                    cls.repository_id.in_(
+                        db.Query(repo_table.c.id).filter(
+                            repo_table.c.public == True  # NOQA
+                        ).subquery()
+                    )
+                )
+
         return self
 
     def unrestricted_unsafe(self):
@@ -83,19 +90,26 @@ class RepositoryBoundMixin(object):
     @declared_attr
     def repository_id(cls):
         return db.Column(
-            GUID, db.ForeignKey('repository.id', ondelete='CASCADE'), nullable=False, index=True
+            GUID,
+            db.ForeignKey("repository.id", ondelete="CASCADE"),
+            nullable=False,
+            index=True,
         )
 
     @declared_attr
     def repository(cls):
-        return db.relationship('Repository', innerjoin=True, uselist=False)
+        return db.relationship("Repository", innerjoin=True, uselist=False)
 
 
 class ApiTokenMixin(object):
+
     @declared_attr
     def key(cls):
         return db.Column(
-            db.String(64), default=lambda: ApiTokenMixin.generate_token(), unique=True, nullable=False
+            db.String(64),
+            default=lambda: ApiTokenMixin.generate_token(),
+            unique=True,
+            nullable=False,
         )
 
     @classmethod

@@ -7,9 +7,7 @@ from zeus.utils import timezone
 
 
 def test_cleanup_artifacts_current(mocker, db_session):
-    artifact = factories.ArtifactFactory.create(
-        status=Status.finished,
-    )
+    artifact = factories.ArtifactFactory.create(status=Status.finished)
 
     cleanup_artifacts()
 
@@ -18,8 +16,7 @@ def test_cleanup_artifacts_current(mocker, db_session):
 
 def test_cleanup_artifacts_old_file(mocker, db_session):
     artifact = factories.ArtifactFactory.create(
-        status=Status.finished,
-        date_created=timezone.now() - timedelta(days=45)
+        status=Status.finished, date_created=timezone.now() - timedelta(days=45)
     )
 
     cleanup_artifacts()

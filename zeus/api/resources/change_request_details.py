@@ -6,6 +6,7 @@ from ..schemas import ChangeRequestSchema
 
 
 class ChangeRequestDetailsResource(BaseChangeRequestResource):
+
     def select_resource_for_update(self):
         return False
 
@@ -15,10 +16,12 @@ class ChangeRequestDetailsResource(BaseChangeRequestResource):
 
     def put(self, cr: ChangeRequest):
         schema = ChangeRequestSchema(
-            context={'repository': cr.repository, 'change_request': cr})
+            context={"repository": cr.repository, "change_request": cr}
+        )
         result = self.schema_from_request(schema, partial=True)
         if result.errors:
             return self.respond(result.errors, 403)
+
         if db.session.is_modified(cr):
             db.session.add(cr)
             db.session.commit()

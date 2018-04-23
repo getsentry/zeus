@@ -8,7 +8,7 @@ from .base import ArtifactHandler
 
 
 class GoTestHandler(ArtifactHandler):
-    supported_types = frozenset(['application/x-gotest+json'])
+    supported_types = frozenset(["application/x-gotest+json"])
 
     def process(self, fp):
         test_list = self.get_tests(fp)
@@ -24,10 +24,7 @@ class GoTestHandler(ArtifactHandler):
 
         results = []
 
-        actionToResult = {
-            'pass': Result.passed,
-            'fail': Result.failed,
-        }
+        actionToResult = {"pass": Result.passed, "fail": Result.failed}
         last_output = {}
         for lineno, line in enumerate(fp.readlines()):
             # Format at https://tip.golang.org/cmd/test2json/
@@ -35,27 +32,31 @@ class GoTestHandler(ArtifactHandler):
                 event = json.loads(line)
             except Exception:
                 current_app.logger.exception(
-                    'Failed to parse JSON on line %d', lineno + 1)
+                    "Failed to parse JSON on line %d", lineno + 1
+                )
                 return []
 
-            if 'Test' not in event:
+            if "Test" not in event:
                 continue
 
-            key = (event.get('Package'), event['Test'])
-            output = event.get('Output') or last_output.get(key)
+            key = (event.get("Package"), event["Test"])
+            output = event.get("Output") or last_output.get(key)
             if output:
                 last_output[key] = output
 
-            result = actionToResult.get(event['Action'])
+            result = actionToResult.get(event["Action"])
             if result is None:
                 continue
-            results.append(TestResult(
-                job=job,
-                name=event['Test'],
-                message=output if result == Result.failed else None,
-                package=event.get('Package'),
-                result=result,
-                duration=int(event['Elapsed'] * 1000),
-            ))
+
+            results.append(
+                TestResult(
+                    job=job,
+                    name=event["Test"],
+                    message=output if result == Result.failed else None,
+                    package=event.get("Package"),
+                    result=result,
+                    duration=int(event["Elapsed"] * 1000),
+                )
+            )
 
         return results

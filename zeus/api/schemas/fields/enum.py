@@ -9,20 +9,25 @@ class EnumField(Field):
         if enum is not None:
             self.enum = enum
         elif self.enum is None:
-            raise ValueError('`enum` must be specified')
+            raise ValueError("`enum` must be specified")
+
         Field.__init__(self, *args, **kwargs)
 
     def _serialize(self, value, attr, obj):
         if value is None:
             return None
+
         return value.name
 
     def _deserialize(self, value, attr, data):
         if value is None:
             return None
+
         if isinstance(value, self.enum):
             return value
+
         try:
             return self.enum[value]
+
         except KeyError:
-            raise ValidationError('Not a valid choice.')
+            raise ValidationError("Not a valid choice.")

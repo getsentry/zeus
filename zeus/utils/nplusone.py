@@ -14,6 +14,7 @@ from nplusone.core import notifiers
 def get_worker():
     try:
         return request._get_current_object()
+
     except RuntimeError:
         return None
 
@@ -36,7 +37,7 @@ class NPlusOne(object):
         self.notifiers = notifiers.init(self.app.config)
         self.whitelist = [
             listeners.Rule(**item)
-            for item in self.app.config.get('NPLUSONE_WHITELIST', [])
+            for item in self.app.config.get("NPLUSONE_WHITELIST", [])
         ]
 
     def init_app(self, app):
@@ -45,7 +46,7 @@ class NPlusOne(object):
         @app.before_request
         def connect():
             self.load_config()
-            g.listeners = getattr(g, 'listeners', {})
+            g.listeners = getattr(g, "listeners", {})
             for name, listener_type in six.iteritems(listeners.listeners):
                 g.listeners[name] = listener_type(self)
                 g.listeners[name].setup()

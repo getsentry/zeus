@@ -7,4 +7,4 @@ def inline_css(value):
     toronado.inline(tree)
     # CSS media query support is inconistent when the DOCTYPE declaration is
     # missing, so we force it to HTML5 here.
-    return lxml.html.tostring(tree, doctype='<!DOCTYPE html>').decode('utf-8')
+    return lxml.html.tostring(tree, doctype="<!DOCTYPE html>").decode("utf-8")

@@ -47,14 +47,9 @@ export default class OwnerDetails extends AsyncPage {
             return (
               <ResultGrid.Row key={repo.name}>
                 <ResultGrid.Column>
-                  <Link to={`/${repo.full_name}`}>
-                    {repo.name}
-                  </Link>
+                  <Link to={`/${repo.full_name}`}>{repo.name}</Link>
                   <br />
-                  {!!repo.url &&
-                    <small>
-                      {repo.url}
-                    </small>}
+                  {!!repo.url && <small>{repo.url}</small>}
                 </ResultGrid.Column>
               </ResultGrid.Row>
             );

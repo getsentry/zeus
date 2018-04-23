@@ -19,7 +19,7 @@ class RepositoryBackend(enum.IntEnum):
 
 
 class RepositoryProvider(enum.Enum):
-    github = 'gh'
+    github = "gh"
 
     def __str__(self):
         return self.value
@@ -62,14 +62,13 @@ class RepositoryAccessBoundQuery(db.Query):
             cls = mzero.class_
             tenant = get_current_tenant()
             if tenant.repository_ids:
-                return self.enable_assertions(False).filter(or_(
-                    cls.id.in_(tenant.repository_ids),
-                    cls.public == True  # NOQA
-                ))
-            else:
                 return self.enable_assertions(False).filter(
-                    cls.public == True,  # NOQA
+                    or_(cls.id.in_(tenant.repository_ids), cls.public == True)  # NOQA
                 )
+
+            else:
+                return self.enable_assertions(False).filter(cls.public == True)  # NOQA
+
         return self
 
     def unrestricted_unsafe(self):
@@ -88,60 +87,60 @@ class Repository(StandardAttributes, db.Model):
     owner_name = db.Column(db.String(200), nullable=False)
     name = db.Column(db.String(200), nullable=False)
     url = db.Column(db.String(200), nullable=False)
-    backend = db.Column(Enum(RepositoryBackend),
-                        default=RepositoryBackend.unknown, nullable=False)
-    status = db.Column(Enum(RepositoryStatus),
-                       default=RepositoryStatus.inactive, nullable=False)
+    backend = db.Column(
+        Enum(RepositoryBackend), default=RepositoryBackend.unknown, nullable=False
+    )
+    status = db.Column(
+        Enum(RepositoryStatus), default=RepositoryStatus.inactive, nullable=False
+    )
     provider = db.Column(StrEnum(RepositoryProvider), nullable=False)
     external_id = db.Column(db.String(64))
     data = db.Column(JSONEncodedDict, nullable=True)
-    public = db.Column(db.Boolean, default=False,
-                       server_default='false', nullable=False, index=True)
+    public = db.Column(
+        db.Boolean, default=False, server_default="false", nullable=False, index=True
+    )
     last_update = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     last_update_attempt = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
 
     options = db.relationship(
-        'ItemOption',
-        foreign_keys='[ItemOption.item_id]',
-        primaryjoin='ItemOption.item_id == Repository.id',
+        "ItemOption",
+        foreign_keys="[ItemOption.item_id]",
+        primaryjoin="ItemOption.item_id == Repository.id",
         viewonly=True,
-        uselist=True
+        uselist=True,
     )
 
     query_class = RepositoryAccessBoundQuery
 
-    __tablename__ = 'repository'
+    __tablename__ = "repository"
     __table_args__ = (
-        db.UniqueConstraint('provider', 'external_id',
-                            name='unq_repo_external_id'),
-        db.UniqueConstraint('provider', 'owner_name',
-                            'name', name='unq_repo_name'),
+        db.UniqueConstraint("provider", "external_id", name="unq_repo_external_id"),
+        db.UniqueConstraint("provider", "owner_name", "name", name="unq_repo_name"),
     )
-    __repr__ = model_repr('name', 'url', 'provider')
+    __repr__ = model_repr("name", "url", "provider")
 
     def get_vcs(self):
         from zeus.models import ItemOption
         from zeus.vcs.git import GitVcs
 
         options = dict(
-            db.session.query(ItemOption.name, ItemOption.value)
-            .filter(ItemOption.item_id == self.id, ItemOption.name.in_([
-                'auth.username',
-            ]))
+            db.session.query(ItemOption.name, ItemOption.value).filter(
+                ItemOption.item_id == self.id, ItemOption.name.in_(["auth.username"])
+            )
         )
 
         kwargs = {
-            'path': os.path.join(current_app.config['REPO_ROOT'], self.id.hex),
-            'id': self.id.hex,
-            'url': self.url,
-            'username': options.get('auth.username'),
+            "path": os.path.join(current_app.config["REPO_ROOT"], self.id.hex),
+            "id": self.id.hex,
+            "url": self.url,
+            "username": options.get("auth.username"),
         }
 
         if self.backend == RepositoryBackend.git:
             return GitVcs(**kwargs)
+
         else:
-            raise NotImplementedError(
-                'Invalid backend: {}'.format(self.backend))
+            raise NotImplementedError("Invalid backend: {}".format(self.backend))
 
     def get_full_name(self):
-        return '{}/{}/{}'.format(self.provider, self.owner_name, self.name)
+        return "{}/{}/{}".format(self.provider, self.owner_name, self.name)

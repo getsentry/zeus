@@ -3,11 +3,13 @@ from zeus.tasks import send_build_notifications
 
 
 def test_sends_failure(mocker, db_session, default_source):
-    auth.set_current_tenant(auth.RepositoryTenant(
-        repository_id=default_source.repository_id))
+    auth.set_current_tenant(
+        auth.RepositoryTenant(repository_id=default_source.repository_id)
+    )
 
     mock_send_email_notification = mocker.patch(
-        'zeus.notifications.email.send_email_notification')
+        "zeus.notifications.email.send_email_notification"
+    )
 
     build = factories.BuildFactory(source=default_source, failed=True)
     db_session.add(build)
@@ -18,11 +20,13 @@ def test_sends_failure(mocker, db_session, default_source):
 
 
 def test_does_not_send_passing(mocker, db_session, default_source):
-    auth.set_current_tenant(auth.RepositoryTenant(
-        repository_id=default_source.repository_id))
+    auth.set_current_tenant(
+        auth.RepositoryTenant(repository_id=default_source.repository_id)
+    )
 
     mock_send_email_notification = mocker.patch(
-        'zeus.notifications.email.send_email_notification')
+        "zeus.notifications.email.send_email_notification"
+    )
 
     build = factories.BuildFactory(source=default_source, passed=True)
     db_session.add(build)

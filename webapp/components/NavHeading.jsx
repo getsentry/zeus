@@ -2,11 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 export default styled(({label, ...props}) => {
-  return (
-    <div {...props}>
-      {props.children}
-    </div>
-  );
+  return <div {...props}>{props.children}</div>;
 })`
   font-size: 13px;
   font-weight: 500;

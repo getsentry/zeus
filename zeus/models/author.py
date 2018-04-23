@@ -14,6 +14,8 @@ class Author(RepositoryBoundMixin, db.Model):
     name = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), nullable=True)
 
-    __tablename__ = 'author'
-    __table_args__ = (db.UniqueConstraint('repository_id', 'email', name='unq_author_email'), )
-    __repr__ = model_repr('repository_id', 'name', 'email')
+    __tablename__ = "author"
+    __table_args__ = (
+        db.UniqueConstraint("repository_id", "email", name="unq_author_email"),
+    )
+    __repr__ = model_repr("repository_id", "name", "email")

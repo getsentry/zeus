@@ -8,13 +8,17 @@ class Patch(RepositoryBoundMixin, StandardAttributes, db.Model):
     diff = db.deferred(db.Column(db.Text, nullable=False))
 
     parent_revision = db.relationship(
-        'Revision', foreign_keys='[Patch.repository_id, Patch.parent_revision_sha]', viewonly=True
+        "Revision",
+        foreign_keys="[Patch.repository_id, Patch.parent_revision_sha]",
+        viewonly=True,
     )
 
-    __tablename__ = 'patch'
+    __tablename__ = "patch"
     __table_args__ = (
         db.ForeignKeyConstraint(
-            ('repository_id', 'parent_revision_sha'), ('revision.repository_id', 'revision.sha')
-        ), db.Index('idx_repo_sha', 'repository_id', 'parent_revision_sha'),
+            ("repository_id", "parent_revision_sha"),
+            ("revision.repository_id", "revision.sha"),
+        ),
+        db.Index("idx_repo_sha", "repository_id", "parent_revision_sha"),
     )
-    __repr__ = model_repr('repository_id', 'parent_revision_sha')
+    __repr__ = model_repr("repository_id", "parent_revision_sha")

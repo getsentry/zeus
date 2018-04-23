@@ -20,10 +20,10 @@ class APIClient(object):
         self,
         path: str,
         method: str,
-        data: dict=None,
-        files: Mapping[str, BinaryIO]=None,
-        json: dict=None,
-        params: dict=None,
+        data: dict = None,
+        files: Mapping[str, BinaryIO] = None,
+        json: dict = None,
+        params: dict = None,
         request=None,
         tenant=True,
     ) -> Response:
@@ -42,7 +42,7 @@ class APIClient(object):
         if json:
             assert not data
             data = dumps(json)
-            content_type = 'application/json'
+            content_type = "application/json"
         elif files:
             if not data:
                 data = {}
@@ -50,41 +50,41 @@ class APIClient(object):
                 data[key] = value
             for key, value in files.items():
                 data[key] = value
-            content_type = 'multipart/form-data'
+            content_type = "multipart/form-data"
         else:
             content_type = None
 
         with current_app.test_client() as client:
             response = client.open(
-                path='/api/{}'.format(path.lstrip('/')),
+                path="/api/{}".format(path.lstrip("/")),
                 query_string=params,
                 method=method,
                 content_type=content_type,
                 data=data,
-                environ_overrides={
-                    'zeus.tenant': tenant,
-                }
+                environ_overrides={"zeus.tenant": tenant},
             )
         if not (200 <= response.status_code < 300):
             raise ApiError(
-                text=response.get_data(as_text=True),
-                code=response.status_code,
+                text=response.get_data(as_text=True), code=response.status_code
             )
-        if response.headers['Content-Type'] != 'application/json':
+
+        if response.headers["Content-Type"] != "application/json":
             raise ApiError(
-                text='Request returned invalid content type: {}'.format(
-                    response.headers['Content-Type']),
+                text="Request returned invalid content type: {}".format(
+                    response.headers["Content-Type"]
+                ),
                 code=response.status_code,
             )
+
         return response
 
-    delete = partialmethod(dispatch, method='DELETE')
-    get = partialmethod(dispatch, method='GET')
-    head = partialmethod(dispatch, method='HEAD')
-    options = partialmethod(dispatch, method='OPTIONS')
-    patch = partialmethod(dispatch, method='PATCH')
-    post = partialmethod(dispatch, method='POST')
-    put = partialmethod(dispatch, method='PUT')
+    delete = partialmethod(dispatch, method="DELETE")
+    get = partialmethod(dispatch, method="GET")
+    head = partialmethod(dispatch, method="HEAD")
+    options = partialmethod(dispatch, method="OPTIONS")
+    patch = partialmethod(dispatch, method="PATCH")
+    post = partialmethod(dispatch, method="POST")
+    put = partialmethod(dispatch, method="PUT")
 
 
 api_client = APIClient()

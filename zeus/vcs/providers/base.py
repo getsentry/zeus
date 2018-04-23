@@ -6,7 +6,10 @@ from zeus.utils.ssh import KeyPair
 
 # this API is very much a work in progress, and hasn't yet had a lot of thought put
 # into it
+
+
 class RepositoryProvider(object):
+
     def __init__(self, cache=True):
         self.cache = cache
 

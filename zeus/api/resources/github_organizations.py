@@ -5,6 +5,7 @@ from .base import Resource
 
 
 class GitHubOrganizationsResource(Resource):
+
     def get(self):
         """
         Return a list of GitHub organizations avaiable to the current user.

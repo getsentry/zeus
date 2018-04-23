@@ -8,6 +8,7 @@ hook_schema = HookSchema(strict=True)
 
 
 class HookDetailsResource(BaseHookResource):
+
     def get(self, hook: Hook):
         """
         Return a hook.
@@ -18,11 +19,11 @@ class HookDetailsResource(BaseHookResource):
         """
         Update a hook.
         """
-        hook_schema = HookSchema(strict=True, context={'hook': hook})
-        result = self.schema_from_request(
-            hook_schema, partial=True)
+        hook_schema = HookSchema(strict=True, context={"hook": hook})
+        result = self.schema_from_request(hook_schema, partial=True)
         if result.errors:
             return self.respond(result.errors, 403)
+
         if db.session.is_modified(hook):
             db.session.add(hook)
             db.session.commit()

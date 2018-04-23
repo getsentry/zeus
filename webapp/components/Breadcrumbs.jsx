@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import styled from 'styled-components';
 
-export const Breadcrumbs = styled.div`display: inline-block;`;
+export const Breadcrumbs = styled.div`
+  display: inline-block;
+`;
 
 export const CrumbLink = props => {
   return (
     <Crumb {...props}>
-      <Link to={props.to}>
-        {props.children}
-      </Link>
+      <Link to={props.to}>{props.children}</Link>
     </Crumb>
   );
 };

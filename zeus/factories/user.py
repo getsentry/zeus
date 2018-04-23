@@ -8,7 +8,7 @@ from .types import GUIDFactory
 
 class UserFactory(ModelFactory):
     id = GUIDFactory()
-    email = factory.Faker('email')
+    email = factory.Faker("email")
 
     class Meta:
         model = models.User

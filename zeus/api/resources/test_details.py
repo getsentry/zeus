@@ -11,11 +11,11 @@ testcase_schema = TestCaseSchema(strict=True)
 
 
 class TestDetailsResource(Resource):
+
     def dispatch_request(self, test_id: str, *args, **kwargs) -> Response:
-        test = TestCase.query.options(
-            undefer('message'),
-            joinedload('job'),
-        ).get(test_id)
+        test = TestCase.query.options(undefer("message"), joinedload("job")).get(
+            test_id
+        )
         if not test:
             return self.not_found()
 
@@ -34,6 +34,7 @@ class TestDetailsResource(Resource):
         result = self.schema_from_request(testcase_schema, partial=True)
         if result.errors:
             return self.respond(result.errors, 403)
+
         for key, value in result.data.items():
             if getattr(test, key) != value:
                 setattr(test, key, value)

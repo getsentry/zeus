@@ -13,11 +13,12 @@ from zeus.tasks import process_artifact
 from .base_job import BaseJobResource
 from ..schemas import ArtifactSchema
 
-artifact_schema = ArtifactSchema(strict=True, exclude=('job',))
-artifacts_schema = ArtifactSchema(strict=True, many=True, exclude=('job',))
+artifact_schema = ArtifactSchema(strict=True, exclude=("job",))
+artifacts_schema = ArtifactSchema(strict=True, many=True, exclude=("job",))
 
 
 class JobArtifactsResource(BaseJobResource):
+
     def select_resource_for_update(self):
         return False
 
@@ -26,14 +27,17 @@ class JobArtifactsResource(BaseJobResource):
         Return a list of artifacts for a given job.
         """
         query = Artifact.query.options(
-            joinedload('job'),
-            joinedload('job').joinedload('build'),
-            joinedload('job').joinedload('build').joinedload('source'),
-            joinedload('job').joinedload('build').joinedload(
-                'source').joinedload('repository'),
+            joinedload("job"),
+            joinedload("job").joinedload("build"),
+            joinedload("job").joinedload("build").joinedload("source"),
+            joinedload("job").joinedload("build").joinedload("source").joinedload(
+                "repository"
+            ),
         ).filter(
-            Artifact.job_id == job.id,
-        ).order_by(Artifact.name.asc())
+            Artifact.job_id == job.id
+        ).order_by(
+            Artifact.name.asc()
+        )
 
         return self.respond_with_schema(artifacts_schema, query)
 
@@ -50,20 +54,22 @@ class JobArtifactsResource(BaseJobResource):
         """
         # dont bother storing artifacts for aborted jobs
         if job.result == Result.aborted:
-            return self.error('job was aborted', status=410)
+            return self.error("job was aborted", status=410)
 
-        if request.content_type == 'application/json':
+        if request.content_type == "application/json":
             # file must be base64 encoded
-            file_data = request.json.get('file')
+            file_data = request.json.get("file")
             if not file_data:
-                return self.respond({'file': 'Missing file content.'}, status=403)
-            file = FileStorage(BytesIO(b64decode(file_data)),
-                               request.json.get('name'))
+                return self.respond({"file": "Missing file content."}, status=403)
+
+            file = FileStorage(BytesIO(b64decode(file_data)), request.json.get("name"))
         else:
             try:
-                file = request.files['file']
+                file = request.files["file"]
             except KeyError:
-                return self.respond({'file': 'Missing data for required field.'}, status=403)
+                return self.respond(
+                    {"file": "Missing data for required field."}, status=403
+                )
 
         result = self.schema_from_request(artifact_schema)
         artifact = result.data
@@ -75,7 +81,9 @@ class JobArtifactsResource(BaseJobResource):
             artifact.name = file.filename
 
         if not artifact.name:
-            return self.respond({'name': 'Missing data for required field.'}, status=403)
+            return self.respond(
+                {"name": "Missing data for required field."}, status=403
+            )
 
         try:
             db.session.add(artifact)
@@ -89,11 +97,11 @@ class JobArtifactsResource(BaseJobResource):
         if exists:
             # XXX(dcramer): this is more of an error but we make an assumption
             # that this happens because it was already sent
-            return self.error('An artifact with this name already exists', 204)
+            return self.error("An artifact with this name already exists", 204)
 
         artifact.file.save(
             file,
-            '{0}/{1}/{2}_{3}'.format(
+            "{0}/{1}/{2}_{3}".format(
                 job.id.hex[:4], job.id.hex[4:], artifact.id.hex, artifact.name
             ),
         )

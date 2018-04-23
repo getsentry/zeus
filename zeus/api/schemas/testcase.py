@@ -24,14 +24,17 @@ class AggregateTestCaseSummarySchema(Schema):
     @pre_dump
     def process_aggregates(self, data):
         return {
-            'name': data.name,
-            'runs': [{
-                'id': UUID(e[0]),
-                'job_id': UUID(e[1]),
-                'duration': int(e[2]),
-                'result': Result(int(e[3])),
-            } for e in data.runs],
-            'result': aggregate_result(Result(int(e[3])) for e in data.runs)
+            "name": data.name,
+            "runs": [
+                {
+                    "id": UUID(e[0]),
+                    "job_id": UUID(e[1]),
+                    "duration": int(e[2]),
+                    "result": Result(int(e[3])),
+                }
+                for e in data.runs
+            ],
+            "result": aggregate_result(Result(int(e[3])) for e in data.runs),
         }
 
 

@@ -5,7 +5,7 @@ from unidecode import unidecode
 _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
 
 
-def slugify(text: str, delim: str='-'):
+def slugify(text: str, delim: str = "-"):
     """
     Generates an ASCII-only slug.
     """
