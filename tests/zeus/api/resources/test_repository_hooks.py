@@ -53,8 +53,26 @@ def test_cannot_create_hooks_without_admin(
     assert resp.status_code == 400
 
 
-def test_repo_hook_create_schema(client, default_login, default_source,
-                                 default_repo, default_repo_access):
+def test_repo_hook_create_custom_schema(client, default_login, default_source,
+                                        default_repo, default_repo_access):
+    resp = client.post(
+        '/api/repos/{}/hooks'.format(default_repo.get_full_name()),
+        json={
+            'provider': 'custom',
+        }
+    )
+    assert resp.status_code == 200, repr(resp.data)
+
+    hook = Hook.query.unrestricted_unsafe().get(resp.json()['id'])
+    assert hook
+    assert hook.repository_id == default_repo.id
+    assert hook.provider == 'custom'
+    assert hook.token
+    assert hook.config == {}
+
+
+def test_repo_hook_create_travis_schema(client, default_login, default_source,
+                                        default_repo, default_repo_access):
     resp = client.post(
         '/api/repos/{}/hooks'.format(default_repo.get_full_name()),
         json={
