@@ -1,24 +1,20 @@
 exclude: '\.snap$'
 repos:
--   repo: git://github.com/pre-commit/mirrors-autopep8
-    sha: v1.3.3
+-   repo: https://github.com/ambv/black
+    rev: b07ca2b7d5d03f5d890c1ce5f19b41065ba815c4
     hooks:
-    -   id: autopep8
+    - id: black
+      args: [--line-length=88, --safe]
+      python_version: python3.6
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha: v1.1.1
+    rev: v1.2.3
     hooks:
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
--   repo: git://github.com/getsentry/pre-commit-hooks
-    sha: f3237d2d65af81d435c49dee3593dc8f03d23c2d
-    hooks:
-    -   id: prettier
--   repo: git://github.com/getsentry/pre-commit-hooks
-    sha: f3237d2d65af81d435c49dee3593dc8f03d23c2d
-    hooks:
-    -   id: eslint
--   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha: v1.1.1
-    hooks:
     -   id: debug-statements
     -   id: flake8
+-   repo: git://github.com/getsentry/pre-commit-hooks
+    rev: f3237d2d65af81d435c49dee3593dc8f03d23c2d
+    hooks:
+    -   id: prettier
+    -   id: eslint
