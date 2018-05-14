@@ -1,3 +1,4 @@
+from datetime import datetime, date
 from json import dumps
 from flask import current_app, Response
 from functools import partialmethod
@@ -5,6 +6,13 @@ from typing import Mapping, BinaryIO
 
 from zeus import auth
 from zeus.exceptions import ApiError
+
+
+def json_encoder(obj):
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+
+    raise TypeError("Type {} not serializable".format(type(obj)))
 
 
 class APIClient(object):
@@ -41,7 +49,7 @@ class APIClient(object):
 
         if json:
             assert not data
-            data = dumps(json)
+            data = dumps(json, default=json_encoder)
             content_type = "application/json"
         elif files:
             if not data:
