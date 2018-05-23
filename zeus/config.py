@@ -257,6 +257,9 @@ def create_app(_read_config=True, **config):
 
     configure_db(app)
 
+    # needs to happen after db
+    configure_scout(app)
+
     redis.init_app(app)
     mail.init_app(app)
     celery.init_app(app, sentry)
@@ -330,3 +333,17 @@ def configure_webpack(app):
     @app.context_processor
     def webpack_assets():
         return {"asset_url": get_asset}
+
+
+def configure_scout(app):
+    try:
+        from scout_apm.flask import ScoutApm
+        from scout_apm.flask.sqlalchemy import instrument_sqlalchemy
+    except ImportError:
+        return False
+
+    app.config.setdefault("SCOUT_NAME", "Zeus")
+    app.config.setdefault("SCOUT_MONITOR", True)
+
+    ScoutApm(app)
+    instrument_sqlalchemy(db)

@@ -89,6 +89,11 @@ spec:
             secretKeyRef:
               name: queue
               key: broker_url
+        - name: SCOUT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: scout
+              key: key
         readinessProbe:
           exec:
             command:
