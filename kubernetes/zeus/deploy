@@ -19,7 +19,7 @@ if [[ ! -x $SENTRY_API_TOKEN ]]; then
       {
         \"version\": \"${VERSION}\",
         \"refs\": [{
-            \"repository\":\"Zeus\",
+            \"repository\":\"getsentry/zeus\",
             \"commit\":\"${VERSION}\"
         }],
         \"projects\":[\"zeus\"]
