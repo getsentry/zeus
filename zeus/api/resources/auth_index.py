@@ -26,6 +26,8 @@ class AuthIndexResource(Resource):
             if exc.code == 401:
                 return {"isAuthenticated": False}
 
+            raise
+
         user = json.loads(user_response.data)
 
         identity_list = list(Identity.query.filter(Identity.user_id == user["id"]))
