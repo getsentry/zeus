@@ -18,7 +18,6 @@ honcho==1.0.1
 idna>=2.5,<2.6
 itsdangerous>=0.24,<0.25
 jsonschema>=2.6.0,<2.7.0
-kombu==4.1.0
 lxml==3.8.0
 marshmallow==2.13.5
 nplusone==0.8.1
