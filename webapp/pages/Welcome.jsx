@@ -8,11 +8,7 @@ import GitHubLoginButton from '../components/GitHubLoginButton';
 import SyntaxHighlight from '../components/SyntaxHighlight';
 
 const TRAVIS_EXAMPLE = `
-after_success:
-  - npm install -g @zeus-ci/cli
-  - $(npm bin -g)/zeus upload -t "application/x-junit+xml" junit.xml
-  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" coverage.xml
-after_failure:
+after_script:
   - npm install -g @zeus-ci/cli
   - $(npm bin -g)/zeus upload -t "application/x-junit+xml" junit.xml
   - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" coverage.xml
