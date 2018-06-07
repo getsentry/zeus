@@ -6,13 +6,14 @@ import {ResultGrid, Column, Header} from '../components/ResultGrid';
 
 export default class BuildList extends Component {
   static propTypes = {
+    repo: PropTypes.object,
     buildList: PropTypes.arrayOf(PropTypes.object).isRequired,
     includeAuthor: PropTypes.bool,
     includeRepo: PropTypes.bool
   };
 
   render() {
-    let {buildList, includeAuthor, includeRepo, params} = this.props;
+    let {buildList, includeAuthor, includeRepo, params, repo} = this.props;
     return (
       <ResultGrid>
         <Header>
@@ -34,6 +35,7 @@ export default class BuildList extends Component {
                 key={build.id}
                 build={build}
                 params={params}
+                repo={repo}
                 includeAuthor={includeAuthor}
                 includeRepo={includeRepo}
               />

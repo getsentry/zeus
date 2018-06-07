@@ -23,13 +23,9 @@ class RepositoryBuildList extends AsyncPage {
 
 class BuildListBody extends AsyncComponent {
   static propTypes = {
+    repo: PropTypes.object.isRequired,
     buildList: PropTypes.array,
     links: PropTypes.object
-  };
-
-  static contextTypes = {
-    ...AsyncPage.contextTypes,
-    repo: PropTypes.object.isRequired
   };
 
   fetchData() {
@@ -43,7 +39,11 @@ class BuildListBody extends AsyncComponent {
   renderBody() {
     return (
       <div>
-        <BuildList params={this.props.params} buildList={this.props.buildList} />
+        <BuildList
+          params={this.props.params}
+          buildList={this.props.buildList}
+          repo={this.props.repo}
+        />
         <Paginator links={this.props.links} {...this.props} />
       </div>
     );
@@ -52,10 +52,11 @@ class BuildListBody extends AsyncComponent {
 
 // We force the repo param into props so that we can read it as part of connect
 // in order to filter down the data we're propagating to the child
+// XXX(dcramer): this is super tricky/sketch atm
 const DecoratedRepositoryBuildList = connect(
   ({builds}, {repo}) => ({
     buildList: builds.items.filter(
-      build => build.repository.full_name === repo.full_name
+      build => !build.repository || build.repository.full_name === repo.full_name
     ),
     links: builds.links,
     loading: !builds.loaded
