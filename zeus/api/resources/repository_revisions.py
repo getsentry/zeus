@@ -11,7 +11,9 @@ from ..schemas import BuildSchema, RevisionSchema
 
 
 class RevisionWithBuildSchema(RevisionSchema):
-    latest_build = fields.Nested(BuildSchema(), dump_only=True, required=False)
+    latest_build = fields.Nested(
+        BuildSchema(exclude=["repository"]), dump_only=True, required=False
+    )
 
 
 revisions_schema = RevisionWithBuildSchema(many=True, strict=True)
