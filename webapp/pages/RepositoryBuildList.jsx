@@ -11,8 +11,8 @@ import BuildList from '../components/BuildList';
 import Paginator from '../components/Paginator';
 
 class RepositoryBuildList extends AsyncPage {
-  static contextTypes = {
-    ...AsyncPage.contextTypes,
+  static propTypes = {
+    ...AsyncPage.propTypes,
     repo: PropTypes.object.isRequired
   };
 
@@ -30,7 +30,7 @@ class BuildListBody extends AsyncComponent {
 
   fetchData() {
     return new Promise((resolve, reject) => {
-      let {repo} = this.context;
+      let {repo} = this.props;
       this.props.loadBuildsForRepository(repo.full_name, this.props.location.query);
       return resolve();
     });
@@ -54,7 +54,7 @@ class BuildListBody extends AsyncComponent {
 // in order to filter down the data we're propagating to the child
 // XXX(dcramer): this is super tricky/sketch atm
 const DecoratedRepositoryBuildList = connect(
-  ({builds}, {repo}) => ({
+  ({builds, repo}) => ({
     buildList: builds.items.filter(
       build => !build.repository || build.repository.full_name === repo.full_name
     ),
@@ -62,7 +62,7 @@ const DecoratedRepositoryBuildList = connect(
     loading: !builds.loaded
   }),
   {loadBuildsForRepository}
-)(subscribe((props, {repo}) => [`repos:${repo.full_name}:builds`])(RepositoryBuildList));
+)(subscribe(({repo}) => [`repos:${repo.full_name}:builds`])(RepositoryBuildList));
 
 export default class RepositoryBuildListWithRepoProp extends Component {
   static contextTypes = {
