@@ -1,6 +1,6 @@
 from flask import request
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
+from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
@@ -10,8 +10,8 @@ from zeus.pubsub.utils import publish
 from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema, BuildCreateSchema
 
-build_schema = BuildSchema(strict=True)
-builds_schema = BuildSchema(many=True, strict=True)
+build_schema = BuildSchema(strict=True, exclude=["repository"])
+builds_schema = BuildSchema(many=True, strict=True, exclude=["repository"])
 
 
 class RepositoryBuildsResource(BaseRepositoryResource):
@@ -26,13 +26,10 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         user = auth.get_current_user()
 
         query = Build.query.options(
-            contains_eager("source"),
+            joinedload("source"),
             joinedload("source").joinedload("author"),
             joinedload("source").joinedload("revision"),
-            joinedload("source").joinedload("patch"),
             subqueryload_all("stats"),
-        ).join(
-            Source, Build.source_id == Source.id
         ).filter(
             Build.repository_id == repo.id
         ).order_by(

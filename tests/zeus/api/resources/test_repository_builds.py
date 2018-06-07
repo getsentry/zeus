@@ -3,15 +3,19 @@ from zeus.models import Build
 
 
 def test_repo_build_list(
-    client, default_login, default_build, default_repo, default_repo_access
+    client, default_login, default_source, default_repo, default_repo_access
 ):
+    build1 = factories.BuildFactory.create(source=default_source)
+    build2 = factories.BuildFactory.create(source=default_source)
+
     resp = client.get(
         "/api/repos/{}/builds?show=all".format(default_repo.get_full_name())
     )
     assert resp.status_code == 200
     data = resp.json()
-    assert len(data) == 1
-    assert data[0]["id"] == str(default_build.id)
+    assert len(data) == 2
+    assert data[0]["id"] == str(build2.id)
+    assert data[1]["id"] == str(build1.id)
 
 
 def test_repo_build_list_without_access(

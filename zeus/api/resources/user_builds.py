@@ -26,6 +26,7 @@ class UserBuildsResource(Resource):
 
         query = Build.query.options(
             joinedload("repository"),
+            contains_eager("source"),
             contains_eager("source").joinedload("author"),
             contains_eager("source").joinedload("revision"),
             contains_eager("source").joinedload("patch"),
