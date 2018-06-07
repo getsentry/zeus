@@ -30,7 +30,7 @@ RUN set -x \
 # grab gosu for easy step-down from root
 RUN set -x \
     && export GOSU_VERSION=1.10 \
-    && apt-get update && apt-get install -y --no-install-recommends gnupg gnupg2 wget && rm -rf /var/lib/apt/lists/* \
+    && apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/* \
     && wget --no-verbose -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
     && wget --no-verbose -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
     && export GNUPGHOME="$(mktemp -d)" \
@@ -39,12 +39,12 @@ RUN set -x \
     && rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true \
-    && apt-get purge -y --auto-remove gnupg gnupg2 wget
+    && apt-get purge -y --auto-remove wget
 
 # grab tini for signal processing and zombie killing
 RUN set -x \
     && export TINI_VERSION=0.15.0 \
-    && apt-get update && apt-get install -y --no-install-recommends gnupg gnupg2 wget && rm -rf /var/lib/apt/lists/* \
+    && apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/* \
     && wget --no-verbose -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini" \
     && wget --no-verbose -O /usr/local/bin/tini.asc "https://github.com/krallin/tini/releases/download/v$TINI_VERSION/tini.asc" \
     && export GNUPGHOME="$(mktemp -d)" \
@@ -53,7 +53,7 @@ RUN set -x \
     && rm -r "$GNUPGHOME" /usr/local/bin/tini.asc \
     && chmod +x /usr/local/bin/tini \
     && tini -h \
-    && apt-get purge -y --auto-remove gnupg gnupg2 wget
+    && apt-get purge -y --auto-remove wget
 
 # gpg keys listed at https://github.com/nodejs/node
 RUN set -x \
@@ -72,14 +72,14 @@ RUN set -x \
     ; do \
       gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
     done \
-    && apt-get update && apt-get install -y --no-install-recommends gnupg gnupg2 wget && rm -rf /var/lib/apt/lists/* \
+    && apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/* \
     && wget --no-verbose "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
     && wget --no-verbose "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
     && gpg --verify SHASUMS256.txt.asc \
     && grep " node-v$NODE_VERSION-linux-x64.tar.gz\$" SHASUMS256.txt.asc | sha256sum -c - \
     && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
     && rm -r "$GNUPGHOME" "node-v$NODE_VERSION-linux-x64.tar.gz" SHASUMS256.txt.asc \
-    && apt-get purge -y --auto-remove gnupg gnupg2 wget \
+    && apt-get purge -y --auto-remove wget \
     && npm install -g yarn@$YARN_VERSION \
     && npm cache clear --force
 
