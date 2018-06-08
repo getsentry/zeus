@@ -10,7 +10,7 @@ from zeus.pubsub.utils import publish
 from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema, BuildCreateSchema
 
-build_schema = BuildSchema(strict=True, exclude=["repository"])
+build_schema = BuildSchema(strict=True)
 builds_schema = BuildSchema(many=True, strict=True, exclude=["repository"])
 
 
