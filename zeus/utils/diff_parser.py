@@ -33,6 +33,7 @@ class DiffParser(object):
     """
     This is based on code from the open source project, "lodgeit".
     """
+
     _chunk_re = re.compile(r"@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@")
 
     def __init__(self, udiff):
@@ -40,7 +41,6 @@ class DiffParser(object):
         self.lines = udiff.splitlines()
 
     def _extract_rev(self, line1, line2):
-
         def _extract(line):
             parts = line.split(None, 1)
             return parts[0], (len(parts) == 2 and parts[1] or None)

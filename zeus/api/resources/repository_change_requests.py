@@ -13,7 +13,6 @@ change_requests_schema = ChangeRequestSchema(many=True, strict=True)
 
 
 class RepositoryChangeRequestsResource(BaseRepositoryResource):
-
     def select_resource_for_update(self):
         return False
 
@@ -23,14 +22,14 @@ class RepositoryChangeRequestsResource(BaseRepositoryResource):
         """
         user = auth.get_current_user()
 
-        query = ChangeRequest.query.options(
-            joinedload("head_revision"),
-            joinedload("parent_revision"),
-            joinedload("author"),
-        ).filter(
-            ChangeRequest.repository_id == repo.id
-        ).order_by(
-            ChangeRequest.number.desc()
+        query = (
+            ChangeRequest.query.options(
+                joinedload("head_revision"),
+                joinedload("parent_revision"),
+                joinedload("author"),
+            )
+            .filter(ChangeRequest.repository_id == repo.id)
+            .order_by(ChangeRequest.number.desc())
         )
         show = request.args.get("show")
         if show == "mine":

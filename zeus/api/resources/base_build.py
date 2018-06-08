@@ -9,7 +9,6 @@ from .base import Resource
 
 
 class BaseBuildResource(Resource):
-
     def dispatch_request(
         self,
         provider: str,

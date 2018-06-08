@@ -2,7 +2,10 @@ import responses
 
 from zeus.constants import Permission
 from zeus.models import (
-    Repository, RepositoryAccess, RepositoryBackend, RepositoryProvider
+    Repository,
+    RepositoryAccess,
+    RepositoryBackend,
+    RepositoryProvider,
 )
 
 REPO_DETAILS_RESPONSE = """{

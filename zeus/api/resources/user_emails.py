@@ -8,7 +8,6 @@ emails_schema = EmailSchema(many=True, strict=True)
 
 
 class UserEmailsResource(Resource):
-
     def get(self, user_id):
         """
         Return a list of builds for the given user.

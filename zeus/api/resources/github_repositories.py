@@ -24,7 +24,6 @@ repo_schema = RepositorySchema(strict=True)
 
 
 class GitHubRepositoriesResource(Resource):
-
     def get(self):
         """
         Return a list of GitHub repositories avaiable to the current user.
@@ -50,9 +49,9 @@ class GitHubRepositoriesResource(Resource):
 
         active_repo_ids = frozenset(
             r[0]
-            for r in db.session.query(Repository.external_id).join(
-                RepositoryAccess, RepositoryAccess.repository_id == Repository.id
-            ).filter(
+            for r in db.session.query(Repository.external_id)
+            .join(RepositoryAccess, RepositoryAccess.repository_id == Repository.id)
+            .filter(
                 Repository.provider == RepositoryProvider.github,
                 RepositoryAccess.user_id == user.id,
             )
@@ -132,10 +131,14 @@ class GitHubRepositoriesResource(Resource):
                     db.session.add(repo)
                     db.session.flush()
             except IntegrityError:
-                repo = Repository.query.unrestricted_unsafe().filter(
-                    Repository.provider == RepositoryProvider.github,
-                    Repository.external_id == str(repo_data["id"]),
-                ).first()
+                repo = (
+                    Repository.query.unrestricted_unsafe()
+                    .filter(
+                        Repository.provider == RepositoryProvider.github,
+                        Repository.external_id == str(repo_data["id"]),
+                    )
+                    .first()
+                )
                 # it's possible to get here if the "full name" already exists
                 assert repo
                 needs_configured = repo.status == RepositoryStatus.inactive

@@ -11,7 +11,6 @@ builds_schema = BuildSchema(many=True, strict=True)
 
 
 class UserBuildsResource(Resource):
-
     def get(self, user_id):
         """
         Return a list of builds for the given user.
@@ -24,26 +23,27 @@ class UserBuildsResource(Resource):
         else:
             user = User.query.get(user_id)
 
-        query = Build.query.options(
-            joinedload("repository"),
-            contains_eager("source"),
-            contains_eager("source").joinedload("author"),
-            contains_eager("source").joinedload("revision"),
-            contains_eager("source").joinedload("patch"),
-            subqueryload_all("stats"),
-        ).join(
-            Source, Build.source_id == Source.id
-        ).filter(
-            Source.author_id.in_(
-                db.session.query(Author.id).filter(
-                    Author.email.in_(
-                        db.session.query(Email.email).filter(
-                            Email.user_id == user.id, Email.verified == True  # NOQA
+        query = (
+            Build.query.options(
+                joinedload("repository"),
+                contains_eager("source"),
+                contains_eager("source").joinedload("author"),
+                contains_eager("source").joinedload("revision"),
+                contains_eager("source").joinedload("patch"),
+                subqueryload_all("stats"),
+            )
+            .join(Source, Build.source_id == Source.id)
+            .filter(
+                Source.author_id.in_(
+                    db.session.query(Author.id).filter(
+                        Author.email.in_(
+                            db.session.query(Email.email).filter(
+                                Email.user_id == user.id, Email.verified == True  # NOQA
+                            )
                         )
                     )
                 )
             )
-        ).order_by(
-            Build.date_created.desc()
+            .order_by(Build.date_created.desc())
         )
         return self.paginate_with_schema(builds_schema, query)

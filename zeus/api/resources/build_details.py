@@ -11,7 +11,6 @@ build_schema = BuildSchema(strict=True)
 
 
 class BuildDetailsResource(BaseBuildResource):
-
     def select_resource_for_update(self) -> bool:
         return self.is_mutation()
 
@@ -22,9 +21,7 @@ class BuildDetailsResource(BaseBuildResource):
         with nplusone.ignore("eager_load"):
             build.source = Source.query.options(
                 joinedload("revision"), joinedload("patch")
-            ).get(
-                build.source_id
-            )
+            ).get(build.source_id)
         build.stats = list(ItemStat.query.filter(ItemStat.item_id == build.id))
         return self.respond_with_schema(build_schema, build)
 

@@ -14,6 +14,7 @@ class TestCase(RepositoryBoundMixin, db.Model):
     """
     A single run of a single test.
     """
+
     id = db.Column(GUID, nullable=False, primary_key=True, default=GUID.default_value)
     job_id = db.Column(
         GUID, db.ForeignKey("job.id", ondelete="CASCADE"), nullable=False

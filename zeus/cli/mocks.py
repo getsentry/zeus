@@ -41,11 +41,15 @@ def mock_single_repository(user_ids=()):
         with db.session.begin_nested():
             db.session.add(repo)
     except IntegrityError:
-        repo = models.Repository.query.unrestricted_unsafe().filter(
-            models.Repository.provider == repo.provider,
-            models.Repository.owner_name == repo.owner_name,
-            models.Repository.name == repo.name,
-        ).first()
+        repo = (
+            models.Repository.query.unrestricted_unsafe()
+            .filter(
+                models.Repository.provider == repo.provider,
+                models.Repository.owner_name == repo.owner_name,
+                models.Repository.name == repo.name,
+            )
+            .first()
+        )
         click.echo("Using {!r}".format(repo))
     else:
         click.echo("Created {!r}".format(repo))
@@ -60,11 +64,17 @@ def mock_single_repository(user_ids=()):
 
 
 def mock_author(repo: models.Repository, user_id) -> models.Author:
-    author = models.Author.query.unrestricted_unsafe().filter(
-        models.Author.email.in_(
-            db.session.query(models.Email.email).filter(models.Email.user_id == user_id)
+    author = (
+        models.Author.query.unrestricted_unsafe()
+        .filter(
+            models.Author.email.in_(
+                db.session.query(models.Email.email).filter(
+                    models.Email.user_id == user_id
+                )
+            )
         )
-    ).first()
+        .first()
+    )
     if author:
         return author
 
@@ -91,8 +101,9 @@ def mock_build(
     )
     source = factories.SourceFactory.create(
         revision=revision,
-        patch=factories.PatchFactory(parent_revision=parent_revision) if parent_revision
-        and random() > 0.8 else None,
+        patch=factories.PatchFactory(parent_revision=parent_revision)
+        if parent_revision and random() > 0.8
+        else None,
     )
     parent_revision = revision
 
@@ -139,9 +150,11 @@ def mock_build(
             for n in range(randint(0, 4)):
                 factories.BundleAssetFactory.create(bundle=bundle, job=job)
 
-        artifact_count = randrange(
-            3
-        ) if job.status == Status.finished and job.result == Result.passed else 0
+        artifact_count = (
+            randrange(3)
+            if job.status == Status.finished and job.result == Result.passed
+            else 0
+        )
         for n in range(0, artifact_count):
             factories.ArtifactFactory.create(job=job, repository=repo)
 

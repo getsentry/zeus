@@ -9,7 +9,6 @@ from .base import Resource
 
 
 class BaseChangeRequestResource(Resource):
-
     def dispatch_request(
         self,
         provider: str,

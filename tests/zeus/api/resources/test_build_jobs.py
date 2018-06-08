@@ -60,7 +60,8 @@ def test_build_job_create_existing_entity(
             default_repo.get_full_name(), default_build.number
         ),
         json={
-            "provider": existing_job.provider, "external_id": existing_job.external_id
+            "provider": existing_job.provider,
+            "external_id": existing_job.external_id,
         },
     )
     assert resp.status_code == 422

@@ -40,7 +40,10 @@ class RevisionResult(object):
 
     def __repr__(self):
         return "<%s: sha=%r author=%r subject=%r>" % (
-            type(self).__name__, self.sha, self.author, self.subject
+            type(self).__name__,
+            self.sha,
+            self.author,
+            self.subject,
         )
 
     def _get_author(self, repository: Repository, value: str) -> Author:
@@ -105,7 +108,6 @@ class RevisionResult(object):
 
 
 class CommandError(Exception):
-
     def __init__(self, cmd, retcode, stdout=None, stderr=None):
         self.cmd = cmd
         self.retcode = retcode
@@ -130,7 +132,6 @@ class InvalidPublicKey(CommandError):
 
 
 class BufferParser(object):
-
     def __init__(self, fp, delim):
         self.fp = fp
         self.delim = delim
@@ -147,7 +148,7 @@ class BufferParser(object):
 
                 chunk_buffer = []
 
-                chunk = chunk[d_pos + 1:]
+                chunk = chunk[d_pos + 1 :]
 
             if chunk:
                 chunk_buffer.append(chunk)

@@ -9,7 +9,6 @@ from sqlalchemy.types import TypeDecorator, Unicode
 
 
 class MutableDict(Mutable, MutableMapping):
-
     def __init__(self, value):
         self.value = value or {}
 

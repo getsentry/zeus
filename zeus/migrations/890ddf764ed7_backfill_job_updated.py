@@ -30,7 +30,9 @@ def upgrade():
     connection = op.get_bind()
     for job in connection.execute(Job.select().where(Job.c.date_updated == None)):
         connection.execute(
-            Job.update().where(Job.c.id == job.id).values(
+            Job.update()
+            .where(Job.c.id == job.id)
+            .values(
                 date_updated=job.date_finished or job.date_started or job.date_created
             )
         )

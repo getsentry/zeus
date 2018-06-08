@@ -8,7 +8,6 @@ from .base import Resource
 
 
 class BaseRevisionResource(Resource):
-
     def dispatch_request(
         self,
         provider,

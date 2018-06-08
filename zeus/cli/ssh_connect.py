@@ -18,11 +18,15 @@ from .base import cli
 def ssh_connect(args, repository):
     if "/" in repository:
         r_provider, r_owner, r_name = repository.split("/", 2)
-        repo = Repository.query.unrestricted_unsafe().filter(
-            Repository.provider == RepositoryProvider(r_provider),
-            Repository.owner_name == r_owner,
-            Repository.name == r_name,
-        ).first()
+        repo = (
+            Repository.query.unrestricted_unsafe()
+            .filter(
+                Repository.provider == RepositoryProvider(r_provider),
+                Repository.owner_name == r_owner,
+                Repository.name == r_name,
+            )
+            .first()
+        )
     else:
         repo = Repository.query.unrestricted_unsafe().get(repository)
     if not repo:

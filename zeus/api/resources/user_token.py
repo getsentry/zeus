@@ -11,7 +11,6 @@ token_schema = TokenSchema(strict=True)
 
 
 class UserTokenResource(Resource):
-
     def get(self):
         """
         Return the API token for the user.

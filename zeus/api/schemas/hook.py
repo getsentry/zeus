@@ -18,7 +18,6 @@ PROVIDERS = {"travis": TravisProvider, "custom": CustomProvider}
 
 
 class HookConfigField(fields.Field):
-
     def _serialize(self, value, attr, obj):
         return dict(value) if value else {}
 

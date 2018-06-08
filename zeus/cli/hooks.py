@@ -22,11 +22,15 @@ def add(repository, provider):
     assert (
         len(repo_bits) == 3
     ), "repository not in valid format: {provider}/{owner}/{name}"
-    repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.provider == RepositoryProvider(repo_bits[0]),
-        Repository.owner_name == repo_bits[1],
-        Repository.name == repo_bits[2],
-    ).first()
+    repo = (
+        Repository.query.unrestricted_unsafe()
+        .filter(
+            Repository.provider == RepositoryProvider(repo_bits[0]),
+            Repository.owner_name == repo_bits[1],
+            Repository.name == repo_bits[2],
+        )
+        .first()
+    )
     assert repo
 
     hook = Hook(repository_id=repo.id, provider=provider)

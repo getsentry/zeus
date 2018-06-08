@@ -11,7 +11,6 @@ filecoverage_schema = FileCoverageSchema(many=True, strict=True)
 
 
 class RevisionFileCoverageResource(BaseRevisionResource):
-
     def get(self, revision: Revision):
         """
         Return a list of file coverage objects for a given revision.

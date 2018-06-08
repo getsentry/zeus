@@ -8,7 +8,6 @@ from .base import Resource
 
 
 class BaseJobResource(Resource):
-
     def dispatch_request(
         self,
         provider: str,
@@ -19,14 +18,16 @@ class BaseJobResource(Resource):
         *args,
         **kwargs
     ) -> Response:
-        queryset = Job.query.join(Build, Build.id == Job.build_id).join(
-            Repository, Repository.id == Build.repository_id
-        ).filter(
-            Repository.provider == RepositoryProvider(provider),
-            Repository.owner_name == owner_name,
-            Repository.name == repo_name,
-            Build.number == build_number,
-            Job.number == job_number,
+        queryset = (
+            Job.query.join(Build, Build.id == Job.build_id)
+            .join(Repository, Repository.id == Build.repository_id)
+            .filter(
+                Repository.provider == RepositoryProvider(provider),
+                Repository.owner_name == owner_name,
+                Repository.name == repo_name,
+                Build.number == build_number,
+                Job.number == job_number,
+            )
         )
         if self.select_resource_for_update():
             queryset = queryset.with_for_update()

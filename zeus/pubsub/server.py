@@ -29,7 +29,6 @@ def is_valid_origin(request):
 
 
 def log_errors(func):
-
     @wraps(func)
     async def wrapped(*a, **k):
         try:

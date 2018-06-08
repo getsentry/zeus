@@ -4,7 +4,12 @@ from urllib.parse import urlparse
 from zeus.utils.functional import memoize
 
 from .base import (
-    Vcs, RevisionResult, BufferParser, CommandError, InvalidPublicKey, UnknownRevision
+    Vcs,
+    RevisionResult,
+    BufferParser,
+    CommandError,
+    InvalidPublicKey,
+    UnknownRevision,
 )
 
 LOG_FORMAT = "%H\x01%an <%ae>\x01%at\x01%cn <%ce>\x01%ct\x01%P\x01%B\x02"
@@ -13,7 +18,6 @@ ORIGIN_PREFIX = "remotes/origin/"
 
 
 class LazyGitRevisionResult(RevisionResult):
-
     def __init__(self, vcs, *args, **kwargs):
         self.vcs = vcs
         super(LazyGitRevisionResult, self).__init__(*args, **kwargs)
@@ -76,7 +80,7 @@ class GitVcs(Vcs):
             # HACK(dcramer): is there a better way around removing the prefix?
             result = result[2:].strip()
             if result.startswith(ORIGIN_PREFIX):
-                result = result[len(ORIGIN_PREFIX):]
+                result = result[len(ORIGIN_PREFIX) :]
             if result == "HEAD":
                 continue
 
@@ -166,10 +170,14 @@ class GitVcs(Vcs):
 
         for chunk in BufferParser(result, "\x02"):
             (
-                sha, author, author_date, committer, committer_date, parents, message
-            ) = chunk.split(
-                "\x01"
-            )
+                sha,
+                author,
+                author_date,
+                committer,
+                committer_date,
+                parents,
+                message,
+            ) = chunk.split("\x01")
 
             # sha may have a trailing newline due to git log adding it
             sha = sha.lstrip("\n")

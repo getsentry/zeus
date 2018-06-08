@@ -53,7 +53,6 @@ def decr_day(dt):
 
 
 class RepositoryStatsResource(BaseRepositoryResource):
-
     def get(self, repo: Repository):
         """
         Return various stats per-day for the given repository.
@@ -125,7 +124,8 @@ class RepositoryStatsResource(BaseRepositoryResource):
                     * 1000
                 )
                 filters = [
-                    Build.status == Status.finished, Build.result == Result.passed
+                    Build.status == Status.finished,
+                    Build.result == Result.passed,
                 ]
             else:
                 value = func.count(Build.id)
@@ -136,14 +136,14 @@ class RepositoryStatsResource(BaseRepositoryResource):
                 k.replace(tzinfo=timezone.utc): v
                 for k, v in db.session.query(
                     grouper.label("grouper"), value.label("value")
-                ).filter(
+                )
+                .filter(
                     Build.repository_id == repo.id,
                     Build.date_created >= date_begin,
                     Build.date_created < date_end,
                     *filters
-                ).group_by(
-                    "grouper"
                 )
+                .group_by("grouper")
             }
         else:
             results = {
@@ -152,16 +152,16 @@ class RepositoryStatsResource(BaseRepositoryResource):
                 k.replace(tzinfo=timezone.utc): v
                 for k, v in db.session.query(
                     grouper.label("grouper"), func.avg(ItemStat.value).label("value")
-                ).filter(
+                )
+                .filter(
                     ItemStat.item_id == Build.id,
                     ItemStat.name == stat,
                     Build.repository_id == repo.id,
                     Build.result == Result.passed,
                     Build.date_created >= date_begin,
                     Build.date_created < date_end,
-                ).group_by(
-                    "grouper"
                 )
+                .group_by("grouper")
             }
 
         data = []

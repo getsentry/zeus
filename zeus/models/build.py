@@ -15,6 +15,7 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
 
     Each Build contains many Jobs.
     """
+
     source_id = db.Column(
         GUID, db.ForeignKey("source.id", ondelete="CASCADE"), nullable=False, index=True
     )

@@ -13,7 +13,6 @@ testcases_schema = TestCaseSummarySchema(many=True, strict=True, exclude=["job"]
 
 
 class JobTestsResource(BaseJobResource):
-
     def select_resource_for_update(self):
         return False
 

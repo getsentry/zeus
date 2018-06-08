@@ -13,6 +13,7 @@ class Hook(RepositoryBoundMixin, StandardAttributes, db.Model):
     """
     An webhook bound to a single respository.
     """
+
     token = db.Column(
         db.LargeBinary(64),
         default=lambda: Hook.generate_token(),

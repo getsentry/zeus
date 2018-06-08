@@ -8,16 +8,15 @@ source_schema = SourceSchema(strict=True)
 
 
 class RevisionSourceResource(BaseRevisionResource):
-
     def get(self, revision: Revision):
         """
         Return a source for the given revision.
         """
-        source = Source.query.options(
-            joinedload("patch"), undefer("patch.diff")
-        ).filter(
-            Source.revision == revision, Source.patch == None  # NoQA
-        ).one_or_none()
+        source = (
+            Source.query.options(joinedload("patch"), undefer("patch.diff"))
+            .filter(Source.revision == revision, Source.patch == None)  # NoQA
+            .one_or_none()
+        )
         if source is None:
             return self.not_found()
 

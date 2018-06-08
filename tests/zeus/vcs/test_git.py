@@ -188,9 +188,12 @@ def test_is_child_parent(vcs):
     assert vcs.is_child_parent(
         child_in_question=revisions[0].sha, parent_in_question=revisions[1].sha
     )
-    assert vcs.is_child_parent(
-        child_in_question=revisions[1].sha, parent_in_question=revisions[0].sha
-    ) is False
+    assert (
+        vcs.is_child_parent(
+            child_in_question=revisions[1].sha, parent_in_question=revisions[0].sha
+        )
+        is False
+    )
 
 
 def test_get_known_branches(git_repo_config, vcs):

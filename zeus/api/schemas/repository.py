@@ -87,25 +87,24 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
     if not repo_list:
         return {}
 
-    build_query = db.session.query(Build.id).join(
-        Source, Build.source_id == Source.id
-    ).filter(
-        Source.patch_id == None,  # NOQA
-        Build.status == Status.finished,
-        Build.result == result,
-    ).order_by(
-        Build.date_created.desc()
+    build_query = (
+        db.session.query(Build.id)
+        .join(Source, Build.source_id == Source.id)
+        .filter(
+            Source.patch_id == None,  # NOQA
+            Build.status == Status.finished,
+            Build.result == result,
+        )
+        .order_by(Build.date_created.desc())
     )
 
     build_map = dict(
         db.session.query(
             Repository.id,
-            build_query.filter(Build.repository_id == Repository.id).limit(
-                1
-            ).as_scalar(),
-        ).filter(
-            Repository.id.in_(r.id for r in repo_list)
-        )
+            build_query.filter(Build.repository_id == Repository.id)
+            .limit(1)
+            .as_scalar(),
+        ).filter(Repository.id.in_(r.id for r in repo_list))
     )
 
     if not build_map:
@@ -113,9 +112,9 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
 
     return {
         b.repository_id: b
-        for b in Build.query.unrestricted_unsafe().filter(
-            Build.id.in_(build_map.values())
-        ).options(
+        for b in Build.query.unrestricted_unsafe()
+        .filter(Build.id.in_(build_map.values()))
+        .options(
             joinedload("source"),
             joinedload("source").joinedload("author"),
             joinedload("source").joinedload("revision"),

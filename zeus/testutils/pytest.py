@@ -113,6 +113,7 @@ def public_key(private_key):
 @pytest.fixture
 def public_key_bytes(public_key):
     from cryptography.hazmat.primitives import serialization
+
     return public_key.public_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PublicFormat.SubjectPublicKeyInfo,

@@ -11,7 +11,6 @@ testcase_schema = TestCaseSchema(strict=True)
 
 
 class TestDetailsResource(Resource):
-
     def dispatch_request(self, test_id: str, *args, **kwargs) -> Response:
         test = TestCase.query.options(undefer("message"), joinedload("job")).get(
             test_id

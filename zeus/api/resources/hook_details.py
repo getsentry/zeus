@@ -8,7 +8,6 @@ hook_schema = HookSchema(strict=True)
 
 
 class HookDetailsResource(BaseHookResource):
-
     def get(self, hook: Hook):
         """
         Return a hook.

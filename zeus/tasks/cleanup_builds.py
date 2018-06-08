@@ -19,9 +19,7 @@ def cleanup_builds():
     for result in queryset:
         Artifact.query.unrestricted_unsafe().filter(
             Artifact.status != Status.finished, Artifact.id == result.id
-        ).update(
-            {"date_updated": timezone.now()}
-        )
+        ).update({"date_updated": timezone.now()})
         db.session.flush()
         process_artifact(artifact_id=result.id)
 

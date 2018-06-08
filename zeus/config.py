@@ -37,7 +37,6 @@ ssl = SSL()
 
 
 def with_health_check(app):
-
     def middleware(environ, start_response):
         if environ.get("PATH_INFO", "") == "/healthz":
             start_response("200 OK", [("Content-Type", "application/json")])
@@ -105,7 +104,8 @@ def create_app(_read_config=True, **config):
             "SQLALCHEMY_DATABASE_URI", "postgresql+psycopg2:///zeus"
         )
         app.config["FILE_STORAGE"] = {
-            "backend": "zeus.storage.base.FileStorage", "options": {}
+            "backend": "zeus.storage.base.FileStorage",
+            "options": {},
         }
         app.config["CELERY_BROKER_URL"] = REDIS_URL
 
@@ -184,13 +184,16 @@ def create_app(_read_config=True, **config):
     )
     app.config["CELERYBEAT_SCHEDULE"] = {
         "sync-all-repos": {
-            "task": "zeus.sync_all_repos", "schedule": timedelta(minutes=5)
+            "task": "zeus.sync_all_repos",
+            "schedule": timedelta(minutes=5),
         },
         "cleanup-builds": {
-            "task": "zeus.cleanup_builds", "schedule": timedelta(minutes=5)
+            "task": "zeus.cleanup_builds",
+            "schedule": timedelta(minutes=5),
         },
         "cleanup-artifacts": {
-            "task": "zeus.cleanup_artifacts", "schedule": timedelta(minutes=60)
+            "task": "zeus.cleanup_artifacts",
+            "schedule": timedelta(minutes=60),
         },
     }
     app.config["REDBEAT_REDIS_URL"] = app.config["REDIS_URL"]

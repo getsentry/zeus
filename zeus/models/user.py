@@ -7,6 +7,7 @@ class User(StandardAttributes, db.Model):
     """
     Actors within Zeus.
     """
+
     email = db.Column(db.String(128), unique=True, nullable=False)
 
     options = db.relationship(

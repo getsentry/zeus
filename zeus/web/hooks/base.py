@@ -18,10 +18,10 @@ class BaseHook(View):
         current_app.logger.info("received webhook id=%s", hook_id)
 
         with nplusone.ignore("eager_load"):
-            hook = Hook.query.unrestricted_unsafe().options(
-                joinedload("repository")
-            ).get(
-                hook_id
+            hook = (
+                Hook.query.unrestricted_unsafe()
+                .options(joinedload("repository"))
+                .get(hook_id)
             )
         if not self.public and not hook.is_valid_signature(signature):
             current_app.logger.warn("invalid webhook signature id=%s", hook_id)

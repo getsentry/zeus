@@ -8,7 +8,6 @@ from zeus.exceptions import ApiError
 
 
 class BaseResponse(object):
-
     @cached_property
     def rel(self):
         link_header = self.headers.get("Link")
@@ -31,14 +30,12 @@ class BaseResponse(object):
 
 
 class MappingResponse(dict, BaseResponse):
-
     def __init__(self, data, headers):
         dict.__init__(self, data)
         self.headers = headers
 
 
 class SequenceResponse(list, BaseResponse):
-
     def __init__(self, data, headers):
         list.__init__(self, data)
         self.headers = headers

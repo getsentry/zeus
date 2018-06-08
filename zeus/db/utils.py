@@ -22,8 +22,10 @@ def try_create(model, where: dict, defaults: dict = None):
 
 
 def try_update(model, where: dict, values: dict):
-    result = db.session.query(type(model)).filter_by(**where).update(
-        values, synchronize_session=False
+    result = (
+        db.session.query(type(model))
+        .filter_by(**where)
+        .update(values, synchronize_session=False)
     )
     return result.rowcount > 0
 

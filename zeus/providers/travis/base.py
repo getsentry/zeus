@@ -2,7 +2,6 @@ from zeus.providers.base import Provider
 
 
 class TravisProvider(Provider):
-
     def get_config(self):
         return {
             "properties": {

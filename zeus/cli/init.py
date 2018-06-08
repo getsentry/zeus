@@ -44,8 +44,6 @@ def init(path, github_client_id, github_client_secret):
                 github_client_id=repr(github_client_id),
                 github_client_secret=repr(github_client_secret),
                 workspace_root=repr(path),
-            ).encode(
-                "utf-8"
-            )
+            ).encode("utf-8")
         )
     click.echo("Configuration written at {}".format(config_path))

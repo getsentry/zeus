@@ -12,11 +12,9 @@ def test_result_generation(sample_checkstyle, default_job):
     handler.process(fp)
 
     results = list(
-        StyleViolation.query.unrestricted_unsafe().filter(
-            StyleViolation.job_id == default_job.id
-        ).order_by(
-            StyleViolation.filename.asc(), StyleViolation.message.asc()
-        )
+        StyleViolation.query.unrestricted_unsafe()
+        .filter(StyleViolation.job_id == default_job.id)
+        .order_by(StyleViolation.filename.asc(), StyleViolation.message.asc())
     )
 
     assert len(results) == 3

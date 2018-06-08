@@ -274,12 +274,12 @@ def git_repo_config():
         % (remote_path,),
         shell=True,
     )
-    commits = check_output(
-        "cd %s && git log --format=%%H --max-count=2" % (remote_path,), shell=True
-    ).decode(
-        "utf-8"
-    ).split(
-        "\n"
+    commits = (
+        check_output(
+            "cd %s && git log --format=%%H --max-count=2" % (remote_path,), shell=True
+        )
+        .decode("utf-8")
+        .split("\n")
     )
 
     yield RepoConfig(url, path, remote_path, commits)

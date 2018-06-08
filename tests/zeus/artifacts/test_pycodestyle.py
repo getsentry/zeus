@@ -12,11 +12,9 @@ def test_pep8(sample_pep8, default_job):
     handler.process(fp)
 
     results = list(
-        StyleViolation.query.unrestricted_unsafe().filter(
-            StyleViolation.job_id == default_job.id
-        ).order_by(
-            StyleViolation.filename.asc(), StyleViolation.lineno.asc()
-        )
+        StyleViolation.query.unrestricted_unsafe()
+        .filter(StyleViolation.job_id == default_job.id)
+        .order_by(StyleViolation.filename.asc(), StyleViolation.lineno.asc())
     )
 
     assert len(results) == 2

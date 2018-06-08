@@ -49,7 +49,10 @@ class Permission(IntFlag):
 
 
 STATUS_PRIORITY = (
-    Status.in_progress, Status.queued, Status.collecting_results, Status.finished
+    Status.in_progress,
+    Status.queued,
+    Status.collecting_results,
+    Status.finished,
 )
 
 RESULT_PRIORITY = (

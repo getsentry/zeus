@@ -8,7 +8,6 @@ from zeus.notifications.email import build_message
 
 
 class MailPreview(object):
-
     def __init__(self, msg):
         self.msg = msg
 
@@ -33,11 +32,12 @@ def debug_notification():
         auth.bind_redirect_target(request.path)
         return redirect("/login")
 
-    build = Build.query.filter(Build.result == Result.failed).order_by(
-        Build.date_created.desc()
-    ).limit(
-        1
-    ).first()
+    build = (
+        Build.query.filter(Build.result == Result.failed)
+        .order_by(Build.date_created.desc())
+        .limit(1)
+        .first()
+    )
     assert build
     msg = build_message(build, force=True)
     assert msg

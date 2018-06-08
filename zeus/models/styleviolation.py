@@ -9,6 +9,7 @@ class StyleViolation(RepositoryBoundMixin, StandardAttributes, db.Model):
     """
     A single style violation.
     """
+
     job_id = db.Column(
         GUID, db.ForeignKey("job.id", ondelete="CASCADE"), nullable=False
     )

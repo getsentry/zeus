@@ -12,21 +12,23 @@ build_schema = BuildSchema(strict=True, exclude=["repository"])
 
 
 class RepositoryTestTreeResource(BaseRepositoryResource):
-
     def get(self, repo: Repository):
         """
         Return a tree of testcases for the given repository.
         """
         parent = request.args.get("parent")
 
-        latest_build = Build.query.join(Source, Source.id == Build.source_id).filter(
-            Source.patch_id == None,  # NOQA
-            Build.repository_id == repo.id,
-            Build.result == Result.passed,
-            Build.status == Status.finished,
-        ).order_by(
-            Build.date_created.desc()
-        ).first()
+        latest_build = (
+            Build.query.join(Source, Source.id == Build.source_id)
+            .filter(
+                Source.patch_id == None,  # NOQA
+                Build.repository_id == repo.id,
+                Build.result == Result.passed,
+                Build.status == Status.finished,
+            )
+            .order_by(Build.date_created.desc())
+            .first()
+        )
 
         if not latest_build:
             current_app.logger.info("no successful builds found for repository")
@@ -59,7 +61,7 @@ class RepositoryTestTreeResource(BaseRepositoryResource):
                         total_duration += duration
 
                 if parent:
-                    name = group[len(parent) + len(sep):]
+                    name = group[len(parent) + len(sep) :]
                 else:
                     name = group
                 data = {

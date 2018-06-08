@@ -21,7 +21,6 @@ def get_oauth_session(redirect_uri=None, state=None, scopes=None):
 
 
 class GitHubAuthView(MethodView):
-
     def __init__(self, authorized_url, scopes=GITHUB_DEFAULT_SCOPES):
         self.authorized_url = authorized_url
         self.scopes = scopes
@@ -115,7 +114,9 @@ class GitHubCompleteView(MethodView):
             # as it means the failure above was due to that
             if not identity:
                 user = User.query.filter(User.email == primary_email).first()
-                assert user  # this should not be possible unless we've got a race condition
+                assert (
+                    user
+                )  # this should not be possible unless we've got a race condition
                 identity = Identity(
                     user=user,
                     external_id=str(user_data["id"]),

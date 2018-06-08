@@ -12,7 +12,6 @@ testcases_schema = TestCaseSummarySchema(many=True, strict=True)
 
 
 class RevisionTestsResource(BaseRevisionResource):
-
     def get(self, revision: Revision):
         """
         Return a list of test cases for a given revision.
@@ -22,10 +21,10 @@ class RevisionTestsResource(BaseRevisionResource):
             return self.respond(status=404)
 
         build_ids = [original.id for original in build.original]
-        query = TestCase.query.options(contains_eager("job")).join(
-            Job, TestCase.job_id == Job.id
-        ).filter(
-            Job.build_id.in_(build_ids)
+        query = (
+            TestCase.query.options(contains_eager("job"))
+            .join(Job, TestCase.job_id == Job.id)
+            .filter(Job.build_id.in_(build_ids))
         )
 
         result = request.args.get("result")
