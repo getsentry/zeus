@@ -51,11 +51,15 @@ def add(repository, url, backend, active):
 @click.argument("repository", required=True)
 def sync(repository):
     provider, owner_name, repo_name = repository.split("/", 2)
-    repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.provider == RepositoryProvider(provider),
-        Repository.owner_name == owner_name,
-        Repository.name == repo_name,
-    ).first()
+    repo = (
+        Repository.query.unrestricted_unsafe()
+        .filter(
+            Repository.provider == RepositoryProvider(provider),
+            Repository.owner_name == owner_name,
+            Repository.name == repo_name,
+        )
+        .first()
+    )
     sync_repo(repo_id=repo.id)
 
 
@@ -69,11 +73,15 @@ def access():
 @click.argument("email", required=True)
 def access_add(repository, email):
     provider, owner_name, repo_name = repository.split("/", 2)
-    repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.provider == RepositoryProvider(provider),
-        Repository.owner_name == owner_name,
-        Repository.name == repo_name,
-    ).first()
+    repo = (
+        Repository.query.unrestricted_unsafe()
+        .filter(
+            Repository.provider == RepositoryProvider(provider),
+            Repository.owner_name == owner_name,
+            Repository.name == repo_name,
+        )
+        .first()
+    )
     user = User.query.filter(User.email == email).first()
     assert repo
     assert email
@@ -92,16 +100,22 @@ def config():
 @click.argument("option", required=True, nargs=-1)
 def config_get(repository, option):
     provider, owner_name, repo_name = repository.split("/", 2)
-    repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.provider == RepositoryProvider(provider),
-        Repository.owner_name == owner_name,
-        Repository.name == repo_name,
-    ).first()
+    repo = (
+        Repository.query.unrestricted_unsafe()
+        .filter(
+            Repository.provider == RepositoryProvider(provider),
+            Repository.owner_name == owner_name,
+            Repository.name == repo_name,
+        )
+        .first()
+    )
 
     for key in option:
-        result = db.session.query(ItemOption.value).filter(
-            ItemOption.item_id == repo.id, ItemOption.name == key
-        ).first()
+        result = (
+            db.session.query(ItemOption.value)
+            .filter(ItemOption.item_id == repo.id, ItemOption.name == key)
+            .first()
+        )
         click.echo("{} = {}".format(key, result[0] if result else "(not set)"))
 
 
@@ -110,11 +124,15 @@ def config_get(repository, option):
 @click.argument("option", required=True, nargs=-1)
 def config_set(repository, option):
     provider, owner_name, repo_name = repository.split("/", 2)
-    repo = Repository.query.unrestricted_unsafe().filter(
-        Repository.provider == RepositoryProvider(provider),
-        Repository.owner_name == owner_name,
-        Repository.name == repo_name,
-    ).first()
+    repo = (
+        Repository.query.unrestricted_unsafe()
+        .filter(
+            Repository.provider == RepositoryProvider(provider),
+            Repository.owner_name == owner_name,
+            Repository.name == repo_name,
+        )
+        .first()
+    )
 
     for key, value in [o.split("=", 1) for o in option]:
         create_or_update(

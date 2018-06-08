@@ -8,7 +8,6 @@ build_schema = BuildSchema(strict=True)
 
 
 class RevisionDetailsResource(BaseRevisionResource):
-
     def select_resource_for_update(self) -> bool:
         return False
 

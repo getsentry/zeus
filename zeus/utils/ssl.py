@@ -10,7 +10,6 @@ EXCLUDE_USER_AGENTS = ("kube-probe", "go-http-client")
 
 
 class SSL(object):
-
     def __init__(
         self,
         app=None,
@@ -45,7 +44,6 @@ class SSL(object):
         return hsts_policy
 
     def fix_protocol(self, app):
-
         def middleware(environ, start_response):
             proto = environ.get("HTTP_X_FORWARDED_PROTO")
             if proto:
@@ -65,8 +63,10 @@ class SSL(object):
             request.headers.get("X-Forwarded-Proto", "http") == "https",
         ]
 
-        if request.headers.get("User-Agent", "").lower().startswith(
-            self.exclude_user_agents
+        if (
+            request.headers.get("User-Agent", "")
+            .lower()
+            .startswith(self.exclude_user_agents)
         ):
             return
 

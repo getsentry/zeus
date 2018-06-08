@@ -13,25 +13,22 @@ testcases_schema = AggregateTestCaseSummarySchema(many=True, strict=True)
 
 
 class BuildTestsResource(BaseBuildResource):
-
     def get(self, build: Build):
         """
         Return a list of test cases for a given build.
         """
         job_ids = db.session.query(Job.id).filter(Job.build_id == build.id).subquery()
 
-        query = db.session.query(
-            TestCase.hash,
-            TestCase.name,
-            array_agg_row(
-                TestCase.id, TestCase.job_id, TestCase.duration, TestCase.result
-            ).label(
-                "runs"
-            ),
-        ).filter(
-            TestCase.job_id.in_(job_ids)
-        ).group_by(
-            TestCase.hash, TestCase.name
+        query = (
+            db.session.query(
+                TestCase.hash,
+                TestCase.name,
+                array_agg_row(
+                    TestCase.id, TestCase.job_id, TestCase.duration, TestCase.result
+                ).label("runs"),
+            )
+            .filter(TestCase.job_id.in_(job_ids))
+            .group_by(TestCase.hash, TestCase.name)
         )
 
         result = request.args.get("result")

@@ -11,11 +11,9 @@ def test_result_generation(sample_webpack_stats, default_job):
     handler.process(fp)
 
     results = list(
-        Bundle.query.unrestricted_unsafe().filter(
-            Bundle.job_id == default_job.id
-        ).order_by(
-            Bundle.name.asc()
-        )
+        Bundle.query.unrestricted_unsafe()
+        .filter(Bundle.job_id == default_job.id)
+        .order_by(Bundle.name.asc())
     )
 
     assert len(results) == 3

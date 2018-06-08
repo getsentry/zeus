@@ -31,7 +31,6 @@ def get_github_client(user: User, scopes=()) -> GitHubClient:
 
 
 class GitHubRepositoryProvider(RepositoryProvider):
-
     def get_owners(self, user: User) -> List[dict]:
         github, identity = get_github_client(user)
         response = github.get("/user/orgs")
@@ -78,9 +77,9 @@ class GitHubRepositoryProvider(RepositoryProvider):
             "owner_name": owner_name,
             "name": repo_name,
             "url": repo_data["ssh_url"],
-            "permission": Permission.admin if repo_data["permissions"].get(
-                "admin", False
-            ) else Permission.read,
+            "permission": Permission.admin
+            if repo_data["permissions"].get("admin", False)
+            else Permission.read,
             "config": {"full_name": repo_data["full_name"]},
         }
 
@@ -157,9 +156,9 @@ class GitHubCache(object):
                             "id": r["id"],
                             "ssh_url": r["ssh_url"],
                             "full_name": r["full_name"],
-                            "permission": Permission.admin if r["permissions"].get(
-                                "admin", False
-                            ) else Permission.read,
+                            "permission": Permission.admin
+                            if r["permissions"].get("admin", False)
+                            else Permission.read,
                         }
                         for r in response
                     ]

@@ -8,7 +8,6 @@ source_schema = SourceSchema(strict=True)
 
 
 class BuildSourceResource(BaseBuildResource):
-
     def get(self, build: Build):
         """
         Return a source for the given build.

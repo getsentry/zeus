@@ -2,7 +2,6 @@ from marshmallow import fields
 
 
 class FileField(fields.Field):
-
     def _serialize(self, value, attr, obj):
         if value is None:
             return None

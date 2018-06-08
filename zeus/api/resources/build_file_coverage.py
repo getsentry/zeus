@@ -10,7 +10,6 @@ filecoverage_schema = FileCoverageSchema(many=True, strict=True)
 
 
 class BuildFileCoverageResource(BaseBuildResource):
-
     def get(self, build: Build):
         """
         Return a list of file coverage objects for a given build.

@@ -10,6 +10,7 @@ class Identity(StandardAttributes, db.Model):
     """
     Identities associated with a user. Primarily used for Single Sign-On.
     """
+
     user_id = db.Column(
         GUID, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True
     )

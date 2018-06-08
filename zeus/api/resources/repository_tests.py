@@ -11,20 +11,22 @@ testcases_schema = TestCaseSummarySchema(many=True, strict=True)
 
 
 class RepositoryTestsResource(BaseRepositoryResource):
-
     def get(self, repo: Repository):
         """
         Return a list of testcases for the given repository.
         """
         # use the most recent successful build to fetch test results
-        latest_build = Build.query.join(Source, Source.id == Build.source_id).filter(
-            Source.patch_id == None,  # NOQA
-            Build.repository_id == repo.id,
-            Build.result == Result.passed,
-            Build.status == Status.finished,
-        ).order_by(
-            Build.number.desc()
-        ).first()
+        latest_build = (
+            Build.query.join(Source, Source.id == Build.source_id)
+            .filter(
+                Source.patch_id == None,  # NOQA
+                Build.repository_id == repo.id,
+                Build.result == Result.passed,
+                Build.status == Status.finished,
+            )
+            .order_by(Build.number.desc())
+            .first()
+        )
 
         if not latest_build:
             current_app.logger.info("no successful builds found for repository")

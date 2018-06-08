@@ -81,6 +81,7 @@ class Repository(StandardAttributes, db.Model):
     """
     Represents a single repository.
     """
+
     # TODO(dcramer): we dont want to be coupled to GitHub (the concept of orgs)
     # but right now we simply dont care, and this can be refactored later (URLs
     # are tricky)

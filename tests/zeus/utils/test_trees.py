@@ -3,7 +3,11 @@ from zeus.utils.trees import build_tree
 
 def test_build_tree():
     test_names = [
-        "foo.bar.bar", "foo.bar.biz", "foo.biz", "blah.brah", "blah.blah.blah"
+        "foo.bar.bar",
+        "foo.bar.biz",
+        "foo.biz",
+        "blah.brah",
+        "blah.blah.blah",
     ]
 
     result = build_tree(test_names, min_children=2)

@@ -13,6 +13,7 @@ class ApiToken(StandardAttributes, db.Model):
     """
     An API token.
     """
+
     access_token = db.Column(
         db.String(64),
         default=lambda: ApiToken.generate_token(),

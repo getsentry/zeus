@@ -10,6 +10,7 @@ class Author(RepositoryBoundMixin, db.Model):
 
     This is different than User, which indicates a known authenticatable user.
     """
+
     id = db.Column(GUID, primary_key=True, default=GUID.default_value)
     name = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), nullable=True)

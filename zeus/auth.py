@@ -25,7 +25,6 @@ from zeus.utils import timezone
 
 
 class Tenant(object):
-
     def __init__(self, access: Optional[Mapping[UUID, Optional[Permission]]] = None):
         self.access = access or {}
 
@@ -75,7 +74,6 @@ class Tenant(object):
 
 
 class ApiTokenTenant(Tenant):
-
     def __init__(self, token_id: str):
         self.token_id = token_id
 
@@ -91,14 +89,11 @@ class ApiTokenTenant(Tenant):
             db.session.query(
                 ApiTokenRepositoryAccess.repository_id,
                 ApiTokenRepositoryAccess.permission,
-            ).filter(
-                ApiTokenRepositoryAccess.apitoken_id == self.token_id
-            )
+            ).filter(ApiTokenRepositoryAccess.apitoken_id == self.token_id)
         )
 
 
 class UserTenant(Tenant):
-
     def __init__(self, user_id: str):
         self.user_id = user_id
 
@@ -113,14 +108,11 @@ class UserTenant(Tenant):
         return dict(
             db.session.query(
                 RepositoryAccess.repository_id, RepositoryAccess.permission
-            ).filter(
-                RepositoryAccess.user_id == self.user_id
-            )
+            ).filter(RepositoryAccess.user_id == self.user_id)
         )
 
 
 class RepositoryTenant(Tenant):
-
     def __init__(self, repository_id: str, permission: Optional[Permission] = None):
         self.repository_id = repository_id
         self.permission = permission
@@ -165,9 +157,11 @@ def get_tenant_from_token():
 
 
 def get_tenant_from_user_token(key):
-    token = UserApiToken.query.options(joinedload("user")).filter(
-        UserApiToken.key == key
-    ).first()
+    token = (
+        UserApiToken.query.options(joinedload("user"))
+        .filter(UserApiToken.key == key)
+        .first()
+    )
 
     if not token:
         raise AuthenticationFailed
@@ -176,9 +170,11 @@ def get_tenant_from_user_token(key):
 
 
 def get_tenant_from_repository_token(key):
-    token = RepositoryApiToken.query.options(joinedload("repository")).filter(
-        RepositoryApiToken.key == key
-    ).first()
+    token = (
+        RepositoryApiToken.query.options(joinedload("repository"))
+        .filter(RepositoryApiToken.key == key)
+        .first()
+    )
 
     if not token:
         raise AuthenticationFailed
@@ -234,9 +230,7 @@ def login_user(user_id: str, session=session, current_datetime=None):
         (
             (current_datetime or timezone.now())
             + current_app.config["PERMANENT_SESSION_LIFETIME"]
-        ).strftime(
-            "%s"
-        )
+        ).strftime("%s")
     )
     session.permanent = True
 

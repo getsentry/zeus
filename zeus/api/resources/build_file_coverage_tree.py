@@ -12,15 +12,12 @@ filecoverage_schema = FileCoverageSchema(many=False, strict=True)
 
 
 class BuildFileCoverageTreeResource(BaseBuildResource):
-
     def _get_leaf(self, build: Build, coverage: FileCoverage):
         # TODO(dcramer): support patches
         source = Source.query.options(
             # joinedload('patch'),
             # undefer('patch.diff'),
-        ).get(
-            build.source_id
-        )
+        ).get(build.source_id)
 
         file_source = None
         vcs = build.repository.get_vcs()
@@ -76,15 +73,14 @@ class BuildFileCoverageTreeResource(BaseBuildResource):
                 lines_covered, lines_uncovered = 0, 0
                 is_leaf = len(coverage_list) == 1 and coverage_list[0].filename == group
                 for coverage in coverage_list:
-                    if (
-                        coverage.filename == group
-                        or coverage.filename.startswith(group + SEPERATOR)
+                    if coverage.filename == group or coverage.filename.startswith(
+                        group + SEPERATOR
                     ):
                         lines_covered += coverage.lines_covered
                         lines_uncovered += coverage.lines_uncovered
 
                 if parent:
-                    name = group[len(parent) + len(SEPERATOR):]
+                    name = group[len(parent) + len(SEPERATOR) :]
                 else:
                     name = group
                 data = {

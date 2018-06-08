@@ -8,6 +8,7 @@ class Email(StandardAttributes, db.Model):
     """
     An email address associated with a user.
     """
+
     user_id = db.Column(
         GUID, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False, index=True
     )

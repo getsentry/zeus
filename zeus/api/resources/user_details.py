@@ -10,7 +10,6 @@ user_schema = UserSchema(strict=True)
 
 
 class UserDetailsResource(Resource):
-
     def get(self, user_id: str):
         """
         Return information on a user.

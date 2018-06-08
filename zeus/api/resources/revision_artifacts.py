@@ -16,7 +16,6 @@ artifacts_schema = ArtifactWithJobSchema(strict=True, many=True)
 
 
 class RevisionArtifactsResource(BaseRevisionResource):
-
     def select_resource_for_update(self) -> bool:
         return False
 
@@ -30,19 +29,19 @@ class RevisionArtifactsResource(BaseRevisionResource):
 
         build_ids = [original.id for original in build.original]
 
-        query = Artifact.query.options(
-            joinedload("job"),
-            joinedload("job").joinedload("build"),
-            joinedload("job").joinedload("build").joinedload("source"),
-            joinedload("job").joinedload("build").joinedload("source").joinedload(
-                "repository"
-            ),
-        ).join(
-            Job, Job.id == Artifact.job_id
-        ).filter(
-            Job.build_id.in_(build_ids)
-        ).order_by(
-            Artifact.name.asc()
+        query = (
+            Artifact.query.options(
+                joinedload("job"),
+                joinedload("job").joinedload("build"),
+                joinedload("job").joinedload("build").joinedload("source"),
+                joinedload("job")
+                .joinedload("build")
+                .joinedload("source")
+                .joinedload("repository"),
+            )
+            .join(Job, Job.id == Artifact.job_id)
+            .filter(Job.build_id.in_(build_ids))
+            .order_by(Artifact.name.asc())
         )
 
         return self.respond_with_schema(artifacts_schema, query)

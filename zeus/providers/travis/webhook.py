@@ -42,9 +42,7 @@ def get_result(state: str) -> str:
         "failing": "failed",
         "errored": "failed",
         "canceled": "aborted",
-    }.get(
-        state, "unknown"
-    )
+    }.get(state, "unknown")
 
 
 def get_travis_public_key(domain) -> str:
@@ -57,9 +55,7 @@ def get_travis_public_key(domain) -> str:
         resp.raise_for_status()
         public_key = resp.json()["config"]["notifications"]["webhook"][
             "public_key"
-        ].encode(
-            "utf-8"
-        )
+        ].encode("utf-8")
         redis.setex(cache_key, public_key, 300)
     return serialization.load_pem_public_key(public_key, backend=default_backend())
 
@@ -141,9 +137,9 @@ class TravisWebhookView(BaseHook):
                     provider=hook.provider,
                     external_id=str(job_payload["id"]),
                     data={
-                        "status": "finished" if job_payload[
-                            "status"
-                        ] is not None else "in_progress",
+                        "status": "finished"
+                        if job_payload["status"] is not None
+                        else "in_progress",
                         "result": get_result(job_payload["state"]),
                         "allow_failure": bool(job_payload["allow_failure"]),
                         "label": get_job_label(job_payload),
@@ -153,16 +149,12 @@ class TravisWebhookView(BaseHook):
                             name=payload["repository"]["name"],
                             job_id=job_payload["id"],
                         ),
-                        "started_at": dateutil.parser.parse(
-                            job_payload["started_at"]
-                        ) if job_payload[
-                            "started_at"
-                        ] else None,
-                        "finished_at": dateutil.parser.parse(
-                            job_payload["finished_at"]
-                        ) if job_payload[
-                            "finished_at"
-                        ] else None,
+                        "started_at": dateutil.parser.parse(job_payload["started_at"])
+                        if job_payload["started_at"]
+                        else None,
+                        "finished_at": dateutil.parser.parse(job_payload["finished_at"])
+                        if job_payload["finished_at"]
+                        else None,
                     },
                 )
         except ApiError:

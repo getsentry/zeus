@@ -38,7 +38,6 @@ class ApiUnauthorized(ApiError):
 
 
 class IdentityNeedsUpgrade(ApiUnauthorized):
-
     def __init__(self, scope, identity):
         ApiUnauthorized.__init__(self)
         self.scope = scope

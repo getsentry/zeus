@@ -26,36 +26,30 @@ def test_build_tests_list(
     assert len(data) == 2
     assert data[0]["name"] == "bar"
     assert data[0]["result"] == "failed"
-    assert (
-        data[0]["runs"]
-        == [
-            {
-                "id": str(testcase3.id),
-                "job_id": str(job2.id),
-                "result": "failed",
-                "duration": testcase3.duration,
-            },
-            {
-                "id": str(testcase1.id),
-                "job_id": str(job1.id),
-                "result": "passed",
-                "duration": testcase1.duration,
-            },
-        ]
-    )
+    assert data[0]["runs"] == [
+        {
+            "id": str(testcase3.id),
+            "job_id": str(job2.id),
+            "result": "failed",
+            "duration": testcase3.duration,
+        },
+        {
+            "id": str(testcase1.id),
+            "job_id": str(job1.id),
+            "result": "passed",
+            "duration": testcase1.duration,
+        },
+    ]
     assert data[1]["name"] == "foo"
     assert data[1]["result"] == "passed"
-    assert (
-        data[1]["runs"]
-        == [
-            {
-                "id": str(testcase2.id),
-                "job_id": str(job2.id),
-                "result": "passed",
-                "duration": testcase2.duration,
-            }
-        ]
-    )
+    assert data[1]["runs"] == [
+        {
+            "id": str(testcase2.id),
+            "job_id": str(job2.id),
+            "result": "passed",
+            "duration": testcase2.duration,
+        }
+    ]
 
 
 def test_build_tests_list_empty(

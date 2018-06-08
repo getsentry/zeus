@@ -4,7 +4,8 @@ from zeus import auth
 from zeus.constants import Permission, Result
 from zeus.models import Artifact, ItemStat, TestCase as ZeusTestCase
 from zeus.utils.testresult import (
-    TestResult as ZeusTestResult, TestResultManager as ZeusTestResultManager
+    TestResult as ZeusTestResult,
+    TestResultManager as ZeusTestResultManager,
 )
 
 
@@ -68,21 +69,15 @@ def test_full(default_job):
 
     teststat = ItemStat.query.filter(
         ItemStat.name == "tests.count", ItemStat.item_id == default_job.id
-    )[
-        0
-    ]
+    )[0]
     assert teststat.value == 2
 
     teststat = ItemStat.query.filter(
         ItemStat.name == "tests.failures", ItemStat.item_id == default_job.id
-    )[
-        0
-    ]
+    )[0]
     assert teststat.value == 1
 
     teststat = ItemStat.query.filter(
         ItemStat.name == "tests.duration", ItemStat.item_id == default_job.id
-    )[
-        0
-    ]
+    )[0]
     assert teststat.value == 168

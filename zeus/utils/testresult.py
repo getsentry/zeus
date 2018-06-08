@@ -35,7 +35,7 @@ class TestResult(object):
 
     @property
     def sep(self):
-        name = (self._package or self._name)
+        name = self._package or self._name
         # handle the case where it might begin with some special character
         if not re.match(r"^[a-zA-Z0-9]", name):
             return "/"
@@ -60,7 +60,6 @@ class TestResult(object):
 
 
 class TestResultManager(object):
-
     def __init__(self, job):
         self.job = job
 
@@ -118,9 +117,9 @@ class TestResultManager(object):
             ItemStat,
             where={"item_id": self.job.id, "name": "tests.count"},
             values={
-                "value": db.session.query(func.count(TestCase.id)).filter(
-                    TestCase.job_id == self.job.id
-                ).as_scalar()
+                "value": db.session.query(func.count(TestCase.id))
+                .filter(TestCase.job_id == self.job.id)
+                .as_scalar()
             },
         )
         db.session.flush()
@@ -130,9 +129,11 @@ class TestResultManager(object):
             ItemStat,
             where={"item_id": self.job.id, "name": "tests.failures"},
             values={
-                "value": db.session.query(func.count(TestCase.id)).filter(
+                "value": db.session.query(func.count(TestCase.id))
+                .filter(
                     TestCase.job_id == self.job.id, TestCase.result == Result.failed
-                ).as_scalar()
+                )
+                .as_scalar()
             },
         )
         db.session.flush()
@@ -142,10 +143,8 @@ class TestResultManager(object):
             ItemStat,
             where={"item_id": self.job.id, "name": "tests.duration"},
             values={
-                "value": db.session.query(
-                    func.coalesce(func.sum(TestCase.duration), 0)
-                ).filter(
-                    TestCase.job_id == self.job.id
-                ).as_scalar()
+                "value": db.session.query(func.coalesce(func.sum(TestCase.duration), 0))
+                .filter(TestCase.job_id == self.job.id)
+                .as_scalar()
             },
         )

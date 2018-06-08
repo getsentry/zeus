@@ -62,10 +62,11 @@ def test_login_complete(client, db_session, mocker, responses):
     assert identity.provider == "github"
     assert identity.external_id == "1"
     assert identity.scopes == ["user:email", "read:org"]
-    assert (
-        identity.config
-        == {"access_token": "access-token", "refresh_token": None, "login": "test"}
-    )
+    assert identity.config == {
+        "access_token": "access-token",
+        "refresh_token": None,
+        "login": "test",
+    }
 
     emails = {
         r[0]: r[1]
@@ -179,10 +180,11 @@ def test_login_complete_automatic_repo_access(
     assert identity
     assert identity.provider == "github"
     assert identity.external_id == "1"
-    assert (
-        identity.config
-        == {"access_token": "access-token", "refresh_token": None, "login": "test"}
-    )
+    assert identity.config == {
+        "access_token": "access-token",
+        "refresh_token": None,
+        "login": "test",
+    }
     assert identity.scopes == ["user:email", "read:org"]
 
     access = RepositoryAccess.query.filter(
@@ -237,10 +239,11 @@ def test_login_complete_existing_user_no_identity(
     assert identity
     assert identity.provider == "github"
     assert identity.external_id == "1"
-    assert (
-        identity.config
-        == {"access_token": "access-token", "refresh_token": None, "login": "test"}
-    )
+    assert identity.config == {
+        "access_token": "access-token",
+        "refresh_token": None,
+        "login": "test",
+    }
     assert identity.scopes == ["user:email", "read:org"]
 
     emails = {
@@ -299,10 +302,11 @@ def test_login_complete_existing_identity(client, db_session, mocker, responses)
     assert identity
     assert identity.provider == "github"
     assert identity.external_id == "1"
-    assert (
-        identity.config
-        == {"access_token": "access-token", "refresh_token": None, "login": "test"}
-    )
+    assert identity.config == {
+        "access_token": "access-token",
+        "refresh_token": None,
+        "login": "test",
+    }
     assert identity.scopes == ["user:email", "read:org"]
 
     emails = {

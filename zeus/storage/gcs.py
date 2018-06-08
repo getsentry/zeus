@@ -6,7 +6,6 @@ from zeus.utils.functional import memoize
 
 
 class GoogleCloudStorage(object):
-
     def __init__(self, path="", project=None, credentials=None, bucket=None):
         self.path = path
         self.bucket_name = bucket

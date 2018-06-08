@@ -3,7 +3,6 @@ from fnmatch import fnmatch
 
 
 class Manager(object):
-
     def __init__(self):
         self.handlers = []
 

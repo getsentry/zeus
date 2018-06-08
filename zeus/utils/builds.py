@@ -22,21 +22,31 @@ def merge_builds(target, build):
     # Afterwards, we always use the more extreme value (e.g. earlier start
     # date or worse result).
     target.stats = target.stats + build.stats if target.stats else build.stats
-    target.status = Status(
-        max(target.status.value, build.status.value)
-    ) if target.status else build.status
-    target.result = Result(
-        max(target.result.value, build.result.value)
-    ) if target.result else build.result
-    target.date_started = min(
-        target.date_started, build.date_started
-    ) if target.date_started else build.date_started
-    target.date_finished = max(
-        target.date_finished, build.date_finished
-    ) if target.date_finished else build.date_finished
-    target.provider = "%s, %s" % (
-        target.provider, build.provider
-    ) if target.provider else build.provider
+    target.status = (
+        Status(max(target.status.value, build.status.value))
+        if target.status
+        else build.status
+    )
+    target.result = (
+        Result(max(target.result.value, build.result.value))
+        if target.result
+        else build.result
+    )
+    target.date_started = (
+        min(target.date_started, build.date_started)
+        if target.date_started
+        else build.date_started
+    )
+    target.date_finished = (
+        max(target.date_finished, build.date_finished)
+        if target.date_finished
+        else build.date_finished
+    )
+    target.provider = (
+        "%s, %s" % (target.provider, build.provider)
+        if target.provider
+        else build.provider
+    )
 
     # NOTE: The build number is not merged, as it would not convey any meaning
     # in the context of a build group.  In that fashion, build numbers should
@@ -73,21 +83,22 @@ def fetch_builds_for_revisions(repo, revisions):
     # we query extra builds here, but its a lot easier than trying to get
     # sqlalchemy to do a ``select (subquery)`` clause and maintain tenant
     # constraints
-    builds = Build.query.options(
-        contains_eager("source"),
-        joinedload("source").joinedload("author"),
-        joinedload("source").joinedload("revision"),
-        joinedload("source").joinedload("patch"),
-        subqueryload_all("stats"),
-    ).join(
-        Source, Build.source_id == Source.id
-    ).filter(
-        Build.repository_id == repo.id,
-        Source.repository_id == repo.id,
-        Source.revision_sha.in_([r.sha for r in revisions]),
-        Source.patch_id == None,  # NOQA
-    ).order_by(
-        Source.revision_sha
+    builds = (
+        Build.query.options(
+            contains_eager("source"),
+            joinedload("source").joinedload("author"),
+            joinedload("source").joinedload("revision"),
+            joinedload("source").joinedload("patch"),
+            subqueryload_all("stats"),
+        )
+        .join(Source, Build.source_id == Source.id)
+        .filter(
+            Build.repository_id == repo.id,
+            Source.repository_id == repo.id,
+            Source.revision_sha.in_([r.sha for r in revisions]),
+            Source.patch_id == None,  # NOQA
+        )
+        .order_by(Source.revision_sha)
     )
 
     groups = groupby(builds, lambda build: build.source.revision_sha)

@@ -20,7 +20,11 @@ CONFIG_RESPONSE = b"""
         },
         "github": {
             "api_url": "https://api.github.com",
-            "scopes": ["read:org", "user:email", "repo_deployment", "repo:status", "write:repo_hook"]
+            "scopes": [
+                "read:org", "user:email",
+                "repo_deployment", "repo:status",
+                "write:repo_hook"
+            ]
         },
         "notifications": {
             "webhook": {
@@ -110,9 +114,11 @@ def test_queued_build(
     )
     assert resp.status_code == 200, repr(resp.data)
 
-    build = Build.query.unrestricted_unsafe().filter(
-        Build.provider == "travis", Build.external_id == "288639281"
-    ).first()
+    build = (
+        Build.query.unrestricted_unsafe()
+        .filter(Build.provider == "travis", Build.external_id == "288639281")
+        .first()
+    )
     assert build
     assert build.repository_id == default_repo.id
     assert build.source_id == source.id
@@ -122,9 +128,11 @@ def test_queued_build(
         == "https://travis-ci.org/travis-ci/docs-travis-ci-com/builds/288639281"
     )
 
-    job = Job.query.unrestricted_unsafe().filter(
-        Job.provider == "travis", Job.external_id == "288639284"
-    ).first()
+    job = (
+        Job.query.unrestricted_unsafe()
+        .filter(Job.provider == "travis", Job.external_id == "288639284")
+        .first()
+    )
     assert job
     assert job.build_id == build.id
     assert job.repository_id == default_repo.id
@@ -168,17 +176,21 @@ def test_pull_request(
     )
     assert resp.status_code == 200, repr(resp.data)
 
-    cr = ChangeRequest.query.unrestricted_unsafe().filter(
-        ChangeRequest.provider == "github", ChangeRequest.external_id == "123"
-    ).first()
+    cr = (
+        ChangeRequest.query.unrestricted_unsafe()
+        .filter(ChangeRequest.provider == "github", ChangeRequest.external_id == "123")
+        .first()
+    )
     assert cr
     assert cr.message == "The title of the pull request"
     assert cr.parent_revision_sha == source.revision_sha
     assert cr.head_revision_sha == source.revision_sha
 
-    build = Build.query.unrestricted_unsafe().filter(
-        Build.provider == "travis", Build.external_id == "288639281"
-    ).first()
+    build = (
+        Build.query.unrestricted_unsafe()
+        .filter(Build.provider == "travis", Build.external_id == "288639281")
+        .first()
+    )
     assert build
     assert build.repository_id == default_repo.id
     assert build.source_id == source.id
@@ -188,9 +200,11 @@ def test_pull_request(
         == "https://travis-ci.org/travis-ci/docs-travis-ci-com/builds/288639281"
     )
 
-    job = Job.query.unrestricted_unsafe().filter(
-        Job.provider == "travis", Job.external_id == "288639284"
-    ).first()
+    job = (
+        Job.query.unrestricted_unsafe()
+        .filter(Job.provider == "travis", Job.external_id == "288639284")
+        .first()
+    )
     assert job
     assert job.build_id == build.id
     assert job.repository_id == default_repo.id

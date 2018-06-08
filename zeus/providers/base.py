@@ -25,7 +25,6 @@ DefaultValidatingDraft4Validator = extend_with_default(Draft4Validator)
 
 
 class Provider(object):
-
     def get_config(self):
         return {
             # the type is inferred as object for the root level

@@ -9,7 +9,6 @@ from uuid import UUID
 
 
 class Celery(object):
-
     def __init__(self, app=None, sentry=None):
         # we create the celery immediately as otherwise NOTHING WORKS
         self.app = None
@@ -53,7 +52,8 @@ class Celery(object):
             return
 
         context = task._flask_context = [
-            self.app.app_context(), self.app.test_request_context()
+            self.app.app_context(),
+            self.app.test_request_context(),
         ]
         for ctx in context:
             ctx.push()
@@ -69,7 +69,6 @@ class Celery(object):
 
 
 class EnhancedJSONEncoder(json.JSONEncoder):
-
     def default(self, value):
         if isinstance(value, UUID):
             return str(value)

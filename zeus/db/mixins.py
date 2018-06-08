@@ -9,7 +9,6 @@ from zeus.utils import timezone
 
 
 class StandardAttributes(object):
-
     @declared_attr
     def id(cls):
         return db.Column(GUID, primary_key=True, default=GUID.default_value)
@@ -60,9 +59,9 @@ class RepositoryBoundQuery(db.Query):
                     or_(
                         cls.repository_id.in_(tenant.repository_ids),
                         cls.repository_id.in_(
-                            db.Query(repo_table.c.id).filter(
-                                repo_table.c.public == True  # NOQA
-                            ).subquery()
+                            db.Query(repo_table.c.id)
+                            .filter(repo_table.c.public == True)  # NOQA
+                            .subquery()
                         ),
                     )
                 )
@@ -70,9 +69,9 @@ class RepositoryBoundQuery(db.Query):
             else:
                 return self.enable_assertions(False).filter(
                     cls.repository_id.in_(
-                        db.Query(repo_table.c.id).filter(
-                            repo_table.c.public == True  # NOQA
-                        ).subquery()
+                        db.Query(repo_table.c.id)
+                        .filter(repo_table.c.public == True)  # NOQA
+                        .subquery()
                     )
                 )
 
@@ -102,7 +101,6 @@ class RepositoryBoundMixin(object):
 
 
 class ApiTokenMixin(object):
-
     @declared_attr
     def key(cls):
         return db.Column(

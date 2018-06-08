@@ -10,15 +10,14 @@ from zeus.utils.imports import import_string
 
 
 class FileData(Mutable):
-
     def __init__(self, data=None, default_storage=None, default_path=None):
         if data is None:
             data = {}
 
         self.filename = data.get("filename")
         self.exists = bool(data and self.filename)
-        self.storage = (
-            data.get("storage", default_storage or current_app.config["FILE_STORAGE"])
+        self.storage = data.get(
+            "storage", default_storage or current_app.config["FILE_STORAGE"]
         )
         self.path = data.get("path", default_path)
         self.size = data.get("size", None)

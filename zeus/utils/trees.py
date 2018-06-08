@@ -11,7 +11,7 @@ def build_flat_tree(
     for test in tests:
         segments = test.split(sep)
         for i, _ in enumerate(segments):
-            prefix = sep.join(segments[:i + 1])
+            prefix = sep.join(segments[: i + 1])
             tree[prefix].add(test)
 
     return tree
@@ -27,7 +27,7 @@ def build_tree(
         segments = test.split(sep)
         for i, _ in enumerate(segments):
             prefix = sep.join(segments[:i])
-            tree[prefix].add(sep.join(segments[:i + 1]))
+            tree[prefix].add(sep.join(segments[: i + 1]))
 
     # This method expands each node if it has fewer than min_children children.
     # "Expand" here means replacing a node with its children.

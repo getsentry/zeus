@@ -26,13 +26,12 @@ from zeus.utils.email import inline_css
 
 def find_linked_emails(build: Build) -> List[Tuple[UUID, str]]:
     return list(
-        db.session.query(User.id, Email.email).filter(Email.user_id == User.id).join(
-            RepositoryAccess, RepositoryAccess.user_id == User.id
-        ).join(
-            Source, Source.id == build.source_id
-        ).join(
-            Author, Source.author_id == Author.id
-        ).filter(
+        db.session.query(User.id, Email.email)
+        .filter(Email.user_id == User.id)
+        .join(RepositoryAccess, RepositoryAccess.user_id == User.id)
+        .join(Source, Source.id == build.source_id)
+        .join(Author, Source.author_id == Author.id)
+        .filter(
             Email.email == Author.email,
             Email.verified == True,  # NOQA
             RepositoryAccess.repository_id == build.repository_id,
@@ -61,9 +60,11 @@ def send_email_notification(build: Build):
 
 
 def build_message(build: Build, force=False) -> Message:
-    author = Author.query.join(Source, Source.author_id == Author.id).filter(
-        Source.id == build.source_id
-    ).first()
+    author = (
+        Author.query.join(Source, Source.author_id == Author.id)
+        .filter(Source.id == build.source_id)
+        .first()
+    )
     if not author:
         current_app.logger.info("mail.missing-author", extra={"build_id": build.id})
         return

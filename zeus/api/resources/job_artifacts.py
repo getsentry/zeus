@@ -18,7 +18,6 @@ artifacts_schema = ArtifactSchema(strict=True, many=True, exclude=("job",))
 
 
 class JobArtifactsResource(BaseJobResource):
-
     def select_resource_for_update(self):
         return False
 
@@ -26,17 +25,18 @@ class JobArtifactsResource(BaseJobResource):
         """
         Return a list of artifacts for a given job.
         """
-        query = Artifact.query.options(
-            joinedload("job"),
-            joinedload("job").joinedload("build"),
-            joinedload("job").joinedload("build").joinedload("source"),
-            joinedload("job").joinedload("build").joinedload("source").joinedload(
-                "repository"
-            ),
-        ).filter(
-            Artifact.job_id == job.id
-        ).order_by(
-            Artifact.name.asc()
+        query = (
+            Artifact.query.options(
+                joinedload("job"),
+                joinedload("job").joinedload("build"),
+                joinedload("job").joinedload("build").joinedload("source"),
+                joinedload("job")
+                .joinedload("build")
+                .joinedload("source")
+                .joinedload("repository"),
+            )
+            .filter(Artifact.job_id == job.id)
+            .order_by(Artifact.name.asc())
         )
 
         return self.respond_with_schema(artifacts_schema, query)

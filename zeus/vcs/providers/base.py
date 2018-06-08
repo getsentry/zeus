@@ -9,7 +9,6 @@ from zeus.utils.ssh import KeyPair
 
 
 class RepositoryProvider(object):
-
     def __init__(self, cache=True):
         self.cache = cache
 

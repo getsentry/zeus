@@ -15,17 +15,14 @@ jobs_schema = JobSchema(many=True, strict=True)
 
 
 class BuildJobsResource(BaseBuildResource):
-
     def get(self, build: Build):
         """
         Return a list of jobs for a given build.
         """
-        query = Job.query.options(
-            subqueryload_all("stats"), subqueryload_all("failures")
-        ).filter(
-            Job.build_id == build.id
-        ).order_by(
-            Job.number.asc()
+        query = (
+            Job.query.options(subqueryload_all("stats"), subqueryload_all("failures"))
+            .filter(Job.build_id == build.id)
+            .order_by(Job.number.asc())
         )
         return self.respond_with_schema(jobs_schema, query)
 

@@ -10,18 +10,17 @@ def remove_access_to_owner_repos(user_id: UUID, owner_name: str, *filters):
     RepositoryAccess.query.filter(
         RepositoryAccess.user_id == user_id,
         RepositoryAccess.repository_id.in_(
-            db.session.query(RepositoryAccess.repository_id).join(
-                Repository, Repository.id == RepositoryAccess.repository_id
-            ).filter(
+            db.session.query(RepositoryAccess.repository_id)
+            .join(Repository, Repository.id == RepositoryAccess.repository_id)
+            .filter(
                 Repository.provider == RepositoryProvider.github,
                 Repository.owner_name == owner_name,
                 RepositoryAccess.user_id == user_id,
                 *filters
-            ).subquery()
+            )
+            .subquery()
         ),
-    ).delete(
-        synchronize_session=False
-    )
+    ).delete(synchronize_session=False)
 
 
 def sync_repos_for_owner(

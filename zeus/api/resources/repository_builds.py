@@ -15,7 +15,6 @@ builds_schema = BuildSchema(many=True, strict=True, exclude=["repository"])
 
 
 class RepositoryBuildsResource(BaseRepositoryResource):
-
     def select_resource_for_update(self):
         return False
 
@@ -25,15 +24,15 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         """
         user = auth.get_current_user()
 
-        query = Build.query.options(
-            joinedload("source"),
-            joinedload("source").joinedload("author"),
-            joinedload("source").joinedload("revision"),
-            subqueryload_all("stats"),
-        ).filter(
-            Build.repository_id == repo.id
-        ).order_by(
-            Build.number.desc()
+        query = (
+            Build.query.options(
+                joinedload("source"),
+                joinedload("source").joinedload("author"),
+                joinedload("source").joinedload("revision"),
+                subqueryload_all("stats"),
+            )
+            .filter(Build.repository_id == repo.id)
+            .order_by(Build.number.desc())
         )
         show = request.args.get("show")
         if show == "mine":
@@ -76,11 +75,13 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         #     db.session.flush()
 
         # TODO(dcramer): need to handle patch case yet
-        source = Source.query.options(
-            joinedload("author"), joinedload("revision")
-        ).filter(
-            Source.revision_sha == data.pop("ref"), Source.repository_id == repo.id
-        ).first()
+        source = (
+            Source.query.options(joinedload("author"), joinedload("revision"))
+            .filter(
+                Source.revision_sha == data.pop("ref"), Source.repository_id == repo.id
+            )
+            .first()
+        )
 
         build = Build(repository=repo, **data)
         # TODO(dcramer): we should convert source in the schema

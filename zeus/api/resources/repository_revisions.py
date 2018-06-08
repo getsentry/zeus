@@ -20,14 +20,15 @@ revisions_schema = RevisionWithBuildSchema(many=True, strict=True)
 
 
 class RepositoryRevisionsResource(BaseRepositoryResource):
-
     def fetch_revisions(
         self, repo: Repository, page: int, parent: str = None
     ) -> Tuple[list, bool]:
         if current_app.config.get("MOCK_REVISIONS"):
-            return Revision.query.filter(Revision.repository_id == repo.id).order_by(
-                Revision.date_created.desc()
-            ).all()
+            return (
+                Revision.query.filter(Revision.repository_id == repo.id)
+                .order_by(Revision.date_created.desc())
+                .all()
+            )
 
         vcs = repo.get_vcs()
         if not vcs:

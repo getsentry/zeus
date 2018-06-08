@@ -11,15 +11,14 @@ styleviolation_schema = StyleViolationSchema(many=True, strict=True)
 
 
 class BuildStyleViolationsResource(BaseBuildResource):
-
     def get(self, build: Build):
         """
         Return a list of style violations for a given build.
         """
-        query = StyleViolation.query.options(contains_eager("job")).join(
-            Job, StyleViolation.job_id == Job.id
-        ).filter(
-            Job.build_id == build.id
+        query = (
+            StyleViolation.query.options(contains_eager("job"))
+            .join(Job, StyleViolation.job_id == Job.id)
+            .filter(Job.build_id == build.id)
         )
 
         severity = request.args.get("severity")

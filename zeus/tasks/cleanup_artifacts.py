@@ -8,19 +8,19 @@ from zeus.utils import timezone
 
 @celery.task(name="zeus.cleanup_artifacts")
 def cleanup_artifacts():
-    queryset = Artifact.query.unrestricted_unsafe().filter(
-        Artifact.status != Status.expired,
-        Artifact.date_created
-        < timezone.now() - current_app.config["ARTIFACT_RETENTION"],
-    ).limit(
-        1000
+    queryset = (
+        Artifact.query.unrestricted_unsafe()
+        .filter(
+            Artifact.status != Status.expired,
+            Artifact.date_created
+            < timezone.now() - current_app.config["ARTIFACT_RETENTION"],
+        )
+        .limit(1000)
     )
     for result in queryset:
         Artifact.query.unrestricted_unsafe().filter(
             Artifact.status != Status.expired, Artifact.id == result.id
-        ).update(
-            {"status": Status.expired}
-        )
+        ).update({"status": Status.expired})
         if result.file:
             result.file.delete()
         db.session.commit()

@@ -39,16 +39,17 @@ class JobFactory(ModelFactory):
         lambda o: (
             faker.date_time_between(
                 o.date_created, o.date_created + timedelta(minutes=1)
-            ) if o.status in [
-                Status.finished, Status.in_progress
-            ] else None
+            )
+            if o.status in [Status.finished, Status.in_progress]
+            else None
         )
     )
     date_finished = factory.LazyAttribute(
         lambda o: faker.date_time_between(
             o.date_started, o.date_started + timedelta(minutes=10)
-        ) if o.status
-        == Status.finished else None
+        )
+        if o.status == Status.finished
+        else None
     )
     date_updated = factory.LazyAttribute(
         lambda o: o.date_finished or o.date_started or o.date_created

@@ -19,7 +19,6 @@ def has_unprocessed_artifacts(job_id):
 
 
 class JobDetailsResource(BaseJobResource):
-
     def select_resource_for_update(self) -> bool:
         return False
 
