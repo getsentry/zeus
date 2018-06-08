@@ -8,7 +8,7 @@ upgrade: install-requirements
 	zeus db upgrade
 
 setup-git:
-	pip install "pre-commit>=1.8.2,<1.9.0"
+	pip install "pre-commit>=1.10.1,<1.11.0"
 	pre-commit install
 	git config branch.autosetuprebase always
 	git config --bool flake8.strict true
