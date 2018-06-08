@@ -9,7 +9,7 @@ import AsyncComponent from '../components/AsyncComponent';
 import Paginator from '../components/Paginator';
 import RevisionList from '../components/RevisionList';
 
-class RepositoryRevisionList extends AsyncPage {
+export class RepositoryRevisionList extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
     repo: PropTypes.object.isRequired

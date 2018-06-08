@@ -59,6 +59,12 @@ window.TestStubs = {
     return result;
   },
 
+  Author: params => ({
+    email: 'dcramer@gmail.com',
+    id: '659dc21c-81db-11e7-988a-0a580a28047a',
+    name: 'David Cramer'
+  }),
+
   Build: params => ({
     created_at: '2018-01-06T16:07:16.830829+00:00',
     external_id: '325812408',
@@ -68,26 +74,7 @@ window.TestStubs = {
     number: 650,
     provider: 'travis-ci',
     result: 'passed',
-    source: {
-      author: {
-        email: 'dcramer@gmail.com',
-        id: '659dc21c-81db-11e7-988a-0a580a28047a',
-        name: 'David Cramer'
-      },
-      created_at: '2018-01-06T16:07:16.814650+00:00',
-      id: 'aa6e1f90-f2fb-11e7-a565-0a580a28057d',
-      revision: {
-        author: {
-          email: 'dcramer@gmail.com',
-          id: '659dc21c-81db-11e7-988a-0a580a28047a',
-          name: 'David Cramer'
-        },
-        committed_at: '2018-01-06T16:06:52+00:00',
-        created_at: '2018-01-06T16:06:52+00:00',
-        message: 'fix: Remove break-word behavior on coverage\n',
-        sha: 'eff634a68a01d081c0bdc51752dfa0709781f0e4'
-      }
-    },
+    source: TestStubs.Source(),
     started_at: '2018-01-06T16:07:16.957093+00:00',
     stats: {
       coverage: {
@@ -131,5 +118,27 @@ window.TestStubs = {
       write: true
     },
     ...params
+  }),
+
+  Revision: params => ({
+    author: TestStubs.Author(),
+    committed_at: '2018-06-08T16:45:55+00:00',
+    created_at: '2018-06-08T16:45:55+00:00',
+    latest_build: TestStubs.Build({repository: undefined}),
+    message: 'fix: Maintain repository in published data\n',
+    sha: '26fef62489212d56d0a5037e3e6d876b887e972b'
+  }),
+
+  Source: params => ({
+    author: TestStubs.Author(),
+    created_at: '2018-01-06T16:07:16.814650+00:00',
+    id: 'aa6e1f90-f2fb-11e7-a565-0a580a28057d',
+    revision: {
+      author: TestStubs.Author(),
+      committed_at: '2018-01-06T16:06:52+00:00',
+      created_at: '2018-01-06T16:06:52+00:00',
+      message: 'fix: Remove break-word behavior on coverage\n',
+      sha: 'eff634a68a01d081c0bdc51752dfa0709781f0e4'
+    }
   })
 };

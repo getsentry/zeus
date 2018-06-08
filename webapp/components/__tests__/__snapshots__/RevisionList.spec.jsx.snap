@@ -1,0 +1,1124 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RevisionList renders 1`] = `
+<RevisionList
+  location={
+    Object {
+      "pathame": "/mock-pathname/",
+      "query": Object {},
+    }
+  }
+  params={
+    Object {
+      "ownerName": "getsentry",
+      "provider": "gh",
+      "repoName": "zeus",
+    }
+  }
+  repo={
+    Object {
+      "backend": "git",
+      "created_at": "2017-08-15T17:01:33.206772+00:00",
+      "full_name": "gh/getsentry/zeus",
+      "id": "63e820d4-81db-11e7-a6df-0a580a28004e",
+      "latest_build": null,
+      "name": "zeus",
+      "owner_name": "getsentry",
+      "permissions": Object {
+        "admin": true,
+        "read": true,
+        "write": true,
+      },
+      "provider": "gh",
+      "url": "git@github.com:getsentry/zeus.git",
+    }
+  }
+  revisionList={
+    Array [
+      Object {
+        "author": Object {
+          "email": "dcramer@gmail.com",
+          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+          "name": "David Cramer",
+        },
+        "committed_at": "2018-06-08T16:45:55+00:00",
+        "created_at": "2018-06-08T16:45:55+00:00",
+        "latest_build": Object {
+          "created_at": "2018-01-06T16:07:16.830829+00:00",
+          "external_id": "325812408",
+          "finished_at": "2018-01-06T16:11:04.393590+00:00",
+          "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
+          "label": "fix: Remove break-word behavior on coverage",
+          "number": 650,
+          "provider": "travis-ci",
+          "repository": undefined,
+          "result": "passed",
+          "source": Object {
+            "author": Object {
+              "email": "dcramer@gmail.com",
+              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+              "name": "David Cramer",
+            },
+            "created_at": "2018-01-06T16:07:16.814650+00:00",
+            "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
+            "revision": Object {
+              "author": Object {
+                "email": "dcramer@gmail.com",
+                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                "name": "David Cramer",
+              },
+              "committed_at": "2018-01-06T16:06:52+00:00",
+              "created_at": "2018-01-06T16:06:52+00:00",
+              "message": "fix: Remove break-word behavior on coverage
+",
+              "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
+            },
+          },
+          "started_at": "2018-01-06T16:07:16.957093+00:00",
+          "stats": Object {
+            "coverage": Object {
+              "diff_lines_covered": 0,
+              "diff_lines_uncovered": 0,
+              "lines_covered": 6127,
+              "lines_uncovered": 3060,
+            },
+            "style_violations": Object {
+              "count": 0,
+            },
+            "tests": Object {
+              "count": 153,
+              "count_unique": 153,
+              "duration": 14673,
+              "failures": 0,
+              "failures_unique": 0,
+            },
+            "webpack": Object {
+              "total_asset_size": 0,
+            },
+          },
+          "status": "finished",
+          "url": "https://travis-ci.org/getsentry/zeus/builds/325812408",
+        },
+        "message": "fix: Maintain repository in published data
+",
+        "sha": "26fef62489212d56d0a5037e3e6d876b887e972b",
+      },
+    ]
+  }
+>
+  <styled.div>
+    <div
+      className="sc-bZQynM fHbQJ"
+    >
+      <Styled(Component)>
+        <Component
+          className="sc-htoDjs CJFOY"
+        >
+          <Styled(styled.div)
+            align="center"
+            className="sc-htoDjs CJFOY ResultGrid-Header"
+          >
+            <styled.div
+              align="center"
+              className="sc-htoDjs CJFOY ResultGrid-Header sc-htpNat iSNGhk"
+            >
+              <div
+                className="sc-htoDjs CJFOY ResultGrid-Header sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+              >
+                <Styled(Component)>
+                  <Component
+                    className="sc-gzVnrw jBvblj"
+                  >
+                    <styled.div
+                      className="sc-gzVnrw jBvblj ResultGrid-Column"
+                      flex={1}
+                    >
+                      <div
+                        className="sc-gzVnrw jBvblj ResultGrid-Column sc-bdVaJa kYmYWE"
+                      >
+                        Revision
+                      </div>
+                    </styled.div>
+                  </Component>
+                </Styled(Component)>
+                <Styled(Component)
+                  hide="sm"
+                  textAlign="center"
+                  width={90}
+                >
+                  <Component
+                    className="sc-gzVnrw hVTCSJ"
+                    hide="sm"
+                    textAlign="center"
+                    width={90}
+                  >
+                    <styled.div
+                      className="sc-gzVnrw hVTCSJ ResultGrid-Column"
+                      hide="sm"
+                      style={
+                        Object {
+                          "textAlign": "center",
+                        }
+                      }
+                      textAlign="center"
+                      width={90}
+                    >
+                      <div
+                        className="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+                        style={
+                          Object {
+                            "textAlign": "center",
+                          }
+                        }
+                        width={90}
+                      >
+                        Coverage
+                      </div>
+                    </styled.div>
+                  </Component>
+                </Styled(Component)>
+                <Styled(Component)
+                  hide="sm"
+                  textAlign="center"
+                  width={90}
+                >
+                  <Component
+                    className="sc-gzVnrw hVTCSJ"
+                    hide="sm"
+                    textAlign="center"
+                    width={90}
+                  >
+                    <styled.div
+                      className="sc-gzVnrw hVTCSJ ResultGrid-Column"
+                      hide="sm"
+                      style={
+                        Object {
+                          "textAlign": "center",
+                        }
+                      }
+                      textAlign="center"
+                      width={90}
+                    >
+                      <div
+                        className="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+                        style={
+                          Object {
+                            "textAlign": "center",
+                          }
+                        }
+                        width={90}
+                      >
+                        Duration
+                      </div>
+                    </styled.div>
+                  </Component>
+                </Styled(Component)>
+                <Styled(Component)
+                  hide="sm"
+                  textAlign="right"
+                  width={150}
+                >
+                  <Component
+                    className="sc-gzVnrw hVTCSJ"
+                    hide="sm"
+                    textAlign="right"
+                    width={150}
+                  >
+                    <styled.div
+                      className="sc-gzVnrw hVTCSJ ResultGrid-Column"
+                      hide="sm"
+                      style={
+                        Object {
+                          "textAlign": "right",
+                        }
+                      }
+                      textAlign="right"
+                      width={150}
+                    >
+                      <div
+                        className="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa bNDigs"
+                        style={
+                          Object {
+                            "textAlign": "right",
+                          }
+                        }
+                        width={150}
+                      >
+                        Commit Date
+                      </div>
+                    </styled.div>
+                  </Component>
+                </Styled(Component)>
+              </div>
+            </styled.div>
+          </Styled(styled.div)>
+        </Component>
+      </Styled(Component)>
+      <div>
+        <RevisionListItem
+          includeAuthor={true}
+          key="26fef62489212d56d0a5037e3e6d876b887e972b"
+          params={
+            Object {
+              "ownerName": "getsentry",
+              "provider": "gh",
+              "repoName": "zeus",
+            }
+          }
+          repo={
+            Object {
+              "backend": "git",
+              "created_at": "2017-08-15T17:01:33.206772+00:00",
+              "full_name": "gh/getsentry/zeus",
+              "id": "63e820d4-81db-11e7-a6df-0a580a28004e",
+              "latest_build": null,
+              "name": "zeus",
+              "owner_name": "getsentry",
+              "permissions": Object {
+                "admin": true,
+                "read": true,
+                "write": true,
+              },
+              "provider": "gh",
+              "url": "git@github.com:getsentry/zeus.git",
+            }
+          }
+          revision={
+            Object {
+              "author": Object {
+                "email": "dcramer@gmail.com",
+                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                "name": "David Cramer",
+              },
+              "committed_at": "2018-06-08T16:45:55+00:00",
+              "created_at": "2018-06-08T16:45:55+00:00",
+              "latest_build": Object {
+                "created_at": "2018-01-06T16:07:16.830829+00:00",
+                "external_id": "325812408",
+                "finished_at": "2018-01-06T16:11:04.393590+00:00",
+                "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
+                "label": "fix: Remove break-word behavior on coverage",
+                "number": 650,
+                "provider": "travis-ci",
+                "repository": undefined,
+                "result": "passed",
+                "source": Object {
+                  "author": Object {
+                    "email": "dcramer@gmail.com",
+                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                    "name": "David Cramer",
+                  },
+                  "created_at": "2018-01-06T16:07:16.814650+00:00",
+                  "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
+                  "revision": Object {
+                    "author": Object {
+                      "email": "dcramer@gmail.com",
+                      "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                      "name": "David Cramer",
+                    },
+                    "committed_at": "2018-01-06T16:06:52+00:00",
+                    "created_at": "2018-01-06T16:06:52+00:00",
+                    "message": "fix: Remove break-word behavior on coverage
+",
+                    "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
+                  },
+                },
+                "started_at": "2018-01-06T16:07:16.957093+00:00",
+                "stats": Object {
+                  "coverage": Object {
+                    "diff_lines_covered": 0,
+                    "diff_lines_uncovered": 0,
+                    "lines_covered": 6127,
+                    "lines_uncovered": 3060,
+                  },
+                  "style_violations": Object {
+                    "count": 0,
+                  },
+                  "tests": Object {
+                    "count": 153,
+                    "count_unique": 153,
+                    "duration": 14673,
+                    "failures": 0,
+                    "failures_unique": 0,
+                  },
+                  "webpack": Object {
+                    "total_asset_size": 0,
+                  },
+                },
+                "status": "finished",
+                "url": "https://travis-ci.org/getsentry/zeus/builds/325812408",
+              },
+              "message": "fix: Maintain repository in published data
+",
+              "sha": "26fef62489212d56d0a5037e3e6d876b887e972b",
+            }
+          }
+        >
+          <BuildListItem
+            build={
+              Object {
+                "created_at": "2018-01-06T16:07:16.830829+00:00",
+                "external_id": "325812408",
+                "finished_at": "2018-01-06T16:11:04.393590+00:00",
+                "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
+                "label": "fix: Remove break-word behavior on coverage",
+                "number": 650,
+                "provider": "travis-ci",
+                "repository": undefined,
+                "result": "passed",
+                "source": Object {
+                  "author": Object {
+                    "email": "dcramer@gmail.com",
+                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                    "name": "David Cramer",
+                  },
+                  "created_at": "2018-01-06T16:07:16.814650+00:00",
+                  "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
+                  "revision": Object {
+                    "author": Object {
+                      "email": "dcramer@gmail.com",
+                      "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                      "name": "David Cramer",
+                    },
+                    "committed_at": "2018-01-06T16:06:52+00:00",
+                    "created_at": "2018-01-06T16:06:52+00:00",
+                    "message": "fix: Remove break-word behavior on coverage
+",
+                    "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
+                  },
+                },
+                "started_at": "2018-01-06T16:07:16.957093+00:00",
+                "stats": Object {
+                  "coverage": Object {
+                    "diff_lines_covered": 0,
+                    "diff_lines_uncovered": 0,
+                    "lines_covered": 6127,
+                    "lines_uncovered": 3060,
+                  },
+                  "style_violations": Object {
+                    "count": 0,
+                  },
+                  "tests": Object {
+                    "count": 153,
+                    "count_unique": 153,
+                    "duration": 14673,
+                    "failures": 0,
+                    "failures_unique": 0,
+                  },
+                  "webpack": Object {
+                    "total_asset_size": 0,
+                  },
+                },
+                "status": "finished",
+                "url": "https://travis-ci.org/getsentry/zeus/builds/325812408",
+              }
+            }
+            date="2018-06-08T16:45:55+00:00"
+            includeAuthor={true}
+            repo={
+              Object {
+                "backend": "git",
+                "created_at": "2017-08-15T17:01:33.206772+00:00",
+                "full_name": "gh/getsentry/zeus",
+                "id": "63e820d4-81db-11e7-a6df-0a580a28004e",
+                "latest_build": null,
+                "name": "zeus",
+                "owner_name": "getsentry",
+                "permissions": Object {
+                  "admin": true,
+                  "read": true,
+                  "write": true,
+                },
+                "provider": "gh",
+                "url": "git@github.com:getsentry/zeus.git",
+              }
+            }
+          >
+            <Styled(Link)
+              activeClassName="active"
+              to="/gh/getsentry/zeus/builds/650"
+            >
+              <Link
+                activeClassName="active"
+                className="sc-bxivhb kZeKpR"
+                onlyActiveOnIndex={false}
+                style={Object {}}
+                to="/gh/getsentry/zeus/builds/650"
+              >
+                <a
+                  className="sc-bxivhb kZeKpR"
+                  onClick={[Function]}
+                  style={Object {}}
+                >
+                  <Styled(Component)>
+                    <Component
+                      className="sc-dnqmqq bLWiHU"
+                    >
+                      <Styled(styled.div)
+                        align="center"
+                        className="sc-dnqmqq bLWiHU ResultGrid-Row"
+                      >
+                        <styled.div
+                          align="center"
+                          className="sc-dnqmqq bLWiHU ResultGrid-Row sc-htpNat iSNGhk"
+                        >
+                          <div
+                            className="sc-dnqmqq bLWiHU ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+                          >
+                            <Styled(Component)>
+                              <Component
+                                className="sc-gzVnrw jBvblj"
+                              >
+                                <styled.div
+                                  className="sc-gzVnrw jBvblj ResultGrid-Column"
+                                  flex={1}
+                                >
+                                  <div
+                                    className="sc-gzVnrw jBvblj ResultGrid-Column sc-bdVaJa kYmYWE"
+                                  >
+                                    <Styled(styled.div)>
+                                      <styled.div
+                                        className="sc-htpNat eLQHN"
+                                      >
+                                        <div
+                                          className="sc-htpNat eLQHN sc-bdVaJa iHZvIS"
+                                        >
+                                          <styled.div
+                                            mr={8}
+                                            width={15}
+                                          >
+                                            <div
+                                              className="sc-bdVaJa hGSMoE"
+                                              width={15}
+                                            >
+                                              <ObjectResult
+                                                data={
+                                                  Object {
+                                                    "created_at": "2018-01-06T16:07:16.830829+00:00",
+                                                    "external_id": "325812408",
+                                                    "finished_at": "2018-01-06T16:11:04.393590+00:00",
+                                                    "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
+                                                    "label": "fix: Remove break-word behavior on coverage",
+                                                    "number": 650,
+                                                    "provider": "travis-ci",
+                                                    "repository": undefined,
+                                                    "result": "passed",
+                                                    "source": Object {
+                                                      "author": Object {
+                                                        "email": "dcramer@gmail.com",
+                                                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                        "name": "David Cramer",
+                                                      },
+                                                      "created_at": "2018-01-06T16:07:16.814650+00:00",
+                                                      "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
+                                                      "revision": Object {
+                                                        "author": Object {
+                                                          "email": "dcramer@gmail.com",
+                                                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                          "name": "David Cramer",
+                                                        },
+                                                        "committed_at": "2018-01-06T16:06:52+00:00",
+                                                        "created_at": "2018-01-06T16:06:52+00:00",
+                                                        "message": "fix: Remove break-word behavior on coverage
+",
+                                                        "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
+                                                      },
+                                                    },
+                                                    "started_at": "2018-01-06T16:07:16.957093+00:00",
+                                                    "stats": Object {
+                                                      "coverage": Object {
+                                                        "diff_lines_covered": 0,
+                                                        "diff_lines_uncovered": 0,
+                                                        "lines_covered": 6127,
+                                                        "lines_uncovered": 3060,
+                                                      },
+                                                      "style_violations": Object {
+                                                        "count": 0,
+                                                      },
+                                                      "tests": Object {
+                                                        "count": 153,
+                                                        "count_unique": 153,
+                                                        "duration": 14673,
+                                                        "failures": 0,
+                                                        "failures_unique": 0,
+                                                      },
+                                                      "webpack": Object {
+                                                        "total_asset_size": 0,
+                                                      },
+                                                    },
+                                                    "status": "finished",
+                                                    "url": "https://travis-ci.org/getsentry/zeus/builds/325812408",
+                                                  }
+                                                }
+                                                size={16}
+                                              >
+                                                <styled.div
+                                                  result="passed"
+                                                  status="finished"
+                                                >
+                                                  <div
+                                                    className="sc-EHOje hJNzZA"
+                                                    result="passed"
+                                                  >
+                                                    <MdCheckCircle
+                                                      size={16}
+                                                    >
+                                                      <IconBase
+                                                        size={16}
+                                                        viewBox="0 0 40 40"
+                                                      >
+                                                        <svg
+                                                          fill="currentColor"
+                                                          height={16}
+                                                          preserveAspectRatio="xMidYMid meet"
+                                                          style={
+                                                            Object {
+                                                              "color": undefined,
+                                                              "verticalAlign": "middle",
+                                                            }
+                                                          }
+                                                          viewBox="0 0 40 40"
+                                                          width={16}
+                                                        >
+                                                          <g>
+                                                            <path
+                                                              d="m16.6 28.4l15-15-2.3-2.5-12.7 12.7-5.9-5.9-2.3 2.3z m3.4-25c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
+                                                            />
+                                                          </g>
+                                                        </svg>
+                                                      </IconBase>
+                                                    </MdCheckCircle>
+                                                  </div>
+                                                </styled.div>
+                                              </ObjectResult>
+                                            </div>
+                                          </styled.div>
+                                          <styled.div
+                                            flex="1"
+                                            style={
+                                              Object {
+                                                "minWidth": 0,
+                                              }
+                                            }
+                                          >
+                                            <div
+                                              className="sc-bdVaJa kYmYWE"
+                                              style={
+                                                Object {
+                                                  "minWidth": 0,
+                                                }
+                                              }
+                                            >
+                                              <styled.div>
+                                                <div
+                                                  className="sc-iwsKbI hSUBot"
+                                                >
+                                                  fix: Remove break-word behavior on coverage
+                                                </div>
+                                              </styled.div>
+                                              <styled.div>
+                                                <div
+                                                  className="sc-jTzLTM ihWNxQ"
+                                                >
+                                                  <Styled(styled.div)>
+                                                    <styled.div
+                                                      className="sc-gqjmRU fKhbCo"
+                                                    >
+                                                      <div
+                                                        className="sc-gqjmRU fKhbCo sc-gZMcBi bDPlgE"
+                                                      >
+                                                        eff634a
+                                                      </div>
+                                                    </styled.div>
+                                                  </Styled(styled.div)>
+                                                  <styled.div>
+                                                    <div
+                                                      className="sc-gZMcBi bDPlgE"
+                                                    >
+                                                      <ObjectAuthor
+                                                        data={
+                                                          Object {
+                                                            "created_at": "2018-01-06T16:07:16.830829+00:00",
+                                                            "external_id": "325812408",
+                                                            "finished_at": "2018-01-06T16:11:04.393590+00:00",
+                                                            "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
+                                                            "label": "fix: Remove break-word behavior on coverage",
+                                                            "number": 650,
+                                                            "provider": "travis-ci",
+                                                            "repository": undefined,
+                                                            "result": "passed",
+                                                            "source": Object {
+                                                              "author": Object {
+                                                                "email": "dcramer@gmail.com",
+                                                                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                                "name": "David Cramer",
+                                                              },
+                                                              "created_at": "2018-01-06T16:07:16.814650+00:00",
+                                                              "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
+                                                              "revision": Object {
+                                                                "author": Object {
+                                                                  "email": "dcramer@gmail.com",
+                                                                  "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                                  "name": "David Cramer",
+                                                                },
+                                                                "committed_at": "2018-01-06T16:06:52+00:00",
+                                                                "created_at": "2018-01-06T16:06:52+00:00",
+                                                                "message": "fix: Remove break-word behavior on coverage
+",
+                                                                "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
+                                                              },
+                                                            },
+                                                            "started_at": "2018-01-06T16:07:16.957093+00:00",
+                                                            "stats": Object {
+                                                              "coverage": Object {
+                                                                "diff_lines_covered": 0,
+                                                                "diff_lines_uncovered": 0,
+                                                                "lines_covered": 6127,
+                                                                "lines_uncovered": 3060,
+                                                              },
+                                                              "style_violations": Object {
+                                                                "count": 0,
+                                                              },
+                                                              "tests": Object {
+                                                                "count": 153,
+                                                                "count_unique": 153,
+                                                                "duration": 14673,
+                                                                "failures": 0,
+                                                                "failures_unique": 0,
+                                                              },
+                                                              "webpack": Object {
+                                                                "total_asset_size": 0,
+                                                              },
+                                                            },
+                                                            "status": "finished",
+                                                            "url": "https://travis-ci.org/getsentry/zeus/builds/325812408",
+                                                          }
+                                                        }
+                                                      >
+                                                        <span>
+                                                          <styled.span>
+                                                            <span
+                                                              className="sc-ifAKCX gQVWpv"
+                                                            >
+                                                              <Gravatar
+                                                                default="retro"
+                                                                email="dcramer@gmail.com"
+                                                                protocol="//"
+                                                                rating="g"
+                                                                size={16}
+                                                              >
+                                                                <img
+                                                                  alt="Gravatar for dcramer@gmail.com"
+                                                                  className="react-gravatar"
+                                                                  height={16}
+                                                                  src="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=16"
+                                                                  srcSet="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=32 2x"
+                                                                  width={16}
+                                                                />
+                                                              </Gravatar>
+                                                            </span>
+                                                          </styled.span>
+                                                          David Cramer
+                                                        </span>
+                                                      </ObjectAuthor>
+                                                    </div>
+                                                  </styled.div>
+                                                </div>
+                                              </styled.div>
+                                            </div>
+                                          </styled.div>
+                                        </div>
+                                      </styled.div>
+                                    </Styled(styled.div)>
+                                  </div>
+                                </styled.div>
+                              </Component>
+                            </Styled(Component)>
+                            <Styled(Component)
+                              hide="sm"
+                              textAlign="center"
+                              width={90}
+                            >
+                              <Component
+                                className="sc-gzVnrw hVTCSJ"
+                                hide="sm"
+                                textAlign="center"
+                                width={90}
+                              >
+                                <styled.div
+                                  className="sc-gzVnrw hVTCSJ ResultGrid-Column"
+                                  hide="sm"
+                                  style={
+                                    Object {
+                                      "textAlign": "center",
+                                    }
+                                  }
+                                  textAlign="center"
+                                  width={90}
+                                >
+                                  <div
+                                    className="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+                                    style={
+                                      Object {
+                                        "textAlign": "center",
+                                      }
+                                    }
+                                    width={90}
+                                  >
+                                    <ObjectCoverage
+                                      data={
+                                        Object {
+                                          "created_at": "2018-01-06T16:07:16.830829+00:00",
+                                          "external_id": "325812408",
+                                          "finished_at": "2018-01-06T16:11:04.393590+00:00",
+                                          "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
+                                          "label": "fix: Remove break-word behavior on coverage",
+                                          "number": 650,
+                                          "provider": "travis-ci",
+                                          "repository": undefined,
+                                          "result": "passed",
+                                          "source": Object {
+                                            "author": Object {
+                                              "email": "dcramer@gmail.com",
+                                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                              "name": "David Cramer",
+                                            },
+                                            "created_at": "2018-01-06T16:07:16.814650+00:00",
+                                            "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
+                                            "revision": Object {
+                                              "author": Object {
+                                                "email": "dcramer@gmail.com",
+                                                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                "name": "David Cramer",
+                                              },
+                                              "committed_at": "2018-01-06T16:06:52+00:00",
+                                              "created_at": "2018-01-06T16:06:52+00:00",
+                                              "message": "fix: Remove break-word behavior on coverage
+",
+                                              "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
+                                            },
+                                          },
+                                          "started_at": "2018-01-06T16:07:16.957093+00:00",
+                                          "stats": Object {
+                                            "coverage": Object {
+                                              "diff_lines_covered": 0,
+                                              "diff_lines_uncovered": 0,
+                                              "lines_covered": 6127,
+                                              "lines_uncovered": 3060,
+                                            },
+                                            "style_violations": Object {
+                                              "count": 0,
+                                            },
+                                            "tests": Object {
+                                              "count": 153,
+                                              "count_unique": 153,
+                                              "duration": 14673,
+                                              "failures": 0,
+                                              "failures_unique": 0,
+                                            },
+                                            "webpack": Object {
+                                              "total_asset_size": 0,
+                                            },
+                                          },
+                                          "status": "finished",
+                                          "url": "https://travis-ci.org/getsentry/zeus/builds/325812408",
+                                        }
+                                      }
+                                      diff={true}
+                                    >
+                                      <span />
+                                    </ObjectCoverage>
+                                  </div>
+                                </styled.div>
+                              </Component>
+                            </Styled(Component)>
+                            <Styled(Component)
+                              hide="sm"
+                              textAlign="center"
+                              width={90}
+                            >
+                              <Component
+                                className="sc-gzVnrw hVTCSJ"
+                                hide="sm"
+                                textAlign="center"
+                                width={90}
+                              >
+                                <styled.div
+                                  className="sc-gzVnrw hVTCSJ ResultGrid-Column"
+                                  hide="sm"
+                                  style={
+                                    Object {
+                                      "textAlign": "center",
+                                    }
+                                  }
+                                  textAlign="center"
+                                  width={90}
+                                >
+                                  <div
+                                    className="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+                                    style={
+                                      Object {
+                                        "textAlign": "center",
+                                      }
+                                    }
+                                    width={90}
+                                  >
+                                    <ObjectDuration
+                                      data={
+                                        Object {
+                                          "created_at": "2018-01-06T16:07:16.830829+00:00",
+                                          "external_id": "325812408",
+                                          "finished_at": "2018-01-06T16:11:04.393590+00:00",
+                                          "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
+                                          "label": "fix: Remove break-word behavior on coverage",
+                                          "number": 650,
+                                          "provider": "travis-ci",
+                                          "repository": undefined,
+                                          "result": "passed",
+                                          "source": Object {
+                                            "author": Object {
+                                              "email": "dcramer@gmail.com",
+                                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                              "name": "David Cramer",
+                                            },
+                                            "created_at": "2018-01-06T16:07:16.814650+00:00",
+                                            "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
+                                            "revision": Object {
+                                              "author": Object {
+                                                "email": "dcramer@gmail.com",
+                                                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                "name": "David Cramer",
+                                              },
+                                              "committed_at": "2018-01-06T16:06:52+00:00",
+                                              "created_at": "2018-01-06T16:06:52+00:00",
+                                              "message": "fix: Remove break-word behavior on coverage
+",
+                                              "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
+                                            },
+                                          },
+                                          "started_at": "2018-01-06T16:07:16.957093+00:00",
+                                          "stats": Object {
+                                            "coverage": Object {
+                                              "diff_lines_covered": 0,
+                                              "diff_lines_uncovered": 0,
+                                              "lines_covered": 6127,
+                                              "lines_uncovered": 3060,
+                                            },
+                                            "style_violations": Object {
+                                              "count": 0,
+                                            },
+                                            "tests": Object {
+                                              "count": 153,
+                                              "count_unique": 153,
+                                              "duration": 14673,
+                                              "failures": 0,
+                                              "failures_unique": 0,
+                                            },
+                                            "webpack": Object {
+                                              "total_asset_size": 0,
+                                            },
+                                          },
+                                          "status": "finished",
+                                          "url": "https://travis-ci.org/getsentry/zeus/builds/325812408",
+                                        }
+                                      }
+                                      short={true}
+                                    >
+                                      <AggregateDuration
+                                        data={
+                                          Array [
+                                            Object {
+                                              "created_at": "2018-01-06T16:07:16.830829+00:00",
+                                              "external_id": "325812408",
+                                              "finished_at": "2018-01-06T16:11:04.393590+00:00",
+                                              "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
+                                              "label": "fix: Remove break-word behavior on coverage",
+                                              "number": 650,
+                                              "provider": "travis-ci",
+                                              "repository": undefined,
+                                              "result": "passed",
+                                              "source": Object {
+                                                "author": Object {
+                                                  "email": "dcramer@gmail.com",
+                                                  "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                  "name": "David Cramer",
+                                                },
+                                                "created_at": "2018-01-06T16:07:16.814650+00:00",
+                                                "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
+                                                "revision": Object {
+                                                  "author": Object {
+                                                    "email": "dcramer@gmail.com",
+                                                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                    "name": "David Cramer",
+                                                  },
+                                                  "committed_at": "2018-01-06T16:06:52+00:00",
+                                                  "created_at": "2018-01-06T16:06:52+00:00",
+                                                  "message": "fix: Remove break-word behavior on coverage
+",
+                                                  "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
+                                                },
+                                              },
+                                              "started_at": "2018-01-06T16:07:16.957093+00:00",
+                                              "stats": Object {
+                                                "coverage": Object {
+                                                  "diff_lines_covered": 0,
+                                                  "diff_lines_uncovered": 0,
+                                                  "lines_covered": 6127,
+                                                  "lines_uncovered": 3060,
+                                                },
+                                                "style_violations": Object {
+                                                  "count": 0,
+                                                },
+                                                "tests": Object {
+                                                  "count": 153,
+                                                  "count_unique": 153,
+                                                  "duration": 14673,
+                                                  "failures": 0,
+                                                  "failures_unique": 0,
+                                                },
+                                                "webpack": Object {
+                                                  "total_asset_size": 0,
+                                                },
+                                              },
+                                              "status": "finished",
+                                              "url": "https://travis-ci.org/getsentry/zeus/builds/325812408",
+                                            },
+                                          ]
+                                        }
+                                      >
+                                        <Duration
+                                          data={
+                                            Array [
+                                              Object {
+                                                "created_at": "2018-01-06T16:07:16.830829+00:00",
+                                                "external_id": "325812408",
+                                                "finished_at": "2018-01-06T16:11:04.393590+00:00",
+                                                "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
+                                                "label": "fix: Remove break-word behavior on coverage",
+                                                "number": 650,
+                                                "provider": "travis-ci",
+                                                "repository": undefined,
+                                                "result": "passed",
+                                                "source": Object {
+                                                  "author": Object {
+                                                    "email": "dcramer@gmail.com",
+                                                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                    "name": "David Cramer",
+                                                  },
+                                                  "created_at": "2018-01-06T16:07:16.814650+00:00",
+                                                  "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
+                                                  "revision": Object {
+                                                    "author": Object {
+                                                      "email": "dcramer@gmail.com",
+                                                      "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                      "name": "David Cramer",
+                                                    },
+                                                    "committed_at": "2018-01-06T16:06:52+00:00",
+                                                    "created_at": "2018-01-06T16:06:52+00:00",
+                                                    "message": "fix: Remove break-word behavior on coverage
+",
+                                                    "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
+                                                  },
+                                                },
+                                                "started_at": "2018-01-06T16:07:16.957093+00:00",
+                                                "stats": Object {
+                                                  "coverage": Object {
+                                                    "diff_lines_covered": 0,
+                                                    "diff_lines_uncovered": 0,
+                                                    "lines_covered": 6127,
+                                                    "lines_uncovered": 3060,
+                                                  },
+                                                  "style_violations": Object {
+                                                    "count": 0,
+                                                  },
+                                                  "tests": Object {
+                                                    "count": 153,
+                                                    "count_unique": 153,
+                                                    "duration": 14673,
+                                                    "failures": 0,
+                                                    "failures_unique": 0,
+                                                  },
+                                                  "webpack": Object {
+                                                    "total_asset_size": 0,
+                                                  },
+                                                },
+                                                "status": "finished",
+                                                "url": "https://travis-ci.org/getsentry/zeus/builds/325812408",
+                                              },
+                                            ]
+                                          }
+                                          ms={227436}
+                                          short={true}
+                                        >
+                                          <span>
+                                            4m
+                                          </span>
+                                        </Duration>
+                                      </AggregateDuration>
+                                    </ObjectDuration>
+                                  </div>
+                                </styled.div>
+                              </Component>
+                            </Styled(Component)>
+                            <Styled(Component)
+                              hide="sm"
+                              textAlign="right"
+                              width={150}
+                            >
+                              <Component
+                                className="sc-gzVnrw hVTCSJ"
+                                hide="sm"
+                                textAlign="right"
+                                width={150}
+                              >
+                                <styled.div
+                                  className="sc-gzVnrw hVTCSJ ResultGrid-Column"
+                                  hide="sm"
+                                  style={
+                                    Object {
+                                      "textAlign": "right",
+                                    }
+                                  }
+                                  textAlign="right"
+                                  width={150}
+                                >
+                                  <div
+                                    className="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa bNDigs"
+                                    style={
+                                      Object {
+                                        "textAlign": "right",
+                                      }
+                                    }
+                                    width={150}
+                                  >
+                                    <TimeSince
+                                      clock24Hours={false}
+                                      date="2018-06-08T16:45:55+00:00"
+                                      suffix="ago"
+                                    >
+                                      <time
+                                        dateTime="2018-06-08T16:45:55.000Z"
+                                        title="June 8, 2018 12:45 PM "
+                                      >
+                                        in 8 months
+                                      </time>
+                                    </TimeSince>
+                                  </div>
+                                </styled.div>
+                              </Component>
+                            </Styled(Component)>
+                          </div>
+                        </styled.div>
+                      </Styled(styled.div)>
+                    </Component>
+                  </Styled(Component)>
+                </a>
+              </Link>
+            </Styled(Link)>
+          </BuildListItem>
+        </RevisionListItem>
+      </div>
+    </div>
+  </styled.div>
+</RevisionList>
+`;
