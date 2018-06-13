@@ -241,7 +241,30 @@ The process for publishing data generally looks like this:
 3. upsert the detailed job parameters
 4. publish artifacts
 
-For example, to publish job details from Travis without using the native webhooks:
+These actions can be also performed manually (without using the native webhooks) with `zeus-cli` (recommended) or `curl`.
+
+### Updating data with `zeus-cli`
+
+More information (installation instructions, documentation) about `zeus-cli` can be found on its project's page: https://github.com/getsentry/zeus-cli
+
+`zeus-cli` is a command line tool that facilitates interaction with Zeus API for actions such as updating jobs or uploading artifacts.
+
+The following command creates a build and a job for a given `git` revision:
+
+```shell
+zeus job update -b $MY_BUILD_ID -j $MY_JOB_ID  --ref=$MY_REF_ID
+```
+
+And here's how you upload an artifact:
+
+```shell
+zeus upload -b $MY_BUILD_ID -j $MY_JOB_ID -t 'text/xml+coverage' coverage.xml
+```
+
+
+### Updating data with `curl`
+
+Here's an example of how you can publish job details without the native webhooks with `curl` from Travis:
 
 ```shell
 #!/bin/bash -eu
@@ -264,4 +287,4 @@ curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER/jobs/$TRAVIS_JOB_NUMBER \
     -d "{\"status\": \"$1\", \"result\": \"$2\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/jobs/${TRAVIS_JOB_ID}\", \"allow_failure\": ${TRAVIS_ALLOW_FAILURE}}"
 ```
 
-Form there you can submit artifacts using ``zeus-cli`` and it's standard mechanisms.
+From there you can submit artifacts using ``zeus-cli`` and its standard mechanisms.
