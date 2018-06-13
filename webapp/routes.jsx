@@ -31,6 +31,7 @@ import RevisionCoverage from './pages/RevisionCoverage';
 import RevisionDetails from './pages/RevisionDetails';
 import RevisionDiff from './pages/RevisionDiff';
 import RevisionOverview from './pages/RevisionOverview';
+import RevisionStyleViolationList from './pages/RevisionStyleViolationList';
 import RevisionTestList from './pages/RevisionTestList';
 import UserBuildList from './pages/UserBuildList';
 import Welcome from './pages/Welcome';
@@ -104,6 +105,7 @@ export default (
         <IndexRoute component={RevisionOverview} />
         <Route path="coverage" component={RevisionCoverage} />
         <Route path="diff" component={RevisionDiff} />
+        <Route path="style-violations" component={RevisionStyleViolationList} />
         <Route path="tests" component={RevisionTestList} />
         <Route path="artifacts" component={RevisionArtifacts} />
       </Route>

@@ -68,8 +68,16 @@ app.add_resource(
     r.RevisionSourceResource,
 )
 app.add_resource(
+    "/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/style-violations",
+    r.RevisionStyleViolationsResource,
+)
+app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/tests",
     r.RevisionTestsResource,
+)
+app.add_resource(
+    "/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/bundle-stats",
+    r.RevisionBundleStatsResource,
 )
 app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>",
