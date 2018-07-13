@@ -1,4 +1,3 @@
-import sortBy from 'lodash/sortBy';
 import React, {Component} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
@@ -10,6 +9,25 @@ import {addRepo, removeRepo, updateRepo} from '../actions/repos';
 import AsyncPage from '../components/AsyncPage';
 import Button from '../components/Button';
 import {ResultGrid, Row, Column} from '../components/ResultGrid';
+
+const sortArray = (arr, score_fn) => {
+  arr.sort((a, b) => {
+    let a_score = score_fn(a),
+      b_score = score_fn(b);
+
+    for (let i = 0; i < a_score.length; i++) {
+      if (a_score[i] > b_score[i]) {
+        return 1;
+      }
+      if (a_score[i] < b_score[i]) {
+        return -1;
+      }
+    }
+    return 0;
+  });
+
+  return arr;
+};
 
 class GitHubRepoItem extends Component {
   static propTypes = {
@@ -42,7 +60,15 @@ class GitHubRepoItem extends Component {
       title: 'You need administrator privileges to activate this repository'
     };
 
-    if (repo.active) {
+    if (repo.status === 'inactive') {
+      return (
+        <Button onClick={this.props.onEnableRepo} size="small" {...props}>
+          Reconnect
+        </Button>
+      );
+    }
+
+    if (repo.status === 'active') {
       return (
         <Button onClick={this.props.onDisableRepo} size="small" type="danger" {...props}>
           Disable
@@ -73,7 +99,7 @@ class GitHubRepoItem extends Component {
 class GitHubRepositoryList extends AsyncPage {
   static propTypes = {
     ...AsyncPage.propTypes,
-    identities: PropTypes.object.isRequired
+    identities: PropTypes.array.isRequired
   };
 
   getTitle() {
@@ -99,8 +125,8 @@ class GitHubRepositoryList extends AsyncPage {
   onToggleRepo = (repoName, active = null) => {
     let {ghRepoList} = this.state;
     let ghRepo = ghRepoList.find(r => r.name === repoName);
-    if (active === null) active = !ghRepo.active;
-    if (ghRepo.loading || ghRepo.active === active) return;
+    if (active === null) active = ghRepo.status === 'active';
+    if (ghRepo.loading || (ghRepo.status === 'active') === active) return;
     ghRepo.loading = true;
 
     // push the loading update
@@ -121,7 +147,7 @@ class GitHubRepositoryList extends AsyncPage {
             let newGhRepoList = [...this.state.ghRepoList];
             let newGhRepo = newGhRepoList.find(r => r.name === ghRepo.name);
             // update the item in place
-            newGhRepo.active = active;
+            newGhRepo.status = 'active';
             newGhRepo.loading = false;
             if (active) {
               this.props.addRepo(repo);
@@ -156,10 +182,12 @@ class GitHubRepositoryList extends AsyncPage {
     let {location} = this.props;
     let query = location.query || {};
 
-    const repositories = sortBy(
-      this.state.ghRepoList || [],
-      repo => `${Number(!repo.active)}:${Number(!repo.admin)}: ${repo.name}}`
-    );
+    const repositories = sortArray(this.state.ghRepoList || [], repo => [
+      repo.status != 'inactive',
+      repo.status != 'active',
+      !repo.permissions.admin,
+      repo.name
+    ]);
 
     return (
       <Flex>
