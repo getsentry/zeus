@@ -191,7 +191,7 @@ class GitHubRepositoryList extends AsyncPage {
 
     return (
       <Flex>
-        <Box flex="1" width={2 / 12} pr={15}>
+        <Box flex="1" width={3 / 12} pr={15}>
           <div style={{marginBottom: 10, fontSize: '0.8em'}}>
             {!this.hasPrivateScope() && (
               <Button
@@ -227,7 +227,7 @@ class GitHubRepositoryList extends AsyncPage {
             })}
           </ul>
         </Box>
-        <Box width={10 / 12}>
+        <Box width={9 / 12}>
           <ResultGrid>
             {repositories.map(ghRepo => {
               return (
