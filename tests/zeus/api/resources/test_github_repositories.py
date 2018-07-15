@@ -77,6 +77,23 @@ def test_new_repository_github(
     mock_import_repo.asset_called_once_with(repo_id=repo.id)
 
 
+def test_deactivate_repository_github(
+    client, default_login, default_repo, default_repo_access
+):
+    resp = client.delete("/api/github/repos", json={"name": "getsentry/zeus"})
+
+    assert resp.status_code == 204
+    assert not Repository.query.unrestricted_unsafe().all()
+    assert not RepositoryAccess.query.all()
+
+
+def test_deactivate_non_existing_repository_github(client, default_login):
+    resp = client.delete("/api/github/repos", json={"name": "getsentry/does-not-exist"})
+
+    assert resp.status_code == 403
+    assert "not found" in resp.json()["message"]
+
+
 def test_list_github_repos(client, default_login, default_user, default_identity):
     responses.add(
         "GET",

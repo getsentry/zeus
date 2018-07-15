@@ -78,7 +78,42 @@ class GitHubRepositoriesResource(Resource):
         if not repo_name:
             return self.error("missing repo_name parameter")
 
-        raise NotImplementedError
+        owner_name, repo_name = repo_name.split("/", 1)
+
+        user = auth.get_current_user()
+        repo = (
+            Repository.query.unrestricted_unsafe()
+            .filter(
+                Repository.owner_name == owner_name,
+                Repository.name == repo_name,
+                Repository.backend == RepositoryBackend.git,
+                Repository.provider == RepositoryProvider.github,
+            )
+            .first()
+        )
+
+        if not repo:
+            return self.error("repository not found")
+
+        repo_access = RepositoryAccess.query.filter_by(
+            repository_id=repo.id, user_id=user.id
+        ).first()
+
+        if repo_access.permission != Permission.admin:
+            return self.respond(
+                {"message": "Insufficient permissions to deactivate repository"}, 403
+            )
+
+        lock_key = self._get_lock_key(owner_name, repo_name)
+        with redis.lock(lock_key):
+            ItemOption.query.filter_by(
+                item_id=repo.id, name="auth.private-key"
+            ).delete()
+            RepositoryAccess.query.filter_by(repository_id=repo.id).delete()
+            db.session.delete(repo)
+            db.session.commit()
+
+        return self.respond(status=204)
 
     def post(self):
         """
@@ -111,9 +146,7 @@ class GitHubRepositoriesResource(Resource):
                 {"message": "Insufficient permissions to activate repository"}, 403
             )
 
-        lock_key = "repo:{provider}/{owner_name}/{repo_name}".format(
-            provider="github", owner_name=owner_name, repo_name=repo_name
-        )
+        lock_key = self._get_lock_key(owner_name, repo_name)
         with redis.lock(lock_key):
             try:
                 with db.session.begin_nested():
@@ -182,3 +215,8 @@ class GitHubRepositoriesResource(Resource):
         db.session.commit()
 
         return self.respond_with_schema(repo_schema, repo, 201)
+
+    def _get_lock_key(self, owner_name: str, repo_name: str) -> str:
+        return "repo:{provider}/{owner_name}/{repo_name}".format(
+            provider="github", owner_name=owner_name, repo_name=repo_name
+        )
