@@ -145,3 +145,9 @@ class Repository(StandardAttributes, db.Model):
 
     def get_full_name(self):
         return "{}/{}/{}".format(self.provider, self.owner_name, self.name)
+
+    @staticmethod
+    def get_lock_key(owner_name: str, repo_name: str) -> str:
+        return "repo:{provider}/{owner_name}/{repo_name}".format(
+            provider="github", owner_name=owner_name, repo_name=repo_name
+        )

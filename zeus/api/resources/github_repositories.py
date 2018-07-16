@@ -13,7 +13,7 @@ from zeus.models import (
     RepositoryProvider,
     RepositoryStatus,
 )
-from zeus.tasks import import_repo
+from zeus.tasks import import_repo, delete_repo
 from zeus.utils import ssh
 from zeus.vcs.providers.github import GitHubRepositoryProvider
 
@@ -104,15 +104,7 @@ class GitHubRepositoriesResource(Resource):
                 {"message": "Insufficient permissions to deactivate repository"}, 403
             )
 
-        lock_key = self._get_lock_key(owner_name, repo_name)
-        with redis.lock(lock_key):
-            ItemOption.query.filter_by(
-                item_id=repo.id, name="auth.private-key"
-            ).delete()
-            RepositoryAccess.query.filter_by(repository_id=repo.id).delete()
-            db.session.delete(repo)
-            db.session.commit()
-
+        delete_repo.delay(repo_id=repo.id)
         return self.respond(status=204)
 
     def post(self):
@@ -146,7 +138,7 @@ class GitHubRepositoriesResource(Resource):
                 {"message": "Insufficient permissions to activate repository"}, 403
             )
 
-        lock_key = self._get_lock_key(owner_name, repo_name)
+        lock_key = Repository.get_lock_key(owner_name, repo_name)
         with redis.lock(lock_key):
             try:
                 with db.session.begin_nested():
@@ -215,8 +207,3 @@ class GitHubRepositoriesResource(Resource):
         db.session.commit()
 
         return self.respond_with_schema(repo_schema, repo, 201)
-
-    def _get_lock_key(self, owner_name: str, repo_name: str) -> str:
-        return "repo:{provider}/{owner_name}/{repo_name}".format(
-            provider="github", owner_name=owner_name, repo_name=repo_name
-        )

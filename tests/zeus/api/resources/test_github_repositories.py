@@ -74,17 +74,18 @@ def test_new_repository_github(
     assert access[0].user_id == default_user.id
     assert access[0].permission == Permission.admin
 
-    mock_import_repo.asset_called_once_with(repo_id=repo.id)
+    mock_import_repo.assert_called_once_with(repo_id=repo.id)
 
 
 def test_deactivate_repository_github(
-    client, default_login, default_repo, default_repo_access
+    client, mocker, default_login, default_repo, default_repo_access
 ):
+    mock_delete_repo = mocker.patch("zeus.tasks.delete_repo.delay")
+
     resp = client.delete("/api/github/repos", json={"name": "getsentry/zeus"})
 
     assert resp.status_code == 204
-    assert not Repository.query.unrestricted_unsafe().all()
-    assert not RepositoryAccess.query.all()
+    mock_delete_repo.assert_called_once_with(repo_id=default_repo.id)
 
 
 def test_deactivate_non_existing_repository_github(client, default_login):
