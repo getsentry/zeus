@@ -152,6 +152,14 @@ class GitHubRepositoryList extends AsyncPage {
     return github && github.scopes.indexOf('repo') !== -1;
   }
 
+  // TODO(tonyo): implement a nice and proper modal confirmation window
+  confirmDelete() {
+    const confirmMessage =
+      'Are you sure you want to delete this repository from Zeus?\n' +
+      'ALL data (build information, artifacts, etc.) will be removed.';
+    return window.confirm(confirmMessage);
+  }
+
   renderBody() {
     let {location} = this.props;
     let query = location.query || {};
@@ -207,7 +215,9 @@ class GitHubRepositoryList extends AsyncPage {
                   key={ghRepo.name}
                   repo={ghRepo}
                   onEnableRepo={() => this.onToggleRepo(ghRepo.name, true)}
-                  onDisableRepo={() => this.onToggleRepo(ghRepo.name, false)}
+                  onDisableRepo={() =>
+                    this.confirmDelete() && this.onToggleRepo(ghRepo.name, false)
+                  }
                 />
               );
             })}
