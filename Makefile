@@ -1,6 +1,3 @@
-CPUS ?= $(shell sysctl -n hw.ncpu || echo 1)
-MAKEFLAGS += --jobs=$(CPUS)
-
 develop: setup-git install-requirements
 
 upgrade: install-requirements
@@ -17,8 +14,6 @@ setup-git:
 install-requirements: install-python-requirements install-js-requirements
 
 install-python-requirements:
-	pip install "setuptools>=17.0"
-	pip install "pip>=9.0.0,<10.0.0"
 	pip install -e .
 	pip install "file://`pwd`#egg=zeus[tests]"
 	pip install -e git+https://github.com/pallets/werkzeug.git@8eb665a94aea9d9b56371663075818ca2546e152#egg=werkzeug
