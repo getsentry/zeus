@@ -26,7 +26,6 @@ class BuildIndexResource(Resource):
                 joinedload("source"),
                 joinedload("source").joinedload("author"),
                 joinedload("source").joinedload("revision"),
-                joinedload("source").joinedload("patch"),
                 subqueryload_all("stats"),
             )
             .filter(Build.repository_id.in_(tenant.repository_ids))

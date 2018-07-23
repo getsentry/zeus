@@ -118,7 +118,6 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
             joinedload("source"),
             joinedload("source").joinedload("author"),
             joinedload("source").joinedload("revision"),
-            joinedload("source").joinedload("patch"),
             subqueryload_all("stats"),
         )
     }
