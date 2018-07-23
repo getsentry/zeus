@@ -57,14 +57,14 @@ class BuildListBody extends AsyncComponent {
 }
 
 export default connect(
-  function(state) {
-    let emailSet = new Set((state.auth.emails || []).map(e => e.email));
+  ({auth, builds}) => {
+    let emailSet = new Set((auth.emails || []).map(e => e.email));
     return {
-      buildList: state.builds.items.filter(
-        build => build.repository && emailSet.has(build.source.author.email)
+      buildList: builds.items.filter(
+        build => !!build.repository && emailSet.has(build.source.author.email)
       ),
-      links: state.builds.links,
-      loading: !state.builds.loaded
+      links: builds.links,
+      loading: !builds.loaded
     };
   },
   {loadBuildsForUser}

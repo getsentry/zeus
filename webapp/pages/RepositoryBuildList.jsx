@@ -54,7 +54,7 @@ class BuildListBody extends AsyncComponent {
 // in order to filter down the data we're propagating to the child
 // XXX(dcramer): this is super tricky/sketch atm
 const DecoratedRepositoryBuildList = connect(
-  ({builds, repo}) => ({
+  ({builds}, {repo}) => ({
     buildList: builds.items.filter(
       build => !build.repository || build.repository.full_name === repo.full_name
     ),

@@ -45,7 +45,7 @@ export default class BuildListItem extends Component {
                 <Meta>
                   {includeRepo ? (
                     <RepoLink to={`/${repo.full_name}`}>
-                      {build.repository.owner_name}/{build.repository.name}
+                      {repo.owner_name}/{repo.name}
                     </RepoLink>
                   ) : null}
                   <Commit>{build.source.revision.sha.substr(0, 7)}</Commit>

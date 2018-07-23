@@ -127,13 +127,13 @@ class BuildListSection extends AsyncComponent {
 }
 
 const WrappedBuildList = connect(
-  function(state) {
-    let emailSet = new Set((state.auth.emails || []).map(e => e.email));
+  ({auth, builds}) => {
+    let emailSet = new Set((auth.emails || []).map(e => e.email));
     return {
-      buildList: state.builds.items.filter(build =>
-        emailSet.has(build.source.author.email)
+      buildList: builds.items.filter(
+        build => !!build.repository && emailSet.has(build.source.author.email)
       ),
-      loading: !state.builds.loaded
+      loading: !builds.loaded
     };
   },
   {loadBuildsForUser}
