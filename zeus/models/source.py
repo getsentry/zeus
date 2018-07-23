@@ -9,10 +9,14 @@ class Source(RepositoryBoundMixin, StandardAttributes, db.Model):
     A source represents the canonical parameters that a build is running against.
     """
 
-    patch_id = db.Column(GUID, db.ForeignKey("patch.id"), unique=True, nullable=True)
+    patch_id = db.Column(
+        GUID, db.ForeignKey("patch.id", ondelete="CASCADE"), unique=True, nullable=True
+    )
     revision_sha = db.Column(db.String(40), nullable=False)
     data = db.Column(JSONEncodedDict, nullable=True)
-    author_id = db.Column(GUID, db.ForeignKey("author.id"), index=True)
+    author_id = db.Column(
+        GUID, db.ForeignKey("author.id", ondelete="SET NULL"), index=True, nullable=True
+    )
 
     author = db.relationship("Author")
     patch = db.relationship("Patch")

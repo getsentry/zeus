@@ -5,8 +5,12 @@ from zeus.db.utils import model_repr
 
 
 class ApiTokenRepositoryAccess(db.Model):
-    repository_id = db.Column(GUID, db.ForeignKey("repository.id"), primary_key=True)
-    api_token_id = db.Column(GUID, db.ForeignKey("api_token.id"), primary_key=True)
+    repository_id = db.Column(
+        GUID, db.ForeignKey("repository.id", ondelete="CASCADE"), primary_key=True
+    )
+    api_token_id = db.Column(
+        GUID, db.ForeignKey("api_token.id", ondelete="CASCADE"), primary_key=True
+    )
     permission = db.Column(Enum(Permission), nullable=False, default=Permission.read)
 
     repository = db.relationship("Repository", innerjoin=True, uselist=False)
