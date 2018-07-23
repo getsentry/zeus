@@ -76,7 +76,7 @@ They should be submitted with the ``application/x-webpack-stats+json`` type.
 
 ### Requirements
 
-- Python 3 (3.6+)
+- Python 3.7
 - Node
 - Postgres 9.4+
 

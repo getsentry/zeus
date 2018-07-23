@@ -1,10 +1,11 @@
 language: python
-sudo: false
+sudo: true
+dist: xenial
 services:
   - redis-server
   - postgresql
 python:
-  - "3.6"
+  - "3.7"
 cache:
   yarn: true
   directories:
@@ -26,22 +27,14 @@ script:
   - py.test tests -v --cov . --cov-report="xml:coverage.xml" --junit-xml=".artifacts/pytest.junit.xml"
   - node_modules/.bin/webpack --profile --json > .artifacts/webpack-stats.json
   - JEST_JUNIT_OUTPUT=.artifacts/jest.junit.xml yarn test -- --ci --testResultsProcessor="jest-junit"
-after_success:
+after_script:
   - npm install -g @zeus-ci/cli
   - $(npm bin -g)/zeus upload -t "application/x-junit+xml" .artifacts/*.junit.xml
-  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" .artifacts/coverage.xml
-  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" .artifacts/coverage/cobertura-coverage.xml
-  - $(npm bin -g)/zeus upload -t "application/x-checkstyle+xml" .artifacts/*.checkstyle.xml
-  - $(npm bin -g)/zeus upload -t "text/x-pycodestyle" .artifacts/flake8.log
-  - $(npm bin -g)/zeus upload -t "application/webpack-stats+json" .artifacts/webpack-stats.json
-after_failure:
-  - npm install -g @zeus-ci/cli
-  - $(npm bin -g)/zeus upload -t "application/x-junit+xml" .artifacts/*.junit.xml
-  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" .artifacts/coverage.xml
-  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" .artifacts/coverage/cobertura-coverage.xml
-  - $(npm bin -g)/zeus upload -t "application/x-checkstyle+xml" .artifacts/*.checkstyle.xml
-  - $(npm bin -g)/zeus upload -t "text/x-pycodestyle" .artifacts/flake8.log
-  - $(npm bin -g)/zeus upload -t "application/webpack-stats+json" .artifacts/webpack-stats.json
+    -t "application/x-cobertura+xml" .artifacts/coverage.xml
+    -t "application/x-cobertura+xml" .artifacts/coverage/cobertura-coverage.xml
+    -t "application/x-checkstyle+xml" .artifacts/*.checkstyle.xml
+    -t "text/x-pycodestyle" .artifacts/flake8.log
+    -t "application/webpack-stats+json" .artifacts/webpack-stats.json
 notifications:
   webhooks:
     urls:

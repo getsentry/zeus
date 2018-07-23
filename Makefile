@@ -40,4 +40,4 @@ build-docker-image:
 
 run-docker-image:
 	docker rm zeus || exit 0
-	docker run  -d -p 8080:8080/tcp -v ~/.zeus:/workspace --name zeus zeus
+	docker run --init -d -p 8080:8080/tcp -v ~/.zeus:/workspace --name zeus zeus
