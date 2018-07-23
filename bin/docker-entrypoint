@@ -11,7 +11,6 @@ esac
 
 # Check if we're trying to execute a zeus bin
 if [ -f "/usr/src/zeus/bin/$1" ]; then
-    set -- tini -- "$@"
     if [ "$(id -u)" = '0' ]; then
         mkdir -p "$REPO_ROOT" "$WORKSPACE_ROOT"
         chown -R zeus "$REPO_ROOT" "$WORKSPACE_ROOT"
