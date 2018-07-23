@@ -1,6 +1,6 @@
 from functools import reduce
 from itertools import groupby
-from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
+from sqlalchemy.orm import contains_eager, subqueryload_all
 
 from zeus.constants import Status, Result
 from zeus.models import Build, Source
@@ -86,9 +86,8 @@ def fetch_builds_for_revisions(repo, revisions):
     builds = (
         Build.query.options(
             contains_eager("source"),
-            joinedload("source").joinedload("author"),
-            joinedload("source").joinedload("revision"),
-            joinedload("source").joinedload("patch"),
+            contains_eager("source").joinedload("author"),
+            contains_eager("source").joinedload("revision"),
             subqueryload_all("stats"),
         )
         .join(Source, Build.source_id == Source.id)

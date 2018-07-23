@@ -29,7 +29,6 @@ class UserBuildsResource(Resource):
                 contains_eager("source"),
                 contains_eager("source").joinedload("author"),
                 contains_eager("source").joinedload("revision"),
-                contains_eager("source").joinedload("patch"),
                 subqueryload_all("stats"),
             )
             .join(Source, Build.source_id == Source.id)
