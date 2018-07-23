@@ -83,9 +83,7 @@ class RepositoryBoundQuery(db.Query):
         return rv
 
 
-class RepositoryBoundMixin(object):
-    query_class = RepositoryBoundQuery
-
+class RepositoryMixin(object):
     @declared_attr
     def repository_id(cls):
         return db.Column(
@@ -98,6 +96,10 @@ class RepositoryBoundMixin(object):
     @declared_attr
     def repository(cls):
         return db.relationship("Repository", innerjoin=True, uselist=False)
+
+
+class RepositoryBoundMixin(RepositoryMixin):
+    query_class = RepositoryBoundQuery
 
 
 class ApiTokenMixin(object):
@@ -115,7 +117,4 @@ class ApiTokenMixin(object):
         return token_hex(32)
 
     def get_token_key(self):
-        raise NotImplementedError
-
-    def get_tenant(self):
         raise NotImplementedError

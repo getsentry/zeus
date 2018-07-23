@@ -22,6 +22,3 @@ class UserApiToken(StandardAttributes, db.Model, ApiTokenMixin):
 
     def get_token_key(self):
         return "u"
-
-    def get_tenant(self):
-        return self.user
