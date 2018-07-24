@@ -2,6 +2,13 @@
 
 exports[`RevisionList renders 1`] = `
 <RevisionList
+  columns={
+    Array [
+      "coverage",
+      "duration",
+      "date",
+    ]
+  }
   location={
     Object {
       "pathame": "/mock-pathname/",
@@ -256,6 +263,13 @@ exports[`RevisionList renders 1`] = `
       </Styled(Component)>
       <div>
         <RevisionListItem
+          columns={
+            Array [
+              "coverage",
+              "duration",
+              "date",
+            ]
+          }
           includeAuthor={true}
           key="26fef62489212d56d0a5037e3e6d876b887e972b"
           params={
@@ -412,6 +426,13 @@ exports[`RevisionList renders 1`] = `
                 "status": "finished",
                 "url": "https://travis-ci.org/getsentry/zeus/builds/325812408",
               }
+            }
+            columns={
+              Array [
+                "coverage",
+                "duration",
+                "date",
+              ]
             }
             date="2018-06-08T16:45:55+00:00"
             includeAuthor={true}
@@ -698,7 +719,7 @@ exports[`RevisionList renders 1`] = `
                                                         <span>
                                                           <styled.span>
                                                             <span
-                                                              className="sc-ifAKCX gQVWpv"
+                                                              className="sc-ifAKCX gdcsSa"
                                                             >
                                                               <Gravatar
                                                                 default="retro"

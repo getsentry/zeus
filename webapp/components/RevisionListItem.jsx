@@ -14,15 +14,17 @@ export default class RevisionListItem extends Component {
     repo: PropTypes.object,
     revision: PropTypes.object.isRequired,
     includeAuthor: PropTypes.bool,
-    includeRepo: PropTypes.bool
+    includeRepo: PropTypes.bool,
+    columns: PropTypes.array
   };
 
   static defaultProps = {
-    includeAuthor: true
+    includeAuthor: true,
+    columns: ['coverage', 'duration', 'date']
   };
 
   render() {
-    let {includeAuthor, includeRepo, revision} = this.props;
+    let {columns, includeAuthor, includeRepo, revision} = this.props;
     let repo = revision.repository || this.props.repo;
     if (revision.latest_build)
       return (
@@ -57,11 +59,17 @@ export default class RevisionListItem extends Component {
               </Box>
             </Flex>
           </Column>
-          <Column width={90} textAlign="center" hide="sm" />
-          <Column width={90} textAlign="center" hide="sm" />
-          <Column width={150} textAlign="right" hide="sm">
-            <TimeSince date={revision.committed_at || revision.created_at} />
-          </Column>
+          {columns.indexOf('coverage') !== -1 && (
+            <Column width={90} textAlign="center" hide="sm" />
+          )}
+          {columns.indexOf('duration') !== -1 && (
+            <Column width={90} textAlign="center" hide="sm" />
+          )}
+          {columns.indexOf('date') !== -1 && (
+            <Column width={150} textAlign="right" hide="sm">
+              <TimeSince date={revision.committed_at || revision.created_at} />
+            </Column>
+          )}
         </Row>
       </ListItemLink>
     );

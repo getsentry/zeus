@@ -156,15 +156,15 @@ def mock_build(
             else 0
         )
         for n in range(0, artifact_count):
-            factories.ArtifactFactory.create(job=job, repository=repo)
+            factories.ArtifactFactory.create(job=job, repository=repo, finished=True)
 
         db.session.commit()
 
         aggregate_build_stats_for_job(job_id=job.id)
 
         result = build_schema.dump(build)
-        publish("builds", "build.create", result.data)
-        click.echo("Created {!r}".format(build))
+        publish("builds", "build.update", result.data)
+        click.echo("Created {!r}".format(job))
 
     db.session.commit()
     return build

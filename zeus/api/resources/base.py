@@ -67,6 +67,7 @@ class Resource(View):
             return resp
 
         except ConnectionError as exc:
+            current_app.logger.exception("failed to handle api request")
             return self.respond(
                 {"error": "connection_error", "url": exc.request.url}, 502
             )

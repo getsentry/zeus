@@ -1317,6 +1317,26 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                             onClick={[Function]}
                             style={Object {}}
                           >
+                            Overview
+                          </a>
+                        </Link>
+                      </Styled(Link)>
+                      <Styled(Link)
+                        activeClassName="active"
+                        to="/gh/getsentry/zeus/revisions"
+                      >
+                        <Link
+                          activeClassName="active"
+                          className="sc-ifAKCX fbekww"
+                          onlyActiveOnIndex={false}
+                          style={Object {}}
+                          to="/gh/getsentry/zeus/revisions"
+                        >
+                          <a
+                            className="sc-ifAKCX fbekww"
+                            onClick={[Function]}
+                            style={Object {}}
+                          >
                             Commits
                           </a>
                         </Link>
