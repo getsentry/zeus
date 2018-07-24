@@ -32,6 +32,7 @@ export default class RevisionListItem extends Component {
           build={revision.latest_build}
           repo={repo}
           date={revision.committed_at || revision.created_at}
+          columns={columns}
         />
       );
 
