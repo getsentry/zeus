@@ -41,7 +41,7 @@ export default class ArtifactsList extends Component {
               <Row key={artifact.id}>
                 <Column>
                   {this.props.collapsable ? (
-                    artifact.name
+                    <a href={artifact.download_url}>{artifact.name}</a>
                   ) : (
                     <div>
                       <a href={artifact.download_url}>{artifact.name}</a>
