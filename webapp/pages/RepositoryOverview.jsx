@@ -33,6 +33,7 @@ class GenericLineChart extends Component {
     });
     return (
       <LineChart
+        redraw={true}
         data={{
           labels: labels,
           datasets: [
@@ -78,6 +79,10 @@ class GenericLineChart extends Component {
 }
 
 class CoverageChart extends AsyncPage {
+  static propTypes = {
+    repo: PropTypes.object.isRequired
+  };
+
   getEndpoints({repo}) {
     let endpoint = `/repos/${repo.full_name}/stats`;
     let params = {resolution: '1d', points: 30};
@@ -109,11 +114,24 @@ class CoverageChart extends AsyncPage {
           : 0
       });
     });
-    return <GenericLineChart formatValue={v => v + '%'} data={data} label="% Coverage" />;
+    return (
+      <GenericLineChart
+        {...this.props}
+        formatValue={v => v + '%'}
+        data={data}
+        label="% Coverage"
+      />
+    );
   }
 }
 
 class RepositoryChart extends AsyncPage {
+  static propTypes = {
+    repo: PropTypes.object.isRequired,
+    label: PropTypes.string,
+    stat: PropTypes.string.isRequired
+  };
+
   static defaultProps = {
     formatValue: value => {
       return value.toLocaleString();
@@ -131,12 +149,9 @@ class RepositoryChart extends AsyncPage {
   }
 
   renderBody() {
+    let {label, stat} = this.props;
     return (
-      <GenericLineChart
-        {...this.props}
-        data={this.state.data}
-        label={this.props.label || this.props.stat}
-      />
+      <GenericLineChart {...this.props} data={this.state.data} label={label || stat} />
     );
   }
 }
@@ -166,6 +181,7 @@ export class RepositoryOverview extends AsyncPage {
           <Section>
             <SectionHeading>Duration</SectionHeading>
             <RepositoryChart
+              {...this.props}
               repo={repo}
               formatValue={v => getDuration(v, true)}
               stat="builds.duration"
@@ -173,11 +189,12 @@ export class RepositoryOverview extends AsyncPage {
           </Section>
           <Section>
             <SectionHeading>Coverage</SectionHeading>
-            <CoverageChart repo={repo} />
+            <CoverageChart {...this.props} repo={repo} />
           </Section>
           <Section>
             <SectionHeading>Bundle Size</SectionHeading>
             <RepositoryChart
+              {...this.props}
               repo={repo}
               formatValue={getSize}
               stat="bundle.total_asset_size"
