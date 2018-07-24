@@ -110,6 +110,12 @@ spec:
             path: /healthz
             port: 8080
           periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 60
+          timeoutSeconds: 1
         volumeMounts:
           - name: nfs
             mountPath: "/mnt/repo-cache"
