@@ -49,6 +49,13 @@ class GenericLineChart extends Component {
           responsive: true,
           title: false,
           legend: {display: false},
+          tooltips: {
+            callbacks: {
+              label: item => {
+                return formatValue(item.yLabel);
+              }
+            }
+          },
           scales: {
             xAxes: [
               {
