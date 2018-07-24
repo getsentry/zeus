@@ -22,8 +22,9 @@ def web(host, port, processes, threads):
             [
                 "uwsgi",
                 "--master",
+                "--vacuum",
                 "--enable-threads",
-                "--lazy-apps",
+                # "--lazy-apps",
                 "--single-interpreter",
                 "--http={}:{}".format(host, port),
                 "--processes={}".format(processes),
@@ -32,7 +33,8 @@ def web(host, port, processes, threads):
                 "--buffer-size=32768",
                 "--post-buffering=65536",
                 "--need-app",
-                # '--disable-logging',
+                "--harakiri=120",
+                "--harakiri-verbose",
                 "--thunder-lock",
                 "--vacuum",
                 "--home={}".format(sys.prefix),
@@ -40,6 +42,9 @@ def web(host, port, processes, threads):
                 "--procname-prefix-spaced=[zeus]",
                 "--module=zeus.app:app",
                 "--die-on-term",
+                "--ignore-sigpipe",
+                "--ignore-write-errors",
+                "--disable-write-exception",
                 # XXX(dcramer): this is disabled as our version of uwsgi doesnt
                 # know what it means
                 # '--wsgi-manage-chunked-input',
