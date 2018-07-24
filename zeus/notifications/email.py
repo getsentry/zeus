@@ -107,6 +107,7 @@ def build_message(build: Build, force=False) -> Message:
         key=lambda x: [x.result != Result.failed, x.number],
     )
     job_ids = [j.id for j in job_list]
+    required_success_job_ids = [j.id for j in job_list if not j.allow_failure]
 
     recipients = [r[1] for r in emails]
 
@@ -116,14 +117,15 @@ def build_message(build: Build, force=False) -> Message:
 
     if job_ids:
         failing_tests_query = TestCase.query.options(undefer("message")).filter(
-            TestCase.job_id.in_(job_ids), TestCase.result == Result.failed
+            TestCase.job_id.in_(required_success_job_ids),
+            TestCase.result == Result.failed,
         )
 
         failing_tests_count = failing_tests_query.count()
         failing_tests = failing_tests_query.limit(10)
 
         style_violations_query = StyleViolation.query.filter(
-            StyleViolation.job_id.in_(job_ids)
+            StyleViolation.job_id.in_(required_success_job_ids)
         ).order_by(
             (StyleViolation.severity == Severity.error).desc(),
             StyleViolation.filename.asc(),

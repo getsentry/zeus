@@ -85,8 +85,8 @@ export default class BuildOverviewBase extends AsyncPage {
     return [
       ['artifacts', `${endpoint}/artifacts`],
       ['jobList', `${endpoint}/jobs`],
-      ['violationList', `${endpoint}/style-violations`],
-      ['testFailures', `${endpoint}/tests?result=failed`],
+      ['violationList', `${endpoint}/style-violations?allowed_failures=false`],
+      ['testFailures', `${endpoint}/tests?result=failed&allowed_failures=false`],
       ['bundleStats', `${endpoint}/bundle-stats`],
       ['diffCoverage', `${endpoint}/file-coverage?diff_only=true`]
     ];

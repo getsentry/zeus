@@ -17,7 +17,12 @@ class BuildTestsResource(BaseBuildResource):
         """
         Return a list of test cases for a given build.
         """
-        job_ids = db.session.query(Job.id).filter(Job.build_id == build.id).subquery()
+        job_query = db.session.query(Job.id).filter(Job.build_id == build.id)
+
+        result = request.args.get("allowed_failures")
+        if result == "false":
+            job_query = job_query.filter(Job.allow_failure == False)  # NOQA
+        job_ids = job_query.subquery()
 
         query = (
             db.session.query(

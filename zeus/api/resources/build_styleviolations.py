@@ -1,6 +1,6 @@
 from flask import request
-from sqlalchemy.orm import contains_eager
 
+from zeus.config import db
 from zeus.constants import Severity
 from zeus.models import Job, Build, StyleViolation
 
@@ -15,11 +15,14 @@ class BuildStyleViolationsResource(BaseBuildResource):
         """
         Return a list of style violations for a given build.
         """
-        query = (
-            StyleViolation.query.options(contains_eager("job"))
-            .join(Job, StyleViolation.job_id == Job.id)
-            .filter(Job.build_id == build.id)
-        )
+        job_query = db.session.query(Job.id).filter(Job.build_id == build.id)
+
+        result = request.args.get("allowed_failures")
+        if result == "false":
+            job_query = job_query.filter(Job.allow_failure == False)  # NOQA
+        job_ids = job_query.subquery()
+
+        query = StyleViolation.query.filter(StyleViolation.job_id.in_(job_ids))
 
         severity = request.args.get("severity")
         if severity:
