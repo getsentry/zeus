@@ -90,6 +90,7 @@
     "collectCoverageFrom": [
       "webapp/**/*.{js,jsx}"
     ],
+    "coverageDirectory": ".artifacts/coverage/",
     "coverageReporters": [
       "lcov",
       "cobertura"
