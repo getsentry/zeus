@@ -20,7 +20,7 @@ from zeus.vcs.providers.github import GitHubRepositoryProvider
 from .base import Resource
 from ..schemas import RepositorySchema
 
-repo_schema = RepositorySchema(strict=True)
+repo_schema = RepositorySchema(strict=True, exclude=("latest_build",))
 
 
 class GitHubRepositoriesResource(Resource):
