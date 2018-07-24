@@ -8,6 +8,7 @@ import MdPerson from 'react-icons/lib/md/person';
 const Avatar = styled.span`
   img {
     border-radius: 2px;
+    overflow: hidden;
   }
 
   img,
