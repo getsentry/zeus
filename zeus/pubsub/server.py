@@ -171,7 +171,7 @@ async def stream(request):
 
 
 async def health_check(request):
-    return Response(b'{"ok": true}')
+    return Response(text='{"ok": true}')
 
 
 async def build_server(loop, host, port):
