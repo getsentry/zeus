@@ -20,6 +20,7 @@ class AggregateTestCaseSummarySchema(Schema):
     hash = fields.Str(dump_only=True)
     runs = fields.List(fields.Nested(ExecutionSchema), required=True)
     result = ResultField(required=True)
+    message = fields.Str(required=False)
 
     @pre_dump
     def process_aggregates(self, data):
@@ -36,10 +37,6 @@ class AggregateTestCaseSummarySchema(Schema):
             ],
             "result": aggregate_result(Result(int(e[3])) for e in data.runs),
         }
-
-
-class AggregateTestCaseSummarySchema(AggregateTestCaseSummarySchema):
-    message = fields.Str(required=False)
 
 
 class TestCaseSummarySchema(Schema):

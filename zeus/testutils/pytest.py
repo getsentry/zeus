@@ -15,6 +15,8 @@ class CountStatementsWithDebug(assertsql.AssertRule):
         self.statements = []
 
     # TODO(dcramer): it'd be nice to capture the last in_app frame here
+    # TODO(dcramer): even better, it'd be nice to snapshot network requests
+    # similar to Jest, and just ensure they havent changed
     def process_statement(self, execute_observed):
         self.statements.extend(execute_observed.statements)
 

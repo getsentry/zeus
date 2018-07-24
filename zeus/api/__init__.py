@@ -84,6 +84,10 @@ app.add_resource(
     r.BuildDetailsResource,
 )
 app.add_resource(
+    "/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/failures",
+    r.BuildFailuresResource,
+)
+app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/file-coverage",
     r.BuildFileCoverageResource,
 )
