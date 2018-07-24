@@ -96,7 +96,7 @@ class CoverageChart extends AsyncPage {
 
   getEndpoints({repo}) {
     let endpoint = `/repos/${repo.full_name}/stats`;
-    let params = {resolution: '1d', points: 30};
+    let params = {resolution: '1d', points: 90};
     return [
       ['covered', endpoint, {query: {stat: 'coverage.lines_covered', ...params}}],
       ['uncovered', endpoint, {query: {stat: 'coverage.lines_uncovered', ...params}}]
@@ -152,7 +152,7 @@ class RepositoryChart extends AsyncPage {
 
   getEndpoints({repo, stat}) {
     let endpoint = `/repos/${repo.full_name}/stats`;
-    let params = {resolution: '1d', points: 30};
+    let params = {resolution: '1d', points: 90};
     return [['data', endpoint, {query: {stat: stat, ...params}}]];
   }
 
