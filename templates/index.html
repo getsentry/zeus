@@ -157,6 +157,7 @@
   <script>window.SENTRY_DSN = '{{ SENTRY_DSN_FRONTEND }}';</script>
   <script>
     window.ZEUS_PUBSUB_ENDPOINT = '{{ PUBSUB_ENDPOINT }}';
+    window.ZEUS_RELEASE = '{{ SENTRY_RELEASE }}'
     window.SENTRY_DSN && Raven.config(window.SENTRY_DSN, {
       // TODO(dcramer): make this configurable/autobind?
       whitelistUrls: [/zeus\.ci/],
