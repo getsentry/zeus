@@ -11,4 +11,4 @@ def test_installation_details(client, default_user, default_build):
     assert data["config"]["debug"] is False
     assert data["config"]["environment"]
     assert data["config"]["release"]
-    assert data["config"]["streamUrl"] == "http://localhost:8090/stream"
+    assert data["config"]["pubsubEndpoint"] == "http://localhost:8090"

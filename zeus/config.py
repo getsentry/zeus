@@ -139,8 +139,6 @@ def create_app(_read_config=True, **config):
 
     app.config["REDIS_URL"] = REDIS_URL
 
-    app.config["STREAM_URL"] = "http://localhost:8090/stream"
-
     app.config["SENTRY_DSN"] = os.environ.get("SENTRY_DSN") or None
     app.config["SENTRY_DSN_FRONTEND"] = os.environ.get("SENTRY_DSN_FRONTEND") or None
     app.config["SENTRY_INCLUDE_PATHS"] = ["zeus"]

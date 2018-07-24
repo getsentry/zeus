@@ -19,7 +19,7 @@ class InstallIndexResource(Resource):
                 "debug": current_app.debug,
                 "environment": current_app.config["SENTRY_ENVIRONMENT"],
                 "release": current_app.config["SENTRY_RELEASE"],
-                "streamUrl": current_app.config["STREAM_URL"],
+                "pubsubEndpoint": current_app.config["PUBSUB_ENDPOINT"],
             },
             "stats": {
                 "buildsTotal": Build.query.unrestricted_unsafe().count(),
