@@ -179,7 +179,7 @@ class RepositoryStatsResource(BaseRepositoryResource):
                     "time": int(float(cur_date.strftime("%s.%f")) * 1000),
                     "value": (
                         int(float(results[cur_date]))
-                        if cur_date in results
+                        if results.get(cur_date)
                         else (0 if stat in ZERO_FILLERS else None)
                     ),
                 }
