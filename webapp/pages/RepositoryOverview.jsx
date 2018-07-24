@@ -20,11 +20,13 @@ class GenericLineChart extends Component {
   static propTypes = {
     data: PropTypes.array.isRequired,
     formatValue: PropTypes.func.isRequired,
-    label: PropTypes.string.isRequired
+    label: PropTypes.string.isRequired,
+    minValue: PropTypes.number,
+    maxValue: PropTypes.number
   };
 
   render() {
-    let {data, formatValue, label} = this.props;
+    let {data, formatValue, label, minValue, maxValue} = this.props;
     let labels = [];
     let values = [];
     data.reverse().forEach(({time, value}) => {
@@ -73,6 +75,8 @@ class GenericLineChart extends Component {
                 scaleLabel: {display: false},
                 ticks: {
                   beginAtZero: true,
+                  suggestedMin: minValue,
+                  suggestedMax: maxValue,
                   userCallback: formatValue
                 }
               }
@@ -118,7 +122,7 @@ class CoverageChart extends AsyncPage {
               coveredPoint.value / (coveredPoint.value + uncoveredPoint.value) * 1000,
               10
             ) / 10
-          : 0
+          : coveredPoint.value
       });
     });
     return (
@@ -126,6 +130,7 @@ class CoverageChart extends AsyncPage {
         {...this.props}
         formatValue={v => v + '%'}
         data={data}
+        maxValue={100}
         label="% Coverage"
       />
     );
