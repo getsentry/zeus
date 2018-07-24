@@ -13,7 +13,7 @@ esac
 if [ -f "/usr/src/zeus/bin/$1" ]; then
     if [ "$(id -u)" = '0' ]; then
         mkdir -p "$REPO_ROOT" "$WORKSPACE_ROOT"
-        chown -R zeus "$REPO_ROOT" "$WORKSPACE_ROOT"
+        chown zeus "$REPO_ROOT" "$WORKSPACE_ROOT"
         exec gosu zeus "$@"
     fi
 fi
