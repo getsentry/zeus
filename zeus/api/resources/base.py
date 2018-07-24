@@ -1,6 +1,7 @@
 from marshmallow import Schema
 from flask import current_app, jsonify, request, Response
 from flask.views import View
+from requests.exceptions import ConnectionError
 from time import sleep
 from urllib.parse import quote
 
@@ -64,6 +65,11 @@ class Resource(View):
             if tenant:
                 resp.headers["X-Stream-Token"] = auth.generate_token(tenant)
             return resp
+
+        except ConnectionError as exc:
+            return self.respond(
+                {"error": "connection_error", "url": exc.request.url}, 502
+            )
 
         except ApiUnauthorized:
             return self.respond({"error": "auth_required"}, 401)

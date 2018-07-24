@@ -5,10 +5,10 @@ class ApiError extends Error {
   }
 }
 
-class ResourceNotFound extends Error {
+class ResourceNotFound extends ApiError {
   static code = 404;
 }
 
-class NetworkError extends Error {}
+class NetworkError extends ApiError {}
 
 export {ApiError, ResourceNotFound, NetworkError};

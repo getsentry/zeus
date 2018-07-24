@@ -5,7 +5,8 @@ import Modal from './Modal';
 
 export default class NetworkError extends Component {
   static propTypes = {
-    error: PropTypes.object.isRequired
+    error: PropTypes.object.isRequired,
+    url: PropTypes.string
   };
 
   getHost(url) {
@@ -15,10 +16,13 @@ export default class NetworkError extends Component {
   }
 
   render() {
-    let {error} = this.props;
+    let {error, url} = this.props;
+    if (!url) url = error.url;
     return (
       <Modal title="Connection Error" subtext="500">
-        <p>There was a problem communication with {this.getHost(error.url)}.</p>
+        <p>
+          There was a problem communicating with <strong>{this.getHost(url)}</strong>.
+        </p>
         <p>The following may provide you some recourse:</p>
         <ul>
           <li>
@@ -37,10 +41,6 @@ export default class NetworkError extends Component {
             more details.
           </li>
         </ul>
-        <div style={{fontSize: '0.8em', borderTop: '1px solid #eee', paddingTop: 20}}>
-          <p>{'The exception Zeus reported was:'}</p>
-          <pre>{error.stack}</pre>
-        </div>
       </Modal>
     );
   }
