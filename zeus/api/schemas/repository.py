@@ -58,13 +58,14 @@ class RepositorySchema(Schema):
 
     @pre_dump(pass_many=True)
     def process_latest_build(self, data, many):
-        if many:
-            latest_builds = get_latest_builds(data, Result.passed)
-            for repo in data:
-                repo.latest_build = latest_builds.get(repo.id)
-        else:
-            latest_builds = get_latest_builds([data], Result.passed)
-            data.latest_build = latest_builds.get(data.id)
+        if "latest_build" not in self.exclude:
+            if many:
+                latest_builds = get_latest_builds(data, Result.passed)
+                for repo in data:
+                    repo.latest_build = latest_builds.get(repo.id)
+            else:
+                latest_builds = get_latest_builds([data], Result.passed)
+                data.latest_build = latest_builds.get(data.id)
         return data
 
     @post_load

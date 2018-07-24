@@ -3,9 +3,42 @@ import pytest
 
 from sqlalchemy import event
 from sqlalchemy.orm import Session
+from sqlalchemy.testing import assertions, assertsql
 
 from zeus import config
 from zeus.storage.mock import FileStorageCache
+
+
+class CountStatementsWithDebug(assertsql.AssertRule):
+    def __init__(self, count):
+        self.count = count
+        self.statements = []
+
+    # TODO(dcramer): it'd be nice to capture the last in_app frame here
+    def process_statement(self, execute_observed):
+        self.statements.extend(execute_observed.statements)
+
+    def no_more_statements(self):
+        statement_count = len(self.statements)
+        if self.count != statement_count:
+            assert False, "desired statement count %d does not match %d:\n%s" % (
+                self.count,
+                statement_count,
+                "\n".join(
+                    ("  {}. {}".format(k + 1, v) for k, v in enumerate(self.statements))
+                ),
+            )
+
+
+class AssertionHelper(object):
+    def __init__(self, db):
+        self.db = db
+        self.mgr = assertions.AssertsExecutionResults()
+
+    def assert_statement_count(self, count):
+        return self.mgr.assert_execution(
+            self.db.engine, CountStatementsWithDebug(count)
+        )
 
 
 @pytest.fixture(scope="session")
@@ -44,6 +77,11 @@ def db(request, app, session_config):
         #     config.db.drop_all()
         #     os.system('dropdb %s' % db_name)
         return config.db
+
+
+@pytest.fixture(scope="session")
+def sqla_assertions(db):
+    return AssertionHelper(db)
 
 
 @event.listens_for(Session, "after_transaction_end")

@@ -1,8 +1,17 @@
 from zeus import factories
 
 
-def test_build_list(client, default_login, default_build, default_repo_access):
-    resp = client.get("/api/builds")
+def test_build_list(
+    client, sqla_assertions, default_login, default_build, default_repo_access
+):
+    # Queries:
+    # - Savepoint (???)
+    # - Tenant
+    # - Builds
+    # - Item Stats
+    # - Build Count (paginator)
+    with sqla_assertions.assert_statement_count(5):
+        resp = client.get("/api/builds")
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 1
