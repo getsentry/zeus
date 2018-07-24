@@ -698,7 +698,7 @@ exports[`RevisionList renders 1`] = `
                                                         <span>
                                                           <styled.span>
                                                             <span
-                                                              className="sc-ifAKCX gQVWpv"
+                                                              className="sc-ifAKCX gdcsSa"
                                                             >
                                                               <Gravatar
                                                                 default="retro"
