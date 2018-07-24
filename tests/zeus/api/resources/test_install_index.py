@@ -9,6 +9,6 @@ def test_installation_details(client, default_user, default_build):
         "usersTotal": 1,
     }
     assert data["config"]["debug"] is False
-    assert data["config"]["environment"] == "development"
+    assert data["config"]["environment"]
     assert data["config"]["release"]
     assert data["config"]["streamUrl"] == "http://localhost:8090/stream"
