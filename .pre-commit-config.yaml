@@ -17,6 +17,7 @@ repos:
     - id: flake8
       log_file: '.artifacts/flake8.log'
     - id: requirements-txt-fixer
+      args: ['requirements-base.txt', 'requirements-dev.txt', 'requirements-test.txt']
 -   repo: git://github.com/getsentry/pre-commit-hooks
     rev: f3237d2d65af81d435c49dee3593dc8f03d23c2d
     hooks:
