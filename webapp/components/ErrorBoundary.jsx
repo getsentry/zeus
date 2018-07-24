@@ -64,7 +64,7 @@ export default class ErrorBoundary extends Component {
               window.location.pathname
             )}`;
             return null;
-          } else if (error.code == 502) {
+          } else if (error.code === 502) {
             return <NetworkError error={error} url={error.data.url} />;
           }
           return <InternalError error={error} />;
