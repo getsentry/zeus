@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import idx from 'idx';
+import {isEqual} from 'lodash';
 // This is being pulled form the CDN currently
 // import Raven from 'raven-js';
 
@@ -10,18 +12,29 @@ import NotFoundError from './NotFoundError';
 import * as errors from '../errors';
 
 export default class ErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {error: null};
+  static contextTypes = {
+    router: PropTypes.object
+  };
+
+  constructor(...params) {
+    super(...params);
+    this.state = {error: null, location: null};
   }
 
-  unstable_handleError(...params) {
-    // This method is a fallback for react <= 16.0.0-alpha.13
-    this.componentDidError(...params);
+  componentWillReceiveProps(nextProps, nextContext) {
+    let {router} = nextContext;
+    if (!isEqual(this.state.location, router.location)) {
+      this.setState({error: null, location: null});
+    }
+    super.componentWillReceiveProps &&
+      super.componentWillReceiveProps(nextProps, nextContext);
   }
 
   componentDidCatch(error, errorInfo) {
-    this.setState({error});
+    this.setState({
+      error,
+      location: {...(idx(this.context.router, _ => _.location) || {})}
+    });
     if (window.Raven) {
       window.Raven.captureException(error, {extra: errorInfo});
       window.Raven.lastEventId() && window.Raven.showReportDialog();
