@@ -73,7 +73,7 @@ class RepositoryStatsResource(BaseRepositoryResource):
                 tzinfo=timezone.utc
             )
         else:
-            date_end = timezone.now()
+            date_end = timezone.now() + timedelta(days=1)
 
         date_end = date_end.replace(minute=0, second=0, microsecond=0)
 

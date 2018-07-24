@@ -45,7 +45,7 @@ export default class AsyncPage extends Component {
 
   // XXX: cant call this getInitialState as React whines
   getDefaultState(props, context) {
-    let endpoints = this.getEndpoints();
+    let endpoints = this.getEndpoints(props, context);
     let state = {
       // has all data finished requesting?
       loading: endpoints.length > 0,
@@ -64,7 +64,7 @@ export default class AsyncPage extends Component {
   }
 
   refreshData() {
-    let endpoints = this.getEndpoints();
+    let endpoints = this.getEndpoints(this.props, this.context);
     if (!endpoints.length) {
       this.setState({
         loading: false,
@@ -118,7 +118,7 @@ export default class AsyncPage extends Component {
    *   ['stateKeyName', '/endpoint/', {optional: 'query params'}]
    * ]
    */
-  getEndpoints() {
+  getEndpoints(props, context) {
     return [];
   }
 

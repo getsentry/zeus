@@ -17,15 +17,17 @@ export default class BuildListItem extends Component {
     repo: PropTypes.object,
     date: PropTypes.object,
     includeAuthor: PropTypes.bool,
-    includeRepo: PropTypes.bool
+    includeRepo: PropTypes.bool,
+    columns: PropTypes.array
   };
 
   static defaultProps = {
-    includeAuthor: true
+    includeAuthor: true,
+    columns: ['coverage', 'duration', 'date']
   };
 
   render() {
-    let {build, includeAuthor, includeRepo} = this.props;
+    let {build, columns, includeAuthor, includeRepo} = this.props;
     let repo = this.props.repo || build.repository;
     let link = build.number
       ? `/${repo.full_name}/builds/${build.number}`
@@ -58,15 +60,21 @@ export default class BuildListItem extends Component {
               </Box>
             </Flex>
           </Column>
-          <Column width={90} textAlign="center" hide="sm">
-            <ObjectCoverage data={build} />
-          </Column>
-          <Column width={90} textAlign="center" hide="sm">
-            <ObjectDuration data={build} short={true} />
-          </Column>
-          <Column width={150} textAlign="right" hide="sm">
-            <TimeSince date={this.props.date || build.created_at} />
-          </Column>
+          {columns.indexOf('coverage') !== -1 && (
+            <Column width={90} textAlign="center" hide="sm">
+              <ObjectCoverage data={build} />
+            </Column>
+          )}
+          {columns.indexOf('duration') !== -1 && (
+            <Column width={90} textAlign="center" hide="sm">
+              <ObjectDuration data={build} short={true} />
+            </Column>
+          )}
+          {columns.indexOf('date') !== -1 && (
+            <Column width={150} textAlign="right" hide="sm">
+              <TimeSince date={this.props.date || build.created_at} />
+            </Column>
+          )}
         </Row>
       </ListItemLink>
     );

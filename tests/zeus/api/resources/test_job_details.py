@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from zeus import factories
-from zeus.config import db
 from zeus.constants import Result, Status
 from zeus.utils import timezone
 
@@ -81,8 +80,9 @@ def test_update_job_to_finished_with_pending_artifacts(
     default_build,
     default_job,
     default_repo_access,
-    default_artifact,
 ):
+    factories.ArtifactFactory(job=default_job, queued=True)
+
     assert default_job.result != Result.failed
 
     mock_delay = mocker.patch("zeus.tasks.aggregate_build_stats_for_job.delay")
@@ -93,9 +93,6 @@ def test_update_job_to_finished_with_pending_artifacts(
         ),
         json={"result": "failed", "status": "finished"},
     )
-    default_artifact.status = Status.in_progress
-    db.session.add(default_artifact)
-    db.session.flush()
 
     assert resp.status_code == 200
     data = resp.json()

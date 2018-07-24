@@ -19,6 +19,7 @@ import RepositoryFileCoverage from './pages/RepositoryFileCoverage';
 import RepositoryHooks from './pages/RepositoryHooks';
 import RepositoryHookCreate from './pages/RepositoryHookCreate';
 import RepositoryHookDetails from './pages/RepositoryHookDetails';
+import RepositoryOverview from './pages/RepositoryOverview';
 import RepositoryRevisionList from './pages/RepositoryRevisionList';
 import RepositorySettingsLayout from './pages/RepositorySettingsLayout';
 import RepositorySettings from './pages/RepositorySettings';
@@ -79,7 +80,7 @@ export default (
     <Route
       path="/:provider/:ownerName/:repoName"
       component={requireAuth(RepositoryDetails)}>
-      <IndexRoute component={requireAuth(RepositoryRevisionList)} />
+      <IndexRoute component={RepositoryOverview} />
       <Route path="builds" component={RepositoryBuildList} />
       <Route path="coverage" component={RepositoryFileCoverage} />
       <Route path="stats" component={RepositoryStats} />
@@ -101,6 +102,7 @@ export default (
         <Route path="tests" component={BuildTestList} />
         <Route path="artifacts" component={BuildArtifacts} />
       </Route>
+      <Route path="revisions" component={RepositoryRevisionList} />
       <Route path="revisions/:sha" component={RevisionDetails}>
         <IndexRoute component={RevisionOverview} />
         <Route path="coverage" component={RevisionCoverage} />

@@ -127,6 +127,7 @@ function getEntry() {
     'marked',
     'moment',
     'react',
+    'react-chartjs-2',
     'react-gravatar',
     'react-dom',
     'react-document-title',

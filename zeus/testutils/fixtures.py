@@ -147,7 +147,7 @@ def default_job(default_build):
 
 @pytest.fixture(scope="function")
 def default_artifact(default_job):
-    return factories.ArtifactFactory(job=default_job, name="junit.xml")
+    return factories.ArtifactFactory(job=default_job, name="junit.xml", finished=True)
 
 
 @pytest.fixture(scope="function")
