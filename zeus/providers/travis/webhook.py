@@ -137,9 +137,11 @@ class TravisWebhookView(BaseHook):
                     provider=hook.provider,
                     external_id=str(job_payload["id"]),
                     data={
-                        "status": "finished"
-                        if job_payload["status"] is not None
-                        else "in_progress",
+                        "status": (
+                            "finished"
+                            if job_payload["status"] is not None
+                            else "in_progress"
+                        ),
                         "result": get_result(job_payload["state"]),
                         "allow_failure": bool(job_payload["allow_failure"]),
                         "label": get_job_label(job_payload),
@@ -149,12 +151,16 @@ class TravisWebhookView(BaseHook):
                             name=payload["repository"]["name"],
                             job_id=job_payload["id"],
                         ),
-                        "started_at": dateutil.parser.parse(job_payload["started_at"])
-                        if job_payload["started_at"]
-                        else None,
-                        "finished_at": dateutil.parser.parse(job_payload["finished_at"])
-                        if job_payload["finished_at"]
-                        else None,
+                        "started_at": (
+                            dateutil.parser.parse(job_payload["started_at"])
+                            if job_payload["started_at"]
+                            else None
+                        ),
+                        "finished_at": (
+                            dateutil.parser.parse(job_payload["finished_at"])
+                            if job_payload["finished_at"]
+                            else None
+                        ),
                     },
                 )
         except ApiError:
