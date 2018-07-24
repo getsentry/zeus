@@ -9,21 +9,27 @@ from zeus.utils import timezone
 from .base_repository import BaseRepositoryResource
 
 
-STAT_CHOICES = (
-    "builds.aborted",
-    "builds.failed",
-    "builds.passed",
-    "builds.total",
-    "builds.duration",
-    "tests.count",
-    "tests.count_unique",
-    "tests.duration",
-    "coverage.lines_covered",
-    "coverage.lines_uncovered",
-    "coverage.diff_lines_covered",
-    "coverage.diff_lines_uncovered",
-    "style_violations.count",
-    "bundle.total_asset_size",
+STAT_CHOICES = frozenset(
+    (
+        "builds.aborted",
+        "builds.failed",
+        "builds.passed",
+        "builds.total",
+        "builds.duration",
+        "tests.count",
+        "tests.count_unique",
+        "tests.duration",
+        "coverage.lines_covered",
+        "coverage.lines_uncovered",
+        "coverage.diff_lines_covered",
+        "coverage.diff_lines_uncovered",
+        "style_violations.count",
+        "bundle.total_asset_size",
+    )
+)
+
+ZERO_FILLERS = frozenset(
+    ("builds.total", "tests.count", "tests.count_unique", "style_violations.count")
 )
 
 RESOLUTION_CHOICES = ("1h", "1d", "1w", "1m")
@@ -171,7 +177,11 @@ class RepositoryStatsResource(BaseRepositoryResource):
             data.append(
                 {
                     "time": int(float(cur_date.strftime("%s.%f")) * 1000),
-                    "value": int(float(results.get(cur_date) or 0)),
+                    "value": (
+                        int(float(results[cur_date]))
+                        if cur_date in results
+                        else (0 if stat in ZERO_FILLERS else None)
+                    ),
                 }
             )
         # data.reverse()
