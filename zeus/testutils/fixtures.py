@@ -242,6 +242,12 @@ def sample_webpack_stats(fixture_path):
         return fp.read()
 
 
+@pytest.fixture(scope="session")
+def sample_webpack_children_stats(fixture_path):
+    with open(os.path.join(fixture_path, "webpack-stats-children.json")) as fp:
+        return fp.read()
+
+
 @pytest.fixture(scope="function")
 def git_repo_config():
     root = "/tmp/zeus-git-test"
