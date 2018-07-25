@@ -46,3 +46,9 @@ class IdentityNeedsUpgrade(ApiUnauthorized):
     def get_upgrade_url(self):
         if self.identity.provider == "github":
             return "/auth/github"
+
+
+class MissingRevision(Exception):
+    def __init__(self, msg=None, sha=None, *args):
+        Exception.__init__(self, msg)
+        self.sha = sha

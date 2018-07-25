@@ -15,8 +15,10 @@ def try_create(model, where: dict, defaults: dict = None):
     try:
         with db.session.begin_nested():
             db.session.add(instance)
-    except IntegrityError:
-        return
+    except IntegrityError as exc:
+        if "duplicate key value violates unique constraint" in str(exc):
+            return
+        raise
 
     return instance
 
