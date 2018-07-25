@@ -6,7 +6,6 @@ from random import randint
 
 from zeus import models
 from zeus.constants import Result, Status
-from zeus.utils import timezone
 
 from .base import ModelFactory
 from .types import GUIDFactory
@@ -27,9 +26,7 @@ class BuildFactory(ModelFactory):
     repository_id = factory.SelfAttribute("repository.id")
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
-    date_created = factory.LazyAttribute(
-        lambda o: timezone.now() - timedelta(minutes=30)
-    )
+    date_created = factory.SelfAttribute("source.date_created")
     date_started = factory.LazyAttribute(
         lambda o: (
             faker.date_time_between(

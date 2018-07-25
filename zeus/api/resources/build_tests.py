@@ -9,8 +9,6 @@ from zeus.models import Job, Build, TestCase
 from .base_build import BaseBuildResource
 from ..schemas import AggregateTestCaseSummarySchema
 
-testcases_schema = AggregateTestCaseSummarySchema(many=True, strict=True)
-
 
 class BuildTestsResource(BaseBuildResource):
     def get(self, build: Build):
@@ -50,4 +48,7 @@ class BuildTestsResource(BaseBuildResource):
             TestCase.name.asc(),
         )
 
-        return self.paginate_with_schema(testcases_schema, query)
+        schema = AggregateTestCaseSummarySchema(
+            many=True, strict=True, context={"build": build}
+        )
+        return self.paginate_with_schema(schema, query)
