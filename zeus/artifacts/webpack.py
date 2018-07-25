@@ -21,7 +21,7 @@ class WebpackStatsHandler(ArtifactHandler):
         # and I can't be asked to read the source
         children = deque([data])
         while children:
-            child = children.pop(0)
+            child = children.pop()
             asset_index = {}
             for asset in child.get("assets", ()):
                 asset_index[asset["name"]] = asset
