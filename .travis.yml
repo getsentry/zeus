@@ -29,11 +29,11 @@ script:
 after_script:
   - npm install -g @zeus-ci/cli
   - $(npm bin -g)/zeus upload -t "application/x-junit+xml" .artifacts/*.junit.xml
-    -t "application/x-cobertura+xml" .artifacts/coverage.xml
-    -t "application/x-cobertura+xml" .artifacts/coverage/cobertura-coverage.xml
-    -t "application/x-checkstyle+xml" .artifacts/*.checkstyle.xml
-    -t "text/x-pycodestyle" .artifacts/flake8.log
-    -t "application/webpack-stats+json" .artifacts/webpack-stats.json
+  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" .artifacts/coverage.xml
+  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" .artifacts/coverage/cobertura-coverage.xml
+  - $(npm bin -g)/zeus upload -t "application/x-checkstyle+xml" .artifacts/*.checkstyle.xml
+  - $(npm bin -g)/zeus upload -t "text/x-pycodestyle" .artifacts/flake8.log
+  - $(npm bin -g)/zeus upload -t "application/webpack-stats+json" .artifacts/webpack-stats.json
 notifications:
   webhooks:
     urls:
