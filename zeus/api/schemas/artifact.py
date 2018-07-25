@@ -23,9 +23,9 @@ class ArtifactSchema(Schema):
 
     def get_download_url(self, obj):
         return "/api/repos/%s/%s/%s/builds/%s/jobs/%s/artifacts/%s/download" % (
-            obj.job.build.source.repository.provider,
-            obj.job.build.source.repository.owner_name,
-            obj.job.build.source.repository.name,
+            obj.job.build.repository.provider,
+            obj.job.build.repository.owner_name,
+            obj.job.build.repository.name,
             obj.job.build.number,
             obj.job.number,
             obj.id,
