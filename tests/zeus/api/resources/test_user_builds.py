@@ -1,3 +1,6 @@
+
+from datetime import timedelta
+
 from zeus import factories
 
 
@@ -14,8 +17,12 @@ def test_user_build_list(
     factories.BuildFactory(repository=default_repo)
 
     # "my" builds
-    build1 = factories.BuildFactory(repository=default_repo, source=default_source)
     build2 = factories.BuildFactory(repository=default_repo, source=default_source)
+    build1 = factories.BuildFactory(
+        repository=default_repo,
+        source=default_source,
+        date_created=build2.date_created - timedelta(minutes=1),
+    )
 
     # Queries:
     # - Tenant

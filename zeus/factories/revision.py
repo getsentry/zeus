@@ -1,11 +1,13 @@
 import factory
 import factory.faker
 
+from datetime import timedelta
 from faker import Factory
 
 faker = Factory.create()
 
 from zeus import models
+from zeus.utils import timezone
 
 from .base import ModelFactory
 
@@ -20,6 +22,9 @@ class RevisionFactory(ModelFactory):
     author_id = factory.SelfAttribute("author.id")
     message = factory.LazyAttribute(
         lambda o: "{}\n\n{}".format(faker.sentence(), faker.sentence())
+    )
+    date_created = factory.LazyAttribute(
+        lambda o: timezone.now() - timedelta(minutes=30)
     )
 
     class Meta:
