@@ -68,10 +68,7 @@ class GenericLineChart extends Component {
                 gridLines: {
                   display: false
                 },
-                // type: 'time',
-                // time: {
-                //   tooltipFormat: 'll'
-                // },
+                type: 'category',
                 ticks: {
                   display: false
                 }
