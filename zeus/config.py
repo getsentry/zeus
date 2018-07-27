@@ -137,6 +137,8 @@ def create_app(_read_config=True, **config):
     app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_URI
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+    app.config["MOCK_REVISIONS"] = bool(os.environ.get("MOCK_REVISIONS"))
+
     app.config["REDIS_URL"] = REDIS_URL
 
     app.config["SENTRY_DSN"] = os.environ.get("SENTRY_DSN") or None
