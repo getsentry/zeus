@@ -1,9 +1,12 @@
 from datetime import datetime, timedelta
-from flask import request
+from flask import current_app, request
 from sqlalchemy.sql import extract, func
+from typing import List
+from uuid import UUID
 
 from zeus.config import db
-from zeus.models import Build, ItemStat, Repository, Result, Status
+from zeus.exceptions import UnknownRepositoryBackend
+from zeus.models import Build, ItemStat, Repository, Result, Source, Status
 from zeus.utils import timezone
 
 from .base_repository import BaseRepositoryResource
@@ -39,26 +42,26 @@ AGG_CHOICES = ("sum", "avg")
 POINTS_DEFAULT = {"1h": 24, "1d": 30, "1w": 26, "1m": 12}
 
 
-def decr_month(dt):
+def decr_month(dt: datetime) -> datetime:
     if dt.month == 1:
         return dt.replace(month=12, year=dt.year - 1)
 
     return dt.replace(month=dt.month - 1)
 
 
-def decr_week(dt):
+def decr_week(dt: datetime) -> datetime:
     return dt - timedelta(days=7)
 
 
-def decr_hour(dt):
+def decr_hour(dt: datetime) -> datetime:
     return dt - timedelta(hours=1)
 
 
-def decr_day(dt):
+def decr_day(dt: datetime) -> datetime:
     return dt - timedelta(days=1)
 
 
-def build_queryset(repo_id, stat: str, grouper, filters=(), limit: int = 100):
+def build_queryset(repo_id: UUID, stat: str, grouper):
     # TODO(dcramer): put minimum date bounds
     if stat in (
         "builds.aborted",
@@ -90,7 +93,7 @@ def build_queryset(repo_id, stat: str, grouper, filters=(), limit: int = 100):
 
         queryset = (
             db.session.query(grouper.label("grouper"), value.label("value"))
-            .filter(Build.repository_id == repo_id, *filters, *extra_filters)
+            .filter(Build.repository_id == repo_id, *extra_filters)
             .group_by("grouper")
         )
     else:
@@ -103,12 +106,32 @@ def build_queryset(repo_id, stat: str, grouper, filters=(), limit: int = 100):
                 ItemStat.name == stat,
                 Build.repository_id == repo_id,
                 Build.result == Result.passed,
-                *filters,
             )
             .group_by("grouper")
         )
 
-    return queryset.limit(limit)
+    return queryset
+
+
+def get_revisions(repo: Repository, branch: str = None, limit: int = 200) -> List[str]:
+    if current_app.config.get("MOCK_REVISIONS"):
+        return (
+            db.session.query(Source.revision_sha)
+            .filter(Source.repository_id == repo.id)
+            .order_by(Source.date_created.desc())
+            .limit(limit)
+            .all()
+        )
+
+    try:
+        vcs = repo.get_vcs()
+    except UnknownRepositoryBackend:
+        return []
+
+    if branch is None:
+        branch = vcs.get_default_branch()
+
+    return [r.sha for r in vcs.log(limit=limit, branch=branch)]
 
 
 class RepositoryStatsResource(BaseRepositoryResource):
@@ -123,10 +146,11 @@ class RepositoryStatsResource(BaseRepositoryResource):
         if stat not in STAT_CHOICES:
             return self.error({"stat": "invalid stat"})
 
-        aggregate = request.args.get("aggregate", "date")
-        if aggregate not in ("date", "build"):
+        aggregate = request.args.get("aggregate", "time")
+        if aggregate not in ("time", "build"):
             return self.error({"aggregate": "invalid aggregate"})
 
+        branch = request.args.get("branch")
         since = request.args.get("since")
 
         if since:
@@ -138,7 +162,7 @@ class RepositoryStatsResource(BaseRepositoryResource):
 
         date_end = date_end.replace(minute=0, second=0, microsecond=0)
 
-        if aggregate == "date":
+        if aggregate == "time":
             resolution = request.args.get("resolution", "1d")
             points = int(request.args.get("points") or POINTS_DEFAULT[resolution])
             if resolution == "1h":
@@ -161,18 +185,26 @@ class RepositoryStatsResource(BaseRepositoryResource):
             grouper = Build.number
             points = int(request.args.get("points") or 100)
 
-        if aggregate == "date":
+        queryset = build_queryset(repo.id, stat, grouper)
+
+        if aggregate == "time":
             date_begin = date_end
             for _ in range(points):
                 date_begin = decr_res(date_begin)
-
-            filters = [Build.date_created >= date_begin, Build.date_created < date_end]
+            queryset = queryset.filter(
+                Build.date_created >= date_begin, Build.date_created < date_end
+            )
         elif aggregate == "build":
-            filters = []
+            revision_shas = get_revisions(repo, branch, limit=points * 2)
+            queryset = (
+                queryset.join(Source, Source.id == Build.source_id)
+                .filter(Source.revision_sha.in_(revision_shas))
+                .order_by(Build.number.desc())
+            )
 
-        queryset = build_queryset(repo.id, stat, grouper, filters, limit=points)
+        queryset = queryset.limit(points)
 
-        if aggregate == "date":
+        if aggregate == "time":
             results = {
                 # HACK(dcramer): force (but dont convert) the timezone to be utc
                 # while this isnt correct, we're not looking for correctness yet
