@@ -24,19 +24,24 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
     def fetch_revisions(
         self, repo: Repository, page: int, parent: str = None
     ) -> Tuple[list, bool]:
+        per_page = min(int(request.args.get("per_page", 50)), 50)
+
         if current_app.config.get("MOCK_REVISIONS"):
-            return (
+            results = (
                 Revision.query.filter(Revision.repository_id == repo.id)
                 .order_by(Revision.date_created.desc())
+                .offset((page - 1) * per_page)
+                .limit(per_page + 1)
                 .all()
             )
+            has_more = len(results) > per_page
+            return results[:per_page], has_more
 
         try:
             vcs = repo.get_vcs()
         except UnknownRepositoryBackend:
             return [], False
 
-        per_page = min(int(request.args.get("per_page", 50)), 50)
         branch = request.args.get("branch")
         if not parent and branch is None:
             branch = vcs.get_default_branch()
