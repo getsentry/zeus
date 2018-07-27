@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import {Flex, Box} from 'grid-styled';
 import {Line as LineChart} from 'react-chartjs-2';
@@ -29,8 +28,8 @@ class GenericLineChart extends Component {
     let {data, formatValue, label, minValue, maxValue} = this.props;
     let labels = [];
     let values = [];
-    data.reverse().forEach(({time, value}) => {
-      labels.push(moment(time).toDate());
+    data.reverse().forEach(({build, value}) => {
+      labels.push(`#${build}`);
       values.push(value);
     });
     return (
@@ -61,10 +60,10 @@ class GenericLineChart extends Component {
           scales: {
             xAxes: [
               {
-                type: 'time',
-                time: {
-                  tooltipFormat: 'll'
-                },
+                // type: 'time',
+                // time: {
+                //   tooltipFormat: 'll'
+                // },
                 ticks: {
                   display: false
                 }
@@ -96,7 +95,7 @@ class CoverageChart extends AsyncPage {
 
   getEndpoints({repo}) {
     let endpoint = `/repos/${repo.full_name}/stats`;
-    let params = {resolution: '1d', points: 90};
+    let params = {resolution: '1d', points: 90, aggregate: 'build'};
     return [
       ['covered', endpoint, {query: {stat: 'coverage.lines_covered', ...params}}],
       ['uncovered', endpoint, {query: {stat: 'coverage.lines_uncovered', ...params}}]
@@ -112,11 +111,11 @@ class CoverageChart extends AsyncPage {
     let data = [];
     covered.forEach((coveredPoint, idx) => {
       let uncoveredPoint = uncovered[idx];
-      if (coveredPoint.time !== uncoveredPoint.time) {
+      if (coveredPoint.build !== uncoveredPoint.build) {
         throw new Error('invalid data');
       }
       data.push({
-        time: coveredPoint.time,
+        build: coveredPoint.build,
         value: coveredPoint.value
           ? parseInt(
               coveredPoint.value / (coveredPoint.value + uncoveredPoint.value) * 1000,
@@ -152,7 +151,7 @@ class RepositoryChart extends AsyncPage {
 
   getEndpoints({repo, stat}) {
     let endpoint = `/repos/${repo.full_name}/stats`;
-    let params = {resolution: '1d', points: 90};
+    let params = {resolution: '1d', points: 90, aggregate: 'build'};
     return [['data', endpoint, {query: {stat: stat, ...params}}]];
   }
 
