@@ -32,7 +32,7 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
 
         vcs = repo.get_vcs()
         if not vcs:
-            return []
+            return [], False
 
         per_page = min(int(request.args.get("per_page", 50)), 50)
         branch = request.args.get("branch")
