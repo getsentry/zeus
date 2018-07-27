@@ -58,6 +58,59 @@ def decr_day(dt):
     return dt - timedelta(days=1)
 
 
+def build_queryset(repo_id, stat: str, grouper, filters=(), limit: int = 100):
+    # TODO(dcramer): put minimum date bounds
+    if stat in (
+        "builds.aborted",
+        "builds.failed",
+        "builds.passed",
+        "builds.total",
+        "builds.duration",
+    ):
+        if stat == "builds.failed":
+            extra_filters = [Build.result == Result.failed]
+        elif stat == "builds.passed":
+            extra_filters = [Build.result == Result.passed]
+        elif stat == "builds.aborted":
+            extra_filters = [Build.result == Result.aborted]
+        else:
+            extra_filters = [Build.status == Status.finished]
+
+        if stat == "builds.duration":
+            value = func.avg(
+                (
+                    extract("epoch", Build.date_finished)
+                    - extract("epoch", Build.date_started)
+                )
+                * 1000
+            )
+            extra_filters.append(Build.result == Result.passed)
+        else:
+            value = func.count(Build.id)
+
+        queryset = (
+            db.session.query(grouper.label("grouper"), value.label("value"))
+            .filter(Build.repository_id == repo_id, *filters, *extra_filters)
+            .group_by("grouper")
+        )
+    else:
+        queryset = (
+            db.session.query(
+                grouper.label("grouper"), func.avg(ItemStat.value).label("value")
+            )
+            .filter(
+                ItemStat.item_id == Build.id,
+                ItemStat.name == stat,
+                Build.repository_id == repo_id,
+                Build.result == Result.passed,
+                *filters,
+            )
+            .group_by("grouper")
+        )
+
+    return queryset.limit(limit)
+
+
 class RepositoryStatsResource(BaseRepositoryResource):
     def get(self, repo: Repository):
         """
@@ -65,13 +118,15 @@ class RepositoryStatsResource(BaseRepositoryResource):
         """
         stat = request.args.get("stat")
         if not stat:
-            return self.error("missing stat")
+            return self.error({"stat": "invalid stat"})
 
         if stat not in STAT_CHOICES:
-            return self.error("invalid stat")
+            return self.error({"stat": "invalid stat"})
 
-        resolution = request.args.get("resolution", "1d")
-        points = int(request.args.get("points") or POINTS_DEFAULT[resolution])
+        aggregate = request.args.get("aggregate", "date")
+        if aggregate not in ("date", "build"):
+            return self.error({"aggregate": "invalid aggregate"})
+
         since = request.args.get("since")
 
         if since:
@@ -83,107 +138,73 @@ class RepositoryStatsResource(BaseRepositoryResource):
 
         date_end = date_end.replace(minute=0, second=0, microsecond=0)
 
-        if resolution == "1h":
-            grouper = func.date_trunc("hour", Build.date_created)
-            decr_res = decr_hour
-        elif resolution == "1d":
-            grouper = func.date_trunc("day", Build.date_created)
-            date_end = date_end.replace(hour=0)
-            decr_res = decr_day
-        elif resolution == "1w":
-            grouper = func.date_trunc("week", Build.date_created)
-            date_end = date_end.replace(hour=0)
-            date_end -= timedelta(days=date_end.weekday())
-            decr_res = decr_week
-        elif resolution == "1m":
-            grouper = func.date_trunc("month", Build.date_created)
-            date_end = date_end.replace(hour=0, day=1)
-            decr_res = decr_month
+        if aggregate == "date":
+            resolution = request.args.get("resolution", "1d")
+            points = int(request.args.get("points") or POINTS_DEFAULT[resolution])
+            if resolution == "1h":
+                grouper = func.date_trunc("hour", Build.date_created)
+                decr_res = decr_hour
+            elif resolution == "1d":
+                grouper = func.date_trunc("day", Build.date_created)
+                date_end = date_end.replace(hour=0)
+                decr_res = decr_day
+            elif resolution == "1w":
+                grouper = func.date_trunc("week", Build.date_created)
+                date_end = date_end.replace(hour=0)
+                date_end -= timedelta(days=date_end.weekday())
+                decr_res = decr_week
+            elif resolution == "1m":
+                grouper = func.date_trunc("month", Build.date_created)
+                date_end = date_end.replace(hour=0, day=1)
+                decr_res = decr_month
+        elif aggregate == "build":
+            grouper = Build.number
+            points = int(request.args.get("points") or 100)
 
-        date_begin = date_end
-        for _ in range(points):
-            date_begin = decr_res(date_begin)
+        if aggregate == "date":
+            date_begin = date_end
+            for _ in range(points):
+                date_begin = decr_res(date_begin)
 
-        # TODO(dcramer): put minimum date bounds
-        if stat in (
-            "builds.aborted",
-            "builds.failed",
-            "builds.passed",
-            "builds.total",
-            "builds.duration",
-        ):
-            if stat == "builds.failed":
-                filters = [Build.result == Result.failed]
-            elif stat == "builds.passed":
-                filters = [Build.result == Result.passed]
-            elif stat == "builds.aborted":
-                filters = [Build.result == Result.aborted]
-            else:
-                filters = [Build.status == Status.finished]
+            filters = [Build.date_created >= date_begin, Build.date_created < date_end]
+        elif aggregate == "build":
+            filters = []
 
-            if stat == "builds.duration":
-                value = func.avg(
-                    (
-                        extract("epoch", Build.date_finished)
-                        - extract("epoch", Build.date_started)
-                    )
-                    * 1000
-                )
-                filters = [
-                    Build.status == Status.finished,
-                    Build.result == Result.passed,
-                ]
-            else:
-                value = func.count(Build.id)
+        queryset = build_queryset(repo.id, stat, grouper, filters, limit=points)
 
+        if aggregate == "date":
             results = {
                 # HACK(dcramer): force (but dont convert) the timezone to be utc
                 # while this isnt correct, we're not looking for correctness yet
                 k.replace(tzinfo=timezone.utc): v
-                for k, v in db.session.query(
-                    grouper.label("grouper"), value.label("value")
-                )
-                .filter(
-                    Build.repository_id == repo.id,
-                    Build.date_created >= date_begin,
-                    Build.date_created < date_end,
-                    *filters
-                )
-                .group_by("grouper")
-            }
-        else:
-            results = {
-                # HACK(dcramer): force (but dont convert) the timezone to be utc
-                # while this isnt correct, we're not looking for correctness yet
-                k.replace(tzinfo=timezone.utc): v
-                for k, v in db.session.query(
-                    grouper.label("grouper"), func.avg(ItemStat.value).label("value")
-                )
-                .filter(
-                    ItemStat.item_id == Build.id,
-                    ItemStat.name == stat,
-                    Build.repository_id == repo.id,
-                    Build.result == Result.passed,
-                    Build.date_created >= date_begin,
-                    Build.date_created < date_end,
-                )
-                .group_by("grouper")
+                for k, v in queryset
             }
 
-        data = []
-        cur_date = date_end
-        for _ in range(points):
-            cur_date = decr_res(cur_date)
-            data.append(
+            data = []
+            cur_date = date_end
+            for _ in range(points):
+                cur_date = decr_res(cur_date)
+                data.append(
+                    {
+                        "time": int(float(cur_date.strftime("%s.%f")) * 1000),
+                        "value": (
+                            int(float(results[cur_date]))
+                            if results.get(cur_date)
+                            else (0 if stat in ZERO_FILLERS else None)
+                        ),
+                    }
+                )
+        elif aggregate == "build":
+            data = [
                 {
-                    "time": int(float(cur_date.strftime("%s.%f")) * 1000),
+                    "build": k,
                     "value": (
-                        int(float(results[cur_date]))
-                        if results.get(cur_date)
+                        int(float(v))
+                        if v is not None
                         else (0 if stat in ZERO_FILLERS else None)
                     ),
                 }
-            )
-        # data.reverse()
+                for k, v in sorted(queryset, key=lambda x: -x[0])
+            ]
 
         return self.respond(data)
