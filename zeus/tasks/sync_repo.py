@@ -4,6 +4,7 @@ from flask import current_app
 from zeus import auth
 from zeus.config import celery, db
 from zeus.constants import Permission
+from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import ItemOption, Repository, RepositoryStatus
 from zeus.utils import timezone
 from zeus.vcs.base import InvalidPublicKey
@@ -21,8 +22,9 @@ def sync_repo(repo_id, max_log_passes=10):
         current_app.logger.error("Repository %s not found", repo_id)
         return
 
-    vcs = repo.get_vcs()
-    if vcs is None:
+    try:
+        vcs = repo.get_vcs()
+    except UnknownRepositoryBackend:
         current_app.logger.warning("Repository %s has no VCS backend set", repo.id)
         return
 
