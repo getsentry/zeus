@@ -116,13 +116,12 @@ class CoverageChart extends AsyncPage {
 
   renderBody() {
     let {covered, uncovered} = this.state;
-    let data = [];
-    covered.forEach((coveredPoint, idx) => {
+    let data = covered.map((coveredPoint, idx) => {
       let uncoveredPoint = uncovered[idx];
       if (coveredPoint.build !== uncoveredPoint.build) {
         throw new Error('invalid data');
       }
-      data.push({
+      return {
         build: coveredPoint.build,
         value: coveredPoint.value
           ? parseInt(
@@ -130,7 +129,7 @@ class CoverageChart extends AsyncPage {
               10
             ) / 10
           : coveredPoint.value
-      });
+      };
     });
     return (
       <GenericLineChart
