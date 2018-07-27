@@ -1,8 +1,9 @@
 from io import BytesIO
+from typing import Mapping
 
 from .base import FileStorage
 
-_cache = {}
+_cache: Mapping[str, bytes] = {}
 
 
 class FileStorageCache(FileStorage):

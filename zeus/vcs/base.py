@@ -164,7 +164,7 @@ class Vcs(object):
         )
     )
 
-    def __init__(self, id: str, path: str, url: str, username: str = None):
+    def __init__(self, id: str, path: str, url: str, username: Optional[str] = None):
         self.id = id
         self.path = path
         self.url = url
@@ -176,7 +176,7 @@ class Vcs(object):
     def get_default_env(self) -> dict:
         return {}
 
-    def run(self, *args, **kwargs) -> str:
+    def run(self, cmd, **kwargs) -> str:
         if self.exists():
             kwargs.setdefault("cwd", self.path)
 
@@ -194,10 +194,10 @@ class Vcs(object):
         kwargs["stdout"] = PIPE
         kwargs["stderr"] = PIPE
 
-        proc = Popen(*args, **kwargs)
+        proc = Popen(cmd, **kwargs)
         (stdout, stderr) = proc.communicate()
         if proc.returncode != 0:
-            raise CommandError(args[0], proc.returncode, stdout, stderr)
+            raise CommandError(cmd[0], proc.returncode, stdout, stderr)
 
         return stdout.decode("utf-8")
 

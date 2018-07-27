@@ -2,6 +2,7 @@ import json
 
 from collections import OrderedDict
 from json.decoder import JSONDecodeError
+from typing import Optional
 
 
 class AuthenticationFailed(Exception):
@@ -9,7 +10,7 @@ class AuthenticationFailed(Exception):
 
 
 class ApiError(Exception):
-    code = None
+    code: Optional[int] = None
     json = None
 
     def __init__(self, text=None, code=None):
@@ -43,7 +44,7 @@ class IdentityNeedsUpgrade(ApiUnauthorized):
         self.scope = scope
         self.identity = identity
 
-    def get_upgrade_url(self):
+    def get_upgrade_url(self) -> Optional[str]:
         if self.identity.provider == "github":
             return "/auth/github"
 

@@ -1,7 +1,7 @@
 import json
 
 from hashlib import md5
-from typing import List
+from typing import List, Tuple
 
 from zeus.config import redis
 from zeus.constants import Permission
@@ -15,7 +15,7 @@ from .base import RepositoryProvider
 ONE_DAY = 60 * 60 * 24
 
 
-def get_github_client(user: User, scopes=()) -> GitHubClient:
+def get_github_client(user: User, scopes=()) -> Tuple[GitHubClient, Identity]:
     identity = Identity.query.filter(
         Identity.provider == "github", Identity.user_id == user.id
     ).first()
