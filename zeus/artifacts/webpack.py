@@ -27,25 +27,35 @@ class WebpackStatsHandler(ArtifactHandler):
                 asset_index[asset["name"]] = asset
 
             for bundle_name, asset_list in child.get("assetsByChunkName", {}).items():
-                bundle_inst = Bundle(
-                    job=job, repository_id=job.repository_id, name=bundle_name
-                )
-                db.session.add(bundle_inst)
-                for asset_name in asset_list:
-                    # dont track sourcemaps
-                    if asset_name.endswith(".map"):
-                        continue
-
-                    asset = asset_index[asset_name]
-                    db.session.add(
-                        BundleAsset(
-                            job=job,
-                            repository_id=job.repository_id,
-                            bundle=bundle_inst,
-                            name=asset["name"],
-                            size=asset["size"],
-                        )
+                with db.session.begin_nested():
+                    Bundle.query.unrestricted_unsafe().filter(
+                        Bundle.job_id == job.id, Bundle.name == bundle_name
+                    ).delete()
+                    bundle_inst = Bundle(
+                        job=job, repository_id=job.repository_id, name=bundle_name
                     )
+                    db.session.add(bundle_inst)
+
+                    complete = set()
+                    for asset_name in asset_list:
+                        # dont track sourcemaps
+                        if asset_name.endswith(".map"):
+                            continue
+                        # webpack can have duplicate asset names in the list
+                        if asset_name in complete:
+                            continue
+                        complete.add(asset_name)
+
+                        asset = asset_index[asset_name]
+                        db.session.add(
+                            BundleAsset(
+                                job=job,
+                                repository_id=job.repository_id,
+                                bundle=bundle_inst,
+                                name=asset["name"],
+                                size=asset["size"],
+                            )
+                        )
 
             children.extend(child.get("children", ()))
-        db.session.flush()
+            db.session.flush()
