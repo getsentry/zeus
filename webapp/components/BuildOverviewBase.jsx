@@ -198,7 +198,11 @@ export default class BuildOverviewBase extends AsyncPage {
         {!!this.state.bundleStats.length && (
           <Section>
             <SectionHeading>Bundles</SectionHeading>
-            <BundleList build={this.context.build} bundleList={this.state.bundleStats} />
+            <BundleList
+              build={this.context.build}
+              bundleList={this.state.bundleStats}
+              collapsable={true}
+            />
           </Section>
         )}
         {!!this.state.artifacts.length && (
