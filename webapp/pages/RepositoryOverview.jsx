@@ -41,6 +41,7 @@ class GenericLineChart extends Component {
             {
               label: label,
               borderColor: '#7b6be6',
+              pointRadius: 1,
               data: values,
               fill: false
             }
@@ -50,7 +51,11 @@ class GenericLineChart extends Component {
           responsive: true,
           title: false,
           legend: {display: false},
+          hover: {
+            intersect: false
+          },
           tooltips: {
+            intersect: false,
             callbacks: {
               label: item => {
                 return formatValue(item.yLabel);
@@ -60,6 +65,9 @@ class GenericLineChart extends Component {
           scales: {
             xAxes: [
               {
+                gridLines: {
+                  display: false
+                },
                 // type: 'time',
                 // time: {
                 //   tooltipFormat: 'll'

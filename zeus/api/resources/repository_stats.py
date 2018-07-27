@@ -114,7 +114,7 @@ def build_queryset(repo_id: UUID, stat: str, grouper):
 
 
 def get_revisions(repo: Repository, branch: str = None, limit: int = 200) -> List[str]:
-    if current_app.config.get("MOCK_REVISIONS"):
+    if current_app.config.get("MOCK_REVISIONS") or True:
         return (
             db.session.query(Source.revision_sha)
             .filter(Source.repository_id == repo.id)
