@@ -68,12 +68,12 @@ def aggregate_build_stats_for_job(job_id: UUID):
             db.session.commit()
 
         # record any job-specific stats that might not have been taken care elsewhere
-        # (we might want to move TestResult's stats here as well)
         if job.status == Status.finished:
             record_test_stats(job.id)
             record_style_violation_stats(job.id)
             record_bundle_stats(job.id)
             record_failure_reasons(job)
+            db.session.commit()
 
     lock_key = "aggstatsbuild:{build_id}".format(build_id=job.build_id.hex)
     with redis.lock(lock_key):
