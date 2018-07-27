@@ -21,7 +21,7 @@ class StyleViolationsSchema(Schema):
     count = fields.Integer()
 
 
-class WebpackSchema(Schema):
+class BundleSchema(Schema):
     total_asset_size = fields.Integer()
 
 
@@ -32,7 +32,7 @@ class StatsSchema(Schema):
     coverage = fields.Nested(CoverageStatsSchema(), dump_only=True)
     tests = fields.Nested(TestStatsSchema(), dump_only=True)
     style_violations = fields.Nested(StyleViolationsSchema(), dump_only=True)
-    webpack = fields.Nested(WebpackSchema(), dump_only=True)
+    bundle = fields.Nested(BundleSchema(), dump_only=True)
 
     @pre_dump
     def process_stats(self, data):
