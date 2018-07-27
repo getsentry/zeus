@@ -9,7 +9,7 @@ class CoverageStatsSchema(Schema):
     diff_lines_uncovered = fields.Integer()
 
 
-class TestStatsSchema(Schema):
+class TestStatsStatsSchema(Schema):
     count = fields.Integer()
     failures = fields.Integer()
     duration = fields.Number()
@@ -17,11 +17,11 @@ class TestStatsSchema(Schema):
     count_unique = fields.Integer(allow_none=True)
 
 
-class StyleViolationsSchema(Schema):
+class StyleViolationsStatsSchema(Schema):
     count = fields.Integer()
 
 
-class BundleSchema(Schema):
+class BundleStatsSchema(Schema):
     total_asset_size = fields.Integer()
 
 
@@ -30,9 +30,9 @@ class BundleSchema(Schema):
 
 class StatsSchema(Schema):
     coverage = fields.Nested(CoverageStatsSchema(), dump_only=True)
-    tests = fields.Nested(TestStatsSchema(), dump_only=True)
-    style_violations = fields.Nested(StyleViolationsSchema(), dump_only=True)
-    bundle = fields.Nested(BundleSchema(), dump_only=True)
+    tests = fields.Nested(TestStatsStatsSchema(), dump_only=True)
+    style_violations = fields.Nested(StyleViolationsStatsSchema(), dump_only=True)
+    bundle = fields.Nested(BundleStatsSchema(), dump_only=True)
 
     @pre_dump
     def process_stats(self, data):
