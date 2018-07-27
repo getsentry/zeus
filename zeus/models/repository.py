@@ -8,6 +8,7 @@ from zeus.config import db
 from zeus.db.mixins import StandardAttributes
 from zeus.db.types import Enum, StrEnum, JSONEncodedDict
 from zeus.db.utils import model_repr
+from zeus.exceptions import UnknownRepositoryBackend
 
 
 class RepositoryBackend(enum.IntEnum):
@@ -140,8 +141,7 @@ class Repository(StandardAttributes, db.Model):
         if self.backend == RepositoryBackend.git:
             return GitVcs(**kwargs)
 
-        else:
-            raise NotImplementedError("Invalid backend: {}".format(self.backend))
+        raise UnknownRepositoryBackend("Invalid backend: {}".format(self.backend))
 
     def get_full_name(self):
         return "{}/{}/{}".format(self.provider, self.owner_name, self.name)

@@ -1,3 +1,4 @@
+from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Repository, Revision
 from zeus.vcs.base import UnknownRevision
 
@@ -14,9 +15,10 @@ def identify_revision(repository: Repository, treeish: str):
         if revision:
             return revision
 
-    vcs = repository.get_vcs()
-    if not vcs:
-        return
+    try:
+        vcs = repository.get_vcs()
+    except UnknownRepositoryBackend:
+        return None
 
     vcs.ensure(update_if_exists=False)
 

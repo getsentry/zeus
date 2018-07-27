@@ -2,6 +2,7 @@ from zeus.config import db
 from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
 from zeus.db.types import GUID, JSONEncodedDict
 from zeus.db.utils import model_repr
+from zeus.exceptions import UnknownRepositoryBackend
 
 
 class Source(RepositoryBoundMixin, StandardAttributes, db.Model):
@@ -46,12 +47,13 @@ class Source(RepositoryBoundMixin, StandardAttributes, db.Model):
         if self.patch:
             return self.patch.diff
 
-        vcs = self.repository.get_vcs()
-        if vcs:
-            try:
-                return vcs.export(self.revision_sha)
+        try:
+            vcs = self.repository.get_vcs()
+        except UnknownRepositoryBackend:
+            return None
 
-            except Exception:
-                pass
-
-        return None
+        try:
+            return vcs.export(self.revision_sha)
+        except Exception:
+            # TODO
+            pass

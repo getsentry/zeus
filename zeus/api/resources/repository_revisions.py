@@ -3,6 +3,7 @@ from marshmallow import fields
 from sqlalchemy.orm import joinedload
 from typing import Tuple
 
+from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Repository, Revision
 from zeus.utils.builds import fetch_builds_for_revisions
 
@@ -30,8 +31,9 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
                 .all()
             )
 
-        vcs = repo.get_vcs()
-        if not vcs:
+        try:
+            vcs = repo.get_vcs()
+        except UnknownRepositoryBackend:
             return [], False
 
         per_page = min(int(request.args.get("per_page", 50)), 50)

@@ -46,3 +46,7 @@ class IdentityNeedsUpgrade(ApiUnauthorized):
     def get_upgrade_url(self):
         if self.identity.provider == "github":
             return "/auth/github"
+
+
+class UnknownRepositoryBackend(Exception):
+    pass

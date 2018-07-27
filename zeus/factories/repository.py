@@ -24,7 +24,9 @@ class RepositoryFactory(ModelFactory):
         model = models.Repository
 
     class Params:
+        unknown = factory.Trait(backend=models.RepositoryBackend.unknown)
         github = factory.Trait(
+            backend=models.RepositoryBackend.git,
             provider=models.RepositoryProvider.github,
             external_id=factory.LazyAttribute(
                 lambda o: "{}/{}".format(o.owner_name, o.name)
