@@ -40,10 +40,8 @@ def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str,
 
     filters = [
         Build.repository_id == build.repository_id,
-        Build.date_created <= build.date_created,
         Build.status == Status.finished,
         Source.id != source.id,
-        Source.date_created <= source.date_created,
         Source.patch == None,  # NOQA
     ]
     if valid_revisions:
@@ -55,7 +53,12 @@ def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str,
     last_pass = (
         db.session.query(Source.id, Source.date_created)
         .join(Build, Source.id == Build.source_id)
-        .filter(Build.result == Result.passed, *filters)
+        .filter(
+            Build.result == Result.passed,
+            Source.date_created <= source.date_created,
+            Build.date_created <= build.date_created,
+            *filters,
+        )
         .order_by(Source.date_created.desc())
         .first()
     )
@@ -68,17 +71,16 @@ def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str,
         previous_build_ids = [
             r
             for r, in db.session.query(Build.id)
-            .join(Source, Source.id == build.source_id)
+            .join(Source, Source.id == Build.source_id)
             .filter(
                 Build.result == Result.failed,
                 Build.date_created >= last_pass_date,
                 Source.date_created >= last_pass_date,
                 Source.id != last_pass_source_id,
-                # *filters,
+                *filters,
             )
             .order_by(Source.date_created.desc())[:100]
         ]
-        print(previous_build_ids)
     else:
         previous_build_ids = [
             r
