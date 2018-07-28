@@ -114,7 +114,8 @@ def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str,
 
     failures_at_build = dict()
     searching = set(t for t in test_failures)
-    last_checked_run = build.id
+    # last_checked_run = build.id
+    last_checked_run = None
 
     for p_build in previous_build_ids:
         p_build_failures = previous_test_failures[p_build]
