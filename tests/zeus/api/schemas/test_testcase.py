@@ -71,7 +71,7 @@ def test_failure_origin(default_repo):
                         str(new_testcase.id),
                         str(new_testcase.job_id),
                         new_testcase.duration,
-                        new_testcase.result,
+                        int(new_testcase.result),
                     ]
                 ],
             ),
@@ -83,7 +83,7 @@ def test_failure_origin(default_repo):
                         str(new_testcase2.id),
                         str(new_testcase2.job_id),
                         new_testcase2.duration,
-                        new_testcase2.result,
+                        int(new_testcase2.result),
                     ]
                 ],
             ),

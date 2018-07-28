@@ -162,7 +162,11 @@ class AggregateTestCaseSummarySchema(Schema):
             # or identify the referenced build
             failure_origins = find_failure_origins(
                 self.context["build"],
-                [i.hash for i in items if any(e[3] == Result.failed for e in i.runs)],
+                [
+                    i.hash
+                    for i in items
+                    if any(Result(int(e[3])) == Result.failed for e in i.runs)
+                ],
             )
 
         if failure_origins:
