@@ -34,13 +34,13 @@ def merge_builds(target, build):
     )
     target.date_started = (
         min(target.date_started, build.date_started)
-        if target.date_started
-        else build.date_started
+        if target.date_started and build.date_started
+        else target.date_started or build.date_started
     )
     target.date_finished = (
         max(target.date_finished, build.date_finished)
-        if target.date_finished
-        else build.date_finished
+        if target.date_finished and build.date_finished
+        else target.date_finished or build.date_finished
     )
     target.provider = (
         "%s, %s" % (target.provider, build.provider)
