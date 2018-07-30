@@ -7,6 +7,7 @@ import Footer from './Footer';
 
 export default class Layout extends Component {
   static propTypes = {
+    children: PropTypes.node,
     title: PropTypes.string
   };
 

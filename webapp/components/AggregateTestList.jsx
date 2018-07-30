@@ -23,9 +23,6 @@ class TestDetails extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {loading: true};
-  }
-
-  componentWillMount() {
     this.api = new Client();
   }
 
@@ -48,8 +45,8 @@ class TestDetails extends Component {
     return (
       <TestDetailsWrapper>
         <h5>
-          <ObjectResult data={testDetails} size={12} />
-          #{build.number}.{testDetails.job.number}
+          <ObjectResult data={testDetails} size={12} />#{build.number}.
+          {testDetails.job.number}
           {testDetails.job.label && ` - ${testDetails.job.label}`}
         </h5>
         <pre>{testDetails.message || <em>no output captured</em>}</pre>
@@ -62,7 +59,8 @@ class TestListItem extends Component {
   static propTypes = {
     test: PropTypes.object.isRequired,
     build: PropTypes.object.isRequired,
-    repo: PropTypes.object.isRequired
+    repo: PropTypes.object.isRequired,
+    params: PropTypes.object
   };
 
   constructor(props, context) {
@@ -79,7 +77,7 @@ class TestListItem extends Component {
           <Box flex="1">
             <ObjectResult data={test} />
             <TestLink
-              onClick={e => {
+              onClick={() => {
                 window.getSelection().toString().length === 0 &&
                   this.setState({expanded: !this.state.expanded});
               }}>
@@ -124,7 +122,8 @@ export default class AggregateTestList extends Component {
     repo: PropTypes.object.isRequired,
     testList: PropTypes.arrayOf(PropTypes.object).isRequired,
     collapsable: PropTypes.bool,
-    maxVisible: PropTypes.number
+    maxVisible: PropTypes.number,
+    params: PropTypes.object
   };
 
   static defaultProps = {

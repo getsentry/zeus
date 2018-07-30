@@ -96,9 +96,12 @@ class RepoListSection extends AsyncComponent {
   }
 }
 
-const WrappedRepoList = connect(function(state) {
-  return {repoList: state.repos.items, loading: !state.repos.loaded};
-}, {})(RepoListSection);
+const WrappedRepoList = connect(
+  function(state) {
+    return {repoList: state.repos.items, loading: !state.repos.loaded};
+  },
+  {}
+)(RepoListSection);
 
 class BuildListSection extends AsyncComponent {
   static propTypes = {
@@ -106,7 +109,7 @@ class BuildListSection extends AsyncComponent {
   };
 
   fetchData() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.props.loadBuildsForUser('me', {per_page: 10});
       return resolve();
     });
@@ -153,7 +156,7 @@ const WrappedBuildList = connect(
     };
   },
   {loadBuildsForUser}
-)(subscribe((props, {repo}) => ['builds'])(BuildListSection));
+)(subscribe(() => ['builds'])(BuildListSection));
 
 export default class Dashboard extends AsyncPage {
   getTitle() {

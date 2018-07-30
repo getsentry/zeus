@@ -23,7 +23,7 @@ class AccountSettings extends AsyncPage {
     return [['emailList', '/users/me/emails'], ['user', '/users/me']];
   }
 
-  toggleNotifications = e => {
+  toggleNotifications = () => {
     let {user} = this.state;
     let indicator = this.props.addIndicator('Saving changes..', 'loading');
     this.api

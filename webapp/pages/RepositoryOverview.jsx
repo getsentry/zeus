@@ -107,7 +107,7 @@ class CoverageChart extends AsyncPage {
     ];
   }
 
-  renderError(error) {
+  renderError() {
     return <div>Error loading chart</div>;
   }
 
@@ -122,7 +122,7 @@ class CoverageChart extends AsyncPage {
         build: coveredPoint.build,
         value: coveredPoint.value
           ? parseInt(
-              coveredPoint.value / (coveredPoint.value + uncoveredPoint.value) * 1000,
+              (coveredPoint.value / (coveredPoint.value + uncoveredPoint.value)) * 1000,
               10
             ) / 10
           : coveredPoint.value
@@ -159,7 +159,7 @@ class RepositoryChart extends AsyncPage {
     return [['data', endpoint, {query: {stat: stat, ...params}}]];
   }
 
-  renderError(error) {
+  renderError() {
     return <div>Error loading chart</div>;
   }
 
@@ -232,7 +232,7 @@ class RevisionListBody extends AsyncComponent {
   };
 
   fetchData(refresh) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       let {repo} = this.context;
       this.props.loadRevisionsForRepository(repo.full_name, {per_page: 10}, !refresh);
       return resolve();

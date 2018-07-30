@@ -29,7 +29,7 @@ class BuildListBody extends AsyncComponent {
   };
 
   fetchData() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       let {repo} = this.props;
       this.props.loadBuildsForRepository(repo.full_name, this.props.location.query);
       return resolve();

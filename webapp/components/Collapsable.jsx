@@ -6,6 +6,7 @@ import {Column, Row} from './ResultGrid';
 
 export default class Collapsable extends Component {
   static propTypes = {
+    children: PropTypes.node.isRequired,
     collapsable: PropTypes.bool,
     maxVisible: PropTypes.number
   };

@@ -9,6 +9,8 @@ export default class ListLink extends React.Component {
 
   static propTypes = {
     activeClassName: PropTypes.string.isRequired,
+    className: PropTypes.string,
+    children: PropTypes.node,
     to: PropTypes.string.isRequired,
     query: PropTypes.object,
     onClick: PropTypes.func,

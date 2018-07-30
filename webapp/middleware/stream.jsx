@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {compose} from 'redux';
 import partial from 'lodash/fp/partial';
 
@@ -23,7 +24,7 @@ const createMiddleware = () => {
   /**
    * Close the connection and cleanup
    */
-  const closeStream = store => {
+  const closeStream = () => {
     if (stream) {
       console.info(`Closing connection to ${stream.url} ...`);
       stream.close();

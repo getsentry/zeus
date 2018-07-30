@@ -31,7 +31,7 @@ class RevisionListBody extends AsyncComponent {
   };
 
   fetchData(refresh) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       let {repo} = this.context;
       this.props.loadRevisionsForRepository(
         repo.full_name,

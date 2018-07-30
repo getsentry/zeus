@@ -51,7 +51,8 @@ export default class Welcome extends Component {
               <h3>Setup is Easy</h3>
               <ol>
                 <li>
-                  You&apos;ll login to Zeus using your GitHub credentials<br />
+                  You&apos;ll login to Zeus using your GitHub credentials
+                  <br />
                   <small>
                     We ask for a lot of permissions, not because we&apos;re untrustworty,
                     but because the GitHub API makes it hard to do otherwise

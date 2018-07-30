@@ -84,28 +84,44 @@ export default class RepositoryStats extends AsyncPage {
         <Header>
           <Column>Week Of</Column>
           <Column width={100} textAlign="right">
-            Total<br />Builds
+            Total
+            <br />
+            Builds
           </Column>
           <Column width={100} textAlign="right">
-            Avg<br />Duration
+            Avg
+            <br />
+            Duration
           </Column>
           <Column width={100} textAlign="right">
-            Pct<br />Green Builds
+            Pct
+            <br />
+            Green Builds
           </Column>
           <Column width={100} textAlign="right">
-            Avg<br />Coverage
+            Avg
+            <br />
+            Coverage
           </Column>
           <Column width={100} textAlign="right">
-            Tests<br />per Build
+            Tests
+            <br />
+            per Build
           </Column>
           <Column width={100} textAlign="right">
-            Avg<br />Test Duration
+            Avg
+            <br />
+            Test Duration
           </Column>
           <Column width={100} textAlign="right">
-            Style<br />Violations
+            Style
+            <br />
+            Violations
           </Column>
           <Column width={100} textAlign="right">
-            Bundle<br />Size
+            Bundle
+            <br />
+            Size
           </Column>
         </Header>
         {testsCount.map(({time}) => {
@@ -124,15 +140,17 @@ export default class RepositoryStats extends AsyncPage {
               <Column width={100} textAlign="right">
                 {stat['builds.total']
                   ? `${parseInt(
-                      (stat['builds.passed'] || 0) / stat['builds.total'] * 1000,
+                      ((stat['builds.passed'] || 0) / stat['builds.total']) * 1000,
                       10
                     ) / 10}%`
                   : ''}
               </Column>
               <Column width={100} textAlign="right">
                 {totalLines
-                  ? `${parseInt(stat['coverage.lines_covered'] / totalLines * 1000, 10) /
-                      10}%`
+                  ? `${parseInt(
+                      (stat['coverage.lines_covered'] / totalLines) * 1000,
+                      10
+                    ) / 10}%`
                   : ''}
               </Column>
               <Column width={100} textAlign="right">

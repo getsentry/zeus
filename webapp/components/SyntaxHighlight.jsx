@@ -80,6 +80,8 @@ const filenameToLanguage = f => {
 
 export default class SyntaxHighlight extends Component {
   static propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.node,
     lang: PropTypes.string,
     filename: PropTypes.string
   };

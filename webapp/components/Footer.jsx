@@ -13,7 +13,8 @@ class UnstyledFooter extends Component {
             style={{color: 'inherit', fontWeight: 500}}>
             Zeus
           </a>{' '}
-          is Open Source Software<br />
+          is Open Source Software
+          <br />
           <small>Build {release}</small>
         </div>
         {props.children}

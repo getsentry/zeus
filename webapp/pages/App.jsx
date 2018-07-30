@@ -26,7 +26,7 @@ export class RepositoryContext extends AsyncComponent {
   }
 
   fetchData() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.props.loadRepos();
       return resolve();
     });
@@ -46,11 +46,12 @@ const AuthedContext = connect(
 class App extends Component {
   static propTypes = {
     isAuthenticated: PropTypes.bool,
+    children: PropTypes.node,
     user: PropTypes.object,
     authSession: PropTypes.func.isRequired
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.authSession();
   }
 

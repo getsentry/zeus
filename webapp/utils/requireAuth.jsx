@@ -4,11 +4,14 @@ import {connect} from 'react-redux';
 
 export default function(ComposedComponent) {
   class Authenticate extends React.Component {
-    static propTypes = {isAuthenticated: PropTypes.bool};
+    static propTypes = {
+      isAuthenticated: PropTypes.bool,
+      location: PropTypes.object.isRequired
+    };
 
     static contextTypes = {router: PropTypes.object.isRequired};
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
       if (this.props.isAuthenticated === false) {
         this.context.router.push({
           pathname: '/login',
@@ -17,7 +20,7 @@ export default function(ComposedComponent) {
       }
     }
 
-    componentWillUpdate(nextProps) {
+    UNSAFE_componentWillUpdate(nextProps) {
       if (nextProps.isAuthenticated === false) {
         this.context.router.push({
           pathname: '/login',
