@@ -11,7 +11,7 @@ export default function(ComposedComponent) {
 
     static contextTypes = {router: PropTypes.object.isRequired};
 
-    UNSAFE_componentWillMount() {
+    componentWillMount() {
       if (this.props.isAuthenticated === false) {
         this.context.router.push({
           pathname: '/login',
@@ -20,7 +20,7 @@ export default function(ComposedComponent) {
       }
     }
 
-    UNSAFE_componentWillUpdate(nextProps) {
+    componentWillUpdate(nextProps) {
       if (nextProps.isAuthenticated === false) {
         this.context.router.push({
           pathname: '/login',
