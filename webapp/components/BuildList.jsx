@@ -34,7 +34,7 @@ export default class BuildList extends Component {
             </Column>
           )}
           {columns.indexOf('date') !== -1 && (
-            <Column width={150} textAlign="right" hide="sm">
+            <Column width={120} textAlign="right" hide="sm">
               When
             </Column>
           )}

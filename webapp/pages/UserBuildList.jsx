@@ -9,6 +9,7 @@ import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
 import BuildList from '../components/BuildList';
 import Layout from '../components/Layout';
+import Paginator from '../components/Paginator';
 import Section from '../components/Section';
 
 class UserBuildList extends AsyncPage {
@@ -46,12 +47,16 @@ class BuildListBody extends AsyncComponent {
 
   renderBody() {
     return (
-      <BuildList
-        params={this.props.params}
-        buildList={this.props.buildList}
-        includeAuthor={false}
-        includeRepo={true}
-      />
+      <div>
+        <h2>Your Builds</h2>
+        <BuildList
+          params={this.props.params}
+          buildList={this.props.buildList}
+          includeAuthor={false}
+          includeRepo={true}
+        />
+        <Paginator links={this.props.links} {...this.props} />
+      </div>
     );
   }
 }
@@ -68,4 +73,4 @@ export default connect(
     };
   },
   {loadBuildsForUser}
-)(subscribe((props, {repo}) => ['builds'])(UserBuildList));
+)(subscribe(() => ['builds'])(UserBuildList));

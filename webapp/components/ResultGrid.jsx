@@ -35,6 +35,9 @@ export const Column = styled(props => {
   if (params.textAlign) {
     params.style = {...(params.style || {}), textAlign: params.textAlign};
   }
+  if (params.verticalAlign) {
+    params.style = {...(params.style || {}), verticalAlign: params.verticalAlign};
+  }
   return <Box {...params} />;
 })`
   overflow: hidden;
