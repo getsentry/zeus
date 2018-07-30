@@ -29,7 +29,7 @@ export default class Collapsable extends Component {
     if (totalChildren <= maxVisible) {
       collapsed = false;
     } else if (collapsed) {
-      visibleChildren = Math.min(5, maxVisible);
+      visibleChildren = Math.max(5, maxVisible);
       children = children.slice(0, visibleChildren);
     }
 
