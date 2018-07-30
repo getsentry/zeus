@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
 import ToastIndicator from './ToastIndicator';
+
+const FadeTransition = props => (
+  <CSSTransition {...props} classNames="fade" timeout={500} />
+);
 
 class Indicators extends Component {
   static propTypes = {
@@ -13,18 +17,18 @@ class Indicators extends Component {
   render() {
     return (
       <div>
-        <ReactCSSTransitionGroup
+        <TransitionGroup
           transitionName="toast"
           transitionEnter={false}
           transitionLeaveTimeout={500}>
           {this.props.items.map(indicator => {
             return (
-              <ToastIndicator type={indicator.type} key={indicator.id}>
-                {indicator.message}
-              </ToastIndicator>
+              <FadeTransition key={indicator.id}>
+                <ToastIndicator type={indicator.type}>{indicator.message}</ToastIndicator>
+              </FadeTransition>
             );
           })}
-        </ReactCSSTransitionGroup>
+        </TransitionGroup>
       </div>
     );
   }
@@ -36,4 +40,7 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {})(Indicators);
+export default connect(
+  mapStateToProps,
+  {}
+)(Indicators);
