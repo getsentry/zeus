@@ -32,11 +32,11 @@ class UserBuildList extends AsyncPage {
 class BuildListBody extends AsyncComponent {
   static propTypes = {
     buildList: PropTypes.array,
-    links: PropTypes.array
+    links: PropTypes.object
   };
 
   fetchData() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.props.loadBuildsForUser('me', {
         per_page: 25,
         page: this.props.location.query.page || 1

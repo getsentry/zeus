@@ -31,7 +31,7 @@ describe('RepositoryDetails', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('renders with fetching repo', done => {
+  it('renders with fetching repo', async () => {
     let repo = TestStubs.Repository();
 
     xhrmock.get(`/api/repos/${repo.full_name}`, {
@@ -53,11 +53,9 @@ describe('RepositoryDetails', () => {
       />,
       context
     );
-    setTimeout(() => {
-      expect(wrapper.state('repo').full_name).toEqual(repo.full_name);
-      expect(wrapper).toMatchSnapshot();
-      done();
-    });
+    await tick();
+    expect(wrapper.state('repo').full_name).toEqual(repo.full_name);
+    expect(wrapper).toMatchSnapshot();
   });
 
   // TODO(dcramer): Cant figure out how to test for error boundaries

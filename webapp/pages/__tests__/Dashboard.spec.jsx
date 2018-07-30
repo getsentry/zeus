@@ -17,7 +17,7 @@ describe('Dashboard', () => {
     let store = TestStubs.store({
       repos: {
         items: [repo],
-        loading: false
+        loaded: true
       }
     });
     let context = TestStubs.standardContext({
@@ -39,11 +39,11 @@ describe('Dashboard', () => {
     let store = TestStubs.store({
       repos: {
         items: [repo],
-        loading: false
+        loaded: true
       },
       builds: {
         items: [build],
-        loading: false,
+        loaded: true,
         links: {}
       }
     });

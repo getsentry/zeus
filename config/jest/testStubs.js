@@ -1,8 +1,9 @@
 import sinon from 'sinon';
+import thunk from 'redux-thunk';
 import PropTypes from 'prop-types';
 import configureStore from 'redux-mock-store';
 
-const mockStore = configureStore();
+const mockStore = configureStore([thunk]);
 
 window.TestStubs = {
   // react-router's 'router' context
@@ -39,12 +40,12 @@ window.TestStubs = {
       auth: {isAuthenticated: null, user: null},
       builds: {
         items: [],
-        loading: false,
+        loaded: false,
         links: {}
       },
       repos: {
         items: [],
-        loading: false
+        loaded: false
       },
       ...state
     }),
@@ -72,7 +73,8 @@ window.TestStubs = {
   Author: params => ({
     email: 'dcramer@gmail.com',
     id: '659dc21c-81db-11e7-988a-0a580a28047a',
-    name: 'David Cramer'
+    name: 'David Cramer',
+    ...params
   }),
 
   Build: params => ({
@@ -112,6 +114,13 @@ window.TestStubs = {
     ...params
   }),
 
+  Email: params => ({
+    id: '659dc21c-81db-11e7-988a-0a580a28047a',
+    email: 'dcramer@gmail.com',
+    verified: true,
+    ...params
+  }),
+
   Repository: params => ({
     backend: 'git',
     created_at: '2017-08-15T17:01:33.206772+00:00',
@@ -136,7 +145,8 @@ window.TestStubs = {
     created_at: '2018-06-08T16:45:55+00:00',
     latest_build: TestStubs.Build({repository: undefined}),
     message: 'fix: Maintain repository in published data\n',
-    sha: '26fef62489212d56d0a5037e3e6d876b887e972b'
+    sha: '26fef62489212d56d0a5037e3e6d876b887e972b',
+    ...params
   }),
 
   Source: params => ({
@@ -149,6 +159,14 @@ window.TestStubs = {
       created_at: '2018-01-06T16:06:52+00:00',
       message: 'fix: Remove break-word behavior on coverage\n',
       sha: 'eff634a68a01d081c0bdc51752dfa0709781f0e4'
-    }
+    },
+    ...params
+  }),
+
+  User: params => ({
+    id: '659dc21c-81db-11e7-988a-0a580a28047a',
+    email: 'dcramer@gmail.com',
+    created_at: '2018-01-06T16:07:16.814650+00:00',
+    ...params
   })
 };
