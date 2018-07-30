@@ -19,7 +19,7 @@ env:
 install:
   - nvm install $(cat .nvmrc)
   - npm install -g yarn@1.7.0
-  - make
+  - NODE_ENV= make
 script:
   - git --version
   - PATH=node_modules/.bin:$PATH pre-commit run -a -v
