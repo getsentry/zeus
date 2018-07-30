@@ -33,28 +33,24 @@ export default class AsyncComponent extends Component {
     this.state = this.getDefaultState(props, context);
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.api = new Client();
     if (this.props.loading) {
       this.refreshData();
     }
-    super.componentWillMount && super.componentWillMount();
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+  componentWillReceiveProps(nextProps, nextContext) {
     if (
       !isEqual(this.props.params, nextProps.params) ||
       !isEqual((this.props.location || {}).query, (nextProps.location || {}).query)
     ) {
       this.remountComponent(nextProps, nextContext);
     }
-    super.componentWillReceiveProps &&
-      super.componentWillReceiveProps(nextProps, nextContext);
   }
 
   componentWillUnmount() {
     this.api && this.api.clear();
-    super.componentWillUnmount && super.componentWillUnmount();
   }
 
   refreshData(refresh = false) {

@@ -28,7 +28,7 @@ export default class TimeSince extends Component {
     this.setRelativeDateTicker();
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.date !== this.props.date) {
       this.setState({
         relative: this.getRelativeDate()

@@ -26,7 +26,7 @@ export default class ErrorBoundary extends Component {
     this.state = {error: null, location: null};
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
+  componentWillReceiveProps(nextProps, nextContext) {
     let {router} = nextContext;
     if (!isEqual(this.state.location, router.location)) {
       this.setState({error: null, location: null});
