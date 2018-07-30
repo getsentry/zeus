@@ -1086,7 +1086,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                           onClick={[Function]}
                           style={Object {}}
                         >
-                          <Component
+                          <LogoIcon
                             color="#111111"
                             size="26"
                           >
@@ -1117,7 +1117,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                                 </g>
                               </svg>
                             </IconBase>
-                          </Component>
+                          </LogoIcon>
                         </a>
                       </Link>
                     </Styled(Link)>

@@ -133,7 +133,7 @@ exports[`UserBuildList fetches builds 1`] = `
                                   onClick={[Function]}
                                   style={Object {}}
                                 >
-                                  <Component
+                                  <LogoIcon
                                     color="#111111"
                                     size="26"
                                   >
@@ -164,7 +164,7 @@ exports[`UserBuildList fetches builds 1`] = `
                                         </g>
                                       </svg>
                                     </IconBase>
-                                  </Component>
+                                  </LogoIcon>
                                 </a>
                               </Link>
                             </Styled(Link)>
@@ -1877,7 +1877,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                   onClick={[Function]}
                                   style={Object {}}
                                 >
-                                  <Component
+                                  <LogoIcon
                                     color="#111111"
                                     size="26"
                                   >
@@ -1908,7 +1908,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                         </g>
                                       </svg>
                                     </IconBase>
-                                  </Component>
+                                  </LogoIcon>
                                 </a>
                               </Link>
                             </Styled(Link)>
