@@ -34,8 +34,18 @@ window.TestStubs = {
   }),
 
   store: state =>
+    // TODO(dcramer): It'd be nice if this could be auto generated
     mockStore({
       auth: {isAuthenticated: null, user: null},
+      builds: {
+        items: [],
+        loading: false,
+        links: {}
+      },
+      repos: {
+        items: [],
+        loading: false
+      },
       ...state
     }),
 
@@ -48,9 +58,9 @@ window.TestStubs = {
     }
   }),
 
-  standardContext: () => {
+  standardContext: (params = {}) => {
     let result = TestStubs.routerContext();
-    let storeResult = TestStubs.storeContext();
+    let storeResult = TestStubs.storeContext(params.store);
     result.context = {...result.context, ...storeResult.context};
     result.childContextTypes = {
       ...result.childContextTypes,

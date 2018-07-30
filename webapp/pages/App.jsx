@@ -9,9 +9,10 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import Indicators from '../components/Indicators';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
 
-class RepositoryContext extends AsyncComponent {
+export class RepositoryContext extends AsyncComponent {
   static propTypes = {
-    repoList: PropTypes.arrayOf(PropTypes.object)
+    repoList: PropTypes.arrayOf(PropTypes.object),
+    ...AsyncComponent.propTypes
   };
 
   static childContextTypes = {

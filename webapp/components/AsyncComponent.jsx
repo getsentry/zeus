@@ -12,6 +12,11 @@ export default class AsyncComponent extends Component {
     error: PropTypes.bool
   };
 
+  static defaultProps = {
+    loading: true,
+    error: false
+  };
+
   static contextTypes = {
     router: PropTypes.object.isRequired
   };
@@ -27,7 +32,9 @@ export default class AsyncComponent extends Component {
 
   componentWillMount() {
     this.api = new Client();
-    this.refreshData();
+    if (this.props.loading) {
+      this.refreshData();
+    }
     super.componentWillMount && super.componentWillMount();
   }
 

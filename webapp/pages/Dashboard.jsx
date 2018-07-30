@@ -1,4 +1,5 @@
 import React from 'react';
+import {Flex, Box} from 'grid-styled';
 import {Link} from 'react-router';
 import styled from 'styled-components';
 import {connect} from 'react-redux';
@@ -38,6 +39,7 @@ class RepoListSection extends AsyncComponent {
     if (!this.props.repoList.length) {
       return (
         <Section>
+          <SectionHeading>Your Repositories</SectionHeading>
           <p>
             {"Looks like you haven't yet setup any repositories. "}
             <Link to="/settings/github/repos">Add a repository</Link> to get started.
@@ -48,33 +50,40 @@ class RepoListSection extends AsyncComponent {
 
     return (
       <Section>
+        <SectionHeading>
+          Your Repositories
+          <Link to="/settings/github/repos" style={{marginLeft: 10}}>
+            <ViewAllIcon size={18} style={{verticalAlign: 'text-bottom'}} />
+          </Link>
+        </SectionHeading>
         <ResultGrid>
           <Header>
             <Column>Repository</Column>
-            <Column textAlign="center" width={90} hide="sm">
+            <Column textAlign="center" width={90} hide="md">
               Coverage
             </Column>
             <Column textAlign="center" width={90} hide="sm">
               Duration
             </Column>
           </Header>
-          <Collapsable collapsable maxVisible={5}>
+          <Collapsable collapsable maxVisible={10}>
             {this.props.repoList.map(repo => {
+              let {latest_build} = repo;
               return (
                 <RepoLink to={repo.full_name} key={repo.id}>
                   <Row>
                     <Column>
-                      <strong>{`${repo.owner_name} / ${repo.name}`}</strong>
+                      <Name>{`${repo.owner_name} / ${repo.name}`}</Name>
                     </Column>
-                    <Column textAlign="center" width={90} hide="sm">
-                      {!!repo.latest_build &&
+                    <Column textAlign="center" width={90} hide="md">
+                      {!!latest_build &&
                         !!(
-                          repo.latest_build.stats.coverage.lines_covered +
-                          repo.latest_build.stats.coverage.lines_uncovered
-                        ) && <ObjectCoverage data={repo.latest_build} diff={false} />}
+                          latest_build.stats.coverage.lines_covered +
+                          latest_build.stats.coverage.lines_uncovered
+                        ) && <ObjectCoverage data={latest_build} diff={false} />}
                     </Column>
                     <Column textAlign="center" width={90} hide="sm">
-                      {!!repo.latest_build && <ObjectDuration data={repo.latest_build} />}
+                      {!!latest_build && <ObjectDuration data={latest_build} />}
                     </Column>
                   </Row>
                 </RepoLink>
@@ -103,10 +112,7 @@ class BuildListSection extends AsyncComponent {
     });
   }
 
-  renderBody() {
-    if (!this.props.buildList.length) {
-      return null;
-    }
+  renderContent() {
     return (
       <Section>
         <SectionHeading>
@@ -115,13 +121,23 @@ class BuildListSection extends AsyncComponent {
             <ViewAllIcon size={18} style={{verticalAlign: 'text-bottom'}} />
           </Link>
         </SectionHeading>
-        <BuildList
-          params={this.props.params}
-          buildList={this.props.buildList}
-          includeAuthor={false}
-          includeRepo={true}
-        />
+        {super.renderContent()}
       </Section>
+    );
+  }
+
+  renderBody() {
+    if (!this.props.buildList.length) {
+      return <p>No builds yet</p>;
+    }
+    return (
+      <BuildList
+        columns={['date']}
+        params={this.props.params}
+        buildList={this.props.buildList}
+        includeAuthor={false}
+        includeRepo={true}
+      />
     );
   }
 }
@@ -147,9 +163,24 @@ export default class Dashboard extends AsyncPage {
   renderBody() {
     return (
       <Layout>
-        <WrappedRepoList {...this.props} />
-        <WrappedBuildList {...this.props} />
+        <Flex>
+          <Box flex="1" width={7 / 12} mr={30}>
+            <WrappedBuildList {...this.props} />
+          </Box>
+          <Box width={5 / 12}>
+            <WrappedRepoList {...this.props} />
+          </Box>
+        </Flex>
       </Layout>
     );
   }
 }
+
+const Name = styled.div`
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+`;

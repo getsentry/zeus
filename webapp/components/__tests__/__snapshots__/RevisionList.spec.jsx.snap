@@ -1084,13 +1084,13 @@ exports[`RevisionList renders 1`] = `
                             <Styled(Component)
                               hide="sm"
                               textAlign="right"
-                              width={150}
+                              width={120}
                             >
                               <Component
                                 className="sc-gzVnrw hVTCSJ"
                                 hide="sm"
                                 textAlign="right"
-                                width={150}
+                                width={120}
                               >
                                 <styled.div
                                   className="sc-gzVnrw hVTCSJ ResultGrid-Column"
@@ -1101,16 +1101,16 @@ exports[`RevisionList renders 1`] = `
                                     }
                                   }
                                   textAlign="right"
-                                  width={150}
+                                  width={120}
                                 >
                                   <div
-                                    className="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa bNDigs"
+                                    className="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa dYmHol"
                                     style={
                                       Object {
                                         "textAlign": "right",
                                       }
                                     }
-                                    width={150}
+                                    width={120}
                                   >
                                     <TimeSince
                                       clock24Hours={false}

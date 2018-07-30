@@ -15,7 +15,7 @@ export default class BuildListItem extends Component {
   static propTypes = {
     build: PropTypes.object.isRequired,
     repo: PropTypes.object,
-    date: PropTypes.object,
+    date: PropTypes.any,
     includeAuthor: PropTypes.bool,
     includeRepo: PropTypes.bool,
     columns: PropTypes.array
@@ -71,7 +71,7 @@ export default class BuildListItem extends Component {
             </Column>
           )}
           {columns.indexOf('date') !== -1 && (
-            <Column width={150} textAlign="right" hide="sm">
+            <Column width={120} textAlign="right" hide="sm">
               <TimeSince date={this.props.date || build.created_at} />
             </Column>
           )}
