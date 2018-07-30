@@ -21,7 +21,7 @@ class TokenSettings extends AsyncPage {
     this.api
       .post('/user/token')
       .then(token => this.setState({token}))
-      .catch(e =>
+      .catch(() =>
         this.props.addIndicator('Could not create a new token.', 'error', 5000)
       );
   };
@@ -31,7 +31,10 @@ class TokenSettings extends AsyncPage {
     return token && token.key ? (
       <div>
         <SectionHeading>This is your API token:</SectionHeading>
-        <pre>zeus-u-{token.key}</pre>
+        <pre>
+          zeus-u-
+          {token.key}
+        </pre>
         <Button type="danger" onClick={this.renewToken}>
           Refresh API Token
         </Button>
@@ -46,7 +49,10 @@ class TokenSettings extends AsyncPage {
   }
 }
 
-export default connect(null, {
-  addIndicator,
-  removeIndicator
-})(TokenSettings);
+export default connect(
+  null,
+  {
+    addIndicator,
+    removeIndicator
+  }
+)(TokenSettings);

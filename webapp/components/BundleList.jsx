@@ -10,6 +10,7 @@ import ResultGridRow from './ResultGridRow';
 
 class BundleListItem extends Component {
   static propTypes = {
+    params: PropTypes.object,
     bundle: PropTypes.object.isRequired
   };
 
@@ -54,7 +55,8 @@ export default class BundleList extends Component {
   static propTypes = {
     bundleList: PropTypes.arrayOf(PropTypes.object).isRequired,
     collapsable: PropTypes.bool,
-    maxVisible: PropTypes.number
+    maxVisible: PropTypes.number,
+    params: PropTypes.object
   };
 
   static defaultProps = {collapsable: false};

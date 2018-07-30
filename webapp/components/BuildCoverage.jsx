@@ -143,7 +143,7 @@ class CoveredTree extends Component {
         </StyledHeader>
         {result.entries.map(entry => {
           let totalLines = entry.lines_covered + entry.lines_uncovered;
-          let pctCovered = parseInt(entry.lines_covered / totalLines * 100, 10);
+          let pctCovered = parseInt((entry.lines_covered / totalLines) * 100, 10);
           let className;
           if (pctCovered >= 100) {
             className = 'good';
@@ -183,6 +183,7 @@ export default class BuildCoverage extends Component {
   };
 
   static propTypes = {
+    location: PropTypes.object.isRequired,
     result: PropTypes.object.isRequired
   };
 
@@ -196,7 +197,7 @@ export default class BuildCoverage extends Component {
       linesCovered += e.lines_covered;
       linesTotal += e.lines_covered + e.lines_uncovered;
     });
-    let pctCovered = parseInt(linesCovered / linesTotal * 100, 10);
+    let pctCovered = parseInt((linesCovered / linesTotal) * 100, 10);
 
     return (
       <Section>

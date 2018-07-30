@@ -10,7 +10,8 @@ export default class BuildList extends Component {
     buildList: PropTypes.arrayOf(PropTypes.object).isRequired,
     columns: PropTypes.array,
     includeAuthor: PropTypes.bool,
-    includeRepo: PropTypes.bool
+    includeRepo: PropTypes.bool,
+    params: PropTypes.object
   };
 
   static defaultProps = {

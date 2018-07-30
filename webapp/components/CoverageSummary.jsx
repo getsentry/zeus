@@ -57,14 +57,14 @@ export default class CoverageSummary extends Component {
                 <Column width={80} textAlign="right">
                   {totalDiffLines
                     ? `${parseInt(
-                        fileCoverage.diff_lines_covered / totalDiffLines * 1000,
+                        (fileCoverage.diff_lines_covered / totalDiffLines) * 1000,
                         10
                       ) / 10}%`
                     : ''}
                 </Column>
                 <Column width={80} textAlign="right">
                   {totalLines
-                    ? `${parseInt(fileCoverage.lines_covered / totalLines * 1000, 10) /
+                    ? `${parseInt((fileCoverage.lines_covered / totalLines) * 1000, 10) /
                         10}%`
                     : ''}
                 </Column>

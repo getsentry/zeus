@@ -16,12 +16,17 @@ export default class ErrorBoundary extends Component {
     router: PropTypes.object
   };
 
+  static propTypes = {
+    children: PropTypes.node,
+    location: PropTypes.object
+  };
+
   constructor(...params) {
     super(...params);
     this.state = {error: null, location: null};
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     let {router} = nextContext;
     if (!isEqual(this.state.location, router.location)) {
       this.setState({error: null, location: null});

@@ -16,6 +16,7 @@ export const CrumbLink = props => {
 };
 
 CrumbLink.propTypes = {
+  children: PropTypes.node,
   to: PropTypes.string.isRequired
 };
 

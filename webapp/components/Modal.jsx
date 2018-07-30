@@ -5,6 +5,7 @@ import {Logo} from '../assets/Logo';
 
 export default class Modal extends Component {
   static propTypes = {
+    children: PropTypes.node,
     title: PropTypes.string.isRequired,
     subtext: PropTypes.string,
     maxWidth: PropTypes.number

@@ -13,15 +13,13 @@ import {ResultGrid, Column, Header} from './ResultGrid';
 
 class TestDetails extends Component {
   static propTypes = {
+    params: PropTypes.object,
     test: PropTypes.object.isRequired
   };
 
   constructor(props, context) {
     super(props, context);
     this.state = {loading: true};
-  }
-
-  componentWillMount() {
     this.api = new Client();
   }
 
@@ -51,6 +49,7 @@ class TestDetails extends Component {
 
 class TestListItem extends Component {
   static propTypes = {
+    params: PropTypes.object,
     test: PropTypes.object.isRequired
   };
 
@@ -84,7 +83,8 @@ export default class TestList extends Component {
   static propTypes = {
     testList: PropTypes.arrayOf(PropTypes.object).isRequired,
     collapsable: PropTypes.bool,
-    maxVisible: PropTypes.number
+    maxVisible: PropTypes.number,
+    params: PropTypes.object
   };
 
   static defaultProps = {

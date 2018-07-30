@@ -6,6 +6,7 @@ import './ToastIndicator.css';
 
 export default class ToastIndicator extends Component {
   static propTypes = {
+    children: PropTypes.node,
     type: PropTypes.string
   };
 

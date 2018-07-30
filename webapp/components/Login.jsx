@@ -15,13 +15,13 @@ class Login extends Component {
     router: PropTypes.object.isRequired
   };
 
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.isAuthenticated) {
       this.context.router.push('/');
     }
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(nextProps) {
     if (nextProps.isAuthenticated) {
       this.context.router.push('/');
     }

@@ -8,8 +8,11 @@ import {Client} from '../api';
 
 export default class AsyncComponent extends Component {
   static propTypes = {
+    children: PropTypes.node,
     loading: PropTypes.bool,
-    error: PropTypes.bool
+    error: PropTypes.bool,
+    location: PropTypes.object,
+    params: PropTypes.object
   };
 
   static defaultProps = {
@@ -30,7 +33,7 @@ export default class AsyncComponent extends Component {
     this.state = this.getDefaultState(props, context);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.api = new Client();
     if (this.props.loading) {
       this.refreshData();
@@ -38,7 +41,7 @@ export default class AsyncComponent extends Component {
     super.componentWillMount && super.componentWillMount();
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     if (
       !isEqual(this.props.params, nextProps.params) ||
       !isEqual((this.props.location || {}).query, (nextProps.location || {}).query)
@@ -64,13 +67,13 @@ export default class AsyncComponent extends Component {
    * Must return a Promise.
    */
   fetchData() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       return resolve();
     });
   }
 
   // XXX: cant call this getInitialState as React whines
-  getDefaultState(props, context) {
+  getDefaultState() {
     return {};
   }
 

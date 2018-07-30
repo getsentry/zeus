@@ -19,11 +19,12 @@ export default class InternalError extends Component {
             Wait a few seconds and{' '}
             <a
               onClick={() => {
-                window.location.href = window.location.href;
+                window.location.reload();
               }}
               style={{cursor: 'pointer'}}>
               reload the page
-            </a>.
+            </a>
+            .
           </li>
           <li>
             If you think this is a bug,{' '}

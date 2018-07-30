@@ -70,7 +70,8 @@ export default class RepositoryHooks extends AsyncPage {
               To get started with Zeus, you&apos;ll likely want to{' '}
               <Link to={`/${repo.full_name}/settings/hooks/create`}>
                 create a new hook
-              </Link>.
+              </Link>
+              .
             </p>
           </div>
         )}

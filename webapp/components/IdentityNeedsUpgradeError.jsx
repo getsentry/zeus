@@ -6,6 +6,7 @@ import Modal from './Modal';
 
 export default class IdentityNeedsUpgradeError extends Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
     url: PropTypes.string.isRequired
   };
 

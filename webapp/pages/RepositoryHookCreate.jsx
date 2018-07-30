@@ -44,7 +44,8 @@ export class RepositoryHookCreate extends AsyncPage {
           credentials that are bound to this repository. Once you&apos;ve created the
           hook, it can be used to submit build and job information, as well as to upload
           artifacts (for example, via{' '}
-          <a href="https://github.com/getsentry/zeus-cli">zeus-cli</a>).
+          <a href="https://github.com/getsentry/zeus-cli">zeus-cli</a>
+          ).
         </p>
         <p>To create a new hook, select a provider:</p>
         <p>
@@ -56,7 +57,10 @@ export class RepositoryHookCreate extends AsyncPage {
   }
 }
 
-export default connect(null, {
-  addIndicator,
-  removeIndicator
-})(RepositoryHookCreate);
+export default connect(
+  null,
+  {
+    addIndicator,
+    removeIndicator
+  }
+)(RepositoryHookCreate);

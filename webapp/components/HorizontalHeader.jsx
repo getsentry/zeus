@@ -1,10 +1,15 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 import styled from 'styled-components';
 
 import Logo from '../assets/Logo';
 
 export class HorizontalHeader extends Component {
+  static propTypes = {
+    children: PropTypes.node
+  };
+
   render() {
     return (
       <HeaderWrapper>

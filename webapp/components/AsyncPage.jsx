@@ -12,6 +12,11 @@ export default class AsyncPage extends Component {
     router: PropTypes.object.isRequired
   };
 
+  static propTypes = {
+    params: PropTypes.object,
+    location: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
 
@@ -21,13 +26,13 @@ export default class AsyncPage extends Component {
     this.state = this.getDefaultState(props, context);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.api = new Client();
     this.refreshData();
     super.componentWillMount && super.componentWillMount();
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     if (
       !isEqual(this.props.params, nextProps.params) ||
       !isEqual((this.props.location || {}).query, (nextProps.location || {}).query)
@@ -53,7 +58,7 @@ export default class AsyncPage extends Component {
       error: false,
       errors: {}
     };
-    endpoints.forEach(([stateKey, endpoint]) => {
+    endpoints.forEach(([stateKey]) => {
       state[stateKey] = null;
     });
     return state;
@@ -118,7 +123,7 @@ export default class AsyncPage extends Component {
    *   ['stateKeyName', '/endpoint/', {optional: 'query params'}]
    * ]
    */
-  getEndpoints(props, context) {
+  getEndpoints() {
     return [];
   }
 
@@ -131,7 +136,7 @@ export default class AsyncPage extends Component {
   }
 
   renderError(error) {
-    throw this.state.errors[Object.keys(this.state.errors).find(_ => true)] || error;
+    throw this.state.errors[Object.keys(this.state.errors).find(() => true)] || error;
   }
 
   renderContent() {

@@ -8,7 +8,8 @@ export default class RevisionList extends Component {
   static propTypes = {
     revisionList: PropTypes.arrayOf(PropTypes.object).isRequired,
     repo: PropTypes.object,
-    columns: PropTypes.array
+    columns: PropTypes.array,
+    params: PropTypes.object
   };
 
   static defaultProps = {

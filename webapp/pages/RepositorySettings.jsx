@@ -18,7 +18,7 @@ class RepositorySettings extends AsyncPage {
     return [['repo', this.getEndpoint()]];
   }
 
-  togglePublic = e => {
+  togglePublic = () => {
     let {repo} = this.state;
     let indicator = this.props.addIndicator('Saving changes..', 'loading');
     this.api
@@ -55,7 +55,10 @@ class RepositorySettings extends AsyncPage {
   }
 }
 
-export default connect(null, {
-  addIndicator,
-  removeIndicator
-})(RepositorySettings);
+export default connect(
+  null,
+  {
+    addIndicator,
+    removeIndicator
+  }
+)(RepositorySettings);
