@@ -25,7 +25,7 @@ script:
   - PATH=node_modules/.bin:$PATH pre-commit run -a -v
   - py.test tests -v --cov . --cov-report="xml:.artifacts/coverage.xml" --junit-xml=".artifacts/pytest.junit.xml"
   - node_modules/.bin/webpack --json > .artifacts/webpack-stats.json
-  - JEST_JUNIT_OUTPUT=.artifacts/jest.junit.xml yarn test -- --ci --testResultsProcessor="jest-junit"
+  - JEST_JUNIT_OUTPUT=.artifacts/jest.junit.xml yarn test --ci --reporters=default --reporters=jest-junit
 after_script:
   - npm install -g @zeus-ci/cli
   - $(npm bin -g)/zeus upload -t "application/x-junit+xml" .artifacts/*.junit.xml
