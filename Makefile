@@ -19,7 +19,7 @@ install-python-requirements:
 	pip install -e git+https://github.com/pallets/werkzeug.git@8eb665a94aea9d9b56371663075818ca2546e152#egg=werkzeug
 
 install-js-requirements:
-	yarn install --dev
+	yarn install
 
 test:
 	py.test tests
