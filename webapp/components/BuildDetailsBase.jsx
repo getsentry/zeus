@@ -108,6 +108,9 @@ export default class BuildDetailsBase extends AsyncPage {
             <TabbedNavItem to={`${this.getBaseRoute()}/artifacts`}>
               Artifacts
             </TabbedNavItem>
+            <TabbedNavItem to={`${this.getBaseRoute()}/snapshots`}>
+              Snapshots
+            </TabbedNavItem>
           </TabbedNav>
         </BuildSummary>
         {this.props.children}

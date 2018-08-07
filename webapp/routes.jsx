@@ -9,6 +9,7 @@ import BuildDetails from './pages/BuildDetails';
 import BuildDiff from './pages/BuildDiff';
 import BuildOverview from './pages/BuildOverview';
 import BuildStyleViolationList from './pages/BuildStyleViolationList';
+import BuildSnapshots from './pages/BuildSnapshots';
 import BuildTestList from './pages/BuildTestList';
 import Dashboard from './pages/Dashboard';
 import DashboardOrWelcome from './pages/DashboardOrWelcome';
@@ -101,6 +102,7 @@ export default (
         <Route path="style-violations" component={BuildStyleViolationList} />
         <Route path="tests" component={BuildTestList} />
         <Route path="artifacts" component={BuildArtifacts} />
+        <Route path="snapshots" component={BuildSnapshots} />
       </Route>
       <Route path="revisions" component={RepositoryRevisionList} />
       <Route path="revisions/:sha" component={RevisionDetails}>
