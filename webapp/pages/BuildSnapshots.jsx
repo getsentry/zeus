@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AsyncPage from '../components/AsyncPage';
+import ImageDiff from '../components/ImageDiff';
 
 import Section from '../components/Section';
 
@@ -14,7 +15,7 @@ export default class BuildDiff extends AsyncPage {
   renderBody() {
     return (
       <Section>
-        <h1>Testing!</h1>
+        <ImageDiff />
       </Section>
     );
   }
