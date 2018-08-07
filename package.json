@@ -8,7 +8,7 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "enzyme-to-json": "^3.3.4",
-    "eslint": "^5.2.0",
+    "eslint": "4.9",
     "eslint-loader": "^2.1.0",
     "eslint-plugin-babel": "^4.1.1",
     "eslint-plugin-flowtype": "2.34.0",
