@@ -1,8 +1,8 @@
-from sqlalchemy.orm import contains_eager, joinedload, subqueryload_all
+from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Email, Source, User
+from zeus.models import Author, Build, Email, User
 
 from .base import Resource
 from ..schemas import BuildSchema
@@ -26,14 +26,17 @@ class UserBuildsResource(Resource):
         query = (
             Build.query.options(
                 joinedload("repository"),
-                contains_eager("source"),
-                contains_eager("source").joinedload("author", innerjoin=True),
-                contains_eager("source").joinedload("revision", innerjoin=True),
+                joinedload("source", innerjoin=True),
+                joinedload("source", innerjoin=True).joinedload(
+                    "author", innerjoin=True
+                ),
+                joinedload("source", innerjoin=True).joinedload(
+                    "revision", innerjoin=True
+                ),
                 subqueryload_all("stats"),
             )
-            .join(Source, Build.source_id == Source.id)
             .filter(
-                Source.author_id.in_(
+                Build.author_id.in_(
                     db.session.query(Author.id).filter(
                         Author.email.in_(
                             db.session.query(Email.email).filter(
