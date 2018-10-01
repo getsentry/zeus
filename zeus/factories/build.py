@@ -24,6 +24,8 @@ class BuildFactory(ModelFactory):
     source_id = factory.SelfAttribute("source.id")
     repository = factory.SelfAttribute("source.repository")
     repository_id = factory.SelfAttribute("repository.id")
+    author = factory.SelfAttribute("source.author")
+    author_id = factory.SelfAttribute("author.id")
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
     date_created = factory.SelfAttribute("source.date_created")
