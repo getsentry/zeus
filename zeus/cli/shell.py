@@ -7,9 +7,9 @@ from .base import cli
 @cli.command()
 def shell():
     import IPython
-    from flask.globals import _app_ctx_stack
+    from zeus.app import app
+    from zeus.config import db
 
-    app = _app_ctx_stack.top.app
     banner = "Python %s on %s\nIPython: %s\nApp: %s%s\nInstance: %s\n" % (
         sys.version,
         sys.platform,
@@ -19,13 +19,15 @@ def shell():
         app.instance_path,
     )
 
-    ctx = {}
+    ctx = app.make_shell_context()
+    ctx["app"].test_request_context().push()
+    ctx["db"] = db
+    # Import all models into the shell context
+    ctx.update(db.Model._decl_class_registry)
 
     startup = os.environ.get("PYTHONSTARTUP")
     if startup and os.path.isfile(startup):
         with open(startup, "rb") as f:
             eval(compile(f.read(), startup, "exec"), ctx)
-
-    ctx.update(app.make_shell_context())
 
     IPython.embed(banner1=banner, user_ns=ctx)
