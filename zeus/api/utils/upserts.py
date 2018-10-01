@@ -76,7 +76,9 @@ def upsert_change_request(
         json["provider"] = provider
 
         cr = ChangeRequest.query.filter(
-            ChangeRequest.provider == provider, ChangeRequest.external_id == external_id
+            ChangeRequest.repository_id == repository.id,
+            ChangeRequest.provider == provider,
+            ChangeRequest.external_id == external_id,
         ).first()
 
         if cr:

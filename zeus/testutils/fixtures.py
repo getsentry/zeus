@@ -5,7 +5,7 @@ from collections import namedtuple
 from datetime import datetime, timedelta
 from subprocess import check_call, check_output
 
-from zeus import factories, models
+from zeus import factories, models, auth
 from zeus.constants import Permission
 from zeus.utils import timezone
 
@@ -80,6 +80,16 @@ def default_repo_write_access(db_session, default_repo, default_user):
     db_session.commit()
 
     return access
+
+
+@pytest.fixture(scope="function")
+def default_repo_tenant(default_repo):
+    auth.set_current_tenant(auth.Tenant(access={default_repo.id: Permission.read}))
+
+
+@pytest.fixture(scope="function")
+def default_repo_write_tenant(default_repo):
+    auth.set_current_tenant(auth.Tenant(access={default_repo.id: Permission.write}))
 
 
 @pytest.fixture(scope="function")
