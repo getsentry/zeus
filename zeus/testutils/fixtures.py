@@ -83,6 +83,13 @@ def default_repo_write_access(db_session, default_repo, default_user):
 
 
 @pytest.fixture(scope="function")
+def default_repo_tenant(default_repo):
+    from zeus import auth
+
+    auth.set_current_tenant(auth.Tenant(access={default_repo.id: Permission.read}))
+
+
+@pytest.fixture(scope="function")
 def default_author(default_repo, default_user):
     return factories.AuthorFactory(
         repository=default_repo, name="Fizz Buzz", email=default_user.email
