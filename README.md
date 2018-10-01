@@ -83,27 +83,26 @@ They should be submitted with the ``application/x-webpack-stats+json`` type.
 ### Setup
 
 ```shell
-# create a new python environment
-python3 -m venv venv
-
-# load the environment as the active
-source venv/bin/activate
+# install pipenv
+brew update && brew install pipenv
 
 # load dependencies
 make
 
 # initialize config
-zeus init
+pipenv run zeus init
 ```
 
 Note, before running any future Python commands (including ``zeus``), you'll
 need to activate the environment:
 
 ```shell
-source venv/bin/activate
+pipenv shell
 ```
 
-Bootstrap the database (see ``Makefile`` for details):
+You can also setup [direnv](https://direnv.net/) to automatically activate the environment.
+
+Once dependencies are resolved, bootstrap the database (see ``Makefile`` for details):
 
 ```shell
 make reset-db
@@ -117,6 +116,12 @@ zeus devserver
 # or alternatively, with workers:
 zeus devserver --workers
 ```
+### Managing Python dependencies
+
+We use Pipenv for environment management, but due to the way Docker layering works, we dont declare dependencies inside of ``Pipfile``. This means adding a new dependency has an extra step.
+
+- Add the dependency to the appropriate ``requirements-[env].txt`` file
+- Run ``pipenv update``
 
 ### Getting some data
 

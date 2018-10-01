@@ -2,7 +2,7 @@ develop: setup-git install-requirements
 
 upgrade: install-requirements
 	createdb -E utf-8 zeus || true
-	zeus db upgrade
+	pipenv run zeus db upgrade
 
 setup-git:
 	pip install "pre-commit>=1.10.1,<1.11.0"
@@ -14,20 +14,18 @@ setup-git:
 install-requirements: install-python-requirements install-js-requirements
 
 install-python-requirements:
-	pip install -e .
-	pip install "file://`pwd`#egg=zeus[tests]"
-	pip install -e git+https://github.com/pallets/werkzeug.git@8eb665a94aea9d9b56371663075818ca2546e152#egg=werkzeug
+	pipenv install --dev
 
 install-js-requirements:
 	yarn install
 
 test:
-	py.test tests
+	pipenv run py.test
 
 reset-db:
 	$(MAKE) drop-db
 	$(MAKE) create-db
-	zeus db upgrade
+	pipenv run zeus db upgrade
 
 drop-db:
 	dropdb --if-exists zeus

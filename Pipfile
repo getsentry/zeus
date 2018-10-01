@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+zeus = {editable = true, path = ".", extras = ['dev', 'test'] }
+
+[packages]
+zeus = {editable = true, path = "." }
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
