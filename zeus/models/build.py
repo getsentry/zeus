@@ -36,7 +36,13 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     provider = db.Column(db.String, nullable=True)
     external_id = db.Column(db.String(64), nullable=True)
     url = db.Column(db.String, nullable=True)
+    # author_id is inherited from Source.author_id, and is denormalized to speed up
+    # "my builds" type of queries
+    author_id = db.Column(
+        GUID, db.ForeignKey("author.id", ondelete="SET NULL"), index=True, nullable=True
+    )
 
+    author = db.relationship("Author")
     source = db.relationship("Source", innerjoin=True)
     stats = db.relationship(
         "ItemStat",
@@ -52,6 +58,7 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
         db.UniqueConstraint(
             "repository_id", "provider", "external_id", name="unq_build_provider"
         ),
+        db.Index("idx_build_author_date", "author_id", "date_created"),
     )
     __repr__ = model_repr("number", "status", "result")
 
