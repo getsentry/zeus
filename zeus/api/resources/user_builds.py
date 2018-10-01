@@ -27,8 +27,8 @@ class UserBuildsResource(Resource):
             Build.query.options(
                 joinedload("repository"),
                 contains_eager("source"),
-                contains_eager("source").joinedload("author"),
-                contains_eager("source").joinedload("revision"),
+                contains_eager("source").joinedload("author", innerjoin=True),
+                contains_eager("source").joinedload("revision", innerjoin=True),
                 subqueryload_all("stats"),
             )
             .join(Source, Build.source_id == Source.id)

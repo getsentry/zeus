@@ -28,7 +28,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             Build.query.options(
                 joinedload("source"),
                 joinedload("source").joinedload("author"),
-                joinedload("source").joinedload("revision"),
+                joinedload("source").joinedload("revision", innerjoin=True),
                 subqueryload_all("stats"),
             )
             .filter(Build.repository_id == repo.id)
