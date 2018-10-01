@@ -17,6 +17,7 @@ env:
     - NODE_ENV=production
     - PIP_DISABLE_PIP_VERSION_CHECK=on
 install:
+  - pip install pipenv
   - nvm install $(cat .nvmrc)
   - npm install -g yarn@1.7.0
   - NODE_ENV= make
