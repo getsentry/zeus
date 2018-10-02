@@ -13,6 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 
 from zeus.utils.celery import Celery
+from zeus.utils.metrics import Metrics
 from zeus.utils.nplusone import NPlusOne
 from zeus.utils.redis import Redis
 from zeus.utils.ssl import SSL
@@ -34,6 +35,7 @@ nplusone = NPlusOne()
 redis = Redis()
 sentry = Sentry(logging=True, level=logging.ERROR, wrap_wsgi=True)
 ssl = SSL()
+metrics = Metrics()
 
 
 def with_health_check(app):
@@ -258,6 +260,8 @@ def create_app(_read_config=True, **config):
     if app.config["SSL"]:
         ssl.init_app(app)
 
+    metrics.init_app(app)
+
     configure_db(app)
 
     # needs to happen after db
@@ -271,6 +275,18 @@ def create_app(_read_config=True, **config):
 
     configure_api(app)
     configure_web(app)
+
+    @app.after_request
+    def track_user(response):
+        from zeus import auth
+        from zeus.utils import timezone
+
+        user = auth.get_current_user(fetch=False)
+        if user and user.date_active < timezone.now() - timedelta(minutes=5):
+            user.date_active = timezone.now()
+            db.session.add(user)
+            db.session.commit()
+        return response
 
     from . import models  # NOQA
 

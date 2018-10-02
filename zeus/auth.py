@@ -241,9 +241,9 @@ def logout():
     g.current_tenant = None
 
 
-def get_current_user() -> Optional[User]:
+def get_current_user(fetch=True) -> Optional[User]:
     rv = getattr(g, "current_user", None)
-    if not rv:
+    if not rv and fetch:
         rv = get_user_from_request()
         g.current_user = rv
     return rv
