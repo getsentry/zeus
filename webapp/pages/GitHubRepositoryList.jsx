@@ -87,7 +87,13 @@ class GitHubRepoItem extends Component {
     let {repo} = this.props;
     return (
       <Row>
-        <Column>{repo.name}</Column>
+        <Column>
+          {repo.status === 'active' ? (
+            <Link to={`/gh/${repo.name}`}>{repo.name}</Link>
+          ) : (
+            repo.name
+          )}
+        </Column>
         <Column textAlign="right" width={80}>
           {this.renderButton()}
         </Column>
