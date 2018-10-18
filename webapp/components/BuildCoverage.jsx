@@ -103,9 +103,11 @@ class CoveredFile extends Component {
           <td>
             {lines.map((l, n) => {
               return (
-                <a key={n} href={`#L${n + 1}`} id={`L${n + 1}`}>
-                  <code key={n}>{n + 1}</code>
-                </a>
+                <div key={n}>
+                  <a href={`#L${n + 1}`} id={`L${n + 1}`}>
+                    <code key={n}>{n + 1}</code>
+                  </a>
+                </div>
               );
             })}
           </td>
