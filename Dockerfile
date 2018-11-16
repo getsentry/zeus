@@ -56,11 +56,11 @@ RUN set -x \
       114F43EE0176B71C7BC219DD50A3051F888C628D \
       7937DFD2AB06298B2293C3187D33FF9D0246406D \
     ; do \
-      gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+      gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
     done \
     && wget --no-verbose "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
     && wget --no-verbose "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
-    && gpg --verify SHASUMS256.txt.asc \
+    && gpg --batch --verify SHASUMS256.txt.asc \
     && grep " node-v$NODE_VERSION-linux-x64.tar.gz\$" SHASUMS256.txt.asc | sha256sum -c - \
     && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
     && rm -rf "$GNUPGHOME" "node-v$NODE_VERSION-linux-x64.tar.gz" SHASUMS256.txt.asc \
