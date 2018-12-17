@@ -51,7 +51,7 @@
     "python.formatting.provider": "black",
     // https://github.com/DonJayamanne/pythonVSCode/issues/992
     "python.formatting.yapfArgs": ["--style", "${workspaceRoot}/setup.cfg"],
-    "python.pythonPath": "${env.WORKON_HOME}/zeus/bin/python",
+    "python.pythonPath": ".venv/bin/python",
     "python.unitTest.pyTestEnabled": false,
     "python.unitTest.unittestEnabled": false,
     "python.unitTest.nosetestsEnabled": false
