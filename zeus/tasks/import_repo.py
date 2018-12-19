@@ -8,7 +8,7 @@ from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Repository, RepositoryStatus
 
 
-@celery.task(max_retries=None, autoretry_for=(Exception,))
+@celery.task(max_retries=5, autoretry_for=(Exception,))
 def import_repo(repo_id, parent=None):
     auth.set_current_tenant(auth.Tenant(access={repo_id: Permission.admin}))
 
