@@ -62,7 +62,7 @@ class RepositoryChangeRequestsResource(BaseRepositoryResource):
         try:
             db.session.add(cr)
             db.session.commit()
-        except IntegrityError as exc:
+        except IntegrityError:
             raise
 
             db.session.rollback()
