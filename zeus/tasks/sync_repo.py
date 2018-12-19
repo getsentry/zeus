@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import current_app
 
 from zeus import auth
@@ -14,12 +14,22 @@ from zeus.vcs.base import InvalidPublicKey
 
 
 @celery.task(max_retries=None, autoretry_for=(Exception,), acks_late=True)
-def sync_repo(repo_id, max_log_passes=10):
+def sync_repo(repo_id, max_log_passes=10, force=False):
     auth.set_current_tenant(auth.Tenant(access={repo_id: Permission.admin}))
 
     repo = Repository.query.get(repo_id)
     if not repo:
         current_app.logger.error("Repository %s not found", repo_id)
+        return
+
+    if (
+        not force
+        and repo.last_update_attempt
+        and repo.last_update_attempt > (timezone.now() - timedelta(minutes=60))
+    ):
+        current_app.logger.warning(
+            "Repository %s was synced recently, refusing to sync", repo.id
+        )
         return
 
     try:
