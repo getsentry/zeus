@@ -4,7 +4,7 @@ metadata:
   name: worker
   namespace: default
 spec:
-  replicas: 2
+  replicas: 4
   strategy:
     type: RollingUpdate
     rollingUpdate:
