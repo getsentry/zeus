@@ -60,7 +60,7 @@ def sync(repository):
         )
         .first()
     )
-    sync_repo(repo_id=repo.id)
+    sync_repo(repo_id=repo.id, force=True)
 
 
 @repos.group("access")
