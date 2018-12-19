@@ -13,7 +13,7 @@ def sync_all_repos():
     queryset = Repository.query.unrestricted_unsafe().filter(
         Repository.status == RepositoryStatus.active,
         or_(
-            Repository.last_update_attempt < (timezone.now() - timedelta(minutes=5)),
+            Repository.last_update_attempt < (timezone.now() - timedelta(minutes=60)),
             Repository.last_update_attempt is None,
         ),
     )
