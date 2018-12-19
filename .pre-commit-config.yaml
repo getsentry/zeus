@@ -22,6 +22,7 @@ repos:
     - id: debug-statements
     - id: flake8
       log_file: '.artifacts/flake8.log'
+      language_version: python3.7
     - id: requirements-txt-fixer
       args: ['requirements-base.txt', 'requirements-dev.txt', 'requirements-test.txt']
 -   repo: git://github.com/getsentry/pre-commit-hooks

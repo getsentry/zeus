@@ -344,7 +344,7 @@ def configure_webpack(app):
             try:
                 with open(app.config["WEBPACK_MANIFEST_PATH"]) as fp:
                     assets = json.load(fp)
-            except FileNotFoundError:  # NOQA
+            except FileNotFoundError:
                 app.logger.exception("Unable to load webpack manifest")
                 assets = {}
             app.extensions["webpack"]["assets"] = assets
