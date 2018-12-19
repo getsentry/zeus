@@ -204,6 +204,7 @@ def create_app(_read_config=True, **config):
     app.config["REPO_ROOT"] = os.environ.get(
         "REPO_ROOT", os.path.join(WORKSPACE_ROOT, "zeus-repos")
     )
+    app.config["REPO_SYNC_INTERVAL"] = timedelta(minutes=60)
 
     app.config["ARTIFACT_RETENTION"] = timedelta(days=30)
 
@@ -343,7 +344,7 @@ def configure_webpack(app):
             try:
                 with open(app.config["WEBPACK_MANIFEST_PATH"]) as fp:
                     assets = json.load(fp)
-            except FileNotFoundError:
+            except FileNotFoundError:  # NOQA
                 app.logger.exception("Unable to load webpack manifest")
                 assets = {}
             app.extensions["webpack"]["assets"] = assets

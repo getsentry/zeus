@@ -1,4 +1,4 @@
-from datetime import timedelta
+from flask import current_app
 from sqlalchemy import or_
 
 from zeus.config import celery
@@ -13,7 +13,8 @@ def sync_all_repos():
     queryset = Repository.query.unrestricted_unsafe().filter(
         Repository.status == RepositoryStatus.active,
         or_(
-            Repository.last_update_attempt < (timezone.now() - timedelta(minutes=60)),
+            Repository.last_update_attempt
+            < (timezone.now() - current_app.config["REPO_SYNC_INTERVAL"]),
             Repository.last_update_attempt is None,
         ),
     )
