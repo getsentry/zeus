@@ -1,7 +1,7 @@
 from datetime import timedelta
 from sqlalchemy import or_
 
-from zeus.config import celery, db
+from zeus.config import celery
 from zeus.models import Repository, RepositoryStatus
 from zeus.utils import timezone
 
@@ -20,7 +20,3 @@ def sync_all_repos():
 
     for repo in queryset:
         sync_repo.delay(repo_id=repo.id)
-        Repository.query.filter(Repository.id == repo.id).update(
-            {"last_update_attempt": timezone.now()}
-        )
-        db.session.commit()

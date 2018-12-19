@@ -13,5 +13,3 @@ def test_sync_all_repos(mocker, db_session, default_repo):
     sync_all_repos()
 
     mock_sync_repo.assert_called_once_with(repo_id=default_repo.id)
-
-    assert default_repo.last_update_attempt is not None
