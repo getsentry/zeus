@@ -29,8 +29,6 @@ junit.xml
 .env.test.local
 .env.production.local
 
-celerybeat-schedule
-
 *.pyc
 *.egg-info
 

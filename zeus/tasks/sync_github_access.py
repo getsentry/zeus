@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from zeus.config import celery, db
+from zeus.config import db, queue
 from zeus.db.utils import create_or_update
 from zeus.models import Repository, RepositoryAccess, RepositoryProvider, User
 from zeus.vcs.providers.github import GitHubRepositoryProvider
@@ -65,7 +65,7 @@ def sync_repos_for_owner(
             ).delete(synchronize_session=False)
 
 
-@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True)
+@queue.task(max_retries=5, autoretry_for=(Exception,))
 def sync_github_access(user_id: UUID):
     user = User.query.get(user_id)
     if not user:

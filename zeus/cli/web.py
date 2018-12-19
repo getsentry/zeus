@@ -14,8 +14,6 @@ from .base import cli
 @click.option("--processes", default=1, type=int)
 @click.option("--threads", default=4, type=int)
 def web(host, port, processes, threads):
-    os.environ["PYTHONUNBUFFERED"] = "true"
-
     daemons = [
         (
             "web",

@@ -21,7 +21,7 @@ spec:
       - name: zeus
         image: gcr.io/zeus-176020/zeus:latest
         imagePullPolicy: Always
-        args: ["zeus", "worker", "--cron"]
+        args: ["zeus", "worker", "--scheduler"]
         env:
         - name: GC_PROJECT
           value: zeus-176020

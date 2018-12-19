@@ -2,13 +2,13 @@ from datetime import datetime, timezone
 from flask import current_app
 
 from zeus import auth
-from zeus.config import celery, db
+from zeus.config import db, queue
 from zeus.constants import Permission
 from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Repository, RepositoryStatus
 
 
-@celery.task(max_retries=5, autoretry_for=(Exception,))
+@queue.task(max_retries=5, autoretry_for=(Exception,))
 def import_repo(repo_id, parent=None):
     auth.set_current_tenant(auth.Tenant(access={repo_id: Permission.admin}))
 

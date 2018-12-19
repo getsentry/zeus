@@ -7,7 +7,7 @@ RUN groupadd -r zeus && useradd -r -m -g zeus zeus
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_ENV production
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED true
 
 # Sane defaults for pip
 ENV PIP_NO_CACHE_DIR off

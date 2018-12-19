@@ -26,7 +26,7 @@ class RepositoryBranchesResource(BaseRepositoryResource):
 
             vcs.ensure()
             result = vcs.get_known_branches()
-            redis.setex(cache_key, json.dumps(result), self.cache_expire)
+            redis.setex(cache_key, self.cache_expire, json.dumps(result))
         else:
             result = json.loads(result)
 

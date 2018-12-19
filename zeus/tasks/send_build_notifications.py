@@ -1,13 +1,13 @@
 from uuid import UUID
 
 from zeus import auth
-from zeus.config import celery
+from zeus.config import queue
 from zeus.constants import Result, Status
 from zeus.models import Build
 from zeus.notifications import email
 
 
-@celery.task(
+@queue.task(
     name="zeus.tasks.send_build_notifications",
     max_retries=None,
     autoretry_for=(Exception,),

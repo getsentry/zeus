@@ -3,7 +3,6 @@ import logging
 import raven
 import os
 import sys
-import tempfile
 
 from datetime import timedelta
 from flask import Flask
@@ -12,7 +11,7 @@ from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 
-from zeus.utils.celery import Celery
+from zeus.queue import Queue
 from zeus.utils.metrics import Metrics
 from zeus.utils.nplusone import NPlusOne
 from zeus.utils.redis import Redis
@@ -28,7 +27,6 @@ WORKSPACE_ROOT = os.path.expanduser(os.environ.get("WORKSPACE_ROOT", "~/.zeus/")
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 alembic = Alembic()
-celery = Celery()
 db = SQLAlchemy()
 mail = Mail()
 nplusone = NPlusOne()
@@ -36,6 +34,7 @@ redis = Redis()
 sentry = Sentry(logging=True, level=logging.ERROR, wrap_wsgi=True)
 ssl = SSL()
 metrics = Metrics()
+queue = Queue()
 
 
 def with_health_check(app):
@@ -159,32 +158,10 @@ def create_app(_read_config=True, **config):
         ROOT, "static", "asset-manifest.json"
     )
 
-    app.config["CELERY_ACCEPT_CONTENT"] = ["zeus_json", "json"]
-    app.config["CELERY_ACKS_LATE"] = True
-    app.config.setdefault("CELERY_BROKER_URL", app.config["REDIS_URL"])
-    app.config["CELERY_DEFAULT_QUEUE"] = "default"
-    app.config["CELERY_DEFAULT_EXCHANGE"] = "default"
-    app.config["CELERY_DEFAULT_EXCHANGE_TYPE"] = "direct"
-    app.config["CELERY_DEFAULT_ROUTING_KEY"] = "default"
-    app.config["CELERY_DISABLE_RATE_LIMITS"] = True
-    app.config["CELERY_EVENT_SERIALIZER"] = "zeus_json"
-    app.config["CELERY_IGNORE_RESULT"] = True
-    app.config["CELERY_IMPORTS"] = ("zeus.tasks",)
-    app.config["CELERY_RESULT_BACKEND"] = None
-    app.config["CELERY_RESULT_SERIALIZER"] = "zeus_json"
-    # app.config['CELERY_SEND_EVENTS'] = False
-    app.config["CELERY_TASK_RESULT_EXPIRES"] = 1
-    app.config["CELERY_TASK_SERIALIZER"] = "zeus_json"
-    # dont let any task run longer than 5 minutes
-    app.config["CELERY_TASK_SOFT_TIME_LIMIT"] = 300
-    # hard kill tasks after 6 minutes
-    app.config["CELERY_TASK_TIME_LIMIT"] = 360
-    # app.config['CELERYD_PREFETCH_MULTIPLIER'] = 1
-    # app.config['CELERYD_MAX_TASKS_PER_CHILD'] = 10000
-    app.config["CELERYBEAT_SCHEDULE_FILE"] = os.path.join(
-        tempfile.gettempdir(), "zeus-celerybeat"
-    )
-    app.config["CELERYBEAT_SCHEDULE"] = {
+    app.config["QUEUE_ADAPTER"] = "zeus.queue.adapters.rq.RqAdapter"
+    app.config["QUEUE_OPTIONS"] = {}
+
+    app.config["CRON_SCHEDULE"] = {
         "sync-all-repos": {
             "task": "zeus.sync_all_repos",
             "schedule": timedelta(minutes=5),
@@ -198,7 +175,6 @@ def create_app(_read_config=True, **config):
             "schedule": timedelta(minutes=60),
         },
     }
-    app.config["REDBEAT_REDIS_URL"] = app.config["REDIS_URL"]
 
     app.config["WORKSPACE_ROOT"] = WORKSPACE_ROOT
     app.config["REPO_ROOT"] = os.environ.get(
@@ -246,6 +222,11 @@ def create_app(_read_config=True, **config):
     if app.config.get("LOG_LEVEL"):
         app.logger.setLevel(getattr(logging, app.config["LOG_LEVEL"].upper()))
 
+    # we cheating and guessing at index
+    app.logger.handlers[-2].setFormatter(
+        logging.Formatter("[%(module)s] %(levelname)s %(message)s")
+    )
+
     # oauthlib compat
     app.config["GITHUB_CONSUMER_KEY"] = app.config["GITHUB_CLIENT_ID"]
     app.config["GITHUB_CONSUMER_SECRET"] = app.config["GITHUB_CLIENT_SECRET"]
@@ -270,7 +251,7 @@ def create_app(_read_config=True, **config):
 
     redis.init_app(app)
     mail.init_app(app)
-    celery.init_app(app, sentry)
+    queue.init_app(app)
 
     configure_webpack(app)
 

@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
-zeus = {editable = true, path = ".", extras = ['dev', 'test'] }
+zeus = {editable = true,path = ".",extras = ['dev', 'test']}
 
 [packages]
-zeus = {editable = true, path = "." }
+zeus = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"

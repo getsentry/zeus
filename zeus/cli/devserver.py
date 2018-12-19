@@ -19,8 +19,11 @@ DEFAULT_HOST_NAME = socket.gethostname().split(".", 1)[0].lower()
 @click.option("--ngrok-domain", default="zeus-{}".format(DEFAULT_HOST_NAME))
 @click.option("--pubsub/--no-pubsub", default=True)
 @click.option("--pubsub-port", default=8090)
-def devserver(environment, workers, port, ngrok, ngrok_domain, pubsub, pubsub_port):
-    os.environ.setdefault("FLASK_DEBUG", "1")
+@click.option("--debug/--no-debug", default=True)
+def devserver(
+    environment, workers, port, ngrok, ngrok_domain, pubsub, pubsub_port, debug
+):
+    os.environ["FLASK_DEBUG"] = "1" if debug else ""
     os.environ["NODE_ENV"] = environment
     if pubsub:
         os.environ["PUBSUB_ENDPOINT"] = "http://localhost:{}".format(pubsub_port)
@@ -51,7 +54,9 @@ def devserver(environment, workers, port, ngrok, ngrok_domain, pubsub, pubsub_po
         daemons.append(("pubsub", ["zeus", "pubsub", "--port={}".format(pubsub_port)]))
 
     if workers:
-        daemons.append(("worker", ["zeus", "worker", "--cron", "--log-level=INFO"]))
+        daemons.append(
+            ("worker", ["zeus", "worker", "--scheduler", "--log-level=INFO"])
+        )
     if ngrok:
         daemons.append(
             (
