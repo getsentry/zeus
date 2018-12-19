@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from flask import current_app
 
 from zeus import auth
@@ -25,7 +25,8 @@ def sync_repo(repo_id, max_log_passes=10, force=False):
     if (
         not force
         and repo.last_update_attempt
-        and repo.last_update_attempt > (timezone.now() - timedelta(minutes=60))
+        and repo.last_update_attempt
+        > (timezone.now() - current_app.config["REPO_SYNC_INTERVAL"])
     ):
         current_app.logger.warning(
             "Repository %s was synced recently, refusing to sync", repo.id
