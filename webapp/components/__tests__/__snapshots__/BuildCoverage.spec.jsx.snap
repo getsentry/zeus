@@ -2,10 +2,10 @@
 
 exports[`BuildCoverage renders with build 1`] = `
 <div
-  class="sc-bdVaJa dJIVuV"
+  class="sc-bdVaJa kkDDII"
 >
   <div
-    class="sc-iwsKbI iGcGwU sc-bdVaJa dJIVuV"
+    class="sc-iwsKbI iGcGwU sc-bdVaJa kkDDII"
   >
     <div
       class="sc-gZMcBi jtErZf"
@@ -169,10 +169,10 @@ exports[`BuildCoverage renders with build 1`] = `
 
 exports[`BuildCoverage renders without build 1`] = `
 <div
-  class="sc-bdVaJa dJIVuV"
+  class="sc-bdVaJa kkDDII"
 >
   <div
-    class="sc-iwsKbI iGcGwU sc-bdVaJa dJIVuV"
+    class="sc-iwsKbI iGcGwU sc-bdVaJa kkDDII"
   >
     <div
       class="sc-gZMcBi jtErZf"

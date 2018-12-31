@@ -310,7 +310,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                 >
                                   <styled.div>
                                     <div
-                                      className="sc-kgoBCf bwYjCS"
+                                      className="sc-kgoBCf urgc"
                                     >
                                       <Styled(Component)>
                                         <Component
@@ -425,7 +425,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                             >
                               <styled.div>
                                 <div
-                                  className="sc-kgoBCf bwYjCS"
+                                  className="sc-kgoBCf urgc"
                                 >
                                   <Styled(Component)>
                                     <Component
@@ -1110,7 +1110,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                 >
                                   <styled.div>
                                     <div
-                                      className="sc-kgoBCf bwYjCS"
+                                      className="sc-kgoBCf urgc"
                                     >
                                       <Styled(Component)>
                                         <Component
@@ -2238,7 +2238,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                             >
                               <styled.div>
                                 <div
-                                  className="sc-kgoBCf bwYjCS"
+                                  className="sc-kgoBCf urgc"
                                 >
                                   <Styled(Component)>
                                     <Component

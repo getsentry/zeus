@@ -433,7 +433,7 @@ exports[`UserBuildList fetches builds 1`] = `
                     >
                       <styled.div>
                         <div
-                          className="sc-kpOJdX bOAvbi"
+                          className="sc-kpOJdX fNSmRS"
                         >
                           <BuildListBody
                             buildList={Array []}
@@ -2177,7 +2177,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                     >
                       <styled.div>
                         <div
-                          className="sc-kpOJdX bOAvbi"
+                          className="sc-kpOJdX fNSmRS"
                         >
                           <BuildListBody
                             buildList={
