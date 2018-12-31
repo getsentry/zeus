@@ -1,10 +1,11 @@
 from functools import reduce
 from itertools import groupby
+from operator import and_, or_
 from typing import Any, List, Mapping, Tuple
 from sqlalchemy.orm import contains_eager, subqueryload_all
 
 from zeus.constants import Status, Result
-from zeus.models import Build, Repository, Source
+from zeus.models import Build, Revision, Source
 
 
 def merge_builds(target: Build, build: Build) -> Build:
@@ -80,35 +81,41 @@ def merge_build_group(build_group: Tuple[Any, List[Build]]) -> Build:
     return reduce(merge_builds, latest_builds, build)
 
 
-def fetch_builds_for_revisions(
-    repo: Repository, revision_shas: List[str]
-) -> Mapping[str, Build]:
+def fetch_builds_for_revisions(revisions: List[Revision]) -> Mapping[str, Build]:
     # we query extra builds here, but its a lot easier than trying to get
     # sqlalchemy to do a ``select (subquery)`` clause and maintain tenant
     # constraints
+    if not revisions:
+        return {}
+
+    lookups = []
+    for revision in revisions:
+        lookups.append(
+            and_(
+                Source.repository_id == revision.repository_id,
+                Source.revision_sha == revision.sha,
+            )
+        )
+
     builds = (
         Build.query.options(
             contains_eager("source"),
             contains_eager("source").joinedload("author"),
-            contains_eager("source").joinedload("revision"),
+            contains_eager("source").joinedload("revision", innerjoin=True),
             subqueryload_all("stats"),
         )
         .join(Source, Build.source_id == Source.id)
-        .filter(
-            Build.repository_id == repo.id,
-            Source.repository_id == repo.id,
-            Source.revision_sha.in_(revision_shas),
-            Source.patch_id == None,  # NOQA
-        )
+        .filter(Source.patch_id == None, reduce(or_, lookups))  # NOQA
         .order_by(Source.revision_sha)
     )
+    groups = groupby(
+        builds, lambda build: (build.source.repository_id, build.source.revision_sha)
+    )
+    return [(ident, merge_build_group(list(group))) for ident, group in groups]
 
-    groups = groupby(builds, lambda build: build.source.revision_sha)
-    return [(sha, merge_build_group(list(group))) for sha, group in groups]
 
-
-def fetch_build_for_revision(repo: Repository, revision_sha: str) -> Build:
-    builds = fetch_builds_for_revisions(repo, [revision_sha])
+def fetch_build_for_revision(revision: Revision) -> Build:
+    builds = fetch_builds_for_revisions(revision)
     if len(builds) < 1:
         return None
 

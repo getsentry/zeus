@@ -119,8 +119,8 @@ def default_parent_revision(default_author, default_repo, default_revision):
 
 
 @pytest.fixture(scope="function")
-def default_source(default_revision, default_patch):
-    return factories.SourceFactory(revision=default_revision, patch=default_patch)
+def default_source(default_revision):
+    return factories.SourceFactory(revision=default_revision)
 
 
 @pytest.fixture(scope="function")
@@ -129,9 +129,13 @@ def default_patch(default_parent_revision):
 
 
 @pytest.fixture(scope="function")
-def default_change_request(default_author, default_parent_revision):
+def default_change_request(default_author, default_revision, default_parent_revision):
     return factories.ChangeRequestFactory(
-        author=default_author, parent_revision=default_parent_revision
+        github=True,
+        external_id="1",
+        author=default_author,
+        parent_revision=default_parent_revision,
+        head_revision=default_revision,
     )
 
 

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
-import {loadChangeRequestsForRepository} from '../actions/changeRequests';
+import {fetchChangeRequests} from '../actions/changeRequests';
 import {subscribe} from '../decorators/stream';
 
 import AsyncPage from '../components/AsyncPage';
@@ -31,10 +31,10 @@ class ChangeRequestListBody extends AsyncComponent {
   fetchData() {
     return new Promise(resolve => {
       let {repo} = this.props;
-      this.props.loadChangeRequestsForRepository(
-        repo.full_name,
-        this.props.location.query
-      );
+      this.props.fetchChangeRequests({
+        repository: repo.full_name,
+        ...this.props.location.query
+      });
       return resolve();
     });
   }
@@ -64,7 +64,7 @@ const DecoratedRepositoryChangeRequestList = connect(
     links: changeRequests.links,
     loading: !changeRequests.loaded
   }),
-  {loadChangeRequestsForRepository}
+  {fetchChangeRequests}
 )(
   subscribe(({repo}) => [`repos:${repo.full_name}:change-requests`])(
     RepositoryChangeRequestList
