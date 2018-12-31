@@ -1,15 +1,33 @@
 from flask import request
+from marshmallow import fields, pre_dump
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 
 from zeus import auth
 from zeus.config import db
 from zeus.models import Author, ChangeRequest, Email, Repository
+from zeus.utils.builds import fetch_builds_for_revisions
 
 from .base_repository import BaseRepositoryResource
-from ..schemas import ChangeRequestSchema, ChangeRequestCreateSchema
+from ..schemas import BuildSchema, ChangeRequestSchema, ChangeRequestCreateSchema
 
-change_requests_schema = ChangeRequestSchema(many=True, strict=True)
+
+class ChangeRequestWithBuildSchema(ChangeRequestSchema):
+    latest_build = fields.Nested(
+        BuildSchema(exclude=["repository"]), dump_only=True, required=False
+    )
+
+    @pre_dump(pass_many=True)
+    def get_latest_build(self, results, many):
+        if results:
+            builds = dict(
+                fetch_builds_for_revisions(
+                    self.context["repository"], [d.head_revision_sha for d in results]
+                )
+            )
+            for item in results:
+                item.latest_build = builds.get(item.head_revision_sha)
+        return results
 
 
 class RepositoryChangeRequestsResource(BaseRepositoryResource):
@@ -25,7 +43,7 @@ class RepositoryChangeRequestsResource(BaseRepositoryResource):
         query = (
             ChangeRequest.query.options(
                 joinedload("head_revision"),
-                joinedload("parent_revision"),
+                joinedload("parent_revision", innerjoin=True),
                 joinedload("author"),
             )
             .filter(ChangeRequest.repository_id == repo.id)
@@ -45,7 +63,10 @@ class RepositoryChangeRequestsResource(BaseRepositoryResource):
                 )
             )
 
-        return self.paginate_with_schema(change_requests_schema, query)
+        schema = ChangeRequestWithBuildSchema(
+            many=True, strict=True, context={"repository": repo}
+        )
+        return self.paginate_with_schema(schema, query)
 
     def post(self, repo: Repository):
         """

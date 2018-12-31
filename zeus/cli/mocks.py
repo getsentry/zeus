@@ -87,12 +87,16 @@ def mock_build(
     parent_revision: models.Revision = None,
     user_ids=(),
     file_list=(),
+    with_change_request=True,
 ):
     if user_ids and randint(0, 1) == 0:
         chosen_user_id = choice(user_ids)
         author = mock_author(repo, chosen_user_id)
     else:
         author = None
+
+    if with_change_request and parent_revision is None:
+        parent_revision = factories.RevisionFactory.create(repository=repo)
 
     revision = factories.RevisionFactory.create(
         repository=repo,
@@ -105,6 +109,16 @@ def mock_build(
         if parent_revision and random() > 0.8
         else None,
     )
+    if with_change_request:
+        factories.ChangeRequestFactory.create(
+            repository=repo,
+            head_revision=revision,
+            head_revision_sha=revision.sha,
+            parent_revision=parent_revision,
+            github=True,
+            **{"author": author} if author else {}
+        )
+
     parent_revision = revision
 
     build = factories.BuildFactory.create(source=source, travis=True)

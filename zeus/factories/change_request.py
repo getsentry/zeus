@@ -35,8 +35,8 @@ class ChangeRequestFactory(ModelFactory):
         github = factory.Trait(
             provider="github",
             external_id=factory.LazyAttribute(lambda o: str(randint(10000, 999999))),
-            head_revision_sha=factory.SelfAttribute("head_revision.sha"),
             head_revision=factory.SubFactory("zeus.factories.RevisionFactory"),
+            head_revision_sha=factory.SelfAttribute("head_revision.sha"),
             url=factory.LazyAttribute(
                 lambda o: "https://github.com/{}/{}/issues/{}".format(
                     o.repository.owner_name, o.repository.name, o.external_id
