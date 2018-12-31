@@ -12,7 +12,7 @@
         ".vscode/tags": true,
         ".mypy_cache": true,
         ".venv": true,
-        "kubernetes/zeus/dist": true,
+        "dist": true,
     },
     "files.trimTrailingWhitespace": false,
     "files.trimFinalNewlines": false,

@@ -3,7 +3,7 @@ from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Email, Repository, Source, User
+from zeus.models import Author, Build, Email, Repository, User
 
 from .base import Resource
 from ..schemas import BuildSchema
@@ -58,14 +58,10 @@ class BuildIndexResource(Resource):
                     )
                 )
             )
-
         repository = request.args.get("repository")
         if repository:
             repo = Repository.from_full_name(repository)
-            print(repo)
             if not repo:
                 return self.respond([])
             query = query.filter(Build.repository_id == repo.id)
-            if user:
-                query = query.filter(Source.repository_id == repo.id)
         return self.paginate_with_schema(builds_schema, query)
