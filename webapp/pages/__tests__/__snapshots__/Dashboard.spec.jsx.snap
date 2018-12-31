@@ -290,10 +290,12 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                           <Connect(Connect(StreamSubscription))>
                             <Connect(StreamSubscription)
                               buildList={Array []}
+                              fetchBuilds={[Function]}
                               loading={false}
                             >
                               <StreamSubscription
                                 buildList={Array []}
+                                fetchBuilds={[Function]}
                                 loading={false}
                                 subscribe={[Function]}
                                 unsubscribe={[Function]}
@@ -301,6 +303,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                 <BuildListSection
                                   buildList={Array []}
                                   error={false}
+                                  fetchBuilds={[Function]}
                                   loading={false}
                                   subscribe={[Function]}
                                   unsubscribe={[Function]}
@@ -1087,10 +1090,12 @@ exports[`Dashboard renders with repos loaded 1`] = `
                           <Connect(Connect(StreamSubscription))>
                             <Connect(StreamSubscription)
                               buildList={Array []}
+                              fetchBuilds={[Function]}
                               loading={true}
                             >
                               <StreamSubscription
                                 buildList={Array []}
+                                fetchBuilds={[Function]}
                                 loading={true}
                                 subscribe={[Function]}
                                 unsubscribe={[Function]}
@@ -1098,6 +1103,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                 <BuildListSection
                                   buildList={Array []}
                                   error={false}
+                                  fetchBuilds={[Function]}
                                   loading={true}
                                   subscribe={[Function]}
                                   unsubscribe={[Function]}
