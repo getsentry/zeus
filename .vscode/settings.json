@@ -10,7 +10,9 @@
         "*.log": true,
         "*.egg-info": true,
         ".vscode/tags": true,
-        ".mypy_cache": true
+        ".mypy_cache": true,
+        ".venv": true,
+        "kubernetes/zeus/dist": true,
     },
     "files.trimTrailingWhitespace": false,
     "files.trimFinalNewlines": false,

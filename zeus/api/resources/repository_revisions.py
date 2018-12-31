@@ -80,7 +80,7 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
 
         revisions, has_more = self.fetch_revisions(repo, page, parent=parent)
         if revisions:
-            builds = dict(fetch_builds_for_revisions(repo, revisions))
+            builds = dict(fetch_builds_for_revisions(repo, [r.sha for r in revisions]))
             for revision in revisions:
                 revision.latest_build = builds.get(revision.sha)
 

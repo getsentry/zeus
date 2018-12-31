@@ -1,12 +1,13 @@
 from functools import reduce
 from itertools import groupby
+from typing import Any, List, Mapping, Tuple
 from sqlalchemy.orm import contains_eager, subqueryload_all
 
 from zeus.constants import Status, Result
-from zeus.models import Build, Source
+from zeus.models import Build, Repository, Source
 
 
-def merge_builds(target, build):
+def merge_builds(target: Build, build: Build) -> Build:
     # Store the original build so we can retrieve its ID or number later, or
     # show a list of all builds in the UI
     target.original.append(build)
@@ -58,7 +59,7 @@ def merge_builds(target, build):
     return target
 
 
-def merge_build_group(build_group):
+def merge_build_group(build_group: Tuple[Any, List[Build]]) -> Build:
     if len(build_group) == 1:
         build = build_group[0]
         build.original = [build]
@@ -79,7 +80,9 @@ def merge_build_group(build_group):
     return reduce(merge_builds, latest_builds, build)
 
 
-def fetch_builds_for_revisions(repo, revisions):
+def fetch_builds_for_revisions(
+    repo: Repository, revision_shas: List[str]
+) -> Mapping[str, Build]:
     # we query extra builds here, but its a lot easier than trying to get
     # sqlalchemy to do a ``select (subquery)`` clause and maintain tenant
     # constraints
@@ -94,7 +97,7 @@ def fetch_builds_for_revisions(repo, revisions):
         .filter(
             Build.repository_id == repo.id,
             Source.repository_id == repo.id,
-            Source.revision_sha.in_([r.sha for r in revisions]),
+            Source.revision_sha.in_(revision_shas),
             Source.patch_id == None,  # NOQA
         )
         .order_by(Source.revision_sha)
@@ -104,8 +107,8 @@ def fetch_builds_for_revisions(repo, revisions):
     return [(sha, merge_build_group(list(group))) for sha, group in groups]
 
 
-def fetch_build_for_revision(repo, revision):
-    builds = fetch_builds_for_revisions(revision.repository, [revision])
+def fetch_build_for_revision(repo: Repository, revision_sha: str) -> Build:
+    builds = fetch_builds_for_revisions(repo, [revision_sha])
     if len(builds) < 1:
         return None
 
