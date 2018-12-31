@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
-import {loadBuildsForUser} from '../actions/builds';
+import {fetchBuilds} from '../actions/builds';
 import {subscribe} from '../decorators/stream';
 
 import AsyncPage from '../components/AsyncPage';
@@ -37,7 +37,8 @@ class BuildListBody extends AsyncComponent {
 
   fetchData() {
     return new Promise(resolve => {
-      this.props.loadBuildsForUser('me', {
+      this.props.fetchBuilds({
+        user: 'me',
         per_page: 25,
         page: this.props.location.query.page || 1
       });
@@ -72,5 +73,5 @@ export default connect(
       loading: !builds.loaded
     };
   },
-  {loadBuildsForUser}
+  {fetchBuilds}
 )(subscribe(() => ['builds'])(UserBuildList));

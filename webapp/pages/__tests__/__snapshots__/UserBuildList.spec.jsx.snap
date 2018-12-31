@@ -36,7 +36,6 @@ exports[`UserBuildList fetches builds 1`] = `
   >
     <Connect(StreamSubscription)
       buildList={Array []}
-      loadBuildsForUser={[Function]}
       loading={true}
       location={
         Object {
@@ -48,7 +47,6 @@ exports[`UserBuildList fetches builds 1`] = `
     >
       <StreamSubscription
         buildList={Array []}
-        loadBuildsForUser={[Function]}
         loading={true}
         location={
           Object {
@@ -62,7 +60,6 @@ exports[`UserBuildList fetches builds 1`] = `
       >
         <UserBuildList
           buildList={Array []}
-          loadBuildsForUser={[Function]}
           loading={true}
           location={
             Object {
@@ -438,7 +435,6 @@ exports[`UserBuildList fetches builds 1`] = `
                           <BuildListBody
                             buildList={Array []}
                             error={false}
-                            loadBuildsForUser={[Function]}
                             loading={true}
                             location={
                               Object {
@@ -1630,7 +1626,6 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
         ]
       }
       links={Object {}}
-      loadBuildsForUser={[Function]}
       loading={false}
       location={
         Object {
@@ -1717,7 +1712,6 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
           ]
         }
         links={Object {}}
-        loadBuildsForUser={[Function]}
         loading={false}
         location={
           Object {
@@ -1806,7 +1800,6 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
             ]
           }
           links={Object {}}
-          loadBuildsForUser={[Function]}
           loading={false}
           location={
             Object {
@@ -2257,7 +2250,6 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                             }
                             error={false}
                             links={Object {}}
-                            loadBuildsForUser={[Function]}
                             loading={false}
                             location={
                               Object {
@@ -3359,7 +3351,6 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                 }
                                 error={false}
                                 links={Object {}}
-                                loadBuildsForUser={[Function]}
                                 loading={false}
                                 location={
                                   Object {

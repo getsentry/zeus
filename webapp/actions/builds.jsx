@@ -43,13 +43,13 @@ export const loadBuilds = items => {
   };
 };
 
-export const loadBuildsForRepository = (repoFullName, query) => {
+export const fetchbuilds = query => {
   return dispatch => {
     dispatch({
       type: PRE_LOAD_BUILD_LIST
     });
     api
-      .get(`/repos/${repoFullName}/builds`, {
+      .get(`/builds`, {
         query
       })
       .then(items => {
@@ -58,16 +58,5 @@ export const loadBuildsForRepository = (repoFullName, query) => {
           items
         });
       });
-  };
-};
-
-export const loadBuildsForUser = (userID = 'me', query) => {
-  return dispatch => {
-    api.get(`/users/${userID}/builds`, {query}).then(items => {
-      dispatch({
-        type: LOAD_BUILD_LIST,
-        items
-      });
-    });
   };
 };

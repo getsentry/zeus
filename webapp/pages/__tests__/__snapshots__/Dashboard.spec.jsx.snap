@@ -290,12 +290,10 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                           <Connect(Connect(StreamSubscription))>
                             <Connect(StreamSubscription)
                               buildList={Array []}
-                              loadBuildsForUser={[Function]}
                               loading={false}
                             >
                               <StreamSubscription
                                 buildList={Array []}
-                                loadBuildsForUser={[Function]}
                                 loading={false}
                                 subscribe={[Function]}
                                 unsubscribe={[Function]}
@@ -303,7 +301,6 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                 <BuildListSection
                                   buildList={Array []}
                                   error={false}
-                                  loadBuildsForUser={[Function]}
                                   loading={false}
                                   subscribe={[Function]}
                                   unsubscribe={[Function]}
@@ -1090,12 +1087,10 @@ exports[`Dashboard renders with repos loaded 1`] = `
                           <Connect(Connect(StreamSubscription))>
                             <Connect(StreamSubscription)
                               buildList={Array []}
-                              loadBuildsForUser={[Function]}
                               loading={true}
                             >
                               <StreamSubscription
                                 buildList={Array []}
-                                loadBuildsForUser={[Function]}
                                 loading={true}
                                 subscribe={[Function]}
                                 unsubscribe={[Function]}
@@ -1103,7 +1098,6 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                 <BuildListSection
                                   buildList={Array []}
                                   error={false}
-                                  loadBuildsForUser={[Function]}
                                   loading={true}
                                   subscribe={[Function]}
                                   unsubscribe={[Function]}
