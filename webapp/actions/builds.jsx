@@ -43,7 +43,7 @@ export const loadBuilds = items => {
   };
 };
 
-export const fetchbuilds = query => {
+export const fetchBuilds = query => {
   return dispatch => {
     dispatch({
       type: PRE_LOAD_BUILD_LIST
