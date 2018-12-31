@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 
 import ViewAllIcon from 'react-icons/lib/md/input';
 
-import {loadBuildsForUser} from '../actions/builds';
+import {fetchBuilds} from '../actions/builds';
 import {subscribe} from '../decorators/stream';
 
 import AsyncPage from '../components/AsyncPage';
@@ -110,7 +110,7 @@ class BuildListSection extends AsyncComponent {
 
   fetchData() {
     return new Promise(resolve => {
-      this.props.loadBuildsForUser('me', {per_page: 10});
+      this.props.fetchBuilds({user: 'me', per_page: 10});
       return resolve();
     });
   }
@@ -155,7 +155,7 @@ const WrappedBuildList = connect(
       loading: !builds.loaded
     };
   },
-  {loadBuildsForUser}
+  {fetchBuilds}
 )(subscribe(() => ['builds'])(BuildListSection));
 
 export default class Dashboard extends AsyncPage {

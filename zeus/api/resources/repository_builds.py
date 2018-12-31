@@ -26,9 +26,11 @@ class RepositoryBuildsResource(BaseRepositoryResource):
 
         query = (
             Build.query.options(
-                joinedload("source"),
-                joinedload("source").joinedload("author"),
-                joinedload("source").joinedload("revision", innerjoin=True),
+                joinedload("source", innerjoin=True),
+                joinedload("source", innerjoin=True).joinedload("author"),
+                joinedload("source", innerjoin=True).joinedload(
+                    "revision", innerjoin=True
+                ),
                 subqueryload_all("stats"),
             )
             .filter(Build.repository_id == repo.id)
@@ -37,11 +39,11 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         show = request.args.get("show")
         if show == "mine":
             query = query.filter(
-                Source.author_id.in_(
+                Build.author_id.in_(
                     db.session.query(Author.id).filter(
                         Author.email.in_(
                             db.session.query(Email.email).filter(
-                                Email.user_id == user.id
+                                Email.user_id == user.id, Email.verified == True  # NOQA
                             )
                         )
                     )
