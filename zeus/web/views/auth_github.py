@@ -2,7 +2,7 @@ from flask import current_app, redirect, Response, request, session, url_for
 from flask.views import MethodView
 from requests_oauthlib import OAuth2Session
 from sqlalchemy.exc import IntegrityError
-
+from oauthlib.oauth2.rfc6749.errors import OAuth2Error
 from zeus import auth
 from zeus.config import db
 from zeus.constants import GITHUB_AUTH_URI, GITHUB_DEFAULT_SCOPES, GITHUB_TOKEN_URI
@@ -44,11 +44,16 @@ class GitHubCompleteView(MethodView):
     def get(self):
         # TODO(dcramer): handle errors
         oauth = get_oauth_session(state=session.pop("oauth_state", None))
-        resp = oauth.fetch_token(
-            GITHUB_TOKEN_URI,
-            client_secret=current_app.config["GITHUB_CLIENT_SECRET"],
-            authorization_response=request.url,
-        )
+        try:
+            resp = oauth.fetch_token(
+                GITHUB_TOKEN_URI,
+                client_secret=current_app.config["GITHUB_CLIENT_SECRET"],
+                authorization_response=request.url,
+            )
+        except OAuth2Error:
+            current_app.logger.exception("oauth.error")
+            # redirect, as this is likely temporary based on server data
+            return redirect(auth.get_redirect_target(clear=True) or "/")
 
         if resp is None or resp.get("access_token") is None:
             return Response(

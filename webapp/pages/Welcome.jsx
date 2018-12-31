@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import {Logo} from '../assets/Logo';
 import BuildDetailsScreenshot from '../assets/screenshots/BuildDetails.png';
 import GitHubLoginButton from '../components/GitHubLoginButton';
+import Section from '../components/Section';
 import SyntaxHighlight from '../components/SyntaxHighlight';
 
 const TRAVIS_EXAMPLE = `
@@ -47,7 +48,7 @@ export default class Welcome extends Component {
         </Hero>
         <Body>
           <Container>
-            <Section>
+            <Section style={{marginBottom: 40}}>
               <h3>Setup is Easy</h3>
               <ol>
                 <li>
@@ -88,7 +89,7 @@ export default class Welcome extends Component {
                 GitHub
               </p>
             </Section>
-            <Section>
+            <Section style={{marginBottom: 40}}>
               <h3>Zeus is Open Source</h3>
               <p>
                 The entirety of Zeus &mdash; including the infrastructure that runs
@@ -171,14 +172,6 @@ const HeroImage = styled.div`
 
 const Body = styled.div`
   margin-bottom: 40px;
-`;
-
-const Section = styled.div`
-  margin-bottom: 40px;
-
-  > ol > li {
-    margin-bottom: 20px;
-  }
 `;
 
 const GetStarted = styled.div`

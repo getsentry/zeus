@@ -21,6 +21,10 @@ class Login extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    return this.props.isAuthenticated === nextProps.isAuthenticated;
+  }
+
   componentDidUpdate(nextProps) {
     if (nextProps.isAuthenticated) {
       this.context.router.push('/');
@@ -45,9 +49,6 @@ class Login extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    isAuthenticated: state.auth.isAuthenticated
-  }),
-  {}
-)(Login);
+export default connect(({auth}) => ({
+  isAuthenticated: auth.isAuthenticated
+}))(Login);

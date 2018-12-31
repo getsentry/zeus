@@ -22,8 +22,7 @@ install-js-requirements:
 test:
 	pipenv run py.test
 
-reset-db:
-	$(MAKE) drop-db
+db:
 	$(MAKE) create-db
 	pipenv run zeus db upgrade
 
@@ -32,6 +31,8 @@ drop-db:
 
 create-db:
 	createdb -E utf-8 zeus
+
+reset-db: drop-db db
 
 build-docker-image:
 	docker build -t zeus .
