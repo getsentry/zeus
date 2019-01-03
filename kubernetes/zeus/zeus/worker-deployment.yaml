@@ -79,7 +79,7 @@ spec:
               name: mail
               key: password
         - name: MAIL_DEFAULT_SENDER
-          value: 'noreply@mg.zeus.ci'
+          value: 'Zeus <noreply@mg.zeus.ci>'
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: '/var/run/secret/cloud.google.com/service-account.json'
         - name: ALLOWED_ORIGINS
