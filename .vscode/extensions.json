@@ -8,6 +8,7 @@
         "dbaeumer.vscode-eslint",
         "lextudio.restructuredtext",
         "PeterJausovec.vscode-docker",
-        "DavidAnson.vscode-markdownlint"
+        "DavidAnson.vscode-markdownlint",
+        "bungcip.better-toml"
     ]
 }
