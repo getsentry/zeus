@@ -4,6 +4,8 @@ FROM python:3.7-slim-stretch
 # add our user and group first to make sure their IDs get assigned consistently
 RUN groupadd -r zeus && useradd -r -m -g zeus zeus
 
+ENV PATH /usr/src/zeus/bin:/root/.poetry/bin:$PATH
+
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_ENV production
 
@@ -40,6 +42,7 @@ ENV YARN_VERSION 1.7.0
 RUN set -x \
     && export NODE_VERSION=$(cat /usr/src/zeus/.nvmrc) \
     && export GNUPGHOME="$(mktemp -d)" \
+    && export NPM_CONFIG_CACHE="$(mktemp -d)" \
     && apt-get update && apt-get install -y --no-install-recommends dirmngr gnupg && rm -rf /var/lib/apt/lists/* \
     && for key in \
       94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
@@ -66,33 +69,27 @@ RUN set -x \
     && rm -rf "$GNUPGHOME" "node-v$NODE_VERSION-linux-x64.tar.gz" SHASUMS256.txt.asc \
     && apt-get purge -y --auto-remove dirmngr gnupg \
     && npm install -g yarn@$YARN_VERSION \
-    && npm cache clear --force
+    && rm -r "$NPM_CONFIG_CACHE"
 
-COPY requirements-base.txt /usr/src/zeus/
-RUN pip install -r requirements-base.txt
+RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/0.12.10/get-poetry.py | python \
+    && poetry config settings.virtualenvs.create false
 
-COPY requirements-dev.txt /usr/src/zeus/
-RUN pip install -r requirements-dev.txt
-
-COPY requirements-test.txt /usr/src/zeus/
-RUN pip install -r requirements-test.txt
-
-RUN pip install -e git+https://github.com/pallets/werkzeug.git@8eb665a94aea9d9b56371663075818ca2546e152#egg=werkzeug
+COPY pyproject.toml /usr/src/zeus/
+COPY poetry.lock /usr/src/zeus/
+RUN poetry install --no-dev
 
 COPY yarn.lock /usr/src/zeus/
 COPY package.json /usr/src/zeus/
-RUN yarn install --production --pure-lockfile --ignore-optional \
-    && yarn cache clean
+RUN export YARN_CACHE_FOLDER="$(mktemp -d)" \
+    && yarn install --production --pure-lockfile --ignore-optional \
+    && rm -r "$YARN_CACHE_FOLDER"
 
 COPY . /usr/src/zeus
-RUN pip install -e .
 RUN node_modules/.bin/webpack -p
 
 ENV WORKSPACE_ROOT /workspace
 ENV REPO_ROOT /workspace/repos
 RUN mkdir -p $WORKSPACE_ROOT $REPO_ROOT
-
-ENV PATH /usr/src/zeus/bin:$PATH
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080

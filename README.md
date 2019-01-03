@@ -80,24 +80,30 @@ They should be submitted with the ``application/x-webpack-stats+json`` type.
 - Node
 - Postgres 9.4+
 
+Note: If you're using pyenv for Python and macOS Mojave, you might need to run the following to install 3.7.1:
+
+```shell
+sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+```
+
 ### Setup
 
 ```shell
-# install pipenv
-brew update && brew install pipenv
+# install poetry
+curl -sSL https://raw.githubusercontent.com/sdispater/poetry/0.12.10/get-poetry.py | python
 
 # load dependencies
 make
 
 # initialize config
-pipenv run zeus init
+poetry run zeus init
 ```
 
 Note, before running any future Python commands (including ``zeus``), you'll
 need to activate the environment:
 
 ```shell
-pipenv shell
+poetry shell
 ```
 
 You can also setup [direnv](https://direnv.net/) to automatically activate the environment.
@@ -105,7 +111,7 @@ You can also setup [direnv](https://direnv.net/) to automatically activate the e
 Once dependencies are resolved, bootstrap the database (see ``Makefile`` for details):
 
 ```shell
-make reset-db
+make db
 ```
 
 Finally, launch the webserver:
@@ -116,12 +122,6 @@ zeus devserver
 # or alternatively, with workers:
 zeus devserver --workers
 ```
-### Managing Python dependencies
-
-We use Pipenv for environment management, but due to the way Docker layering works, we dont declare dependencies inside of ``Pipfile``. This means adding a new dependency has an extra step.
-
-- Add the dependency to the appropriate ``requirements-[env].txt`` file
-- Run ``pipenv update``
 
 ### Getting some data
 

@@ -2,7 +2,7 @@ develop: setup-git install-requirements
 
 upgrade: install-requirements
 	createdb -E utf-8 zeus || true
-	pipenv run zeus db upgrade
+	poetry run zeus db upgrade
 
 setup-git:
 	pip install "pre-commit>=1.12.0,<1.13.0"
@@ -14,17 +14,17 @@ setup-git:
 install-requirements: install-python-requirements install-js-requirements
 
 install-python-requirements:
-	pipenv install --dev
+	poetry install --extras=test
 
 install-js-requirements:
 	yarn install
 
 test:
-	pipenv run py.test
+	poetry run py.test
 
 db:
 	$(MAKE) create-db
-	pipenv run zeus db upgrade
+	poetry run zeus db upgrade
 
 drop-db:
 	dropdb --if-exists zeus
