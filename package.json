@@ -58,7 +58,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-chartjs-2": "^2.7.4",
-    "react-dev-utils": "^3.0.2",
+    "react-dev-utils": "^3.1.2",
     "react-document-title": "^2.0.3",
     "react-dom": "16.4.2",
     "react-gravatar": "^2.6.3",
