@@ -115,7 +115,7 @@ def fetch_builds_for_revisions(revisions: List[Revision]) -> Mapping[str, Build]
 
 
 def fetch_build_for_revision(revision: Revision) -> Build:
-    builds = fetch_builds_for_revisions(revision)
+    builds = fetch_builds_for_revisions([revision])
     if len(builds) < 1:
         return None
 
