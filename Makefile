@@ -35,7 +35,10 @@ create-db:
 reset-db: drop-db db
 
 build-docker-image:
-	docker build -t zeus .
+	docker build \
+		-t zeus \
+		--build-arg BUILD_REVISION=$(shell git rev-parse HEAD | tr -d '\n') \
+		.
 
 run-docker-image:
 	docker rm zeus || exit 0
