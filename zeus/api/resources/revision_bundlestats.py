@@ -15,7 +15,7 @@ class RevisionBundleStatsResource(BaseRevisionResource):
         """
         Return bundle stats for a given revision.
         """
-        build = fetch_build_for_revision(revision.repository, revision)
+        build = fetch_build_for_revision(revision)
         if not build:
             return self.respond(status=404)
 

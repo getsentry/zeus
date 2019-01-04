@@ -23,7 +23,7 @@ class RevisionArtifactsResource(BaseRevisionResource):
         """
         Return all artifacts of all builds in a revision.
         """
-        build = fetch_build_for_revision(revision.repository, revision)
+        build = fetch_build_for_revision(revision)
         if not build:
             return self.respond(status=404)
 
