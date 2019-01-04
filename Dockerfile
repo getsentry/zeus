@@ -87,6 +87,7 @@ RUN export YARN_CACHE_FOLDER="$(mktemp -d)" \
     && rm -r "$YARN_CACHE_FOLDER"
 
 COPY . /usr/src/zeus
+# we run poetry install again to ensure the 'zeus' module gets installed
 RUN poetry install --no-dev
 RUN node_modules/.bin/webpack -p
 
