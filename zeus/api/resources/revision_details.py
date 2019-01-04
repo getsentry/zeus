@@ -15,7 +15,7 @@ class RevisionDetailsResource(BaseRevisionResource):
         """
         Return the joined build status of a revision.
         """
-        build = fetch_build_for_revision(revision.repository, revision)
+        build = fetch_build_for_revision(revision)
         if not build:
             return self.respond(status=404)
 
