@@ -4,9 +4,6 @@ FROM python:3.7-slim-stretch
 # add our user and group first to make sure their IDs get assigned consistently
 RUN groupadd -r zeus && useradd -r -m -g zeus zeus
 
-ARG BUILD_REVISION
-ENV BUILD_REVISION $BUILD_REVISION
-
 ENV PATH /usr/src/zeus/bin:/root/.poetry/bin:$PATH
 
 ENV NVM_DIR /usr/local/nvm
@@ -97,6 +94,9 @@ RUN node_modules/.bin/webpack -p
 ENV WORKSPACE_ROOT /workspace
 ENV REPO_ROOT /workspace/repos
 RUN mkdir -p $WORKSPACE_ROOT $REPO_ROOT
+
+ARG BUILD_REVISION
+ENV BUILD_REVISION $BUILD_REVISION
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
