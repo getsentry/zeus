@@ -36,6 +36,7 @@ celery-redbeat = "~0.11.0"
 cryptography = "~2.2.1"
 cssselect = "~1.0.1"
 cssutils = "~1.0.2"
+factory_boy = "~2.8.1"
 flask-mail = "~0.9.1"
 flask = "~0.12.3"
 google-cloud-storage = "~1.4.0"
@@ -58,7 +59,6 @@ flake8 = "=3.5.0"
 ipython = "~6.1.0"
 pycodestyle = "=2.3.1"
 exam = "~0.10.6"
-factory_boy = "~2.8.1"
 
 [tool.poetry.extras]
 test = [
