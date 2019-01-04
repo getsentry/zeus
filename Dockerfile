@@ -59,7 +59,9 @@ RUN set -x \
       114F43EE0176B71C7BC219DD50A3051F888C628D \
       7937DFD2AB06298B2293C3187D33FF9D0246406D \
     ; do \
-      gpg --batch --keyserver ipv4.pool.sks-keyservers.net --recv-keys "$key"; \
+      gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" || \
+      gpg --batch --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "$key" || \
+      gpg --batch --keyserver hkp://pgp.mit.edu:80 --recv-keys "$key" ; \
     done \
     && wget --no-verbose "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
     && wget --no-verbose "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
