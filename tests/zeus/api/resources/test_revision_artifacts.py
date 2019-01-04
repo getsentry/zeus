@@ -37,3 +37,27 @@ def test_revision_artifacts(
     data = resp.json()
     assert len(data) == 1
     assert data[0]["id"] == str(artifact.id)
+
+
+def test_revision_artifacts_no_build(
+    client, db_session, default_login, default_user, git_repo_config
+):
+    repo = factories.RepositoryFactory.create(
+        backend=RepositoryBackend.git,
+        provider=RepositoryProvider.github,
+        url=git_repo_config.url,
+    )
+    db_session.add(RepositoryAccess(user=default_user, repository=repo))
+    db_session.flush()
+
+    revision = factories.RevisionFactory.create(
+        sha=git_repo_config.commits[0], repository=repo
+    )
+
+    resp = client.get(
+        "/api/repos/{}/revisions/{}/artifacts".format(
+            repo.get_full_name(), revision.sha
+        )
+    )
+
+    assert resp.status_code == 404
