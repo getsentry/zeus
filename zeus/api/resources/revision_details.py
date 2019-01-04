@@ -11,6 +11,8 @@ class RevisionDetailsResource(BaseRevisionResource):
     def select_resource_for_update(self) -> bool:
         return False
 
+    # TODO(dcramer): this endpoint should be returning a revision, but is
+    # instead returning a build
     def get(self, revision: Revision, repo=None):
         """
         Return the joined build status of a revision.
