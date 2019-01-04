@@ -87,6 +87,7 @@ RUN export YARN_CACHE_FOLDER="$(mktemp -d)" \
     && rm -r "$YARN_CACHE_FOLDER"
 
 COPY . /usr/src/zeus
+RUN poetry install --no-dev
 RUN node_modules/.bin/webpack -p
 
 ENV WORKSPACE_ROOT /workspace
