@@ -2,6 +2,8 @@
 name = "zeus"
 version = "0.1.0"
 description = ""
+readme = "README.md"
+repository = "https://github.com/getsentry/zeus"
 authors = ["David Cramer <dcramer@gmail.com>"]
 license = "Apache-2.0"
 
@@ -59,7 +61,14 @@ exam = "~0.10.6"
 factory_boy = "~2.8.1"
 
 [tool.poetry.extras]
-test = ["pytest", "pytest-cov", "pytest-mock", "pytest-responses", "pytest-xdist", "responses"]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-responses",
+    "pytest-xdist",
+    "responses",
+]
 
 [tool.poetry.scripts]
 zeus = 'zeus.cli:main'
