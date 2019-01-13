@@ -80,11 +80,9 @@ They should be submitted with the ``application/x-webpack-stats+json`` type.
 - Node
 - Postgres 9.4+
 
-Note: If you're using pyenv for Python and macOS Mojave, you might need to run the following to install 3.7.1:
+Note: If you're using pyenv for Python and macOS Mojave and having issues installing 3.7.1, take a look here:
 
-```shell
-sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
-```
+https://github.com/pyenv/pyenv/issues/1219
 
 ### Setup
 
