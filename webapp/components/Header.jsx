@@ -1,29 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router';
 import styled from 'styled-components';
 import {connect} from 'react-redux';
 import Select from 'react-select';
-
-import {logout} from '../actions/auth';
-import Logo from '../assets/Logo';
-
-import MdSettings from 'react-icons/lib/md/settings';
-import MdLogout from 'react-icons/lib/md/exit-to-app';
-
-const NavLink = styled(Link)`
-  display: inline-block;
-  width: 26px;
-  height: 26px;
-  margin: 5px 0;
-  margin-right: 10px;
-  cursor: pointer;
-  vertical-align: middle;
-
-  &:last-child {
-    margin-right: 0;
-  }
-`;
 
 class UnstyledHeader extends Component {
   static contextTypes = {
@@ -53,21 +32,6 @@ class UnstyledHeader extends Component {
     let props = this.props;
     return (
       <div className={props.className}>
-        <div style={{float: 'left', marginRight: 10}}>
-          <NavLink to="/">
-            <Logo size="26" />
-          </NavLink>
-        </div>
-        {props.isAuthenticated && (
-          <div style={{float: 'right'}}>
-            <NavLink to="/settings">
-              <MdSettings size={24} />
-            </NavLink>
-            <NavLink onClick={props.logout}>
-              <MdLogout size={24} />
-            </NavLink>
-          </div>
-        )}
         <Select
           placeholder="Select Repository"
           className="Repo-Selector"
@@ -105,10 +69,7 @@ const Header = styled(UnstyledHeader)`
   }
 `;
 
-export default connect(
-  ({auth}) => ({
-    user: auth.user,
-    isAuthenticated: auth.isAuthenticated
-  }),
-  {logout}
-)(Header);
+export default connect(({auth}) => ({
+  user: auth.user,
+  isAuthenticated: auth.isAuthenticated
+}))(Header);

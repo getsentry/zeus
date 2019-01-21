@@ -61,7 +61,7 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         <Indicators />
         <ErrorBoundary>
           {!this.props.isAuthenticated === null ? (
@@ -70,7 +70,7 @@ class App extends Component {
             <AuthedContext>{this.props.children}</AuthedContext>
           )}
         </ErrorBoundary>
-      </div>
+      </React.Fragment>
     );
   }
 }

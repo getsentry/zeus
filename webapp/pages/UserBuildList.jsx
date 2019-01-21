@@ -20,7 +20,7 @@ class UserBuildList extends AsyncPage {
 
   renderBody() {
     return (
-      <Layout title={this.getTitle()}>
+      <Layout title={this.getTitle()} withHeader>
         <Section>
           <BuildListBody {...this.props} />
         </Section>

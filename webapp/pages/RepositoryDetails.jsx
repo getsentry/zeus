@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
+import Layout from '../components/Layout';
 import RepositoryContent from '../components/RepositoryContent';
 import RepositoryHeader from '../components/RepositoryHeader';
 
@@ -50,10 +51,10 @@ export default class RepositoryDetails extends AsyncPage {
 
   renderBody() {
     return (
-      <div>
+      <Layout>
         <RepositoryHeader />
         <RepositoryContent>{this.props.children}</RepositoryContent>
-      </div>
+      </Layout>
     );
   }
 }

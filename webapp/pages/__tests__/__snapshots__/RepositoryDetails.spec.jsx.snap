@@ -1051,442 +1051,609 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
     <DocumentTitle
       title="getsentry/zeus"
     >
-      <div>
-        <RepositoryHeader>
-          <Connect(Styled(UnstyledHeader))>
-            <Styled(UnstyledHeader)
-              isAuthenticated={null}
-              logout={[Function]}
-              user={null}
+      <Connect(Layout)>
+        <Layout
+          isAuthenticated={null}
+          logout={[Function]}
+          user={null}
+        >
+          <Styled(styled.div)
+            flex="1"
+            flexDirection="row"
+            style={
+              Object {
+                "height": "100%",
+              }
+            }
+          >
+            <styled.div
+              className="sc-htpNat eLQHN"
+              flex="1"
+              flexDirection="row"
+              style={
+                Object {
+                  "height": "100%",
+                }
+              }
             >
-              <UnstyledHeader
-                className="sc-htpNat fRTwhC"
-                isAuthenticated={null}
-                logout={[Function]}
-                user={null}
+              <div
+                className="sc-htpNat eLQHN sc-bdVaJa kYmYWE"
+                style={
+                  Object {
+                    "height": "100%",
+                  }
+                }
               >
-                <div
-                  className="sc-htpNat fRTwhC"
+                <Styled(styled.div)
+                  flex="0 0 32px"
                 >
-                  <div
-                    style={
-                      Object {
-                        "float": "left",
-                        "marginRight": 10,
-                      }
-                    }
-                  >
-                    <Styled(Link)
-                      to="/"
-                    >
-                      <Link
-                        className="sc-bwzfXH gtiAPr"
-                        onlyActiveOnIndex={false}
-                        style={Object {}}
-                        to="/"
-                      >
-                        <a
-                          className="sc-bwzfXH gtiAPr"
-                          onClick={[Function]}
-                          style={Object {}}
-                        >
-                          <LogoIcon
-                            color="#111111"
-                            size="26"
-                          >
-                            <IconBase
-                              color="#111111"
-                              size="26"
-                              viewBox="0 0 31 20"
-                            >
-                              <svg
-                                fill="currentColor"
-                                height="26"
-                                preserveAspectRatio="xMidYMid meet"
-                                style={
-                                  Object {
-                                    "color": "#111111",
-                                    "verticalAlign": "middle",
-                                  }
-                                }
-                                viewBox="0 0 31 20"
-                                width="26"
-                              >
-                                <g
-                                  fill="#111111"
-                                >
-                                  <path
-                                    d="M4.89681425,0.000171191628 L3.11788867,1.94050602 L3.39546367,1.94270705 L22.1969511,1.94270705 L15.3534435,9.40861852 L12.5312272,6.32961481 L0,19.9997554 L0,20 L10.9645792,20 L13.4446568,20 L30.5435212,20 L20.7484253,9.31421857 L18.0093593,12.3059145 L16.6713744,10.8461391 L26.6134505,0.000171191628 L4.89681425,0.000171191628 Z M12.5312272,9.56122363 L13.8723913,11.0241784 L7.49819332,17.8165731 L4.9640681,17.8165731 L12.5312272,9.56122363 Z M15.1900777,12.4616989 L16.5290408,13.9226972 L12.9638529,17.8165731 L10.1631578,17.8165731 L15.1900777,12.4616989 Z M20.7494036,12.5470502 L25.5796977,17.8165731 L15.9247344,17.8165731 L20.7494036,12.5470502 Z"
-                                  />
-                                </g>
-                              </svg>
-                            </IconBase>
-                          </LogoIcon>
-                        </a>
-                      </Link>
-                    </Styled(Link)>
-                  </div>
-                  <Select
-                    addLabelText="Add \\"{label}\\"?"
-                    arrowRenderer={[Function]}
-                    autosize={true}
-                    backspaceRemoves={true}
-                    backspaceToRemoveMessage="Press backspace to remove {label}"
-                    className="Repo-Selector"
-                    clearAllText="Clear all"
-                    clearRenderer={[Function]}
-                    clearValueText="Clear value"
-                    clearable={false}
-                    closeOnSelect={true}
-                    deleteRemoves={true}
-                    delimiter=","
-                    disabled={false}
-                    escapeClearsValue={true}
-                    filterOptions={[Function]}
-                    ignoreAccents={true}
-                    ignoreCase={true}
-                    inputProps={Object {}}
-                    isLoading={false}
-                    joinValues={false}
-                    labelKey="label"
-                    matchPos="any"
-                    matchProp="any"
-                    menuBuffer={0}
-                    menuRenderer={[Function]}
-                    multi={false}
-                    noResultsText="No results found"
-                    onBlurResetsInput={true}
-                    onChange={[Function]}
-                    onCloseResetsInput={true}
-                    onSelectResetsInput={true}
-                    openOnClick={true}
-                    optionComponent={[Function]}
-                    options={
-                      Array [
-                        Object {
-                          "label": "getsentry / zeus",
-                          "value": "gh/getsentry/zeus",
-                        },
-                      ]
-                    }
-                    pageSize={5}
-                    placeholder="Select Repository"
-                    required={false}
-                    scrollMenuIntoView={true}
-                    searchable={true}
-                    simpleValue={false}
-                    tabSelectsValue={true}
-                    value={
-                      Object {
-                        "label": "getsentry / zeus",
-                        "value": "gh/getsentry/zeus",
-                      }
-                    }
-                    valueComponent={[Function]}
-                    valueKey="value"
+                  <styled.div
+                    className="sc-bZQynM dMBEOJ"
+                    flex="0 0 32px"
                   >
                     <div
-                      className="Select Repo-Selector Select--single is-searchable has-value"
+                      className="sc-bZQynM dMBEOJ sc-bdVaJa eOGfJk"
                     >
-                      <div
-                        className="Select-control"
-                        onKeyDown={[Function]}
-                        onMouseDown={[Function]}
-                        onTouchEnd={[Function]}
-                        onTouchMove={[Function]}
-                        onTouchStart={[Function]}
-                      >
-                        <span
-                          className="Select-multi-value-wrapper"
-                          id="react-select-2--value"
+                      <styled.div>
+                        <div
+                          className="sc-gzVnrw gdNggw"
                         >
-                          <Value
-                            disabled={false}
-                            id="react-select-2--value-item"
-                            instancePrefix="react-select-2-"
-                            onClick={null}
-                            value={
-                              Object {
-                                "label": "getsentry / zeus",
-                                "value": "gh/getsentry/zeus",
-                              }
-                            }
+                          <Link
+                            onlyActiveOnIndex={false}
+                            style={Object {}}
+                            to="/"
                           >
-                            <div
-                              className="Select-value"
+                            <a
+                              onClick={[Function]}
+                              style={Object {}}
                             >
-                              <span
-                                aria-selected="true"
-                                className="Select-value-label"
-                                id="react-select-2--value-item"
-                                role="option"
+                              <LogoIcon
+                                color="#fff"
+                                size={26}
                               >
-                                getsentry / zeus
-                              </span>
-                            </div>
-                          </Value>
-                          <AutosizeInput
-                            aria-activedescendant="react-select-2--value"
-                            aria-expanded="false"
-                            aria-haspopup="false"
-                            aria-owns=""
-                            className="Select-input"
-                            minWidth="5"
-                            onBlur={[Function]}
-                            onChange={[Function]}
-                            onFocus={[Function]}
-                            required={false}
-                            role="combobox"
-                            value=""
+                                <IconBase
+                                  color="#fff"
+                                  size={26}
+                                  viewBox="0 0 31 20"
+                                >
+                                  <svg
+                                    fill="currentColor"
+                                    height={26}
+                                    preserveAspectRatio="xMidYMid meet"
+                                    style={
+                                      Object {
+                                        "color": "#fff",
+                                        "verticalAlign": "middle",
+                                      }
+                                    }
+                                    viewBox="0 0 31 20"
+                                    width={26}
+                                  >
+                                    <g
+                                      fill="#fff"
+                                    >
+                                      <path
+                                        d="M4.89681425,0.000171191628 L3.11788867,1.94050602 L3.39546367,1.94270705 L22.1969511,1.94270705 L15.3534435,9.40861852 L12.5312272,6.32961481 L0,19.9997554 L0,20 L10.9645792,20 L13.4446568,20 L30.5435212,20 L20.7484253,9.31421857 L18.0093593,12.3059145 L16.6713744,10.8461391 L26.6134505,0.000171191628 L4.89681425,0.000171191628 Z M12.5312272,9.56122363 L13.8723913,11.0241784 L7.49819332,17.8165731 L4.9640681,17.8165731 L12.5312272,9.56122363 Z M15.1900777,12.4616989 L16.5290408,13.9226972 L12.9638529,17.8165731 L10.1631578,17.8165731 L15.1900777,12.4616989 Z M20.7494036,12.5470502 L25.5796977,17.8165731 L15.9247344,17.8165731 L20.7494036,12.5470502 Z"
+                                      />
+                                    </g>
+                                  </svg>
+                                </IconBase>
+                              </LogoIcon>
+                            </a>
+                          </Link>
+                        </div>
+                      </styled.div>
+                      <div
+                        style={
+                          Object {
+                            "display": "flex",
+                            "flexDirection": "column",
+                            "height": "100%",
+                          }
+                        }
+                      >
+                        <Styled(Link)
+                          to="/builds"
+                        >
+                          <Link
+                            className="sc-htoDjs fEBgNb"
+                            onlyActiveOnIndex={false}
+                            style={Object {}}
+                            to="/builds"
+                          >
+                            <a
+                              className="sc-htoDjs fEBgNb"
+                              onClick={[Function]}
+                              style={Object {}}
+                            >
+                              <MdAccessTime
+                                color="#fff"
+                                size={26}
+                              >
+                                <IconBase
+                                  color="#fff"
+                                  size={26}
+                                  viewBox="0 0 40 40"
+                                >
+                                  <svg
+                                    fill="currentColor"
+                                    height={26}
+                                    preserveAspectRatio="xMidYMid meet"
+                                    style={
+                                      Object {
+                                        "color": "#fff",
+                                        "verticalAlign": "middle",
+                                      }
+                                    }
+                                    viewBox="0 0 40 40"
+                                    width={26}
+                                  >
+                                    <g>
+                                      <path
+                                        d="m20.9 11.6v8.8l7.5 4.4-1.3 2.2-8.7-5.4v-10h2.5z m-0.9 21.8q5.5 0 9.4-4t4-9.4-4-9.4-9.4-4-9.4 4-4 9.4 4 9.4 9.4 4z m0-30q6.9 0 11.8 4.8t4.8 11.8-4.8 11.8-11.8 4.8-11.8-4.8-4.8-11.8 4.8-11.8 11.8-4.8z"
+                                      />
+                                    </g>
+                                  </svg>
+                                </IconBase>
+                              </MdAccessTime>
+                            </a>
+                          </Link>
+                        </Styled(Link)>
+                        <div
+                          style={
+                            Object {
+                              "alignSelf": "flex-end",
+                            }
+                          }
+                        >
+                          <Styled(Link)
+                            to="/settings"
+                          >
+                            <Link
+                              className="sc-htoDjs fEBgNb"
+                              onlyActiveOnIndex={false}
+                              style={Object {}}
+                              to="/settings"
+                            >
+                              <a
+                                className="sc-htoDjs fEBgNb"
+                                onClick={[Function]}
+                                style={Object {}}
+                              >
+                                <MdSettings
+                                  color="#fff"
+                                  size={26}
+                                >
+                                  <IconBase
+                                    color="#fff"
+                                    size={26}
+                                    viewBox="0 0 40 40"
+                                  >
+                                    <svg
+                                      fill="currentColor"
+                                      height={26}
+                                      preserveAspectRatio="xMidYMid meet"
+                                      style={
+                                        Object {
+                                          "color": "#fff",
+                                          "verticalAlign": "middle",
+                                        }
+                                      }
+                                      viewBox="0 0 40 40"
+                                      width={26}
+                                    >
+                                      <g>
+                                        <path
+                                          d="m20 25.9c3.2 0 5.9-2.7 5.9-5.9s-2.7-5.9-5.9-5.9-5.9 2.7-5.9 5.9 2.7 5.9 5.9 5.9z m12.4-4.3l3.5 2.8c0.4 0.2 0.4 0.7 0.2 1.1l-3.4 5.8c-0.2 0.3-0.6 0.4-1 0.3l-4.1-1.7c-0.9 0.7-1.8 1.3-2.8 1.7l-0.7 4.3c0 0.4-0.4 0.7-0.7 0.7h-6.8c-0.4 0-0.7-0.3-0.7-0.7l-0.7-4.3c-1-0.4-1.9-1-2.8-1.7l-4.1 1.7c-0.4 0.1-0.8 0-1-0.3l-3.4-5.8c-0.2-0.4-0.2-0.9 0.2-1.1l3.5-2.8c-0.1-0.5-0.1-1.1-0.1-1.6s0-1.1 0.1-1.6l-3.5-2.8c-0.4-0.2-0.4-0.7-0.2-1.1l3.4-5.7c0.2-0.4 0.6-0.5 1-0.4l4.1 1.7c0.9-0.6 1.8-1.3 2.8-1.7l0.7-4.3c0-0.4 0.3-0.7 0.7-0.7h6.8c0.3 0 0.7 0.3 0.7 0.7l0.7 4.3c1 0.4 1.9 1 2.8 1.7l4.1-1.7c0.4-0.1 0.8 0 1 0.4l3.4 5.7c0.2 0.4 0.2 0.9-0.2 1.1l-3.5 2.8c0.1 0.5 0.1 1.1 0.1 1.6s0 1.1-0.1 1.6z"
+                                        />
+                                      </g>
+                                    </svg>
+                                  </IconBase>
+                                </MdSettings>
+                              </a>
+                            </Link>
+                          </Styled(Link)>
+                        </div>
+                        <div
+                          style={
+                            Object {
+                              "alignSelf": "flex-end",
+                            }
+                          }
+                        />
+                      </div>
+                    </div>
+                  </styled.div>
+                </Styled(styled.div)>
+                <styled.div
+                  flex="1 1 auto"
+                >
+                  <div
+                    className="sc-bdVaJa fSzdHl"
+                  >
+                    <RepositoryHeader>
+                      <Connect(Styled(UnstyledHeader))>
+                        <Styled(UnstyledHeader)
+                          dispatch={[Function]}
+                          isAuthenticated={null}
+                          user={null}
+                        >
+                          <UnstyledHeader
+                            className="sc-ifAKCX ljpGwt"
+                            dispatch={[Function]}
+                            isAuthenticated={null}
+                            user={null}
                           >
                             <div
-                              className="Select-input"
-                              style={
-                                Object {
-                                  "display": "inline-block",
-                                }
-                              }
+                              className="sc-ifAKCX ljpGwt"
                             >
-                              <style
-                                dangerouslySetInnerHTML={
-                                  Object {
-                                    "__html": "input#undefined::-ms-clear {display: none;}",
-                                  }
-                                }
-                              />
-                              <input
-                                aria-activedescendant="react-select-2--value"
-                                aria-expanded="false"
-                                aria-haspopup="false"
-                                aria-owns=""
-                                onBlur={[Function]}
+                              <Select
+                                addLabelText="Add \\"{label}\\"?"
+                                arrowRenderer={[Function]}
+                                autosize={true}
+                                backspaceRemoves={true}
+                                backspaceToRemoveMessage="Press backspace to remove {label}"
+                                className="Repo-Selector"
+                                clearAllText="Clear all"
+                                clearRenderer={[Function]}
+                                clearValueText="Clear value"
+                                clearable={false}
+                                closeOnSelect={true}
+                                deleteRemoves={true}
+                                delimiter=","
+                                disabled={false}
+                                escapeClearsValue={true}
+                                filterOptions={[Function]}
+                                ignoreAccents={true}
+                                ignoreCase={true}
+                                inputProps={Object {}}
+                                isLoading={false}
+                                joinValues={false}
+                                labelKey="label"
+                                matchPos="any"
+                                matchProp="any"
+                                menuBuffer={0}
+                                menuRenderer={[Function]}
+                                multi={false}
+                                noResultsText="No results found"
+                                onBlurResetsInput={true}
                                 onChange={[Function]}
-                                onFocus={[Function]}
+                                onCloseResetsInput={true}
+                                onSelectResetsInput={true}
+                                openOnClick={true}
+                                optionComponent={[Function]}
+                                options={
+                                  Array [
+                                    Object {
+                                      "label": "getsentry / zeus",
+                                      "value": "gh/getsentry/zeus",
+                                    },
+                                  ]
+                                }
+                                pageSize={5}
+                                placeholder="Select Repository"
                                 required={false}
-                                role="combobox"
-                                style={
+                                scrollMenuIntoView={true}
+                                searchable={true}
+                                simpleValue={false}
+                                tabSelectsValue={true}
+                                value={
                                   Object {
-                                    "boxSizing": "content-box",
-                                    "width": "5px",
+                                    "label": "getsentry / zeus",
+                                    "value": "gh/getsentry/zeus",
                                   }
                                 }
-                                value=""
-                              />
+                                valueComponent={[Function]}
+                                valueKey="value"
+                              >
+                                <div
+                                  className="Select Repo-Selector Select--single is-searchable has-value"
+                                >
+                                  <div
+                                    className="Select-control"
+                                    onKeyDown={[Function]}
+                                    onMouseDown={[Function]}
+                                    onTouchEnd={[Function]}
+                                    onTouchMove={[Function]}
+                                    onTouchStart={[Function]}
+                                  >
+                                    <span
+                                      className="Select-multi-value-wrapper"
+                                      id="react-select-2--value"
+                                    >
+                                      <Value
+                                        disabled={false}
+                                        id="react-select-2--value-item"
+                                        instancePrefix="react-select-2-"
+                                        onClick={null}
+                                        value={
+                                          Object {
+                                            "label": "getsentry / zeus",
+                                            "value": "gh/getsentry/zeus",
+                                          }
+                                        }
+                                      >
+                                        <div
+                                          className="Select-value"
+                                        >
+                                          <span
+                                            aria-selected="true"
+                                            className="Select-value-label"
+                                            id="react-select-2--value-item"
+                                            role="option"
+                                          >
+                                            getsentry / zeus
+                                          </span>
+                                        </div>
+                                      </Value>
+                                      <AutosizeInput
+                                        aria-activedescendant="react-select-2--value"
+                                        aria-expanded="false"
+                                        aria-haspopup="false"
+                                        aria-owns=""
+                                        className="Select-input"
+                                        minWidth="5"
+                                        onBlur={[Function]}
+                                        onChange={[Function]}
+                                        onFocus={[Function]}
+                                        required={false}
+                                        role="combobox"
+                                        value=""
+                                      >
+                                        <div
+                                          className="Select-input"
+                                          style={
+                                            Object {
+                                              "display": "inline-block",
+                                            }
+                                          }
+                                        >
+                                          <style
+                                            dangerouslySetInnerHTML={
+                                              Object {
+                                                "__html": "input#undefined::-ms-clear {display: none;}",
+                                              }
+                                            }
+                                          />
+                                          <input
+                                            aria-activedescendant="react-select-2--value"
+                                            aria-expanded="false"
+                                            aria-haspopup="false"
+                                            aria-owns=""
+                                            onBlur={[Function]}
+                                            onChange={[Function]}
+                                            onFocus={[Function]}
+                                            required={false}
+                                            role="combobox"
+                                            style={
+                                              Object {
+                                                "boxSizing": "content-box",
+                                                "width": "5px",
+                                              }
+                                            }
+                                            value=""
+                                          />
+                                          <div
+                                            style={
+                                              Object {
+                                                "height": 0,
+                                                "left": 0,
+                                                "overflow": "scroll",
+                                                "position": "absolute",
+                                                "top": 0,
+                                                "visibility": "hidden",
+                                                "whiteSpace": "pre",
+                                              }
+                                            }
+                                          />
+                                        </div>
+                                      </AutosizeInput>
+                                    </span>
+                                    <span
+                                      className="Select-arrow-zone"
+                                      onMouseDown={[Function]}
+                                    >
+                                      <span
+                                        className="Select-arrow"
+                                        onMouseDown={[Function]}
+                                      />
+                                    </span>
+                                  </div>
+                                </div>
+                              </Select>
+                              <styled.div>
+                                <div
+                                  className="sc-dnqmqq fSJNbt"
+                                >
+                                  <Styled(Link)
+                                    activeClassName="active"
+                                    onlyActiveOnIndex={true}
+                                    to="/gh/getsentry/zeus"
+                                  >
+                                    <Link
+                                      activeClassName="active"
+                                      className="sc-iwsKbI gkIods"
+                                      onlyActiveOnIndex={true}
+                                      style={Object {}}
+                                      to="/gh/getsentry/zeus"
+                                    >
+                                      <a
+                                        className="sc-iwsKbI gkIods"
+                                        onClick={[Function]}
+                                        style={Object {}}
+                                      >
+                                        Overview
+                                      </a>
+                                    </Link>
+                                  </Styled(Link)>
+                                  <Styled(Link)
+                                    activeClassName="active"
+                                    to="/gh/getsentry/zeus/revisions"
+                                  >
+                                    <Link
+                                      activeClassName="active"
+                                      className="sc-iwsKbI gkIods"
+                                      onlyActiveOnIndex={false}
+                                      style={Object {}}
+                                      to="/gh/getsentry/zeus/revisions"
+                                    >
+                                      <a
+                                        className="sc-iwsKbI gkIods"
+                                        onClick={[Function]}
+                                        style={Object {}}
+                                      >
+                                        Commits
+                                      </a>
+                                    </Link>
+                                  </Styled(Link)>
+                                  <Styled(Link)
+                                    activeClassName="active"
+                                    to="/gh/getsentry/zeus/change-requests"
+                                  >
+                                    <Link
+                                      activeClassName="active"
+                                      className="sc-iwsKbI gkIods"
+                                      onlyActiveOnIndex={false}
+                                      style={Object {}}
+                                      to="/gh/getsentry/zeus/change-requests"
+                                    >
+                                      <a
+                                        className="sc-iwsKbI gkIods"
+                                        onClick={[Function]}
+                                        style={Object {}}
+                                      >
+                                        Change Requests
+                                      </a>
+                                    </Link>
+                                  </Styled(Link)>
+                                  <Styled(Link)
+                                    activeClassName="active"
+                                    to="/gh/getsentry/zeus/builds"
+                                  >
+                                    <Link
+                                      activeClassName="active"
+                                      className="sc-iwsKbI gkIods"
+                                      onlyActiveOnIndex={false}
+                                      style={Object {}}
+                                      to="/gh/getsentry/zeus/builds"
+                                    >
+                                      <a
+                                        className="sc-iwsKbI gkIods"
+                                        onClick={[Function]}
+                                        style={Object {}}
+                                      >
+                                        Builds
+                                      </a>
+                                    </Link>
+                                  </Styled(Link)>
+                                  <Styled(Link)
+                                    activeClassName="active"
+                                    to="/gh/getsentry/zeus/coverage"
+                                  >
+                                    <Link
+                                      activeClassName="active"
+                                      className="sc-iwsKbI gkIods"
+                                      onlyActiveOnIndex={false}
+                                      style={Object {}}
+                                      to="/gh/getsentry/zeus/coverage"
+                                    >
+                                      <a
+                                        className="sc-iwsKbI gkIods"
+                                        onClick={[Function]}
+                                        style={Object {}}
+                                      >
+                                        Coverage
+                                      </a>
+                                    </Link>
+                                  </Styled(Link)>
+                                  <Styled(Link)
+                                    activeClassName="active"
+                                    to="/gh/getsentry/zeus/tests"
+                                  >
+                                    <Link
+                                      activeClassName="active"
+                                      className="sc-iwsKbI gkIods"
+                                      onlyActiveOnIndex={false}
+                                      style={Object {}}
+                                      to="/gh/getsentry/zeus/tests"
+                                    >
+                                      <a
+                                        className="sc-iwsKbI gkIods"
+                                        onClick={[Function]}
+                                        style={Object {}}
+                                      >
+                                        Tests
+                                      </a>
+                                    </Link>
+                                  </Styled(Link)>
+                                  <Styled(Link)
+                                    activeClassName="active"
+                                    to="/gh/getsentry/zeus/stats"
+                                  >
+                                    <Link
+                                      activeClassName="active"
+                                      className="sc-iwsKbI gkIods"
+                                      onlyActiveOnIndex={false}
+                                      style={Object {}}
+                                      to="/gh/getsentry/zeus/stats"
+                                    >
+                                      <a
+                                        className="sc-iwsKbI gkIods"
+                                        onClick={[Function]}
+                                        style={Object {}}
+                                      >
+                                        Stats
+                                      </a>
+                                    </Link>
+                                  </Styled(Link)>
+                                  <Styled(Link)
+                                    activeClassName="active"
+                                    to="/gh/getsentry/zeus/settings"
+                                  >
+                                    <Link
+                                      activeClassName="active"
+                                      className="sc-iwsKbI gkIods"
+                                      onlyActiveOnIndex={false}
+                                      style={Object {}}
+                                      to="/gh/getsentry/zeus/settings"
+                                    >
+                                      <a
+                                        className="sc-iwsKbI gkIods"
+                                        onClick={[Function]}
+                                        style={Object {}}
+                                      >
+                                        Settings
+                                      </a>
+                                    </Link>
+                                  </Styled(Link)>
+                                </div>
+                              </styled.div>
                               <div
                                 style={
                                   Object {
-                                    "height": 0,
-                                    "left": 0,
-                                    "overflow": "scroll",
-                                    "position": "absolute",
-                                    "top": 0,
-                                    "visibility": "hidden",
-                                    "whiteSpace": "pre",
+                                    "clear": "both",
                                   }
                                 }
                               />
                             </div>
-                          </AutosizeInput>
-                        </span>
-                        <span
-                          className="Select-arrow-zone"
-                          onMouseDown={[Function]}
-                        >
-                          <span
-                            className="Select-arrow"
-                            onMouseDown={[Function]}
-                          />
-                        </span>
-                      </div>
-                    </div>
-                  </Select>
-                  <styled.div>
-                    <div
-                      className="sc-bxivhb jzkpli"
-                    >
-                      <Styled(Link)
-                        activeClassName="active"
-                        onlyActiveOnIndex={true}
-                        to="/gh/getsentry/zeus"
-                      >
-                        <Link
-                          activeClassName="active"
-                          className="sc-ifAKCX fbekww"
-                          onlyActiveOnIndex={true}
-                          style={Object {}}
-                          to="/gh/getsentry/zeus"
-                        >
-                          <a
-                            className="sc-ifAKCX fbekww"
-                            onClick={[Function]}
-                            style={Object {}}
-                          >
-                            Overview
-                          </a>
-                        </Link>
-                      </Styled(Link)>
-                      <Styled(Link)
-                        activeClassName="active"
-                        to="/gh/getsentry/zeus/revisions"
-                      >
-                        <Link
-                          activeClassName="active"
-                          className="sc-ifAKCX fbekww"
-                          onlyActiveOnIndex={false}
-                          style={Object {}}
-                          to="/gh/getsentry/zeus/revisions"
-                        >
-                          <a
-                            className="sc-ifAKCX fbekww"
-                            onClick={[Function]}
-                            style={Object {}}
-                          >
-                            Commits
-                          </a>
-                        </Link>
-                      </Styled(Link)>
-                      <Styled(Link)
-                        activeClassName="active"
-                        to="/gh/getsentry/zeus/change-requests"
-                      >
-                        <Link
-                          activeClassName="active"
-                          className="sc-ifAKCX fbekww"
-                          onlyActiveOnIndex={false}
-                          style={Object {}}
-                          to="/gh/getsentry/zeus/change-requests"
-                        >
-                          <a
-                            className="sc-ifAKCX fbekww"
-                            onClick={[Function]}
-                            style={Object {}}
-                          >
-                            Change Requests
-                          </a>
-                        </Link>
-                      </Styled(Link)>
-                      <Styled(Link)
-                        activeClassName="active"
-                        to="/gh/getsentry/zeus/builds"
-                      >
-                        <Link
-                          activeClassName="active"
-                          className="sc-ifAKCX fbekww"
-                          onlyActiveOnIndex={false}
-                          style={Object {}}
-                          to="/gh/getsentry/zeus/builds"
-                        >
-                          <a
-                            className="sc-ifAKCX fbekww"
-                            onClick={[Function]}
-                            style={Object {}}
-                          >
-                            Builds
-                          </a>
-                        </Link>
-                      </Styled(Link)>
-                      <Styled(Link)
-                        activeClassName="active"
-                        to="/gh/getsentry/zeus/coverage"
-                      >
-                        <Link
-                          activeClassName="active"
-                          className="sc-ifAKCX fbekww"
-                          onlyActiveOnIndex={false}
-                          style={Object {}}
-                          to="/gh/getsentry/zeus/coverage"
-                        >
-                          <a
-                            className="sc-ifAKCX fbekww"
-                            onClick={[Function]}
-                            style={Object {}}
-                          >
-                            Coverage
-                          </a>
-                        </Link>
-                      </Styled(Link)>
-                      <Styled(Link)
-                        activeClassName="active"
-                        to="/gh/getsentry/zeus/tests"
-                      >
-                        <Link
-                          activeClassName="active"
-                          className="sc-ifAKCX fbekww"
-                          onlyActiveOnIndex={false}
-                          style={Object {}}
-                          to="/gh/getsentry/zeus/tests"
-                        >
-                          <a
-                            className="sc-ifAKCX fbekww"
-                            onClick={[Function]}
-                            style={Object {}}
-                          >
-                            Tests
-                          </a>
-                        </Link>
-                      </Styled(Link)>
-                      <Styled(Link)
-                        activeClassName="active"
-                        to="/gh/getsentry/zeus/stats"
-                      >
-                        <Link
-                          activeClassName="active"
-                          className="sc-ifAKCX fbekww"
-                          onlyActiveOnIndex={false}
-                          style={Object {}}
-                          to="/gh/getsentry/zeus/stats"
-                        >
-                          <a
-                            className="sc-ifAKCX fbekww"
-                            onClick={[Function]}
-                            style={Object {}}
-                          >
-                            Stats
-                          </a>
-                        </Link>
-                      </Styled(Link)>
-                      <Styled(Link)
-                        activeClassName="active"
-                        to="/gh/getsentry/zeus/settings"
-                      >
-                        <Link
-                          activeClassName="active"
-                          className="sc-ifAKCX fbekww"
-                          onlyActiveOnIndex={false}
-                          style={Object {}}
-                          to="/gh/getsentry/zeus/settings"
-                        >
-                          <a
-                            className="sc-ifAKCX fbekww"
-                            onClick={[Function]}
-                            style={Object {}}
-                          >
-                            Settings
-                          </a>
-                        </Link>
-                      </Styled(Link)>
-                    </div>
-                  </styled.div>
-                  <div
-                    style={
-                      Object {
-                        "clear": "both",
-                      }
-                    }
-                  />
-                </div>
-              </UnstyledHeader>
-            </Styled(UnstyledHeader)>
-          </Connect(Styled(UnstyledHeader))>
-        </RepositoryHeader>
-        <Component>
-          <styled.div>
-            <div
-              className="sc-bdVaJa MqCKh"
-            />
-          </styled.div>
-        </Component>
-      </div>
+                          </UnstyledHeader>
+                        </Styled(UnstyledHeader)>
+                      </Connect(Styled(UnstyledHeader))>
+                    </RepositoryHeader>
+                    <Component>
+                      <styled.div>
+                        <div
+                          className="sc-bxivhb btucbN"
+                        />
+                      </styled.div>
+                    </Component>
+                  </div>
+                </styled.div>
+              </div>
+            </styled.div>
+          </Styled(styled.div)>
+        </Layout>
+      </Connect(Layout)>
     </DocumentTitle>
   </SideEffect(DocumentTitle)>
 </RepositoryDetails>

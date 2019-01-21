@@ -165,7 +165,7 @@ export default class Dashboard extends AsyncPage {
 
   renderBody() {
     return (
-      <Layout>
+      <Layout withHeader>
         <Flex flex="1">
           <Box width={7 / 12} mr={30}>
             <WrappedBuildList {...this.props} />

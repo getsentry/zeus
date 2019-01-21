@@ -1,172 +1,187 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="theme-color" content="#000000">
-  <!--
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
+    <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-  <title>Zeus</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css?family=Rubik:400,500');
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <title>Zeus</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css?family=Rubik:400,500');
 
-    body {
-      font-size: 16px;
-      font-family: 'Rubik', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      padding: 0;
-      margin: 0;
-    }
-
-    .sk-cube-grid {
-      width: 40px;
-      height: 40px;
-      margin: 20px auto;
-    }
-
-    .sk-cube-grid .sk-cube {
-      width: 33%;
-      height: 33%;
-      background-color: #7B6BE6;
-      float: left;
-      -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
-      animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
-    }
-
-    .sk-cube-grid .sk-cube1 {
-      -webkit-animation-delay: 0.2s;
-      animation-delay: 0.2s;
-    }
-
-    .sk-cube-grid .sk-cube2 {
-      -webkit-animation-delay: 0.3s;
-      animation-delay: 0.3s;
-    }
-
-    .sk-cube-grid .sk-cube3 {
-      -webkit-animation-delay: 0.4s;
-      animation-delay: 0.4s;
-    }
-
-    .sk-cube-grid .sk-cube4 {
-      -webkit-animation-delay: 0.1s;
-      animation-delay: 0.1s;
-    }
-
-    .sk-cube-grid .sk-cube5 {
-      -webkit-animation-delay: 0.2s;
-      animation-delay: 0.2s;
-    }
-
-    .sk-cube-grid .sk-cube6 {
-      -webkit-animation-delay: 0.3s;
-      animation-delay: 0.3s;
-    }
-
-    .sk-cube-grid .sk-cube7 {
-      -webkit-animation-delay: 0s;
-      animation-delay: 0s;
-    }
-
-    .sk-cube-grid .sk-cube8 {
-      -webkit-animation-delay: 0.1s;
-      animation-delay: 0.1s;
-    }
-
-    .sk-cube-grid .sk-cube9 {
-      -webkit-animation-delay: 0.2s;
-      animation-delay: 0.2s;
-    }
-
-    @-webkit-keyframes sk-cubeGridScaleDelay {
-      0%,
-      70%,
-      100% {
-        -webkit-transform: scale3D(1, 1, 1);
-        transform: scale3D(1, 1, 1);
+      html {
+        margin: 0;
       }
-      35% {
-        -webkit-transform: scale3D(0, 0, 1);
-        transform: scale3D(0, 0, 1);
+
+      body {
+        font-size: 16px;
+        font-family: 'Rubik', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        padding: 0;
+        margin: 0;
       }
-    }
 
-    @keyframes sk-cubeGridScaleDelay {
-      0%,
-      70%,
-      100% {
-        -webkit-transform: scale3D(1, 1, 1);
-        transform: scale3D(1, 1, 1);
+      html,
+      body,
+      #root {
+        height: 100%;
       }
-      35% {
-        -webkit-transform: scale3D(0, 0, 1);
-        transform: scale3D(0, 0, 1);
+
+      .sk-cube-grid {
+        width: 40px;
+        height: 40px;
+        margin: 20px auto;
       }
-    }
 
-    .react-loading-wrapper {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 100%;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      text-align: center;
-    }
+      .sk-cube-grid .sk-cube {
+        width: 33%;
+        height: 33%;
+        background-color: #7b6be6;
+        float: left;
+        -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+        animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+      }
 
-    .react-loading {
-      flex: 1;
-    }
-  </style>
-</head>
+      .sk-cube-grid .sk-cube1 {
+        -webkit-animation-delay: 0.2s;
+        animation-delay: 0.2s;
+      }
 
-<body>
-  <noscript>
-    You need to enable JavaScript to run this app.
-  </noscript>
-  <div id="root">
-    <div class="react-loading-wrapper">
-      <div class="react-loading">
-        <p>Please wait while we load an obnoxious amount of JavaScript.</p>
-        <p>
-          <small>You may need to disable adblocking extensions to run this app.</small>
-        </p>
-        <div class="sk-cube-grid">
-          <div class="sk-cube sk-cube1"></div>
-          <div class="sk-cube sk-cube2"></div>
-          <div class="sk-cube sk-cube3"></div>
-          <div class="sk-cube sk-cube4"></div>
-          <div class="sk-cube sk-cube5"></div>
-          <div class="sk-cube sk-cube6"></div>
-          <div class="sk-cube sk-cube7"></div>
-          <div class="sk-cube sk-cube8"></div>
-          <div class="sk-cube sk-cube9"></div>
+      .sk-cube-grid .sk-cube2 {
+        -webkit-animation-delay: 0.3s;
+        animation-delay: 0.3s;
+      }
+
+      .sk-cube-grid .sk-cube3 {
+        -webkit-animation-delay: 0.4s;
+        animation-delay: 0.4s;
+      }
+
+      .sk-cube-grid .sk-cube4 {
+        -webkit-animation-delay: 0.1s;
+        animation-delay: 0.1s;
+      }
+
+      .sk-cube-grid .sk-cube5 {
+        -webkit-animation-delay: 0.2s;
+        animation-delay: 0.2s;
+      }
+
+      .sk-cube-grid .sk-cube6 {
+        -webkit-animation-delay: 0.3s;
+        animation-delay: 0.3s;
+      }
+
+      .sk-cube-grid .sk-cube7 {
+        -webkit-animation-delay: 0s;
+        animation-delay: 0s;
+      }
+
+      .sk-cube-grid .sk-cube8 {
+        -webkit-animation-delay: 0.1s;
+        animation-delay: 0.1s;
+      }
+
+      .sk-cube-grid .sk-cube9 {
+        -webkit-animation-delay: 0.2s;
+        animation-delay: 0.2s;
+      }
+
+      @-webkit-keyframes sk-cubeGridScaleDelay {
+        0%,
+        70%,
+        100% {
+          -webkit-transform: scale3D(1, 1, 1);
+          transform: scale3D(1, 1, 1);
+        }
+        35% {
+          -webkit-transform: scale3D(0, 0, 1);
+          transform: scale3D(0, 0, 1);
+        }
+      }
+
+      @keyframes sk-cubeGridScaleDelay {
+        0%,
+        70%,
+        100% {
+          -webkit-transform: scale3D(1, 1, 1);
+          transform: scale3D(1, 1, 1);
+        }
+        35% {
+          -webkit-transform: scale3D(0, 0, 1);
+          transform: scale3D(0, 0, 1);
+        }
+      }
+
+      .react-loading-wrapper {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        text-align: center;
+      }
+
+      .react-loading {
+        flex: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+    <div id="root">
+      <div class="react-loading-wrapper">
+        <div class="react-loading">
+          <p>Please wait while we load an obnoxious amount of JavaScript.</p>
+          <p>
+            <small>You may need to disable adblocking extensions to run this app.</small>
+          </p>
+          <div class="sk-cube-grid">
+            <div class="sk-cube sk-cube1"></div>
+            <div class="sk-cube sk-cube2"></div>
+            <div class="sk-cube sk-cube3"></div>
+            <div class="sk-cube sk-cube4"></div>
+            <div class="sk-cube sk-cube5"></div>
+            <div class="sk-cube sk-cube6"></div>
+            <div class="sk-cube sk-cube7"></div>
+            <div class="sk-cube sk-cube8"></div>
+            <div class="sk-cube sk-cube9"></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <script src="https://cdn.ravenjs.com/3.17.0/raven.min.js" crossorigin="anonymous"></script>
-  <script>window.SENTRY_DSN = '{{ SENTRY_DSN_FRONTEND }}';</script>
-  <script>
-    window.ZEUS_PUBSUB_ENDPOINT = '{{ PUBSUB_ENDPOINT }}';
-    window.ZEUS_RELEASE = '{{ SENTRY_RELEASE }}'
-    window.SENTRY_DSN && Raven.config(window.SENTRY_DSN, {
-      // TODO(dcramer): make this configurable/autobind?
-      whitelistUrls: [/zeus\.ci/],
-      environment: '{{ SENTRY_ENVIRONMENT }}',
-      release: '{{ SENTRY_RELEASE }}',
-    }).install();
-  </script>
-  <script type="text/javascript" src="{{ asset_url('vendor.js') }}"></script>
-  <script type="text/javascript" src="{{ asset_url('app.js') }}"></script>
-</body>
-
+    <script
+      src="https://cdn.ravenjs.com/3.17.0/raven.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      window.SENTRY_DSN = '{{ SENTRY_DSN_FRONTEND }}';
+    </script>
+    <script>
+      window.ZEUS_PUBSUB_ENDPOINT = '{{ PUBSUB_ENDPOINT }}';
+      window.ZEUS_RELEASE = '{{ SENTRY_RELEASE }}';
+      window.SENTRY_DSN &&
+        Raven.config(window.SENTRY_DSN, {
+          // TODO(dcramer): make this configurable/autobind?
+          whitelistUrls: [/zeus\.ci/],
+          environment: '{{ SENTRY_ENVIRONMENT }}',
+          release: '{{ SENTRY_RELEASE }}'
+        }).install();
+    </script>
+    <script type="text/javascript" src="{{ asset_url('vendor.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_url('app.js') }}"></script>
+  </body>
 </html>
