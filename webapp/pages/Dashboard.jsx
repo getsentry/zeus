@@ -108,7 +108,7 @@ class BuildListSection extends AsyncComponent {
     buildList: PropTypes.array
   };
 
-  fetchData() {
+  loadData() {
     return new Promise(resolve => {
       this.props.fetchBuilds({user: 'me', per_page: 10});
       return resolve();
@@ -149,9 +149,9 @@ const WrappedBuildList = connect(
   ({auth, builds}) => {
     let emailSet = new Set((auth.emails || []).map(e => e.email));
     return {
-      buildList: builds.items.filter(
-        build => !!build.repository && emailSet.has(build.source.author.email)
-      ),
+      buildList: builds.items
+        .filter(build => !!build.repository && emailSet.has(build.source.author.email))
+        .slice(0, 10),
       loading: !builds.loaded
     };
   },
@@ -166,8 +166,8 @@ export default class Dashboard extends AsyncPage {
   renderBody() {
     return (
       <Layout>
-        <Flex>
-          <Box flex="1" width={7 / 12} mr={30}>
+        <Flex flex="1">
+          <Box width={7 / 12} mr={30}>
             <WrappedBuildList {...this.props} />
           </Box>
           <Box width={5 / 12}>

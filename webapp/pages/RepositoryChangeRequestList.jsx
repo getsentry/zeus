@@ -28,7 +28,7 @@ class ChangeRequestListBody extends AsyncComponent {
     links: PropTypes.object
   };
 
-  fetchData() {
+  loadData() {
     return new Promise(resolve => {
       let {repo} = this.props;
       this.props.fetchChangeRequests({

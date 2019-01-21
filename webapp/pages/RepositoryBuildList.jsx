@@ -28,7 +28,7 @@ class BuildListBody extends AsyncComponent {
     links: PropTypes.object
   };
 
-  fetchData() {
+  loadData() {
     return new Promise(resolve => {
       let {repo} = this.props;
       this.props.fetchBuilds({repository: repo.full_name, ...this.props.location.query});

@@ -27,23 +27,42 @@ export default class AsyncComponent extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.refreshData = this.refreshData.bind(this);
+    this.reloadData = this.reloadData.bind(this);
     this.render = this.render.bind(this);
 
-    this.state = this.getDefaultState(props, context);
+    this.state = {
+      __location: {
+        ...(props.location || context.router.location)
+      },
+      ...this.getDefaultState(props, context)
+    };
   }
 
   componentWillMount() {
     this.api = new Client();
-    if (this.props.loading) {
-      this.refreshData();
-    }
+    this.reloadData();
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
+    let isRouterInContext = !!nextContext.router;
+    let isLocationInProps = nextProps.location !== undefined;
+
+    let prevLocation = isLocationInProps ? this.props.location : this.state.__location;
+    let currentLocation = isLocationInProps
+      ? nextProps.location
+      : isRouterInContext
+        ? nextContext.router.location
+        : null;
+
+    if (!(currentLocation && prevLocation)) {
+      return;
+    }
+
     if (
+      currentLocation.pathname !== prevLocation.pathname ||
       !isEqual(this.props.params, nextProps.params) ||
-      !isEqual((this.props.location || {}).query, (nextProps.location || {}).query)
+      currentLocation.search !== prevLocation.search ||
+      currentLocation.state !== prevLocation.state
     ) {
       this.remountComponent(nextProps, nextContext);
     }
@@ -53,16 +72,16 @@ export default class AsyncComponent extends Component {
     this.api && this.api.clear();
   }
 
-  refreshData(refresh = false) {
-    this.fetchData(refresh);
+  reloadData(refresh = false) {
+    this.loadData(refresh);
   }
 
   /**
-   * Method to asynchronously fetch data.
+   * Method to asynchronously load data.
    *
    * Must return a Promise.
    */
-  fetchData() {
+  loadData() {
     return new Promise(resolve => {
       return resolve();
     });
@@ -76,7 +95,15 @@ export default class AsyncComponent extends Component {
   remountComponent(props, context) {
     /// XXX(dcramer): why is this happening?
     if (props === undefined) return;
-    this.setState(this.getDefaultState(props, context), this.refreshData);
+    this.setState(
+      {
+        __location: {
+          ...(props.location || context.router.location)
+        },
+        ...this.getDefaultState(props, context)
+      },
+      this.reloadData
+    );
   }
 
   renderLoading() {

@@ -35,7 +35,7 @@ class BuildListBody extends AsyncComponent {
     links: PropTypes.object
   };
 
-  fetchData() {
+  loadData() {
     return new Promise(resolve => {
       this.props.fetchBuilds({
         user: 'me',
@@ -66,9 +66,9 @@ export default connect(
   ({auth, builds}) => {
     let emailSet = new Set((auth.emails || []).map(e => e.email));
     return {
-      buildList: builds.items.filter(
-        build => !!build.repository && emailSet.has(build.source.author.email)
-      ),
+      buildList: builds.items
+        .filter(build => !!build.repository && emailSet.has(build.source.author.email))
+        .slice(0, 25),
       links: builds.links,
       loading: !builds.loaded
     };

@@ -62,7 +62,7 @@ export default class RepositoryHookDetails extends AsyncPage {
       }
     };
 
-    this.fetchDataForEndpoint('hook', `/hooks/${params.hookId}`, {method: 'PUT', data});
+    this.loadDataForEndpoint('hook', `/hooks/${params.hookId}`, {method: 'PUT', data});
   };
 
   renderBody() {

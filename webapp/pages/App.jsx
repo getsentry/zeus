@@ -25,7 +25,7 @@ export class RepositoryContext extends AsyncComponent {
     };
   }
 
-  fetchData() {
+  loadData() {
     return new Promise(resolve => {
       this.props.loadRepos();
       return resolve();
