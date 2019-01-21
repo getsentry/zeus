@@ -62,6 +62,7 @@ exports[`UserBuildList fetches builds 1`] = `
       >
         <UserBuildList
           buildList={Array []}
+          error={false}
           fetchBuilds={[Function]}
           loading={true}
           location={
@@ -1805,6 +1806,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
               },
             ]
           }
+          error={false}
           fetchBuilds={[Function]}
           links={Object {}}
           loading={false}

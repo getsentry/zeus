@@ -2,6 +2,8 @@
 
 exports[`RepositoryDetails renders with fetching repo 1`] = `
 <RepositoryDetails
+  error={false}
+  loading={true}
   params={
     Object {
       "ownerName": "getsentry",
@@ -1033,6 +1035,8 @@ exports[`RepositoryDetails renders with fetching repo 1`] = `
 
 exports[`RepositoryDetails renders with repo in context 1`] = `
 <RepositoryDetails
+  error={false}
+  loading={true}
   params={
     Object {
       "ownerName": "getsentry",
