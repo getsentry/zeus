@@ -21,6 +21,7 @@ install-js-requirements:
 
 test:
 	poetry run py.test
+	yarn test
 
 db:
 	$(MAKE) create-db
