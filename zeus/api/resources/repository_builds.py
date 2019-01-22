@@ -82,7 +82,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             .filter(
                 Source.revision_sha == data.pop("ref"), Source.repository_id == repo.id
             )
-            .first()
+            .one_or_none()
         )
         assert source
 
