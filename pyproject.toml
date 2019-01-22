@@ -41,6 +41,7 @@ flask-mail = "~0.9.1"
 flask = "~0.12.3"
 google-cloud-storage = "~1.4.0"
 idna = "~2.5"
+ipython = "~6.1.0"
 itsdangerous = "~0.24"
 jsonschema = "~2.6.0"
 lxml = "~4.2.3"
@@ -56,7 +57,6 @@ responses = { version = "~0.8.1", optional = true }
 [tool.poetry.dev-dependencies]
 black = "=18.6b4"
 flake8 = "=3.5.0"
-ipython = "~6.1.0"
 pycodestyle = "=2.3.1"
 exam = "~0.10.6"
 
