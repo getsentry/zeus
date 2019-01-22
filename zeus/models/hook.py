@@ -46,7 +46,7 @@ class Hook(RepositoryBoundMixin, StandardAttributes, db.Model):
         return sorted(
             [
                 str(h)
-                for h, _ in db.session.query(Hook.id).filter(
+                for h, in db.session.query(Hook.id).filter(
                     Hook.repository_id == repository_id,
                     Hook.is_required == True,  # NOQA
                 )
