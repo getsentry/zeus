@@ -4,34 +4,34 @@ from sqlalchemy.dialects.postgresql import array_agg
 from zeus.config import db
 from zeus.constants import Result
 from zeus.db.func import array_agg_row
-from zeus.models import Job, Build, TestCase
+from zeus.models import Job, Build, Repository, TestCase
 
-from .base_build import BaseBuildResource
+from .base_repository import BaseRepositoryResource
 from ..schemas import AggregateTestCaseSummarySchema
 
 
-class BuildTestsResource(BaseBuildResource):
-    def get(self, build: Build):
-        """
-        Return a list of test cases for a given build.
-        """
-        job_query = db.session.query(Job.id).filter(Job.build_id == build.id)
+class TestHistoryResource(BaseRepositoryResource):
+    def select_resource_for_update(self) -> bool:
+        return False
 
-        result = request.args.get("allowed_failures")
-        if result == "false":
-            job_query = job_query.filter(Job.allow_failure == False)  # NOQA
-        job_ids = job_query.subquery()
-
+    def get(self, repo: Repository, test_hash: str):
         query = (
             db.session.query(
+                Build.id.label("build_id"),
                 TestCase.hash,
                 TestCase.name,
                 array_agg_row(
                     TestCase.id, TestCase.job_id, TestCase.duration, TestCase.result
                 ).label("runs"),
             )
-            .filter(TestCase.job_id.in_(job_ids))
-            .group_by(TestCase.hash, TestCase.name)
+            # .join(Job, Job.id == TestCase.job_id)
+            # .join(Build, Build.id == Job.build_id)
+            .filter(
+                TestCase.hash == test_hash,
+                TestCase.repository_id == repo.id,
+                Build.id == Job.build_id,
+                Job.id == TestCase.job_id,
+            ).group_by(Build.id, TestCase.hash, TestCase.name)
         )
 
         result = request.args.get("result")
@@ -42,6 +42,7 @@ class BuildTestsResource(BaseBuildResource):
                 raise NotImplementedError
 
         query = query.order_by(
+            Build.id,
             (
                 array_agg(TestCase.result).label("results").contains([Result.failed])
             ).desc(),
@@ -49,6 +50,6 @@ class BuildTestsResource(BaseBuildResource):
         )
 
         schema = AggregateTestCaseSummarySchema(
-            many=True, strict=True, exclude=("build",), context={"build": build}
+            many=True, strict=True, context={"repo": repo}
         )
         return self.paginate_with_schema(schema, query)
