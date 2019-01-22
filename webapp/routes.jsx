@@ -35,6 +35,7 @@ import RevisionDiff from './pages/RevisionDiff';
 import RevisionOverview from './pages/RevisionOverview';
 import RevisionStyleViolationList from './pages/RevisionStyleViolationList';
 import RevisionTestList from './pages/RevisionTestList';
+import TestDetails from './pages/TestDetails';
 import UserBuildList from './pages/UserBuildList';
 import Welcome from './pages/Welcome';
 
@@ -113,6 +114,7 @@ export default (
         <Route path="tests" component={RevisionTestList} />
         <Route path="artifacts" component={RevisionArtifacts} />
       </Route>
+      <Route path="tests/:testHash" component={TestDetails} />
     </Route>
     <Route path="*" component={NotFoundError} />
   </Route>

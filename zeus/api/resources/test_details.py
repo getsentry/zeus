@@ -1,42 +1,25 @@
-from flask import Response
-from sqlalchemy.orm import joinedload, undefer
+from sqlalchemy.orm import contains_eager
 
-from zeus.config import db
-from zeus.models import TestCase
+from zeus.models import Job, Repository, TestCase
 
-from .base import Resource
-from ..schemas import TestCaseSchema
-
-testcase_schema = TestCaseSchema(strict=True)
+from .base_repository import BaseRepositoryResource
+from ..schemas import TestCaseSummarySchema
 
 
-class TestDetailsResource(Resource):
-    def dispatch_request(self, test_id: str, *args, **kwargs) -> Response:
-        test = TestCase.query.options(undefer("message"), joinedload("job")).get(
-            test_id
+class TestDetailsResource(BaseRepositoryResource):
+    def select_resource_for_update(self) -> bool:
+        return False
+
+    def get(self, repo: Repository, test_hash: str):
+        testcase = (
+            TestCase.query.filter(
+                TestCase.repository_id == repo.id, TestCase.hash == test_hash
+            )
+            .join(TestCase.job)
+            .options(contains_eager("job"))
+            .order_by(Job.date_created.desc())
+            .first()
         )
-        if not test:
-            return self.not_found()
 
-        return Resource.dispatch_request(self, test, *args, **kwargs)
-
-    def get(self, test: TestCase):
-        """
-        Return a test.
-        """
-        return self.respond_with_schema(testcase_schema, test)
-
-    def put(self, test: TestCase):
-        """
-        Update a test.
-        """
-        result = self.schema_from_request(testcase_schema, partial=True)
-        if result.errors:
-            return self.respond(result.errors, 403)
-
-        for key, value in result.data.items():
-            if getattr(test, key) != value:
-                setattr(test, key, value)
-        db.session.add(test)
-        db.session.commit()
-        return self.respond_with_schema(testcase_schema, test)
+        schema = TestCaseSummarySchema(strict=True)
+        return self.respond_with_schema(schema, testcase)

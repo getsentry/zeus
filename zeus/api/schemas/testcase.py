@@ -145,6 +145,9 @@ class AggregateTestCaseSummarySchema(Schema):
     runs = fields.List(fields.Nested(ExecutionSchema), required=True)
     result = ResultField(required=True)
     message = fields.Str(required=False)
+    build = fields.Nested(
+        BuildSchema(exclude=("repository", "source", "stats")), required=False
+    )
     origin_build = fields.Nested(
         BuildSchema(exclude=("repository", "source", "stats")), required=False
     )
@@ -155,7 +158,6 @@ class AggregateTestCaseSummarySchema(Schema):
             items = [data]
         else:
             items = data
-
         if "origin_build" in self.exclude or "build" not in self.context:
             failure_origins = {}
         else:
@@ -169,6 +171,14 @@ class AggregateTestCaseSummarySchema(Schema):
                     if any(Result(int(e[3])) == Result.failed for e in i.runs)
                 ],
             )
+
+        if "build" in self.exclude or not hasattr(items[0], "build_id"):
+            builds = {}
+        else:
+            builds = {
+                b.id: b
+                for b in Build.query.filter(Build.id.in_(i.build_id for i in items))
+            }
 
         if failure_origins:
             origin_builds = {
@@ -193,6 +203,7 @@ class AggregateTestCaseSummarySchema(Schema):
                     }
                     for e in i.runs
                 ],
+                "build": builds.get(getattr(i, "build_id", None)),
                 "origin_build": origin_builds.get(failure_origins.get(i.hash)),
                 "result": aggregate_result(Result(int(e[3])) for e in i.runs),
             }
