@@ -18,6 +18,7 @@ class TestHistoryResource(BaseRepositoryResource):
         query = (
             db.session.query(
                 Build.id.label("build_id"),
+                Build.number,
                 TestCase.hash,
                 TestCase.name,
                 array_agg_row(
@@ -31,7 +32,7 @@ class TestHistoryResource(BaseRepositoryResource):
                 TestCase.repository_id == repo.id,
                 Build.id == Job.build_id,
                 Job.id == TestCase.job_id,
-            ).group_by(Build.id, TestCase.hash, TestCase.name)
+            ).group_by(Build.id, Build.number, TestCase.hash, TestCase.name)
         )
 
         result = request.args.get("result")
@@ -42,7 +43,7 @@ class TestHistoryResource(BaseRepositoryResource):
                 raise NotImplementedError
 
         query = query.order_by(
-            Build.id,
+            Build.number.desc(),
             (
                 array_agg(TestCase.result).label("results").contains([Result.failed])
             ).desc(),
