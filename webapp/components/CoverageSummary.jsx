@@ -25,7 +25,9 @@ export default class CoverageSummary extends Component {
 
   render() {
     let {build, coverage, repo} = this.props;
-    let coverageLink = `/${repo.full_name}/builds/${build.number}/coverage`;
+    let link = build.number
+      ? `/${repo.full_name}/builds/${build.number}/coverage`
+      : `/${repo.full_name}/revisions/${build.source.revision.sha}/coverage`;
 
     return (
       <ResultGrid>
@@ -49,8 +51,7 @@ export default class CoverageSummary extends Component {
             return (
               <Row key={fileCoverage.filename}>
                 <Column>
-                  <Link
-                    to={{pathname: coverageLink, query: {parent: fileCoverage.filename}}}>
+                  <Link to={{pathname: link, query: {parent: fileCoverage.filename}}}>
                     {fileCoverage.filename}
                   </Link>
                 </Column>
