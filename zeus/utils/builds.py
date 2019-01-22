@@ -9,6 +9,9 @@ from zeus.models import Build, Revision, Source
 
 
 def merge_builds(target: Build, build: Build) -> Build:
+    # explicitly unset the default id as target should begin as an empty instance
+    target.id = None
+
     # Store the original build so we can retrieve its ID or number later, or
     # show a list of all builds in the UI
     target.original.append(build)
@@ -60,28 +63,31 @@ def merge_builds(target: Build, build: Build) -> Build:
     return target
 
 
-def merge_build_group(build_group: Tuple[Any, List[Build]]) -> Build:
-    if len(build_group) == 1:
-        build = build_group[0]
-        build.original = [build]
-        return build
-
-    providers = groupby(build_group, lambda build: build.provider)
+def merge_build_group(
+    build_group: Tuple[Any, List[Build]], required_hook_ids: List[str] = None
+) -> Build:
+    # XXX(dcramer): required_hook_ids is still dirty here, but its our simplest way
+    # to get it into place
+    grouped_builds = groupby(
+        build_group, lambda build: (str(build.hook_id), build.provider)
+    )
     latest_builds = [
-        max(build, key=lambda build: build.number) for _, build in providers
+        max(build, key=lambda build: build.number) for _, build in grouped_builds
     ]
-
-    if len(latest_builds) == 1:
-        build = latest_builds[0]
-        build.original = [build]
-        return build
 
     build = Build()
     build.original = []
+    if set(required_hook_ids or ()).difference(
+        set(str(b.hook_id) for b in build_group)
+    ):
+        build.result = Result.failed
+
     return reduce(merge_builds, latest_builds, build)
 
 
-def fetch_builds_for_revisions(revisions: List[Revision]) -> Mapping[str, Build]:
+def fetch_builds_for_revisions(
+    revisions: List[Revision], required_hook_ids: List[str] = None
+) -> Mapping[str, Build]:
     # we query extra builds here, but its a lot easier than trying to get
     # sqlalchemy to do a ``select (subquery)`` clause and maintain tenant
     # constraints
@@ -108,14 +114,30 @@ def fetch_builds_for_revisions(revisions: List[Revision]) -> Mapping[str, Build]
         .filter(Source.patch_id == None, reduce(or_, lookups))  # NOQA
         .order_by(Source.revision_sha)
     )
-    groups = groupby(
+    build_groups = groupby(
         builds, lambda build: (build.source.repository_id, build.source.revision_sha)
     )
-    return [(ident, merge_build_group(list(group))) for ident, group in groups]
+    return [
+        (ident, merge_build_group(list(group), required_hook_ids))
+        for ident, group in build_groups
+    ]
 
 
 def fetch_build_for_revision(revision: Revision) -> Build:
-    builds = fetch_builds_for_revisions([revision])
+    source = (
+        Source.query.unrestricted_unsafe()
+        .filter(
+            Source.revision_sha == revision.sha,
+            Source.repository_id == revision.repository_id,
+        )
+        .first()
+    )
+    if source:
+        required_hook_ids = source.data.get("required_hook_ids") or ()
+    else:
+        required_hook_ids = ()
+
+    builds = fetch_builds_for_revisions([revision], required_hook_ids)
     if len(builds) < 1:
         return None
 

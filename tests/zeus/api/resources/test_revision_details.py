@@ -23,7 +23,7 @@ def test_revision_details(
     factories.BuildFactory.create(
         source=source, date_created=timezone.now() - timedelta(minutes=1)
     )
-    build = factories.BuildFactory.create(source=source, date_created=timezone.now())
+    factories.BuildFactory.create(source=source, passed=True)
 
     resp = client.get(
         "/api/repos/{}/revisions/{}".format(repo.get_full_name(), revision.sha)
@@ -31,4 +31,4 @@ def test_revision_details(
 
     assert resp.status_code == 200
     data = resp.json()
-    assert data["id"] == str(build.id)
+    assert data["status"] == "finished"

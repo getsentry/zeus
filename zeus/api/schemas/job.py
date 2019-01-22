@@ -22,3 +22,4 @@ class JobSchema(Schema):
     url = fields.Str(allow_none=True)
     failures = fields.List(fields.Nested(FailureReasonSchema), dump_only=True)
     allow_failure = fields.Bool(default=False)
+    hook_id = fields.Str()

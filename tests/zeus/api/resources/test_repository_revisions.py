@@ -23,7 +23,7 @@ def test_repo_revision_list(
     factories.BuildFactory.create(
         source=source, date_created=timezone.now() - timedelta(minutes=1)
     )
-    build = factories.BuildFactory.create(source=source, date_created=timezone.now())
+    factories.BuildFactory.create(source=source, passed=True)
 
     resp = client.get("/api/repos/{}/revisions".format(repo.get_full_name()))
 
@@ -31,6 +31,6 @@ def test_repo_revision_list(
     data = resp.json()
     assert len(data) == 2
     assert data[0]["sha"] == git_repo_config.commits[0]
-    assert data[0]["latest_build"]["id"] == str(build.id)
+    assert data[0]["latest_build"]["status"] == "finished"
     assert data[1]["sha"] == git_repo_config.commits[1]
     assert data[1]["latest_build"] is None

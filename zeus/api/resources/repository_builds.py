@@ -4,7 +4,7 @@ from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Email, Repository, Source
+from zeus.models import Author, Build, Email, Hook, Repository, Source
 from zeus.pubsub.utils import publish
 
 from .base_repository import BaseRepositoryResource
@@ -84,6 +84,15 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             )
             .first()
         )
+        assert source
+
+        # we need to write/sync the required hook IDs in case they've changed
+        required_hook_ids = Hook.get_required_hook_ids(repo.id)
+        if (source.data or {}).get("required_hook_ids") != required_hook_ids:
+            if source.data is None:
+                source.data = {}
+            source.data["required_hook_ids"] = required_hook_ids
+            db.session.add(source)
 
         build = Build(repository=repo, **data)
         # TODO(dcramer): we should convert source in the schema

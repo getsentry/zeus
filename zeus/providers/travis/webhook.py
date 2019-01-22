@@ -125,16 +125,13 @@ class TravisWebhookView(BaseHook):
                 )
 
             response = upsert_build(
-                repository=hook.repository,
-                provider=hook.provider,
-                external_id=str(payload["id"]),
-                data=data,
+                hook=hook, external_id=str(payload["id"]), data=data
             )
             build = Build.query.get(response.json()["id"])
             for job_payload in payload["matrix"]:
                 upsert_job(
                     build=build,
-                    provider=hook.provider,
+                    hook=hook,
                     external_id=str(job_payload["id"]),
                     data={
                         "status": (

@@ -5,7 +5,7 @@ from sqlalchemy import event
 from sqlalchemy.orm import Session
 from sqlalchemy.testing import assertions, assertsql
 
-from zeus import config
+from zeus import auth, config
 from zeus.storage.mock import FileStorageCache
 
 
@@ -158,3 +158,8 @@ def public_key_bytes(public_key):
         encoding=serialization.Encoding.PEM,
         format=serialization.PublicFormat.SubjectPublicKeyInfo,
     )
+
+
+@pytest.fixture
+def default_tenant(default_repo):
+    auth.set_current_tenant(auth.RepositoryTenant(repository_id=default_repo.id))

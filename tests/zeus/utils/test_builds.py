@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from zeus import factories
 from zeus.constants import Status, Result
-from zeus.utils.builds import merge_build_group
+from zeus.utils.builds import fetch_build_for_revision, merge_build_group
 
 
 def test_merge_build_group_different_providers(client, default_login, default_source):
@@ -46,3 +46,25 @@ def test_merge_build_group_empty_dates(client, default_login, default_source):
 
     assert merged_build.date_started == now
     assert merged_build.date_finished == now
+
+
+def test_fetch_build_with_required_hooks(
+    client, db_session, default_login, default_tenant, default_repo, default_source
+):
+    hook1 = factories.HookFactory.create(repository_id=default_repo.id)
+    hook2 = factories.HookFactory.create(repository_id=default_repo.id)
+    default_source.data = {"required_hook_ids": [str(hook1.id), str(hook2.id)]}
+    db_session.add(default_source)
+    db_session.commit()
+
+    factories.BuildFactory.create(source=default_source, hook_id=hook1.id, passed=True)
+
+    merged_build = fetch_build_for_revision(default_source.revision)
+
+    assert merged_build.result == Result.failed
+
+    factories.BuildFactory.create(source=default_source, hook_id=hook2.id, passed=True)
+
+    merged_build = fetch_build_for_revision(default_source.revision)
+
+    assert merged_build.result == Result.passed

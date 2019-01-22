@@ -1,23 +1,24 @@
 from flask import Response
 
 from zeus.config import redis
-from zeus.models import Repository, Build, ChangeRequest, Job
+from zeus.models import Repository, Build, ChangeRequest, Hook, Job
 from zeus.api import client
 
 
 def upsert_job(
-    build: Build, provider: str, external_id: str, data: dict = None
+    build: Build, hook: Hook, external_id: str, data: dict = None
 ) -> Response:
     lock_key = "upsert:job:{build_id}:{provider}:{job_xid}".format(
-        build_id=build.id, provider=provider, job_xid=external_id
+        build_id=build.id, provider=hook.provider, job_xid=external_id
     )
     with redis.lock(lock_key):
         json = data.copy() if data else {}
         json["external_id"] = external_id
-        json["provider"] = provider
+        json["provider"] = hook.provider
+        json["hook_id"] = str(hook.id)
 
         job = Job.query.filter(
-            Job.provider == provider,
+            Job.provider == hook.provider,
             Job.external_id == external_id,
             Job.build_id == build.id,
         ).first()
@@ -38,29 +39,30 @@ def upsert_job(
         )
 
 
-def upsert_build(
-    repository: Repository, provider: str, external_id: str, data: dict = None
-) -> Response:
+def upsert_build(hook: Hook, external_id: str, data: dict = None) -> Response:
     lock_key = "hook:build:{repo_id}:{provider}:{build_xid}".format(
-        repo_id=repository.id, provider=provider, build_xid=external_id
+        repo_id=hook.repository_id, provider=hook.provider, build_xid=external_id
     )
     with redis.lock(lock_key):
         json = data.copy() if data else {}
         json["external_id"] = external_id
-        json["provider"] = provider
+        json["provider"] = hook.provider
+        json["hook_id"] = str(hook.id)
 
         build = Build.query.filter(
-            Build.provider == provider, Build.external_id == external_id
+            Build.provider == hook.provider, Build.external_id == external_id
         ).first()
 
         if build:
             return client.put(
-                "/repos/{}/builds/{}".format(repository.get_full_name(), build.number),
+                "/repos/{}/builds/{}".format(
+                    hook.repository.get_full_name(), build.number
+                ),
                 json=json,
             )
 
         return client.post(
-            "/repos/{}/builds".format(repository.get_full_name()), json=json
+            "/repos/{}/builds".format(hook.repository.get_full_name()), json=json
         )
 
 

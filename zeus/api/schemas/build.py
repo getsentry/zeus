@@ -29,6 +29,7 @@ class BuildSchema(Schema):
 class BuildCreateSchema(Schema):
     # label is only required if they're specifying a source with a patch (which they cant do yet)
     label = fields.Str(required=False)
+    hook_id = fields.Str()
     provider = fields.Str()
     external_id = fields.Str()
     url = fields.Str(allow_none=True)

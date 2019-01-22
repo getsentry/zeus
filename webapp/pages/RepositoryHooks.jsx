@@ -41,6 +41,7 @@ export default class RepositoryHooks extends AsyncPage {
               <Header>
                 <Column>ID</Column>
                 <Column width={120}>Provider</Column>
+                <Column width={120}>Required?</Column>
                 <Column width={150}>Created</Column>
               </Header>
               {hookList.map(hook => {
@@ -52,6 +53,7 @@ export default class RepositoryHooks extends AsyncPage {
                       </Link>
                     </Column>
                     <Column width={120}>{hook.provider}</Column>
+                    <Column width={120}>{hook.is_required ? 'Yes' : 'No'}</Column>
                     <Column width={150}>
                       <TimeSince date={hook.created_at} />
                     </Column>
