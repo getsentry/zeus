@@ -34,20 +34,8 @@ class Source(RepositoryBoundMixin, StandardAttributes, db.Model):
             ("revision.repository_id", "revision.sha"),
         ),
         db.Index("idx_source_repo_sha", "repository_id", "revision_sha"),
-        db.Index(
-            "unq_source_revision2",
-            "repository_id",
-            "revision_sha",
-            unique=True,
-            postgresql_where=db.Column("patch_id").is_(None),
-        ),
-        db.Index(
-            "unq_source_revision3",
-            "repository_id",
-            "revision_sha",
-            "patch_id",
-            unique=True,
-            postgresql_where=db.Column("patch_id").isnot(None),
+        db.UniqueConstraint(
+            "repository_id", "revision_sha", "patch_id", name="unq_source_revision"
         ),
     )
     __repr__ = model_repr("repository_id", "revision_sha", "patch_id")
