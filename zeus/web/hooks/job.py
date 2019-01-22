@@ -15,8 +15,5 @@ class JobHook(BaseHook):
             return self.respond("", 404)
 
         return upsert_job(
-            build=build,
-            provider=hook.provider,
-            external_id=job_xid,
-            data=request.get_json() or {},
+            build=build, hook=hook, external_id=job_xid, data=request.get_json() or {}
         )

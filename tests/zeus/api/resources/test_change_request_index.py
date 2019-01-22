@@ -46,7 +46,7 @@ def test_change_request_list_with_latest_build(
     data = resp.json()
     assert len(data) == 1
     assert data[0]["id"] == str(default_change_request.id)
-    assert data[0]["latest_build"]["id"] == str(default_build.id)
+    assert data[0]["latest_build"]["status"] == "finished"
 
 
 def test_change_request_list_without_access(

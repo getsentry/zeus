@@ -13,7 +13,7 @@ from ..schemas import BuildSchema, ChangeRequestSchema
 
 class ChangeRequestWithBuildSchema(ChangeRequestSchema):
     latest_build = fields.Nested(
-        BuildSchema(exclude=["repository"]), dump_only=True, required=False
+        BuildSchema(exclude=["id", "repository"]), dump_only=True, required=False
     )
 
     @pre_dump(pass_many=True)

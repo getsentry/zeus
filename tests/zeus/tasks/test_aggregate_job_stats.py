@@ -1,4 +1,4 @@
-from zeus import auth, factories
+from zeus import factories
 from zeus.constants import Result, Status
 from zeus.models import FailureReason, ItemStat
 from zeus.tasks import (
@@ -8,11 +8,7 @@ from zeus.tasks import (
 )
 
 
-def test_unfinished_job(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
+def test_unfinished_job(mocker, db_session, default_source, default_tenant):
     build = factories.BuildFactory(source=default_source, queued=True)
     db_session.add(build)
 
@@ -25,11 +21,7 @@ def test_unfinished_job(mocker, db_session, default_source):
     assert build.result == Result.unknown
 
 
-def test_finished_job(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
+def test_finished_job(mocker, db_session, default_source, default_tenant):
     build = factories.BuildFactory(source=default_source, in_progress=True)
     db_session.add(build)
 
@@ -48,11 +40,7 @@ def test_finished_job(mocker, db_session, default_source):
     mock_send_build_notifications.assert_called_once_with(build_id=build.id)
 
 
-def test_failing_tests(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
+def test_failing_tests(mocker, db_session, default_source, default_tenant):
     build = factories.BuildFactory(source=default_source, in_progress=True)
     db_session.add(build)
 
@@ -72,11 +60,9 @@ def test_failing_tests(mocker, db_session, default_source):
     assert reasons[0].reason == FailureReason.Reason.failing_tests
 
 
-def test_failing_tests_duplicate_reason(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
+def test_failing_tests_duplicate_reason(
+    mocker, db_session, default_source, default_tenant
+):
     build = factories.BuildFactory(source=default_source, in_progress=True)
     db_session.add(build)
 
@@ -102,11 +88,7 @@ def test_failing_tests_duplicate_reason(mocker, db_session, default_source):
     assert reasons[0].reason == FailureReason.Reason.failing_tests
 
 
-def test_failure_with_allow_failure(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
+def test_failure_with_allow_failure(mocker, db_session, default_source, default_tenant):
     build = factories.BuildFactory(source=default_source, in_progress=True)
     db_session.add(build)
 
@@ -119,11 +101,7 @@ def test_failure_with_allow_failure(mocker, db_session, default_source):
     assert build.result == Result.passed
 
 
-def test_newly_unfinished_job(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
+def test_newly_unfinished_job(mocker, db_session, default_source, default_tenant):
     build = factories.BuildFactory(source=default_source, finished=True)
     db_session.add(build)
 
@@ -136,11 +114,7 @@ def test_newly_unfinished_job(mocker, db_session, default_source):
     assert build.result == Result.unknown
 
 
-def test_coverage_stats(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
+def test_coverage_stats(mocker, db_session, default_source, default_tenant):
     build = factories.BuildFactory(source=default_source)
     db_session.add(build)
 
@@ -188,11 +162,7 @@ def test_coverage_stats(mocker, db_session, default_source):
     assert stats["coverage.diff_lines_uncovered"] == 2
 
 
-def test_test_stats(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
+def test_test_stats(mocker, db_session, default_source, default_tenant):
     build = factories.BuildFactory(source=default_source, in_progress=True)
     db_session.add(build)
 
@@ -233,11 +203,7 @@ def test_test_stats(mocker, db_session, default_source):
     assert job_stats["tests.duration"] == 10
 
 
-def test_record_bundle_stats(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
+def test_record_bundle_stats(mocker, db_session, default_source, default_tenant):
     build = factories.BuildFactory(source=default_source, in_progress=True)
     db_session.add(build)
 

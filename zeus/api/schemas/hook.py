@@ -49,6 +49,7 @@ class HookSchema(Schema):
     token = fields.Method("get_token", dump_only=True)
     secret_uri = fields.Method("get_secret_uri", dump_only=True)
     public_uri = fields.Method("get_public_uri", dump_only=True)
+    is_required = fields.Boolean()
     created_at = fields.DateTime(attribute="date_created", dump_only=True)
     config = HookConfigField()
 
