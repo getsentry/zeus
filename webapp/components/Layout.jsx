@@ -15,10 +15,20 @@ import Footer from './Footer';
 import Logo from '../assets/Logo';
 import {logout} from '../actions/auth';
 
-const Sidebar = styled(Box)`
+const Sidebar = styled(Flex)`
   background: #39364e;
   padding: 10px 20px;
   color: #fff;
+  flex-direction: column;
+`;
+
+const SidebarItems = styled(Flex)`
+  flex: 1;
+  flex-direction: column;
+`;
+
+const SidebarSection = styled(Flex)`
+  flex-direction: column;
 `;
 
 const ContentColumn = styled(Box)`
@@ -67,23 +77,23 @@ class Layout extends Component {
               <Logo size={ICON_SIZE} color="#fff" />
             </Link>
           </LogoArea>
-          <Flex direction="column">
-            <NavLink to="/builds">
-              <MdClock size={ICON_SIZE} color="#fff" />
-            </NavLink>
-            <div style={{alignSelf: 'flex-end'}}>
+          <SidebarItems>
+            <SidebarSection>
+              <NavLink to="/builds">
+                <MdClock size={ICON_SIZE} color="#fff" />
+              </NavLink>
+            </SidebarSection>
+            <SidebarSection alignSelf="flex-end">
               <NavLink to="/settings">
                 <MdSettings size={ICON_SIZE} color="#fff" />
               </NavLink>
-            </div>
-            <div style={{alignSelf: 'flex-end'}}>
               {this.props.isAuthenticated && (
                 <NavLink onClick={this.props.logout} style={{alignSelf: 'flex-end'}}>
                   <MdLogout size={ICON_SIZE} color="#fff" />
                 </NavLink>
               )}
-            </div>
-          </Flex>
+            </SidebarSection>
+          </SidebarItems>
         </Sidebar>
         <ContentColumn>
           {this.props.withHeader ? (
