@@ -21,6 +21,12 @@ const Sidebar = styled(Box)`
   color: #fff;
 `;
 
+const ContentColumn = styled(Box)`
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+`;
+
 const LogoArea = styled.div`
   padding: 4px 0 20px;
   margin: 0 0 20px;
@@ -54,19 +60,14 @@ class Layout extends Component {
 
   render() {
     return (
-      <Flex flexDirection="row" flex="1" style={{height: '100%'}}>
-        <Sidebar flex="0 0 32px">
+      <Flex style={{height: '100vh'}}>
+        <Sidebar>
           <LogoArea>
             <Link to="/">
               <Logo size={ICON_SIZE} color="#fff" />
             </Link>
           </LogoArea>
-          <div
-            style={{
-              flexDirection: 'column',
-              height: '100%',
-              display: 'flex'
-            }}>
+          <Flex direction="column">
             <NavLink to="/builds">
               <MdClock size={ICON_SIZE} color="#fff" />
             </NavLink>
@@ -82,9 +83,9 @@ class Layout extends Component {
                 </NavLink>
               )}
             </div>
-          </div>
+          </Flex>
         </Sidebar>
-        <Box flex="1 1 auto">
+        <ContentColumn>
           {this.props.withHeader ? (
             <React.Fragment>
               <Header />
@@ -94,7 +95,7 @@ class Layout extends Component {
           ) : (
             this.props.children
           )}
-        </Box>
+        </ContentColumn>
       </Flex>
     );
   }
