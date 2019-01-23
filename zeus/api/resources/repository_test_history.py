@@ -10,7 +10,7 @@ from .base_repository import BaseRepositoryResource
 from ..schemas import AggregateTestCaseSummarySchema
 
 
-class TestHistoryResource(BaseRepositoryResource):
+class RepositoryTestHistoryResource(BaseRepositoryResource):
     def select_resource_for_update(self) -> bool:
         return False
 

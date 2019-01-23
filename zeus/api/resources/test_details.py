@@ -1,25 +1,19 @@
-from sqlalchemy.orm import contains_eager
+from sqlalchemy.orm import joinedload, undefer
 
-from zeus.models import Job, Repository, TestCase
+from zeus.models import TestCase
 
-from .base_repository import BaseRepositoryResource
-from ..schemas import TestCaseSummarySchema
+from .base import Resource
+from ..schemas import TestCaseSchema
 
 
-class TestDetailsResource(BaseRepositoryResource):
+class TestDetailsResource(Resource):
     def select_resource_for_update(self) -> bool:
         return False
 
-    def get(self, repo: Repository, test_hash: str):
-        testcase = (
-            TestCase.query.filter(
-                TestCase.repository_id == repo.id, TestCase.hash == test_hash
-            )
-            .join(TestCase.job)
-            .options(contains_eager("job"))
-            .order_by(Job.date_created.desc())
-            .first()
+    def get(self, test_id: str):
+        testcase = TestCase.query.options(undefer("message"), joinedload("job")).get(
+            test_id
         )
 
-        schema = TestCaseSummarySchema(strict=True)
+        schema = TestCaseSchema(strict=True)
         return self.respond_with_schema(schema, testcase)

@@ -139,12 +139,13 @@ app.add_resource(
 )
 app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/tests/<test_hash>",
-    r.TestDetailsResource,
+    r.RepositoryTestDetailsResource,
 )
 app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/tests/<test_hash>/history",
-    r.TestHistoryResource,
+    r.RepositoryTestHistoryResource,
 )
+app.add_resource("/tests/<test_id>", r.TestDetailsResource)
 app.add_resource("/users/<user_id>", r.UserDetailsResource)
 app.add_resource("/users/<user_id>/emails", r.UserEmailsResource)
 app.add_resource("/<path:path>", r.CatchallResource)

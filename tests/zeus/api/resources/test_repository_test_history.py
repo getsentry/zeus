@@ -1,4 +1,4 @@
-def test_test_details(
+def test_repository_test_history(
     client,
     default_login,
     default_build,
