@@ -42,7 +42,10 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     # author_id is inherited from Source.author_id, and is denormalized to speed up
     # "my builds" type of queries
     author_id = db.Column(
-        GUID, db.ForeignKey("author.id", ondelete="SET NULL"), index=True, nullable=True
+        GUID,
+        db.ForeignKey("author.id", ondelete="SET NULL"),
+        index=False,
+        nullable=True,
     )
 
     author = db.relationship("Author")
