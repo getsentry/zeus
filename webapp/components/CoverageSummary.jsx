@@ -7,7 +7,7 @@ import {ResultGrid, Column, Header, Row} from './ResultGrid';
 
 export default class CoverageSummary extends Component {
   static propTypes = {
-    build: PropTypes.object.isRequired,
+    build: PropTypes.object,
     coverage: PropTypes.arrayOf(PropTypes.object).isRequired,
     collapsable: PropTypes.bool,
     repo: PropTypes.object.isRequired,
@@ -18,6 +18,10 @@ export default class CoverageSummary extends Component {
     collapsable: false
   };
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {collapsable: props.collapsable};
@@ -25,9 +29,12 @@ export default class CoverageSummary extends Component {
 
   render() {
     let {build, coverage, repo} = this.props;
-    let link = build.number
-      ? `/${repo.full_name}/builds/${build.number}/coverage`
-      : `/${repo.full_name}/revisions/${build.source.revision.sha}/coverage`;
+    // XXX(dcramer): dirty hack to ensure URL generation still works
+    let link = build
+      ? build.number
+        ? `/${repo.full_name}/builds/${build.number}/coverage`
+        : `/${repo.full_name}/revisions/${build.source.revision.sha}/coverage`
+      : this.context.router.location.pathname;
 
     return (
       <ResultGrid>
