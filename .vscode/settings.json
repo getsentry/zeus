@@ -14,7 +14,7 @@
     ".venv": true,
     "dist": true,
     "kubernetes/zeus/dist/**": true,
-    "webpack-stats.json": true
+    "**/webpack-stats.json": true
   },
   "files.trimTrailingWhitespace": false,
   "files.trimFinalNewlines": false,
