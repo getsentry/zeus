@@ -42,10 +42,15 @@ def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str,
         Build.repository_id == build.repository_id,
         Build.status == Status.finished,
         Source.id != source.id,
-        Source.patch == None,  # NOQA
+        Source.patch_id == None,  # NOQA
     ]
     if valid_revisions:
-        filters.append(Source.revision_sha.in_(valid_revisions))
+        filters.extend(
+            [
+                Source.revision_sha.in_(valid_revisions),
+                Source.repository_id == build.repository_id,
+            ]
+        )
 
     # NOTE(dcramer): many of these queries ignore tenant constraints
     # find any existing failures in the previous runs
