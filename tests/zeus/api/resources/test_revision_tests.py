@@ -29,7 +29,7 @@ def test_build_tests_list(
     )
     assert resp.status_code == 200
     data = resp.json()
-    assert len(data) == 3
+    assert len(data) == 2
 
 
 def test_build_tests_list_empty(

@@ -1,14 +1,14 @@
 from flask import request
-from sqlalchemy.orm import contains_eager
+from sqlalchemy.dialects.postgresql import array_agg
 
+from zeus.config import db
 from zeus.constants import Result
+from zeus.db.func import array_agg_row
 from zeus.models import Job, TestCase, Revision
 from zeus.utils.builds import fetch_build_for_revision
 
 from .base_revision import BaseRevisionResource
-from ..schemas import TestCaseSummarySchema
-
-testcases_schema = TestCaseSummarySchema(many=True, strict=True)
+from ..schemas import AggregateTestCaseSummarySchema
 
 
 class RevisionTestsResource(BaseRevisionResource):
@@ -21,10 +21,24 @@ class RevisionTestsResource(BaseRevisionResource):
             return self.respond(status=404)
 
         build_ids = [original.id for original in build.original]
+
+        job_query = db.session.query(Job.id).filter(Job.build_id.in_(build_ids))
+
+        result = request.args.get("allowed_failures")
+        if result == "false":
+            job_query = job_query.filter(Job.allow_failure == False)  # NOQA
+        job_ids = job_query.subquery()
+
         query = (
-            TestCase.query.options(contains_eager("job"))
-            .join(Job, TestCase.job_id == Job.id)
-            .filter(Job.build_id.in_(build_ids))
+            db.session.query(
+                TestCase.hash,
+                TestCase.name,
+                array_agg_row(
+                    TestCase.id, TestCase.job_id, TestCase.duration, TestCase.result
+                ).label("runs"),
+            )
+            .filter(TestCase.job_id.in_(job_ids))
+            .group_by(TestCase.hash, TestCase.name)
         )
 
         result = request.args.get("result")
@@ -35,7 +49,13 @@ class RevisionTestsResource(BaseRevisionResource):
                 raise NotImplementedError
 
         query = query.order_by(
-            (TestCase.result == Result.failed).desc(), TestCase.name.asc()
+            (
+                array_agg(TestCase.result).label("results").contains([Result.failed])
+            ).desc(),
+            TestCase.name.asc(),
         )
 
-        return self.paginate_with_schema(testcases_schema, query)
+        schema = AggregateTestCaseSummarySchema(
+            many=True, strict=True, exclude=("build",)
+        )
+        return self.paginate_with_schema(schema, query)
