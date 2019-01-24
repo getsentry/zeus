@@ -32,7 +32,10 @@ def import_repo(repo_id, parent=None):
     )
     db.session.commit()
 
-    vcs.ensure()
+    if vcs.ensure():
+        vcs.update()
+    else:
+        vcs.clone()
 
     has_more = False
     for commit in vcs.log(parent=parent):
