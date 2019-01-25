@@ -8,17 +8,18 @@ from zeus.api import client
 def upsert_job(
     build: Build, hook: Hook, external_id: str, data: dict = None
 ) -> Response:
+    provider_name = hook.get_provider().get_name(hook.config)
     lock_key = "upsert:job:{build_id}:{provider}:{job_xid}".format(
-        build_id=build.id, provider=hook.provider, job_xid=external_id
+        build_id=build.id, provider=provider_name, job_xid=external_id
     )
     with redis.lock(lock_key):
         json = data.copy() if data else {}
         json["external_id"] = external_id
-        json["provider"] = hook.provider
+        json["provider"] = provider_name
         json["hook_id"] = str(hook.id)
 
         job = Job.query.filter(
-            Job.provider == hook.provider,
+            Job.provider == provider_name,
             Job.external_id == external_id,
             Job.build_id == build.id,
         ).first()
@@ -40,17 +41,18 @@ def upsert_job(
 
 
 def upsert_build(hook: Hook, external_id: str, data: dict = None) -> Response:
+    provider_name = hook.get_provider().get_name(hook.config)
     lock_key = "hook:build:{repo_id}:{provider}:{build_xid}".format(
-        repo_id=hook.repository_id, provider=hook.provider, build_xid=external_id
+        repo_id=hook.repository_id, provider=provider_name, build_xid=external_id
     )
     with redis.lock(lock_key):
         json = data.copy() if data else {}
         json["external_id"] = external_id
-        json["provider"] = hook.provider
+        json["provider"] = provider_name
         json["hook_id"] = str(hook.id)
 
         build = Build.query.filter(
-            Build.provider == hook.provider, Build.external_id == external_id
+            Build.provider == provider_name, Build.external_id == external_id
         ).first()
 
         if build:

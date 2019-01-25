@@ -36,32 +36,40 @@ export default class RepositoryHooks extends AsyncPage {
           <SectionHeading>Hooks</SectionHeading>
         </div>
         {hookList.length ? (
-          <ResultGrid>
-            <div>
-              <Header>
-                <Column>ID</Column>
-                <Column width={120}>Provider</Column>
-                <Column width={120}>Required?</Column>
-                <Column width={150}>Created</Column>
-              </Header>
-              {hookList.map(hook => {
-                return (
-                  <Row key={hook.id}>
-                    <Column>
-                      <Link to={`/${repo.full_name}/settings/hooks/${hook.id}`}>
-                        {hook.id}
-                      </Link>
-                    </Column>
-                    <Column width={120}>{hook.provider}</Column>
-                    <Column width={120}>{hook.is_required ? 'Yes' : 'No'}</Column>
-                    <Column width={150}>
-                      <TimeSince date={hook.created_at} />
-                    </Column>
-                  </Row>
-                );
-              })}
-            </div>
-          </ResultGrid>
+          <React.Fragment>
+            <ResultGrid>
+              <div>
+                <Header>
+                  <Column>ID</Column>
+                  <Column width={120}>Name</Column>
+                  <Column width={120}>Provider</Column>
+                  <Column width={120}>Required?</Column>
+                  <Column width={150}>Created</Column>
+                </Header>
+                {hookList.map(hook => {
+                  return (
+                    <Row key={hook.id}>
+                      <Column>
+                        <Link to={`/${repo.full_name}/settings/hooks/${hook.id}`}>
+                          {hook.id}
+                        </Link>
+                      </Column>
+                      <Column width={120}>{hook.provider_name}</Column>
+                      <Column width={120}>{hook.provider}</Column>
+                      <Column width={120}>{hook.is_required ? 'Yes' : 'No'}</Column>
+                      <Column width={150}>
+                        <TimeSince date={hook.created_at} />
+                      </Column>
+                    </Row>
+                  );
+                })}
+              </div>
+            </ResultGrid>
+            <p>
+              Each build that&apos;s reported via a hook is keyed based on the provider
+              name and the external_id.
+            </p>
+          </React.Fragment>
         ) : (
           <div>
             <p>

@@ -1,169 +1,139 @@
 {
-    "id": 288639281,
-    "number": "2843",
-    "config": {
-      "sudo": false,
-      "dist": "trusty",
-      "language": "python",
-      "python": [
-        "3.5.2"
-      ],
-      "branches": {
-        "only": [
-          "master"
-        ]
-      },
-      "cache": {
-        "pip": true,
-        "directories": [
-          "vendor/bundle",
-          "node_modules"
-        ]
-      },
-      "deploy": {
-        "provider": "heroku",
-        "api_key": {
-          "secure": "hylw2GIHMvZKOKX3uPSaLEzVrUGEA9mzGEA0s4zK37W9HJCTnvAcmgRCwOkRuC4L7R4Zshdh/CGORNnBBgh1xx5JGYwkdnqtjHuUQmWEXCusrIURu/iEBNSsZZEPK7zBuwqMHj2yRm64JfbTDJsku3xdoA5Z8XJG5AMJGKLFgUQ="
-        },
-        "app": "docs-travis-ci-com",
-        "skip_cleanup": true,
-        "true": {
-          "branch": [
-            "master"
-          ]
-        }
-      },
-      "notifications": {
-        "slack": {
-          "rooms": {
-            "secure": "LPNgf0Ra6Vu6I7XuK7tcnyFWJg+becx1RfAR35feWK81sru8TyuldQIt7uAKMA8tqFTP8j1Af7iz7UDokbCCfDNCX1GxdAWgXs+UKpwhO89nsidHAsCkW2lWSEM0E3xtOJDyNFoauiHxBKGKUsApJTnf39H+EW9tWrqN5W2sZg8="
-          },
-          "on_success": "never"
-        },
-        "webhooks": "https://docs.travis-ci.com/update_webhook_payload_doc"
-      },
-      "install": [
-        "rvm use 2.3.1 --install",
-        "bundle install --deployment"
-      ],
-      "script": [
-        "bundle exec rake test"
-      ],
-      ".result": "configured",
-      "global_env": [
-        "PATH=$HOME/.local/user/bin:$PATH"
-      ],
-      "group": "stable"
+  "id": 288639281,
+  "number": "2843",
+  "config": {
+    "sudo": false,
+    "dist": "trusty",
+    "language": "python",
+    "python": ["3.5.2"],
+    "branches": {
+      "only": ["master"]
     },
-    "type": "cron",
-    "state": "passed",
-    "status": 0,
-    "result": 0,
-    "status_message": "Passed",
-    "result_message": "Passed",
-    "started_at": "2017-10-16T16:08:56Z",
-    "finished_at": "2017-10-16T16:12:35Z",
-    "duration": 219,
-    "build_url": "https://travis-ci.org/travis-ci/docs-travis-ci-com/builds/288639281",
-    "commit_id": 84531696,
-    "commit": "d79e3a6ff0cada29d731ed93de203f76a81d02c0",
-    "base_commit": "d79e3a6ff0cada29d731ed93de203f76a81d02c0",
-    "head_commit": null,
-    "branch": "master",
-    "message": "Merge pull request #1389 from christopher-dG/patch-1\\n\\nJulia: Refer to PkgDev's generate instead of Pkg's",
-    "compare_url": "https://github.com/travis-ci/docs-travis-ci-com/compare/eb58bd2fac2e339d0339689d9eb7290246805a1d...d79e3a6ff0cada29d731ed93de203f76a81d02c0",
-    "committed_at": "2017-10-16T14:56:34Z",
-    "author_name": "Plaindocs",
-    "author_email": "lykoszine@gmail.com",
-    "committer_name": "GitHub",
-    "committer_email": "noreply@github.com",
-    "pull_request": false,
-    "pull_request_number": null,
-    "pull_request_title": null,
-    "tag": null,
-    "repository": {
-      "id": 1771959,
-      "name": "docs-travis-ci-com",
-      "owner_name": "travis-ci",
-      "url": "http://docs.travis-ci.com"
+    "cache": {
+      "pip": true,
+      "directories": ["vendor/bundle", "node_modules"]
     },
-    "matrix": [
-      {
-        "id": 288639284,
-        "repository_id": 1771959,
-        "parent_id": 288639281,
-        "number": "2843.1",
-        "state": "passed",
-        "config": {
-          "sudo": false,
-          "dist": "trusty",
-          "language": "python",
-          "python": "3.5.2",
-          "branches": {
-            "only": [
-              "master"
-            ]
-          },
-          "env": ["TEST_SUITE=integration"],
-          "cache": {
-            "pip": true,
-            "directories": [
-              "vendor/bundle",
-              "node_modules"
-            ]
-          },
-          "notifications": {
-            "slack": {
-              "rooms": {
-                "secure": "LPNgf0Ra6Vu6I7XuK7tcnyFWJg+becx1RfAR35feWK81sru8TyuldQIt7uAKMA8tqFTP8j1Af7iz7UDokbCCfDNCX1GxdAWgXs+UKpwhO89nsidHAsCkW2lWSEM0E3xtOJDyNFoauiHxBKGKUsApJTnf39H+EW9tWrqN5W2sZg8="
-              },
-              "on_success": "never"
+    "deploy": {
+      "provider": "heroku",
+      "api_key": {
+        "secure": "hylw2GIHMvZKOKX3uPSaLEzVrUGEA9mzGEA0s4zK37W9HJCTnvAcmgRCwOkRuC4L7R4Zshdh/CGORNnBBgh1xx5JGYwkdnqtjHuUQmWEXCusrIURu/iEBNSsZZEPK7zBuwqMHj2yRm64JfbTDJsku3xdoA5Z8XJG5AMJGKLFgUQ="
+      },
+      "app": "docs-travis-ci-com",
+      "skip_cleanup": true,
+      "true": {
+        "branch": ["master"]
+      }
+    },
+    "notifications": {
+      "slack": {
+        "rooms": {
+          "secure": "LPNgf0Ra6Vu6I7XuK7tcnyFWJg+becx1RfAR35feWK81sru8TyuldQIt7uAKMA8tqFTP8j1Af7iz7UDokbCCfDNCX1GxdAWgXs+UKpwhO89nsidHAsCkW2lWSEM0E3xtOJDyNFoauiHxBKGKUsApJTnf39H+EW9tWrqN5W2sZg8="
+        },
+        "on_success": "never"
+      },
+      "webhooks": "https://docs.travis-ci.com/update_webhook_payload_doc"
+    },
+    "install": ["rvm use 2.3.1 --install", "bundle install --deployment"],
+    "script": ["bundle exec rake test"],
+    ".result": "configured",
+    "global_env": ["PATH=$HOME/.local/user/bin:$PATH"],
+    "group": "stable"
+  },
+  "type": "cron",
+  "state": "passed",
+  "status": 0,
+  "result": 0,
+  "status_message": "Passed",
+  "result_message": "Passed",
+  "started_at": "2017-10-16T16:08:56Z",
+  "finished_at": "2017-10-16T16:12:35Z",
+  "duration": 219,
+  "build_url": "https://travis-ci.org/travis-ci/docs-travis-ci-com/builds/288639281",
+  "commit_id": 84531696,
+  "commit": "d79e3a6ff0cada29d731ed93de203f76a81d02c0",
+  "base_commit": "d79e3a6ff0cada29d731ed93de203f76a81d02c0",
+  "head_commit": null,
+  "branch": "master",
+  "message": "Merge pull request #1389 from christopher-dG/patch-1\\n\\nJulia: Refer to PkgDev's generate instead of Pkg's",
+  "compare_url": "https://github.com/travis-ci/docs-travis-ci-com/compare/eb58bd2fac2e339d0339689d9eb7290246805a1d...d79e3a6ff0cada29d731ed93de203f76a81d02c0",
+  "committed_at": "2017-10-16T14:56:34Z",
+  "author_name": "Plaindocs",
+  "author_email": "lykoszine@gmail.com",
+  "committer_name": "GitHub",
+  "committer_email": "noreply@github.com",
+  "pull_request": false,
+  "pull_request_number": null,
+  "pull_request_title": null,
+  "tag": null,
+  "repository": {
+    "id": 1771959,
+    "name": "docs-travis-ci-com",
+    "owner_name": "travis-ci",
+    "url": "http://docs.travis-ci.com"
+  },
+  "matrix": [
+    {
+      "id": 288639284,
+      "repository_id": 1771959,
+      "parent_id": 288639281,
+      "number": "2843.1",
+      "state": "passed",
+      "config": {
+        "sudo": false,
+        "dist": "trusty",
+        "language": "python",
+        "python": "3.5.2",
+        "branches": {
+          "only": ["master"]
+        },
+        "env": ["TEST_SUITE=integration"],
+        "cache": {
+          "pip": true,
+          "directories": ["vendor/bundle", "node_modules"]
+        },
+        "notifications": {
+          "slack": {
+            "rooms": {
+              "secure": "LPNgf0Ra6Vu6I7XuK7tcnyFWJg+becx1RfAR35feWK81sru8TyuldQIt7uAKMA8tqFTP8j1Af7iz7UDokbCCfDNCX1GxdAWgXs+UKpwhO89nsidHAsCkW2lWSEM0E3xtOJDyNFoauiHxBKGKUsApJTnf39H+EW9tWrqN5W2sZg8="
             },
-            "webhooks": "https://docs.travis-ci.com/update_webhook_payload_doc"
+            "on_success": "never"
           },
-          "install": [
-            "rvm use 2.3.1 --install",
-            "bundle install --deployment"
-          ],
-          "script": [
-            "bundle exec rake test"
-          ],
-          ".result": "configured",
-          "global_env": [
-            "PATH=$HOME/.local/user/bin:$PATH"
-          ],
-          "group": "stable",
-          "os": "linux",
-          "addons": {
-            "deploy": {
-              "provider": "heroku",
-              "api_key": {
-                "secure": "hylw2GIHMvZKOKX3uPSaLEzVrUGEA9mzGEA0s4zK37W9HJCTnvAcmgRCwOkRuC4L7R4Zshdh/CGORNnBBgh1xx5JGYwkdnqtjHuUQmWEXCusrIURu/iEBNSsZZEPK7zBuwqMHj2yRm64JfbTDJsku3xdoA5Z8XJG5AMJGKLFgUQ="
-              },
-              "app": "docs-travis-ci-com",
-              "skip_cleanup": true,
-              "true": {
-                "branch": [
-                  "master"
-                ]
-              }
+          "webhooks": "https://docs.travis-ci.com/update_webhook_payload_doc"
+        },
+        "install": ["rvm use 2.3.1 --install", "bundle install --deployment"],
+        "script": ["bundle exec rake test"],
+        ".result": "configured",
+        "global_env": ["PATH=$HOME/.local/user/bin:$PATH"],
+        "group": "stable",
+        "os": "linux",
+        "addons": {
+          "deploy": {
+            "provider": "heroku",
+            "api_key": {
+              "secure": "hylw2GIHMvZKOKX3uPSaLEzVrUGEA9mzGEA0s4zK37W9HJCTnvAcmgRCwOkRuC4L7R4Zshdh/CGORNnBBgh1xx5JGYwkdnqtjHuUQmWEXCusrIURu/iEBNSsZZEPK7zBuwqMHj2yRm64JfbTDJsku3xdoA5Z8XJG5AMJGKLFgUQ="
+            },
+            "app": "docs-travis-ci-com",
+            "skip_cleanup": true,
+            "true": {
+              "branch": ["master"]
             }
           }
-        },
-        "status": 0,
-        "result": 0,
-        "commit": "d79e3a6ff0cada29d731ed93de203f76a81d02c0",
-        "branch": "master",
-        "message": "Merge pull request #1389 from christopher-dG/patch-1\\n\\nJulia: Refer to PkgDev's generate instead of Pkg's",
-        "compare_url": "https://github.com/travis-ci/docs-travis-ci-com/compare/eb58bd2fac2e339d0339689d9eb7290246805a1d...d79e3a6ff0cada29d731ed93de203f76a81d02c0",
-        "started_at": null,
-        "finished_at": null,
-        "committed_at": "2017-10-16T14:56:34Z",
-        "author_name": "Plaindocs",
-        "author_email": "lykoszine@gmail.com",
-        "committer_name": "GitHub",
-        "committer_email": "noreply@github.com",
-        "allow_failure": true
-      }
-    ]
-  }
+        }
+      },
+      "status": 0,
+      "result": 0,
+      "commit": "d79e3a6ff0cada29d731ed93de203f76a81d02c0",
+      "branch": "master",
+      "message": "Merge pull request #1389 from christopher-dG/patch-1\\n\\nJulia: Refer to PkgDev's generate instead of Pkg's",
+      "compare_url": "https://github.com/travis-ci/docs-travis-ci-com/compare/eb58bd2fac2e339d0339689d9eb7290246805a1d...d79e3a6ff0cada29d731ed93de203f76a81d02c0",
+      "started_at": null,
+      "finished_at": null,
+      "committed_at": "2017-10-16T14:56:34Z",
+      "author_name": "Plaindocs",
+      "author_email": "lykoszine@gmail.com",
+      "committer_name": "GitHub",
+      "committer_email": "noreply@github.com",
+      "allow_failure": true
+    }
+  ]
+}

@@ -187,7 +187,7 @@ def default_api_token():
 
 @pytest.fixture(scope="function")
 def default_hook(default_repo):
-    return factories.HookFactory(repository=default_repo, travis_com=True)
+    return factories.HookFactory(repository=default_repo, travis_org=True)
 
 
 @pytest.fixture(scope="session")

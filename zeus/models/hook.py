@@ -27,7 +27,7 @@ class Hook(RepositoryBoundMixin, StandardAttributes, db.Model):
     config = db.Column(JSONEncodedDict, nullable=True)
 
     __tablename__ = "hook"
-    __repr__ = model_repr("repository_id")
+    __repr__ = model_repr("repository_id", "provider")
 
     @classmethod
     def generate_token(cls) -> bytes:
@@ -40,6 +40,11 @@ class Hook(RepositoryBoundMixin, StandardAttributes, db.Model):
 
     def is_valid_signature(self, signature: bytes) -> bool:
         return compare_digest(self.get_signature(), signature)
+
+    def get_provider(self):
+        from zeus.providers import get_provider
+
+        return get_provider(self.provider)
 
     @classmethod
     def get_required_hook_ids(cls, repository_id: str) -> List[str]:
