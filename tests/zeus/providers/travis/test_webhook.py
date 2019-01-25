@@ -96,7 +96,7 @@ def test_queued_build(
 ):
     responses.add(
         responses.GET,
-        "https://api.travis-ci.com/config",
+        "https://api.travis-ci.org/config",
         get_config_response(public_key_bytes),
     )
 
@@ -116,7 +116,7 @@ def test_queued_build(
 
     build = (
         Build.query.unrestricted_unsafe()
-        .filter(Build.provider == "travis", Build.external_id == "288639281")
+        .filter(Build.provider == "api.travis-ci.org", Build.external_id == "288639281")
         .first()
     )
     assert build
@@ -130,7 +130,7 @@ def test_queued_build(
 
     job = (
         Job.query.unrestricted_unsafe()
-        .filter(Job.provider == "travis", Job.external_id == "288639284")
+        .filter(Job.provider == "api.travis-ci.org", Job.external_id == "288639284")
         .first()
     )
     assert job
@@ -158,7 +158,7 @@ def test_pull_request(
 ):
     responses.add(
         responses.GET,
-        "https://api.travis-ci.com/config",
+        "https://api.travis-ci.org/config",
         get_config_response(public_key_bytes),
     )
 
@@ -188,7 +188,7 @@ def test_pull_request(
 
     build = (
         Build.query.unrestricted_unsafe()
-        .filter(Build.provider == "travis", Build.external_id == "288639281")
+        .filter(Build.provider == "api.travis-ci.org", Build.external_id == "288639281")
         .first()
     )
     assert build
@@ -202,7 +202,7 @@ def test_pull_request(
 
     job = (
         Job.query.unrestricted_unsafe()
-        .filter(Job.provider == "travis", Job.external_id == "288639284")
+        .filter(Job.provider == "api.travis-ci.org", Job.external_id == "288639284")
         .first()
     )
     assert job

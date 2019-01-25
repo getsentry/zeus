@@ -17,14 +17,16 @@ def test_new_build(client, default_source, default_repo, default_hook):
     build = Build.query.unrestricted_unsafe().get(resp.json()["id"])
     assert build
     assert build.repository_id == default_repo.id
-    assert build.provider == default_hook.provider
+    assert build.provider == default_hook.get_provider().get_name(default_hook.config)
     assert build.external_id == build_xid
     assert build.label == "test build"
 
 
 def test_existing_build(client, default_source, default_repo, default_hook):
     build = factories.BuildFactory(
-        source=default_source, provider=default_hook.provider, external_id="2"
+        source=default_source,
+        provider=default_hook.get_provider().get_name(default_hook.config),
+        external_id="2",
     )
 
     path = "/hooks/{}/{}/builds/{}".format(

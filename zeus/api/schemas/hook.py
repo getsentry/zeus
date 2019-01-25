@@ -8,13 +8,7 @@ from marshmallow.exceptions import ValidationError
 from zeus.models import Hook
 from zeus.utils import timezone
 
-from zeus.providers.custom import CustomProvider
-from zeus.providers.travis import TravisProvider
-
-
-ALIASES = {"travis-ci": "travis"}
-
-PROVIDERS = {"travis": TravisProvider, "custom": CustomProvider}
+from zeus.providers import InvalidProvider, get_provider, VALID_PROVIDER_NAMES
 
 
 class HookConfigField(fields.Field):
@@ -25,8 +19,8 @@ class HookConfigField(fields.Field):
         provider_name = data.get("provider")
         if provider_name:
             try:
-                provider_cls = PROVIDERS[ALIASES.get(provider_name, provider_name)]()
-            except KeyError:
+                provider_cls = get_provider(provider_name)
+            except InvalidProvider:
                 raise ValidationError("Invalid provider")
 
             try:
@@ -40,12 +34,9 @@ class HookConfigField(fields.Field):
 class HookSchema(Schema):
     id = fields.UUID(dump_only=True)
     provider = fields.Str(
-        validate=[
-            fields.validate.OneOf(
-                choices=list(set(PROVIDERS.keys()).union(ALIASES.keys()))
-            )
-        ]
+        validate=[fields.validate.OneOf(choices=VALID_PROVIDER_NAMES)]
     )
+    provider_name = fields.Method("get_provider_name", dump_only=True)
     token = fields.Method("get_token", dump_only=True)
     secret_uri = fields.Method("get_secret_uri", dump_only=True)
     public_uri = fields.Method("get_public_uri", dump_only=True)
@@ -75,3 +66,7 @@ class HookSchema(Schema):
 
     def get_secret_uri(self, obj):
         return "/hooks/{}/{}".format(str(obj.id), obj.get_signature())
+
+    def get_provider_name(self, obj):
+        provider_cls = get_provider(obj.provider)
+        return provider_cls.get_name(obj.config)

@@ -6,11 +6,16 @@ from zeus.models import Artifact
 
 def test_new_artifact(client, default_source, default_repo, default_hook, sample_xunit):
     build = factories.BuildFactory(
-        source=default_source, provider=default_hook.provider, external_id="3"
+        source=default_source,
+        provider=default_hook.get_provider().get_name(default_hook.config),
+        external_id="3",
     )
 
     job = factories.JobFactory(
-        build=build, provider=default_hook.provider, external_id="2", in_progress=True
+        build=build,
+        provider=default_hook.get_provider().get_name(default_hook.config),
+        external_id="2",
+        in_progress=True,
     )
 
     path = "/hooks/{}/{}/builds/{}/jobs/{}/artifacts".format(

@@ -60,18 +60,27 @@ export default class RepositoryHookDetails extends AsyncPage {
     this.api.put(`/hooks/${params.hookId}`, {data});
   };
 
-  onChangeDomain = selected => {
+  onChangeConfig = (key, value) => {
     let {hook} = this.state;
     let {params} = this.props;
 
     let data = {
       config: {
         ...hook.config,
-        domain: selected.value
+        [key]: value
       }
     };
 
-    this.api.put(`/hooks/${params.hookId}`, {data});
+    this.api.put(
+      `/hooks/${params.hookId}`,
+      {data},
+      this.setState({
+        hook: {
+          ...hook,
+          ...data
+        }
+      })
+    );
   };
 
   renderBody() {
@@ -139,9 +148,30 @@ export default class RepositoryHookDetails extends AsyncPage {
                   placeholder=""
                   clearable={false}
                   options={TRAVIS_DOMAIN_OPTIONS}
-                  onChange={this.onChangeDomain}
+                  onChange={({value}) => this.onChangeConfig('domain', value)}
                   value={hook.config.domain || TRAVIS_DOMAIN_OPTIONS[0]}
                 />
+              </OverflowColumn>
+            </Row>
+          )}
+          {hook.provider === 'custom' && (
+            <Row>
+              <Column width={200}>
+                <strong>Service Name</strong>
+              </Column>
+              <OverflowColumn textAlign="left">
+                <div style={{marginBottom: 5}}>
+                  <input
+                    type="text"
+                    placeholder=""
+                    onChange={e => this.onChangeConfig('name', e.target.value)}
+                    value={hook.config.name || 'custom'}
+                  />
+                </div>
+                <div style={{fontSize: '90%'}}>
+                  Enter a service name unique to this provider. It will be captured and
+                  keyed with each reported build.
+                </div>
               </OverflowColumn>
             </Row>
           )}

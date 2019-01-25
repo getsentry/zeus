@@ -33,6 +33,9 @@ class Provider(object):
             "required": [],
         }
 
+    def get_name(self, config):
+        raise NotImplementedError
+
     def validate_config(self, data):
         schema = self.get_config()
         schema["type"] = "object"
