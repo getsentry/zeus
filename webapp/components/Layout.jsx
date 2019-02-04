@@ -78,7 +78,7 @@ class Layout extends Component {
             </Link>
           </LogoArea>
           <SidebarItems>
-            <SidebarSection>
+            <SidebarSection flex="1">
               <NavLink to="/builds">
                 <MdClock size={ICON_SIZE} color="#fff" />
               </NavLink>
