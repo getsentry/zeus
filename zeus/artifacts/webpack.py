@@ -38,6 +38,9 @@ class WebpackStatsHandler(ArtifactHandler):
 
                     complete = set()
                     for asset_name in asset_list:
+                        # skip non-js assets like .css files
+                        if asset_index.get(asset_name) is None:
+                            continue
                         # dont track sourcemaps
                         if asset_name.endswith(".map"):
                             continue
