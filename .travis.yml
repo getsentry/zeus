@@ -5,7 +5,7 @@ services:
   - redis-server
   - postgresql
 python:
-  - "3.7"
+  - '3.7'
 cache:
   yarn: true
   directories:
@@ -18,8 +18,7 @@ env:
     - PIP_DISABLE_PIP_VERSION_CHECK=on
 install:
   - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/0.12.10/get-poetry.py | python
-  - nvm install $(cat .nvmrc)
-  - npm install -g yarn@1.7.0
+  - curl -sSLf https://get.notionjs.com | bash
   - PATH=$HOME/.poetry/bin:$PATH NODE_ENV= make
 script:
   - git --version
