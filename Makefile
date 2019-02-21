@@ -38,6 +38,8 @@ reset-db: drop-db db
 build-docker-image:
 	docker build \
 		-t zeus \
+		--build-arg NODE_VERSION=$(shell bin/get-node-version | tr -d '\n') \
+		--build-arg YARN_VERSION=$(shell bin/get-yarn-version | tr -d '\n') \
 		--build-arg BUILD_REVISION=$(shell git rev-parse HEAD | tr -d '\n') \
 		.
 

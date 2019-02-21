@@ -39,9 +39,11 @@ RUN set -ex \
 # install nvm, node, and npm
 # gpg keys listed at https://github.com/nodejs/node
 COPY .nvmrc /usr/src/zeus/
-ENV YARN_VERSION 1.7.0
+ARG YARN_VERSION 1.13.0
+ENV YARN_VERSION $YARN_VERSION
+ARG NODE_VERSION 8.11.3
+ENV NODE_VERSION $NODE_VERSION
 RUN set -x \
-  && export NODE_VERSION=$(cat /usr/src/zeus/.nvmrc) \
   && export GNUPGHOME="$(mktemp -d)" \
   && export NPM_CONFIG_CACHE="$(mktemp -d)" \
   && apt-get update && apt-get install -y --no-install-recommends dirmngr gnupg && rm -rf /var/lib/apt/lists/* \

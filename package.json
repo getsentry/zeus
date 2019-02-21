@@ -163,5 +163,9 @@
     "rules": {
       "react/no-deprecated": "off"
     }
+  },
+  "toolchain": {
+    "node": "8.11.3",
+    "yarn": "1.13.0"
   }
 }
