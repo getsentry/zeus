@@ -100,6 +100,7 @@ def create_app(_read_config=True, **config):
                 if x.strip()
             ],
         )
+        app.config.setdefault("SENTRY_RELEASE", os.environ.get("BUILD_REVISION"))
     else:
         REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost/0")
         SQLALCHEMY_URI = os.environ.get(
@@ -110,6 +111,10 @@ def create_app(_read_config=True, **config):
             "options": {},
         }
         app.config["CELERY_BROKER_URL"] = REDIS_URL
+        try:
+            app.config["SENTRY_RELEASE"] = raven.fetch_git_sha(ROOT)
+        except Exception:
+            app.logger.warn("unable to bind sentry.release context", exc_info=True)
 
     app.config.setdefault(
         "MAIL_DEFAULT_SENDER", "{}@localhost".format(os.environ.get("USERNAME", "root"))
@@ -146,10 +151,6 @@ def create_app(_read_config=True, **config):
     app.config["SENTRY_DSN"] = os.environ.get("SENTRY_DSN") or None
     app.config["SENTRY_DSN_FRONTEND"] = os.environ.get("SENTRY_DSN_FRONTEND") or None
     app.config["SENTRY_INCLUDE_PATHS"] = ["zeus"]
-    try:
-        app.config["SENTRY_RELEASE"] = raven.fetch_git_sha(ROOT)
-    except Exception:
-        app.logger.warn("unable to bind sentry.release context", exc_info=True)
     app.config["SENTRY_ENVIRONMENT"] = os.environ.get("NODE_ENV", "development")
 
     app.config["GITHUB_CLIENT_ID"] = os.environ.get("GITHUB_CLIENT_ID") or None
