@@ -4,6 +4,8 @@ from zeus.config import redis
 from zeus.models import Repository, Build, ChangeRequest, Hook, Job
 from zeus.api import client
 
+BUILD_LOCK_TIMEOUT = 10.0
+
 
 def upsert_job(
     build: Build, hook: Hook, external_id: str, data: dict = None
@@ -45,7 +47,9 @@ def upsert_build(hook: Hook, external_id: str, data: dict = None) -> Response:
     lock_key = "hook:build:{repo_id}:{provider}:{build_xid}".format(
         repo_id=hook.repository_id, provider=provider_name, build_xid=external_id
     )
-    with redis.lock(lock_key):
+    # TODO (here and in other upsert_* functions): it's better to move all the locking
+    # code to async tasks.
+    with redis.lock(lock_key, timeout=BUILD_LOCK_TIMEOUT):
         json = data.copy() if data else {}
         json["external_id"] = external_id
         json["provider"] = provider_name
