@@ -1,8 +1,8 @@
-import redis
-
+import time
 from contextlib import contextmanager
 from random import random
-from time import sleep
+
+import redis
 
 
 class UnableToGetLock(Exception):
@@ -28,31 +28,35 @@ class Redis(object):
     def lock(
         self, lock_key: str, timeout: int = 3, expire: int = None, nowait: bool = False
     ):
+        """
+        Context manager for using a redis lock with the given key
+
+        Arguments:
+            lock_key (string): key to lock
+            timeout (float): how long (in seconds) to try locking.
+                             An exception is raised if the lock can't be acquired.
+            expire (float): how long (in seconds) we can hold lock before it is
+                            automatically released
+            nowait (bool): if True, don't block if can't acquire the lock
+                           (will instead raise an exception)
+        """
+
         conn = self.redis
 
         if expire is None:
             expire = timeout
 
         delay = 0.01 + random() / 10
-        attempt = 0
-        max_attempts = timeout / delay
-        got_lock = None
-        while not got_lock and attempt < max_attempts:
-            pipe = conn.pipeline()
-            pipe.setnx(lock_key, "")
-            pipe.expire(lock_key, expire)
-            got_lock = pipe.execute()[0]
-            if not got_lock:
-                if nowait:
-                    break
-
-                sleep(delay)
-                attempt += 1
+        lock = conn.lock(lock_key, timeout=expire, sleep=delay)
 
         self.logger.info("Acquiring lock on %s", lock_key)
+        acquired = lock.acquire(blocking=not nowait, blocking_timeout=timeout)
+        start = time.time()
 
-        if not got_lock:
+        if not acquired:
             raise self.UnableToGetLock("Unable to fetch lock on %s" % (lock_key,))
+
+        self.logger.info("Successfully acquired lock on %s", lock_key)
 
         try:
             yield
@@ -61,9 +65,13 @@ class Redis(object):
             self.logger.info("Releasing lock on %s", lock_key)
 
             try:
-                conn.delete(lock_key)
-            except Exception as e:
-                self.logger.exception(e)
+                lock.release()
+            except Exception:
+                self.logger.exception(
+                    "Error releasing lock on %s, acquired around %.2f s ago",
+                    lock_key,
+                    time.time() - start,
+                )
 
     def incr(self, key: str):
         self.redis.incr(key)
