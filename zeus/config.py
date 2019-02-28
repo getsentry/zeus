@@ -1,6 +1,5 @@
 import json
 import logging
-import raven
 import os
 import sys
 import tempfile
@@ -10,7 +9,6 @@ from flask import Flask
 from flask_alembic import Alembic
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
-from raven.contrib.flask import Sentry
 
 from zeus.utils.celery import Celery
 from zeus.utils.metrics import Metrics
@@ -33,7 +31,6 @@ db = SQLAlchemy()
 mail = Mail()
 nplusone = NPlusOne()
 redis = Redis()
-sentry = Sentry(logging=True, level=logging.ERROR, wrap_wsgi=True)
 ssl = SSL()
 metrics = Metrics()
 
@@ -100,7 +97,6 @@ def create_app(_read_config=True, **config):
                 if x.strip()
             ],
         )
-        app.config.setdefault("SENTRY_RELEASE", os.environ.get("BUILD_REVISION"))
     else:
         REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost/0")
         SQLALCHEMY_URI = os.environ.get(
@@ -111,10 +107,6 @@ def create_app(_read_config=True, **config):
             "options": {},
         }
         app.config["CELERY_BROKER_URL"] = REDIS_URL
-        try:
-            app.config["SENTRY_RELEASE"] = raven.fetch_git_sha(ROOT)
-        except Exception:
-            app.logger.warn("unable to bind sentry.release context", exc_info=True)
 
     app.config.setdefault(
         "MAIL_DEFAULT_SENDER", "{}@localhost".format(os.environ.get("USERNAME", "root"))
@@ -148,11 +140,7 @@ def create_app(_read_config=True, **config):
 
     app.config["REDIS_URL"] = REDIS_URL
 
-    app.config["SENTRY_DSN"] = os.environ.get("SENTRY_DSN") or None
     app.config["SENTRY_DSN_FRONTEND"] = os.environ.get("SENTRY_DSN_FRONTEND") or None
-    app.config["SENTRY_INCLUDE_PATHS"] = ["zeus"]
-    app.config["SENTRY_ENVIRONMENT"] = os.environ.get("NODE_ENV", "development")
-
     app.config["GITHUB_CLIENT_ID"] = os.environ.get("GITHUB_CLIENT_ID") or None
     app.config["GITHUB_CLIENT_SECRET"] = os.environ.get("GITHUB_CLIENT_SECRET") or None
 
@@ -251,14 +239,6 @@ def create_app(_read_config=True, **config):
     app.config["GITHUB_CONSUMER_KEY"] = app.config["GITHUB_CLIENT_ID"]
     app.config["GITHUB_CONSUMER_SECRET"] = app.config["GITHUB_CLIENT_SECRET"]
 
-    # init sentry first
-    sentry.init_app(app)
-    # XXX(dcramer): Sentry + Flask + Logging integration is broken
-    # https://github.com/getsentry/raven-python/issues/1030
-    from raven.handlers.logging import SentryHandler
-
-    app.logger.addHandler(SentryHandler(client=sentry.client, level=logging.WARN))
-
     if app.config["SSL"]:
         ssl.init_app(app)
 
@@ -271,9 +251,10 @@ def create_app(_read_config=True, **config):
 
     redis.init_app(app)
     mail.init_app(app)
-    celery.init_app(app, sentry)
+    celery.init_app(app)
 
     configure_webpack(app)
+    configure_sentry(app)
 
     configure_api(app)
     configure_web(app)
@@ -368,3 +349,32 @@ def configure_scout(app):
 
     ScoutApm(app)
     instrument_sqlalchemy(db)
+
+
+def configure_sentry(app):
+    from sentry_sdk import init
+    from sentry_sdk.integrations.flask import FlaskIntegration
+
+    release = os.environ.get("BUILD_REVISION") or None
+    if not release:
+        try:
+            import subprocess
+
+            release = str(
+                subprocess.check_output(["git", "describe", "--always"])
+            ).strip()
+        except Exception:
+            app.logger.warn("Unable to get release from git", exc_info=True)
+
+    # set into env for compatibility with existing code
+    app.config["SENTRY_RELEASE"] = release
+    app.config["SENTRY_ENVIRONMENT"] = environment = (
+        os.environ.get("NODE_ENV", "development") or None
+    )
+
+    init(
+        integrations=[FlaskIntegration(transaction_style="url")],
+        in_app_include=["zeus"],
+        release=release,
+        environment=environment,
+    )
