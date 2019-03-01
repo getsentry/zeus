@@ -39,9 +39,9 @@ RUN set -ex \
 # install nvm, node, and npm
 # gpg keys listed at https://github.com/nodejs/node
 COPY .nvmrc /usr/src/zeus/
-ARG YARN_VERSION 1.13.0
+ARG YARN_VERSION=1.13.0
 ENV YARN_VERSION $YARN_VERSION
-ARG NODE_VERSION 8.11.3
+ARG NODE_VERSION=8.11.3
 ENV NODE_VERSION $NODE_VERSION
 RUN set -x \
   && export GNUPGHOME="$(mktemp -d)" \
