@@ -10,8 +10,9 @@ from flask import current_app
 from urllib.parse import urlparse
 from uuid import uuid4
 
+import sentry_sdk
+
 from zeus import auth
-from zeus.config import sentry
 
 Event = namedtuple("Event", ["id", "event", "data"])
 
@@ -83,7 +84,8 @@ async def ping(loop, resp, client_guid):
 async def stream(request):
     client_guid = str(uuid4())
 
-    sentry.tags_context({"client_guid": client_guid})
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("client_guid", client_guid)
 
     if request.headers.get("accept") != "text/event-stream":
         return Response(status=406)
@@ -103,7 +105,8 @@ async def stream(request):
         return Response(status=401)
 
     if "uid" in token:
-        sentry.user_context({"id": token["uid"]})
+        with sentry_sdk.configure_scope() as scope:
+            scope.user = {"id": token["uid"]}
 
     current_app.logger.debug(
         "pubsub.client.connected guid=%s tenant=%s", client_guid, token
