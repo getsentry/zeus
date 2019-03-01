@@ -6,7 +6,6 @@ RUN groupadd -r zeus && useradd -r -m -g zeus zeus
 
 ENV PATH /usr/src/zeus/bin:/root/.poetry/bin:$PATH
 
-ENV NVM_DIR /usr/local/nvm
 ENV NODE_ENV production
 
 ENV PYTHONUNBUFFERED 1
@@ -36,9 +35,8 @@ RUN set -ex \
   wget \
   && rm -rf /var/lib/apt/lists/*
 
-# install nvm, node, and npm
+# install node and yarn
 # gpg keys listed at https://github.com/nodejs/node
-COPY .nvmrc /usr/src/zeus/
 ARG YARN_VERSION=1.13.0
 ENV YARN_VERSION $YARN_VERSION
 ARG NODE_VERSION=8.11.3
