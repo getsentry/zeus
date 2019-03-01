@@ -4,21 +4,20 @@ import json
 from celery.signals import task_postrun, task_prerun, worker_process_init
 from kombu import serialization
 from kombu.utils.encoding import bytes_t
-from raven.contrib.celery import register_signal, register_logger_signal
 from uuid import UUID
 
 
 class Celery(object):
-    def __init__(self, app=None, sentry=None):
+    def __init__(self, app=None):
         # we create the celery immediately as otherwise NOTHING WORKS
         self.app = None
         self.context = None
         self.celery = celery.Celery(__name__)
         if app:
-            self.init_app(app, sentry)
+            self.init_app(app)
         register_serializer()
 
-    def init_app(self, app, sentry):
+    def init_app(self, app):
         self.app = app
         new_celery = celery.Celery(
             app.import_name,
@@ -33,10 +32,6 @@ class Celery(object):
 
         task_postrun.connect(self._task_postrun)
         task_prerun.connect(self._task_prerun)
-
-        if sentry:
-            register_signal(sentry.client)
-            register_logger_signal(sentry.client)
 
     def task(self, *args, **kwargs):
         return self.celery.task(*args, **kwargs)
