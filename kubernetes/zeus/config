@@ -29,6 +29,6 @@ function update_repo() {
 
 function bind_version() {
     cd dist/zeus
-    VERSION=$(git rev-parse head)
+    VERSION=$(git rev-parse HEAD)
     cd ../..
 }
