@@ -10,7 +10,7 @@ echo "> Deploying ${VERSION:0:7}"
 gcloud container images describe ${IMAGE}:${VERSION}
 
 # TODO(dcramer): upload sourcemaps
-if [[ ! -x $SENTRY_API_TOKEN ]]; then
+if [[ -n "${SENTRY_API_TOKEN:-}" ]]; then
     curl https://sentry.io/api/0/organizations/sentry/releases/ \
       -X POST \
       -H "Authorization: Bearer ${SENTRY_API_TOKEN}" \
@@ -37,7 +37,7 @@ kubectl rollout status deployments web
 kubectl rollout status deployments pubsub
 kubectl rollout status deployments worker
 
-if [[ ! -x $SENTRY_API_TOKEN ]]; then
+if [[ -n "${SENTRY_API_TOKEN:-}" ]]; then
     curl https://sentry.io/api/0/organizations/sentry/releases/${VERSION}/deploys/ \
       -X POST \
       -H "Authorization: Bearer ${SENTRY_API_TOKEN}" \
