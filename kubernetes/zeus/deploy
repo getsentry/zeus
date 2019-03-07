@@ -7,6 +7,7 @@ bind_version
 
 echo "> Deploying ${VERSION:0:7}"
 
+gcloud info
 gcloud container clusters get-credentials zeus --zone "us-central1-b" --project "$PROJECT_ID"
 gcloud container images describe ${IMAGE}:${VERSION}
 
