@@ -7,6 +7,8 @@ PROJECT_ID="zeus-176020"
 IMAGE="gcr.io/${PROJECT_ID}/zeus"
 
 REF=${1:-"origin/master"}
+# REMOVEME!!!
+REF="origin/master"
 
 function update_repo() {
     mkdir -p dist
