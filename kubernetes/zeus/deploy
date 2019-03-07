@@ -7,6 +7,7 @@ bind_version
 
 echo "> Deploying ${VERSION:0:7}"
 
+gcloud container clusters get-credentials zeus --project "$PROJECT_ID"
 gcloud container images describe ${IMAGE}:${VERSION}
 
 # TODO(dcramer): upload sourcemaps
@@ -30,8 +31,6 @@ fi
 kubectl set image deploy/web zeus=${IMAGE}:${VERSION} --record
 kubectl set image deploy/pubsub zeus=${IMAGE}:${VERSION} --record
 kubectl set image deploy/worker zeus=${IMAGE}:${VERSION} --record
-# kubectl rolling-update web --image=${IMAGE}:${VERSION} --image-pull-policy="IfNotPresent" --container=zeus
-# kubectl rolling-update worker --image=${IMAGE}:${VERSION} --image-pull-policy="IfNotPresent" --container=zeus
 
 kubectl rollout status deployments web
 kubectl rollout status deployments pubsub
