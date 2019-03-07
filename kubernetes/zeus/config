@@ -18,7 +18,7 @@ function update_repo() {
         git fetch -a
     else
         echo "> Cloning source repository"
-        git clone git@github.com:getsentry/zeus.git
+        git clone https://github.com/getsentry/zeus
         cd zeus
     fi
 
