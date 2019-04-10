@@ -33,7 +33,7 @@ def test_sync_repo(mocker, db_session, default_repo):
     assert default_repo.status == RepositoryStatus.active
 
     # build sync is abstracted via sync_with_builder
-    mock_vcs_backend.update.assert_called_once_with()
+    mock_vcs_backend.update.assert_called_once_with(allow_cleanup=True)
 
 
 def test_invalid_public_key(mocker, db_session, default_repo):

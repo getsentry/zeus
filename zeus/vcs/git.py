@@ -109,8 +109,11 @@ class GitVcs(Vcs):
     def clone(self):
         self.run(["clone", "--mirror", self.remote_url, self.path])
 
-    def update(self):
-        self.run(["fetch", "--all", "-p"])
+    def update(self, allow_cleanup=False):
+        if allow_cleanup:
+            self.run(["fetch", "--all", "--force", "-p"])
+        else:
+            self.run(["fetch", "--all", "--force"])
 
     def log(
         self,

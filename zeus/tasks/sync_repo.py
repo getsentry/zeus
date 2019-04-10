@@ -50,7 +50,7 @@ def sync_repo(repo_id, max_log_passes=10, force=False):
 
     try:
         if vcs.exists():
-            vcs.update()
+            vcs.update(allow_cleanup=True)
         else:
             vcs.clone()
     except InvalidPublicKey:

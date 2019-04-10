@@ -212,7 +212,7 @@ class Vcs(object):
     def clone(self):
         raise NotImplementedError
 
-    def update(self):
+    def update(self, allow_cleanup=False):
         raise NotImplementedError
 
     def ensure(self, update_if_exists=True):
