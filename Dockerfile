@@ -13,7 +13,6 @@ ENV PYTHONUNBUFFERED 1
 # Sane defaults for pip
 ENV PIP_NO_CACHE_DIR off
 ENV PIP_DISABLE_PIP_VERSION_CHECK on
-ENV PIP_VERSION 18.0
 
 RUN mkdir -p /usr/src/zeus
 WORKDIR /usr/src/zeus
@@ -74,10 +73,8 @@ RUN set -x \
   && npm install -g yarn@$YARN_VERSION \
   && rm -r "$NPM_CONFIG_CACHE"
 
-RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/0.12.10/get-poetry.py | python \
+RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/0.12.14/get-poetry.py | python \
   && poetry config settings.virtualenvs.create false
-
-RUN pip install "pip==$PIP_VERSION"
 
 COPY pyproject.toml /usr/src/zeus/
 COPY poetry.lock /usr/src/zeus/
@@ -90,7 +87,7 @@ RUN export YARN_CACHE_FOLDER="$(mktemp -d)" \
   && rm -r "$YARN_CACHE_FOLDER"
 
 COPY . /usr/src/zeus
-# we run poetry install again to ensure the 'zeus' module gets installed
+# # we run poetry install again to ensure the 'zeus' module gets installed
 RUN poetry install --no-dev
 RUN node_modules/.bin/webpack -p
 
