@@ -15,3 +15,17 @@ def test_token_generation(default_user, default_repo, default_repo_access):
     result = auth.parse_token(token)
     assert result["repo_ids"] == [str(default_repo.id)]
     assert result["uid"] == str(default_user.id)
+
+
+def test_redirect_target(client, default_user):
+    with client.session_transaction() as session:
+        auth.bind_redirect_target("/gh/getsentry/zeus", session=session)
+        assert (
+            auth.get_redirect_target(clear=False, session=session)
+            == "/gh/getsentry/zeus"
+        )
+        assert (
+            auth.get_redirect_target(clear=True, session=session)
+            == "/gh/getsentry/zeus"
+        )
+        assert auth.get_redirect_target(session=session) is None

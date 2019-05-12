@@ -303,7 +303,7 @@ def is_safe_url(target: str) -> bool:
     )
 
 
-def get_redirect_target(clear=True) -> str:
+def get_redirect_target(clear=True, session=session) -> str:
     if clear:
         session_target = session.pop("next", None)
     else:
@@ -317,7 +317,7 @@ def get_redirect_target(clear=True) -> str:
             return target
 
 
-def bind_redirect_target(target: str = None):
+def bind_redirect_target(target: str = None, session=session):
     if not target:
         target = request.values.get("next")
     if not target and request.referrer != request.url:
