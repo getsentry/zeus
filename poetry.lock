@@ -984,7 +984,7 @@ description = "Python client for Sentry (https://getsentry.com)"
 name = "sentry-sdk"
 optional = false
 python-versions = "*"
-version = "0.10.0"
+version = "0.10.1"
 
 [package.dependencies]
 certifi = "*"
@@ -1131,7 +1131,7 @@ multidict = ">=4.0"
 test = ["pytest", "pytest-cov", "pytest-mock", "pytest-responses", "pytest-xdist", "responses"]
 
 [metadata]
-content-hash = "83a1ba90c58e1944a07d114e36507799a1d0e94dd9b8a47bc466a3ffa00fa965"
+content-hash = "3c6f5f806c84617a40c896046e42dcea344073188d39c6f0dfe525f9c4200ed0"
 python-versions = "~3.7"
 
 [metadata.hashes]
@@ -1229,7 +1229,7 @@ requests = ["6a1b267aa90cac58ac3a765d067950e7dbbf75b1da07e895d1f594193a40a38b", 
 requests-oauthlib = ["50a8ae2ce8273e384895972b56193c7409601a66d4975774c60c2aed869639ca", "883ac416757eada6d3d07054ec7092ac21c7f35cb1d2cf82faf205637081f468"]
 responses = ["98e1c0eb5a7a03d59e73c8ac774428664f319ef35c6ac59479436bbb9c3499be", "a64029dbc6bed7133e2c971ee52153f30e779434ad55a5abf40322bcff91d029"]
 rsa = ["14ba45700ff1ec9eeb206a2ce76b32814958a98e372006c8fb76ba820211be66", "1a836406405730121ae9823e19c6e806c62bbad73f890574fff50efa4122c487"]
-sentry-sdk = ["14cfbc61e44f7acb18c91b27a0912249c7bf941ecd7e248646e81492464faee0", "ff50be281cebb77525f0a7ad43aabaf04ee61131ba09885be2544acf959e0451"]
+sentry-sdk = ["1db9c4653e71d39ff3557c0981d5fb5f43a43e3a830fcf5e21a37c97f7bce6bb", "7e24f3ec1f4c909306d1b97373fe5caa942f54009acdcfa4d1ee6671f626bbe9"]
 simplegeneric = ["dc972e06094b9af5b855b3df4a646395e43d1c9d0d39ed345b7393560d0b9173"]
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
 sqlalchemy = ["8027fa183f5be466030617a497b2d64e0e16c8d615e5a34bdf9fab6f66bf4723"]
