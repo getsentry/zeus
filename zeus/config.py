@@ -336,6 +336,7 @@ def configure_webpack(app):
 
 def configure_sentry(app):
     from sentry_sdk import init
+    from sentry_sdk.integrations.celery import CeleryIntegration
     from sentry_sdk.integrations.flask import FlaskIntegration
 
     release = os.environ.get("BUILD_REVISION") or None
@@ -356,7 +357,7 @@ def configure_sentry(app):
     )
 
     init(
-        integrations=[FlaskIntegration(transaction_style="url")],
+        integrations=[FlaskIntegration(transaction_style="url"), CeleryIntegration()],
         in_app_include=["zeus"],
         release=release,
         environment=environment,
