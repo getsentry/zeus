@@ -98,9 +98,9 @@ def create_app(_read_config=True, **config):
             ],
         )
     else:
-        REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost/0")
+        REDIS_URL = os.environ.get("REDIS_URL", "redis://127.0.0.1/0")
         SQLALCHEMY_URI = os.environ.get(
-            "SQLALCHEMY_DATABASE_URI", "postgresql+psycopg2://127.0.0.1/zeus"
+            "SQLALCHEMY_DATABASE_URI", "postgresql+psycopg2://postgres@127.0.0.1/zeus"
         )
         app.config["FILE_STORAGE"] = {
             "backend": "zeus.storage.base.FileStorage",
