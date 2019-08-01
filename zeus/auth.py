@@ -1,4 +1,5 @@
 import re
+import sentry_sdk
 
 from cached_property import cached_property
 from datetime import datetime
@@ -246,6 +247,8 @@ def get_current_user(fetch=True) -> Optional[User]:
     if not rv and fetch:
         rv = get_user_from_request()
         g.current_user = rv
+        with sentry_sdk.configure_scope() as scope:
+            scope.user = {"id": rv.id, "email": rv.email} if rv else None
     return rv
 
 
@@ -261,6 +264,12 @@ def get_tenant_from_request():
 def set_current_tenant(tenant: Tenant):
     current_app.logger.info("Binding tenant as %r", tenant)
     g.current_tenant = tenant
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag(
+            "repository_id",
+            tenant.repository_ids[0] if len(tenant.repository_ids) == 1 else None,
+        )
+        scope.set_context("tenant", {"repository_ids": tenant.repository_ids})
 
 
 def get_current_tenant() -> Tenant:
