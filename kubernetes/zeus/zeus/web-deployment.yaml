@@ -4,7 +4,7 @@ metadata:
   name: web
   namespace: default
 spec:
-  replicas: 6
+  replicas: 4
   strategy:
     type: RollingUpdate
     rollingUpdate:
