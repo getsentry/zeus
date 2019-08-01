@@ -248,7 +248,7 @@ def get_current_user(fetch=True) -> Optional[User]:
         rv = get_user_from_request()
         g.current_user = rv
         with sentry_sdk.configure_scope() as scope:
-            scope.user = {"id": rv.id, "email": rv.email} if rv else None
+            scope.user = {"id": str(rv.id), "email": rv.email} if rv else None
     return rv
 
 
@@ -267,9 +267,11 @@ def set_current_tenant(tenant: Tenant):
     with sentry_sdk.configure_scope() as scope:
         scope.set_tag(
             "repository_id",
-            tenant.repository_ids[0] if len(tenant.repository_ids) == 1 else None,
+            str(tenant.repository_ids[0]) if len(tenant.repository_ids) == 1 else None,
         )
-        scope.set_context("tenant", {"repository_ids": tenant.repository_ids})
+        scope.set_context(
+            "tenant", {"repository_ids": [str(i) for i in tenant.repository_ids]}
+        )
 
 
 def get_current_tenant() -> Tenant:
