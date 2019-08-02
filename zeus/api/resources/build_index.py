@@ -64,4 +64,5 @@ class BuildIndexResource(Resource):
             if not repo:
                 return self.respond([])
             query = query.filter(Build.repository_id == repo.id)
+
         return self.paginate_with_schema(builds_schema, query)

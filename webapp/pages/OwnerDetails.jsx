@@ -38,7 +38,7 @@ export default class OwnerDetails extends AsyncPage {
 
   renderBody() {
     return (
-      <Layout title={this.props.params.ownerName}>
+      <Layout title={this.props.params.ownerName} withHeader>
         <ResultGrid.ResultGrid>
           <ResultGrid.Header>
             <ResultGrid.Column>Repository</ResultGrid.Column>
