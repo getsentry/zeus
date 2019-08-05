@@ -24,6 +24,8 @@
     "xhr-mock": "^2.4.1"
   },
   "dependencies": {
+    "@sentry/browser": "^5.5.0",
+    "@sentry/integrations": "^5.5.0",
     "autoprefixer": "7.1.1",
     "babel-core": "6.25.0",
     "babel-loader": "^7.1.2",

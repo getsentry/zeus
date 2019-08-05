@@ -140,7 +140,9 @@ def create_app(_read_config=True, **config):
 
     app.config["REDIS_URL"] = REDIS_URL
 
-    app.config["SENTRY_DSN_FRONTEND"] = os.environ.get("SENTRY_DSN_FRONTEND") or None
+    app.config["SENTRY_DSN_FRONTEND"] = (
+        os.environ.get("SENTRY_DSN_FRONTEND") or os.environ.get("SENTRY_DSN") or None
+    )
     app.config["GITHUB_CLIENT_ID"] = os.environ.get("GITHUB_CLIENT_ID") or None
     app.config["GITHUB_CLIENT_SECRET"] = os.environ.get("GITHUB_CLIENT_SECRET") or None
 
@@ -346,9 +348,11 @@ def configure_sentry(app):
         try:
             import subprocess
 
-            release = str(
-                subprocess.check_output(["git", "describe", "--always"])
-            ).strip()
+            release = (
+                (subprocess.check_output(["git", "describe", "--always"]))
+                .decode("utf-8")
+                .strip()
+            )
         except Exception:
             app.logger.warn("Unable to get release from git", exc_info=True)
 

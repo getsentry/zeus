@@ -41,8 +41,8 @@ export default class ErrorBoundary extends Component {
       location: {...(idx(this.context.router, _ => _.location) || {})}
     });
     if (window.Raven) {
-      window.Raven.captureException(error, {extra: errorInfo});
-      window.Raven.lastEventId() && window.Raven.showReportDialog();
+      window.Sentry.captureException(error, {extra: errorInfo});
+      window.Sentry.lastEventId() && window.Sentry.showReportDialog();
     }
   }
 
