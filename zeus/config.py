@@ -361,4 +361,6 @@ def configure_sentry(app):
         in_app_include=["zeus"],
         release=release,
         environment=environment,
+        traces_sample_rate=1.0,
+        traceparent_v2=True,
     )
