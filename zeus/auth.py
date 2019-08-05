@@ -55,6 +55,8 @@ class Tenant(object):
             return cls()
 
         g.current_user = user
+        with sentry_sdk.configure_scope() as scope:
+            scope.user = {"id": str(user.id), "email": user.email}
         return UserTenant(user_id=user.id)
 
     @classmethod
@@ -234,12 +236,16 @@ def login_user(user_id: str, session=session, current_datetime=None):
         ).strftime("%s")
     )
     session.permanent = True
+    with sentry_sdk.configure_scope() as scope:
+        scope.user = {"id": str(user_id)}
 
 
 def logout():
     session.clear()
     g.current_user = None
     g.current_tenant = None
+    with sentry_sdk.configure_scope() as scope:
+        scope.user = None
 
 
 def get_current_user(fetch=True) -> Optional[User]:
