@@ -28,10 +28,10 @@ db:
 	poetry run zeus db upgrade
 
 drop-db:
-	dropdb --if-exists -h 127.0.0.1 zeus
+	dropdb --if-exists -U postgres -h 127.0.0.1 zeus
 
 create-db:
-	createdb -E utf-8 -h 127.0.0.1 zeus
+	createdb -E utf-8 -U postgres -h 127.0.0.1 zeus
 
 reset-db: drop-db db
 
