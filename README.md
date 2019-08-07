@@ -77,7 +77,7 @@ They should be submitted with the `application/x-webpack-stats+json` type.
 ### Requirements
 
 - Python 3.7
-- Node (and [Notion.js](https://www.notionjs.com/))
+- Node (and [Volta](https://volta.sh/))
 - Postgres 9.4+
 
 Note: If you're using pyenv for Python and macOS Mojave and having issues installing 3.7.1, take a look here:
