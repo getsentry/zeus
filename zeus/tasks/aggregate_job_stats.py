@@ -256,6 +256,7 @@ def record_bundle_stats(job_id: UUID):
     max_retries=None,
     autoretry_for=(Exception,),
     acks_late=True,
+    time_limit=60,
 )
 def aggregate_build_stats(build_id: UUID):
     """
