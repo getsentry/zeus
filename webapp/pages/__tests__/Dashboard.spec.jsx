@@ -25,7 +25,7 @@ describe('Dashboard', () => {
     });
 
     const wrapper = mount(
-      <RepositoryContext repoList={[repo]} loading={false}>
+      <RepositoryContext repoList={[repo]} loading={false} loadRepos={() => {}}>
         <Dashboard />
       </RepositoryContext>,
       context
@@ -52,7 +52,7 @@ describe('Dashboard', () => {
     });
 
     const wrapper = mount(
-      <RepositoryContext repoList={[repo]} loading={false}>
+      <RepositoryContext repoList={[repo]} loading={false} loadRepos={() => {}}>
         <Dashboard />
       </RepositoryContext>,
       context

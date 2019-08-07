@@ -3,6 +3,7 @@
 exports[`UserBuildList fetches builds 1`] = `
 <RepositoryContext
   error={false}
+  loadRepos={[Function]}
   loading={false}
   repoList={
     Array [
@@ -1523,6 +1524,7 @@ exports[`UserBuildList fetches builds 1`] = `
 exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
 <RepositoryContext
   error={false}
+  loadRepos={[Function]}
   loading={false}
   repoList={
     Array [

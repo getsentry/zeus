@@ -105,7 +105,8 @@ const WrappedRepoList = connect(
 
 class BuildListSection extends AsyncComponent {
   static propTypes = {
-    buildList: PropTypes.array
+    buildList: PropTypes.array,
+    fetchBuilds: PropTypes.func.isRequired
   };
 
   loadData() {

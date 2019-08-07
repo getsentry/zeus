@@ -3,6 +3,7 @@
 exports[`Dashboard renders with repos and builds loaded 1`] = `
 <RepositoryContext
   error={false}
+  loadRepos={[Function]}
   loading={false}
   repoList={
     Array [
@@ -816,6 +817,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
 exports[`Dashboard renders with repos loaded 1`] = `
 <RepositoryContext
   error={false}
+  loadRepos={[Function]}
   loading={false}
   repoList={
     Array [

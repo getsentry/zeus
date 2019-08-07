@@ -48,7 +48,7 @@ describe('UserBuildList', () => {
     });
 
     const wrapper = mount(
-      <RepositoryContext repoList={[repo]} loading={false}>
+      <RepositoryContext repoList={[repo]} loading={false} loadRepos={() => {}}>
         <UserBuildList params={{}} location={TestStubs.location()} />
       </RepositoryContext>,
       context
@@ -94,7 +94,7 @@ describe('UserBuildList', () => {
     });
 
     const wrapper = mount(
-      <RepositoryContext repoList={[repo]} loading={false}>
+      <RepositoryContext repoList={[repo]} loading={false} loadRepos={() => {}}>
         <UserBuildList params={{}} location={TestStubs.location()} />
       </RepositoryContext>,
       context
