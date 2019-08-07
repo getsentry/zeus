@@ -65,8 +65,11 @@ class APIClient(object):
         path = "/api/{}".format(path.lstrip("/"))
 
         from sentry_sdk import Hub
+
         hub = Hub.current
-        with hub.span(op="api", description=f"{method} {path}"), current_app.test_client() as client:
+        with hub.span(
+            op="api", description=f"{method} {path}"
+        ), current_app.test_client() as client:
             response = client.open(
                 path=path,
                 query_string=params,
