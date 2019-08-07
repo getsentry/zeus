@@ -165,4 +165,7 @@ class GitHubCompleteView(MethodView):
         else:
             sync_github_access.delay(user_id=user.id)
 
-        return redirect(auth.get_redirect_target(clear=True) or "/")
+        next_uri = auth.get_redirect_target(clear=True) or "/"
+        if "/login" in next_uri or "/auth/github" in next_uri:
+            next_uri = "/"
+        return redirect(next_uri)
