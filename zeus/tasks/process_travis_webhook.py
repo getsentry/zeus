@@ -39,7 +39,7 @@ def get_result(state: str) -> str:
     }.get(state, "unknown")
 
 
-@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True)
+@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
 def process_travis_webhook(hook_id: str, payload: dict, timestamp_ms: int):
     # TODO(dcramer): we want to utilize timestamp_ms to act as a version and
     # ensure we dont process older updates after newer updates are already present

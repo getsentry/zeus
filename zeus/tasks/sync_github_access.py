@@ -65,7 +65,7 @@ def sync_repos_for_owner(
             ).delete(synchronize_session=False)
 
 
-@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True)
+@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
 def sync_github_access(user_id: UUID):
     user = User.query.get(user_id)
     if not user:

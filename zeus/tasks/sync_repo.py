@@ -14,7 +14,7 @@ from zeus.vcs.base import InvalidPublicKey
 
 
 @celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True)
-def sync_repo(repo_id, max_log_passes=10, force=False):
+def sync_repo(repo_id, max_log_passes=10, force=False, time_limit=300):
     auth.set_current_tenant(auth.Tenant(access={repo_id: Permission.admin}))
 
     repo = Repository.query.get(repo_id)
