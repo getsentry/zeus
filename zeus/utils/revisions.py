@@ -25,7 +25,7 @@ def identify_revision(repository: Repository, treeish: str):
 
     lock_key = "sync_repo:{repo_id}".format(repo_id=repository.id)
     # lock this update to avoild piling up duplicate fetch/save calls
-    with redis.lock(lock_key):
+    with redis.lock(lock_key, expire=30):
         try:
             commit = next(vcs.log(parent=treeish, limit=1))
         except UnknownRevision:

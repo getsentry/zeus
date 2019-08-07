@@ -14,7 +14,7 @@ def upsert_job(
     lock_key = "upsert:job:{build_id}:{provider}:{job_xid}".format(
         build_id=build.id, provider=provider_name, job_xid=external_id
     )
-    with redis.lock(lock_key):
+    with redis.lock(lock_key, expire=30):
         json = data.copy() if data else {}
         json["external_id"] = external_id
         json["provider"] = provider_name
@@ -49,7 +49,7 @@ def upsert_build(hook: Hook, external_id: str, data: dict = None) -> Response:
     )
     # TODO (here and in other upsert_* functions): it's better to move all the locking
     # code to async tasks.
-    with redis.lock(lock_key, timeout=BUILD_LOCK_TIMEOUT):
+    with redis.lock(lock_key, timeout=BUILD_LOCK_TIMEOUT, expire=30):
         json = data.copy() if data else {}
         json["external_id"] = external_id
         json["provider"] = provider_name
@@ -78,7 +78,7 @@ def upsert_change_request(
     lock_key = "hook:cr:{repo_id}:{provider}:{cr_xid}".format(
         repo_id=repository.id, provider=provider, cr_xid=external_id
     )
-    with redis.lock(lock_key):
+    with redis.lock(lock_key, expire=30):
         json = data.copy() if data else {}
         json["external_id"] = external_id
         json["provider"] = provider
