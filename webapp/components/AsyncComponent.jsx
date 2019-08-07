@@ -40,7 +40,7 @@ export default class AsyncComponent extends Component {
 
   componentWillMount() {
     this.api = new Client();
-    if (this.state.loading) this.reloadData();
+    this.reloadData();
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
