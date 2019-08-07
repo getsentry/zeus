@@ -166,7 +166,7 @@
       "react/no-deprecated": "off"
     }
   },
-  "toolchain": {
+  "volta": {
     "node": "8.11.3",
     "yarn": "1.13.0"
   }
