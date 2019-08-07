@@ -62,9 +62,13 @@ class APIClient(object):
         else:
             content_type = None
 
-        with current_app.test_client() as client:
+        path = "/api/{}".format(path.lstrip("/"))
+
+        from sentry_sdk import Hub
+        hub = Hub.current
+        with hub.span(op="api", description=f"{method} {path}"), current_app.test_client() as client:
             response = client.open(
-                path="/api/{}".format(path.lstrip("/")),
+                path=path,
                 query_string=params,
                 method=method,
                 content_type=content_type,
