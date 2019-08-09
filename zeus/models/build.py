@@ -66,7 +66,9 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
             "repository_id", "provider", "external_id", name="unq_build_provider"
         ),
         db.Index("idx_build_author_date", "author_id", "date_created"),
-        db.Index("idx_build_outcomes", "status", "result", "date_created"),
+        db.Index(
+            "idx_build_outcomes", "repository_id", "status", "result", "date_created"
+        ),
     )
     __repr__ = model_repr("number", "status", "result")
 
