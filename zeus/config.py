@@ -342,6 +342,7 @@ def configure_sentry(app):
     from sentry_sdk.integrations.celery import CeleryIntegration
     from sentry_sdk.integrations.flask import FlaskIntegration
     from sentry_sdk.integrations.redis import RedisIntegration
+    from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
     release = os.environ.get("BUILD_REVISION") or None
     if not release:
@@ -368,6 +369,7 @@ def configure_sentry(app):
             FlaskIntegration(transaction_style="url"),
             CeleryIntegration(),
             RedisIntegration(),
+            SqlalchemyIntegration(),
         ],
         in_app_include=["zeus"],
         release=release,
