@@ -10,10 +10,12 @@ from ..schemas import JobSchema
 job_schema = JobSchema(strict=True)
 
 
-def has_unprocessed_artifacts(job_id):
+def has_unprocessed_artifacts(repository_id, job_id) -> bool:
     return db.session.query(
         Artifact.query.filter(
-            Artifact.status != Status.finished, Artifact.job_id == job_id
+            Artifact.status != Status.finished,
+            Artifact.repository_id == repository_id,
+            Artifact.job_id == job_id,
         ).exists()
     ).scalar()
 
@@ -69,7 +71,9 @@ class JobDetailsResource(BaseJobResource):
                     job.date_started = job.date_created
             elif job.status != Status.finished:
                 job.date_finished = None
-            if job.status == Status.finished and has_unprocessed_artifacts(job.id):
+            if job.status == Status.finished and has_unprocessed_artifacts(
+                job.repository_id, job.id
+            ):
                 job.status = Status.collecting_results
             db.session.add(job)
             db.session.commit()
