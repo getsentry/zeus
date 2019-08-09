@@ -218,7 +218,7 @@ Using the subpath, you'll be able to access several endpoints:
 - `{prefix}/builds/{build-external-id}/jobs/{job-external-id}`
 - `{prefix}/builds/{build-external-id}/jobs/{job-external-id}/artifacts`
 
-The prefix will be generated for you as part of the a new hook, and is made up of the Hook's GUID and it's signature:
+The prefix will be generated for you as part of the new hook, and is made up of the Hook's GUID and it's signature:
 
 http://example.com/hooks/{hook-id}/{hook-signature}/{path}
 
