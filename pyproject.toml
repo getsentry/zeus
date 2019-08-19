@@ -51,7 +51,7 @@ pytest-responses = { version = "~0.2.0", optional = true }
 pytest-xdist = { version = "~1.18.0", optional = true }
 responses = { version = "~0.8.1", optional = true }
 sentry-sdk = { git = "https://github.com/getsentry/sentry-python.git", rev = "211f7f41f52a5f5a956ee5e780688149a2fda1b6" }
-celery-redbeat = {git = "https://github.com/sibson/redbeat.git", version="c5269838b0daf49e34cff85e6ad0c7b95dceaf12"}
+celery-redbeat = {git = "https://github.com/sibson/redbeat.git", rev = "c5269838b0daf49e34cff85e6ad0c7b95dceaf12"}
 
 [tool.poetry.dev-dependencies]
 black = "=18.6b4"
