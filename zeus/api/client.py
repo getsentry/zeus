@@ -67,7 +67,7 @@ class APIClient(object):
         from sentry_sdk import Hub
 
         hub = Hub.current
-        with hub.span(
+        with hub.start_span(
             op="api", description=f"{method} {path}"
         ), current_app.test_client() as client:
             response = client.open(
