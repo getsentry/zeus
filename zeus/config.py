@@ -38,11 +38,13 @@ metrics = Metrics()
 
 def with_health_check(app):
     def middleware(environ, start_response):
+        path_info = environ.get("PATH_INFO", "")
+        if path_info:
+            with sentry_sdk.configure_scope() as scope:
+                scope.transaction = path_info
         if environ.get("PATH_INFO", "") == "/healthz":
-            with sentry_sdk.push_scope() as scope:
-                scope.transaction = "/healthz"
-                start_response("200 OK", [("Content-Type", "application/json")])
-                return [b'{"ok": true}']
+            start_response("200 OK", [("Content-Type", "application/json")])
+            return [b'{"ok": true}']
         return app(environ, start_response)
 
     return middleware
