@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import sentry_sdk
 import sys
 import tempfile
 
@@ -38,9 +39,10 @@ metrics = Metrics()
 def with_health_check(app):
     def middleware(environ, start_response):
         if environ.get("PATH_INFO", "") == "/healthz":
-            start_response("200 OK", [("Content-Type", "application/json")])
-            return [b'{"ok": true}']
-
+            with sentry_sdk.push_scope() as scope:
+                scope.transaction = "/healthz"
+                start_response("200 OK", [("Content-Type", "application/json")])
+                return [b'{"ok": true}']
         return app(environ, start_response)
 
     return middleware
@@ -337,7 +339,6 @@ def configure_webpack(app):
 
 
 def configure_sentry(app):
-    from sentry_sdk import init
     from sentry_sdk.integrations.aiohttp import AioHttpIntegration
     from sentry_sdk.integrations.celery import CeleryIntegration
     from sentry_sdk.integrations.flask import FlaskIntegration
@@ -363,7 +364,7 @@ def configure_sentry(app):
         os.environ.get("NODE_ENV", "development") or None
     )
 
-    init(
+    sentry_sdk.init(
         integrations=[
             AioHttpIntegration(),
             FlaskIntegration(transaction_style="url"),
