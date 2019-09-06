@@ -13,6 +13,7 @@ from uuid import uuid4
 import sentry_sdk
 
 from zeus import auth
+from zeus.utils.sentry import span
 
 Event = namedtuple("Event", ["id", "event", "data"])
 
@@ -45,6 +46,7 @@ def log_errors(func):
 # @log_errors
 
 
+@span("worker")
 async def worker(channel, queue, token, repo_ids=None, build_ids=None):
     allowed_repo_ids = frozenset(token["repo_ids"])
 
@@ -85,12 +87,12 @@ async def ping(loop, resp, client_guid):
 # @log_errors
 
 
+@span("stream")
 async def stream(request):
     client_guid = str(uuid4())
 
     with sentry_sdk.configure_scope() as scope:
         scope.set_tag("client_guid", client_guid)
-        scope.transaction = "event stream"
 
     if request.headers.get("accept") != "text/event-stream":
         return Response(status=406)
@@ -121,16 +123,23 @@ async def stream(request):
 
     parts = urlparse(current_app.config["REDIS_URL"])
 
-    conn = await aioredis.create_redis(
-        address=(parts.hostname or "localhost", parts.port or "6379"),
-        db=parts.path.split("1", 1)[:-1] or 0,
-        password=parts.password,
-        loop=loop,
-    )
+    with sentry_sdk.Hub.current.start_span(
+        op="aioredis.create_redis",
+        description=f'{parts.hostname or "localhost"}:{parts.port or "6379"}',
+    ):
+        conn = await aioredis.create_redis(
+            address=(parts.hostname or "localhost", parts.port or "6379"),
+            db=parts.path.split("1", 1)[:-1] or 0,
+            password=parts.password,
+            loop=loop,
+        )
     try:
         queue = asyncio.Queue(loop=loop)
 
-        res = await conn.subscribe("builds")
+        with sentry_sdk.Hub.current.start_span(
+            op="aioredis.subscribe", description="builds"
+        ):
+            res = await conn.subscribe("builds")
         asyncio.ensure_future(worker(res[0], queue, token, repo_ids, build_ids))
 
         resp = StreamResponse(status=200, reason="OK")
@@ -183,6 +192,7 @@ async def stream(request):
         )
 
 
+@span("health_check")
 async def health_check(request):
     return Response(text='{"ok": true}')
 

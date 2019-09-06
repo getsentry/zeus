@@ -7,6 +7,7 @@ from sqlalchemy.ext.mutable import Mutable
 from sqlalchemy.types import TypeDecorator, Unicode
 
 from zeus.utils.imports import import_string
+from zeus.utils.sentry import span
 
 
 class FileData(Mutable):
@@ -44,6 +45,7 @@ class FileData(Mutable):
 
         return self.get_storage().url_for(self.filename, expire=expire)
 
+    @span("file.save")
     def save(self, fp, filename=None):
         if filename:
             self.filename = filename
@@ -68,6 +70,7 @@ class FileData(Mutable):
         self.get_storage().save(self.filename, fp)
         self.changed()
 
+    @span("file.delete")
     def delete(self):
         self.get_storage().delete(self.filename)
         self.exists = False
