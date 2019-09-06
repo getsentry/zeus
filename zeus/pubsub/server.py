@@ -61,7 +61,10 @@ async def worker(channel, queue, token, repo_ids=None, build_ids=None):
             continue
 
         evt = Event(msg.get("id"), msg.get("event"), data)
-        await queue.put(evt)
+        with sentry_sdk.Hub.current.start_span(
+            op="pubsub.receive", description=msg.get("id")
+        ):
+            await queue.put(evt)
         current_app.logger.debug("pubsub.event.received qsize=%s", queue.qsize())
 
 
@@ -75,7 +78,8 @@ async def ping(loop, resp, client_guid):
     while True:
         await asyncio.sleep(15, loop=loop)
         current_app.logger.debug("pubsub.ping guid=%s", client_guid)
-        resp.write(b": ping\r\n\r\n")
+        with sentry_sdk.Hub.current.start_span(op="pubsub.ping"):
+            resp.write(b": ping\r\n\r\n")
 
 
 # @log_errors
@@ -86,6 +90,7 @@ async def stream(request):
 
     with sentry_sdk.configure_scope() as scope:
         scope.set_tag("client_guid", client_guid)
+        scope.transaction = "event stream"
 
     if request.headers.get("accept") != "text/event-stream":
         return Response(status=406)
@@ -148,17 +153,22 @@ async def stream(request):
             if event is None:
                 break
 
-            buffer = io.BytesIO()
-            if event.id:
-                buffer.write(b"id: %s\r\n" % (event.id.encode("utf-8"),))
-            if event.event:
-                buffer.write(b"event: %s\r\n" % (event.event.encode("utf-8")))
-            if event.data:
-                buffer.write(b"data: %s\r\n" % (json.dumps(event.data).encode("utf-8")))
-            buffer.write(b"\r\n")
-            resp.write(buffer.getvalue())
-            queue.task_done()
-            current_app.logger.debug("pubsub.event.sent qsize=%s", queue.qsize())
+            with sentry_sdk.Hub.current.start_span(
+                op="pubsub.send", description=event.id
+            ):
+                buffer = io.BytesIO()
+                if event.id:
+                    buffer.write(b"id: %s\r\n" % (event.id.encode("utf-8"),))
+                if event.event:
+                    buffer.write(b"event: %s\r\n" % (event.event.encode("utf-8")))
+                if event.data:
+                    buffer.write(
+                        b"data: %s\r\n" % (json.dumps(event.data).encode("utf-8"))
+                    )
+                buffer.write(b"\r\n")
+                resp.write(buffer.getvalue())
+                queue.task_done()
+                current_app.logger.debug("pubsub.event.sent qsize=%s", queue.qsize())
             # Yield to the scheduler so other processes do stuff.
             await resp.drain()
 

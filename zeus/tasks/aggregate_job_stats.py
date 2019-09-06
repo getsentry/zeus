@@ -20,6 +20,7 @@ from zeus.models import (
 from zeus.tasks.send_build_notifications import send_build_notifications
 from zeus.utils import timezone
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
+from zeus.utils.sentry import span
 
 AGGREGATED_BUILD_STATS = (
     "tests.count",
@@ -125,6 +126,7 @@ def has_unprocessed_artifacts(job_id: UUID):
     ).scalar()
 
 
+@span("record_failure_reasons")
 def record_failure_reasons(job: Job):
     has_failures = db.session.query(
         TestCase.query.filter(
@@ -154,6 +156,7 @@ def record_failure_reasons(job: Job):
     db.session.flush()
 
 
+@span("record_test_stats")
 def record_test_stats(job_id: UUID):
     create_or_update(
         ItemStat,
@@ -185,6 +188,7 @@ def record_test_stats(job_id: UUID):
     db.session.flush()
 
 
+@span("record_coverage_stats")
 def record_coverage_stats(build_id: UUID):
     """
     Aggregates all FileCoverage stats for the given build.
@@ -225,6 +229,7 @@ def record_coverage_stats(build_id: UUID):
             )
 
 
+@span("record_style_violation_stats")
 def record_style_violation_stats(job_id: UUID):
     create_or_update(
         ItemStat,
@@ -238,6 +243,7 @@ def record_style_violation_stats(job_id: UUID):
     db.session.flush()
 
 
+@span("record_bundle_stats")
 def record_bundle_stats(job_id: UUID):
     create_or_update(
         ItemStat,

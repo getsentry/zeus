@@ -15,6 +15,7 @@ from zeus.utils.celery import Celery
 from zeus.utils.metrics import Metrics
 from zeus.utils.nplusone import NPlusOne
 from zeus.utils.redis import Redis
+from zeus.utils.sentry import span
 from zeus.utils.ssl import SSL
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -263,6 +264,7 @@ def create_app(_read_config=True, **config):
     configure_web(app)
 
     @app.after_request
+    @span("middleware.track_user")
     def track_user(response):
         from zeus import auth
         from zeus.utils import timezone
@@ -336,6 +338,7 @@ def configure_webpack(app):
         return url_for("static", filename=assets.get(path, path))
 
     @app.context_processor
+    @span("context_processor.webpack_assets")
     def webpack_assets():
         return {"asset_url": get_asset}
 
