@@ -196,6 +196,7 @@ tenacity = "*"
 reference = "c5269838b0daf49e34cff85e6ad0c7b95dceaf12"
 type = "git"
 url = "https://github.com/sibson/redbeat.git"
+
 [[package]]
 category = "main"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -986,11 +987,11 @@ description = "Python client for Sentry (https://getsentry.com)"
 name = "sentry-sdk"
 optional = false
 python-versions = "*"
-version = "0.11.0"
+version = "0.12.0"
 
 [package.dependencies]
 certifi = "*"
-urllib3 = "*"
+urllib3 = ">=1.9"
 
 [[package]]
 category = "main"
@@ -1141,7 +1142,7 @@ version = "0.5.2"
 test = ["pytest", "pytest-cov", "pytest-mock", "pytest-responses", "pytest-xdist", "responses"]
 
 [metadata]
-content-hash = "b2ce0086a9e71552abb9d70aff61ff1a520b19ab4b4c52ee5b3be5f28ea9cce8"
+content-hash = "48f5a1b1b19f9dee5febe6ed9fa3f4fe282e6c6ea1e26e1935b7c01589971fdd"
 python-versions = "~3.7"
 
 [metadata.hashes]
@@ -1239,7 +1240,7 @@ requests = ["6a1b267aa90cac58ac3a765d067950e7dbbf75b1da07e895d1f594193a40a38b", 
 requests-oauthlib = ["50a8ae2ce8273e384895972b56193c7409601a66d4975774c60c2aed869639ca", "883ac416757eada6d3d07054ec7092ac21c7f35cb1d2cf82faf205637081f468"]
 responses = ["98e1c0eb5a7a03d59e73c8ac774428664f319ef35c6ac59479436bbb9c3499be", "a64029dbc6bed7133e2c971ee52153f30e779434ad55a5abf40322bcff91d029"]
 rsa = ["14ba45700ff1ec9eeb206a2ce76b32814958a98e372006c8fb76ba820211be66", "1a836406405730121ae9823e19c6e806c62bbad73f890574fff50efa4122c487"]
-sentry-sdk = ["2a80ff5e2d1bb2e8c745876015fe0c9f2e19c5c6a9da4c28ec06251f1e5f9f9c", "9eba140e6f9c02f58f6c62f40f1284ceb442c77e704a414efbe5e8401988b483"]
+sentry-sdk = ["01c8b27233c792d7d957cefd0e261d7913e1633a7d8a67ad1df742cb9f2b50a5", "13e58855d6e347f8545c7f18ae4db3d56639540f21e4476d94c8fc16a0af57ca"]
 simplegeneric = ["dc972e06094b9af5b855b3df4a646395e43d1c9d0d39ed345b7393560d0b9173"]
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
 sqlalchemy = ["5bb2c4fc2bcc3447ad45716c66581eab982c007dcf925482498d8733f86f17c7"]
