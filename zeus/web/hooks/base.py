@@ -23,6 +23,10 @@ class BaseHook(View):
                 .options(joinedload("repository"))
                 .get(hook_id)
             )
+
+        if not hook:
+            return self.respond({"message": "hook not found"}, 404)
+
         if not self.public and not hook.is_valid_signature(signature):
             current_app.logger.warn("invalid webhook signature id=%s", hook_id)
             return "", 403
