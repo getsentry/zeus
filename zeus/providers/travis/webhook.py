@@ -73,8 +73,14 @@ class TravisWebhookView(BaseHook):
             current_app.logger.error("travis.webhook-invalid-payload", exc_info=True)
             return Response(status=400)
 
-        process_travis_webhook.delay(
-            hook_id=hook.id, payload=payload, timestamp_ms=int(time() * 1000)
-        )
+        try:
+            process_travis_webhook(
+                hook_id=hook.id, payload=payload, timestamp_ms=int(time() * 1000)
+            )
+        except Exception:
+            current_app.logger.error("travis.process-webhook-failed", exc_info=True)
+            process_travis_webhook.delay(
+                hook_id=hook.id, payload=payload, timestamp_ms=int(time() * 1000)
+            )
 
         return Response(status=202)
