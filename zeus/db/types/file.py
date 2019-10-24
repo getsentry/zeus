@@ -46,28 +46,44 @@ class FileData(Mutable):
         return self.get_storage().url_for(self.filename, expire=expire)
 
     @span("file.save")
-    def save(self, fp, filename=None):
-        if filename:
-            self.filename = filename
+    def save(self, fp, filename=None, allow_ref=True):
+        # this is effectively a copy
+        if isinstance(fp, FileData):
+            self.size = fp.size
+            if filename:
+                self.filename = filename
+                self.get_storage().save(self.filename, fp.get_file())
+            elif fp.filename and allow_ref:
+                # we avoid re-saving anything at this point
+                self.filename = fp.filename
+                self.path = fp.path
+                self.storage = fp.storage
+            elif self.filename:
+                self.get_storage().save(self.filename, fp.get_file())
+            else:
+                raise ValueError("Missing filename")
             self.exists = True
-        elif self.filename is None:
-            raise ValueError("Missing filename")
-
-        # Flask's FileStorage object might give us an accurate content_length,
-        # otherwise we need to seek the underlying file to obtain its size.
-        # For in-memory files this will fail, so we just assume None as default
-        if hasattr(fp, "content_length") and fp.content_length:
-            self.size = fp.content_length
         else:
-            try:
-                pos = fp.tell()
-                fp.seek(0, 2)
-                self.size = fp.tell()
-                fp.seek(pos)
-            except (AttributeError, IOError):
-                self.size = None
+            if filename:
+                self.filename = filename
+                self.exists = True
+            elif self.filename is None:
+                raise ValueError("Missing filename")
 
-        self.get_storage().save(self.filename, fp)
+            # Flask's FileStorage object might give us an accurate content_length,
+            # otherwise we need to seek the underlying file to obtain its size.
+            # For in-memory files this will fail, so we just assume None as default
+            if hasattr(fp, "content_length") and fp.content_length:
+                self.size = fp.content_length
+            else:
+                try:
+                    pos = fp.tell()
+                    fp.seek(0, 2)
+                    self.size = fp.tell()
+                    fp.seek(pos)
+                except (AttributeError, IOError):
+                    self.size = None
+            self.get_storage().save(self.filename, fp)
         self.changed()
 
     @span("file.delete")

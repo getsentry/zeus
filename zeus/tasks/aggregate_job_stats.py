@@ -7,20 +7,23 @@ from zeus.config import celery, db, redis
 from zeus.constants import Result, Status
 from zeus.db.utils import create_or_update
 from zeus.models import (
-    Artifact,
     Build,
     FailureReason,
     FileCoverage,
     ItemStat,
     Job,
+    PendingArtifact,
     StyleViolation,
     TestCase,
     BundleAsset,
 )
-from zeus.tasks.send_build_notifications import send_build_notifications
 from zeus.utils import timezone
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
+from zeus.utils.artifacts import has_unprocessed_artifacts
 from zeus.utils.sentry import span
+
+from .send_build_notifications import send_build_notifications
+from .process_pending_artifact import process_pending_artifact
 
 AGGREGATED_BUILD_STATS = (
     "tests.count",
@@ -59,14 +62,22 @@ def aggregate_build_stats_for_job(job_id: UUID):
 
         # we need to handle the race between when the mutations were made to <Job> and
         # when the only remaining artifact may have finished processing
-        if job.status == Status.collecting_results and not has_unprocessed_artifacts(
-            job.id
-        ):
-            job.status = Status.finished
-            if not job.date_finished:
-                job.date_finished = timezone.now()
-            db.session.add(job)
-            db.session.commit()
+        if job.status == Status.collecting_results:
+            if not has_unprocessed_artifacts(job):
+                job.status = Status.finished
+                if not job.date_finished:
+                    job.date_finished = timezone.now()
+                db.session.add(job)
+                db.session.commit()
+            else:
+                pending_artifact_ids = db.session.query(PendingArtifact.id).filter(
+                    PendingArtifact.repository_id == job.repository_id,
+                    PendingArtifact.provider == job.provider,
+                    PendingArtifact.external_build_id == job.build.external_id,
+                    PendingArtifact.external_job_id == job.external_id,
+                )
+                for pa_id in pending_artifact_ids:
+                    process_pending_artifact.delay(pending_artifact_id=pa_id)
 
         # record any job-specific stats that might not have been taken care elsewhere
         if job.status == Status.finished:
@@ -116,14 +127,6 @@ def aggregate_stat_for_build(build: Build, name: str, func_=func.sum):
         where={"item_id": build.id, "name": name},
         values={"value": value},
     )
-
-
-def has_unprocessed_artifacts(job_id: UUID):
-    return db.session.query(
-        Artifact.query.filter(
-            Artifact.status != Status.finished, Artifact.job_id == job_id
-        ).exists()
-    ).scalar()
 
 
 @span("record_failure_reasons")
