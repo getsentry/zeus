@@ -2,12 +2,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import Collapsable from './Collapsable';
-import {ResultGrid, Column, Header} from './ResultGrid';
+import {Header} from './ResultGrid';
 
 export default class TestChart extends Component {
   static propTypes = {
-    testList: PropTypes.arrayOf(PropTypes.object).isRequired,
+    testList: PropTypes.shape({
+      builds: PropTypes.object,
+      results: PropTypes.object
+    }),
     collapsable: PropTypes.bool,
     maxVisible: PropTypes.number,
     params: PropTypes.object
@@ -18,28 +20,32 @@ export default class TestChart extends Component {
   };
 
   render() {
+    const buildsList = Object.entries(this.props.testList.builds);
+
     return (
-      <ResultGrid>
-        <Header>
-          <Column>Tests</Column>
-        </Header>
-        <Collapsable
-          collapsable={this.props.collapsable}
-          maxVisible={this.props.maxVisible}>
-          <ResultRow jobs={this.props.testList.jobs.length}>
-            {Object.entries(this.props.testList.results).map(([test, results]) => {
-              return (
-                <React.Fragment key={test}>
-                  {test}
-                  {results.map((result, i) => (
-                    <ResultBox key={i} result={result} />
-                  ))}
-                </React.Fragment>
-              );
-            })}
-          </ResultRow>
-        </Collapsable>
-      </ResultGrid>
+      <ResultRow builds={buildsList.length}>
+        <Header>Test</Header>
+        {buildsList.map(([id, build]) => (
+          <Header key={id}>
+            <BuildLink
+              href={build.url}
+              title={`${build.label} finished at ${build.finished_at}`}>
+              i
+            </BuildLink>
+          </Header>
+        ))}
+
+        {Object.entries(this.props.testList.results).map(([test, results]) => {
+          return (
+            <React.Fragment key={test}>
+              {test}
+              {results.map((result, i) => (
+                <ResultBox key={i} result={result} />
+              ))}
+            </React.Fragment>
+          );
+        })}
+      </ResultRow>
     );
   }
 }
@@ -47,12 +53,21 @@ export default class TestChart extends Component {
 const ResultRow = styled('div')`
   display: grid;
   grid-gap: 4px;
-  grid-template-columns: max-content repeat(${p => p.jobs}, max-content);
+  align-items: center;
+  grid-template-columns: max-content repeat(${p => p.builds}, max-content);
 `;
 
 const ResultBox = styled('div')`
   width: 24px;
   height: 24px;
   background-color: ${p =>
-    p.result === 1 ? 'green' : p.result === null ? '#ccc' : 'red'};
+    p.result === 'passed' ? 'green' : p.result === null ? '#ccc' : 'red'};
+`;
+
+const BuildLink = styled('a')`
+  display: flex;
+  justify-content: center;
+  text-transform: none;
+  width: 100%;
+  color: #999;
 `;
