@@ -38,7 +38,7 @@ export default class TestChart extends Component {
         {Object.entries(this.props.testList.results).map(([test, results]) => {
           return (
             <React.Fragment key={test}>
-              {test}
+              <TestName title={test}>{test}</TestName>
               {results.map((result, i) => (
                 <ResultBox key={i} result={result} />
               ))}
@@ -54,7 +54,7 @@ const ResultRow = styled('div')`
   display: grid;
   grid-gap: 4px;
   align-items: center;
-  grid-template-columns: max-content repeat(${p => p.builds}, max-content);
+  grid-template-columns: auto repeat(${p => p.builds}, max-content);
 `;
 
 const ResultBox = styled('div')`
@@ -70,4 +70,10 @@ const BuildLink = styled('a')`
   text-transform: none;
   width: 100%;
   color: #999;
+`;
+
+const TestName = styled('span')`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
