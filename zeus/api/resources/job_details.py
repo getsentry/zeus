@@ -1,23 +1,14 @@
 from zeus.config import db
 from zeus.constants import Result, Status
-from zeus.models import Artifact, Job
+from zeus.models import Job
 from zeus.tasks import aggregate_build_stats_for_job
 from zeus.utils import timezone
+from zeus.utils.artifacts import has_unprocessed_artifacts
 
 from .base_job import BaseJobResource
 from ..schemas import JobSchema
 
 job_schema = JobSchema()
-
-
-def has_unprocessed_artifacts(repository_id, job_id) -> bool:
-    return db.session.query(
-        Artifact.query.filter(
-            Artifact.status != Status.finished,
-            Artifact.repository_id == repository_id,
-            Artifact.job_id == job_id,
-        ).exists()
-    ).scalar()
 
 
 class JobDetailsResource(BaseJobResource):
@@ -69,9 +60,7 @@ class JobDetailsResource(BaseJobResource):
                     job.date_started = job.date_created
             elif job.status != Status.finished:
                 job.date_finished = None
-            if job.status == Status.finished and has_unprocessed_artifacts(
-                job.repository_id, job.id
-            ):
+            if job.status == Status.finished and has_unprocessed_artifacts(job):
                 job.status = Status.collecting_results
             db.session.add(job)
             db.session.commit()
