@@ -18,10 +18,11 @@ export default class RepositoryTestChart extends AsyncPage {
   }
 
   renderBody() {
+    console.log(this.state);
     return (
       <Section>
         <TestChart testList={this.state.testList} />
-        <Paginator links={this.state.links} {...this.props} />
+        <Paginator links={this.state.testList.links} {...this.props} />
       </Section>
     );
   }
