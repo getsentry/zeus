@@ -7,7 +7,7 @@ from zeus.models import Build, Repository, TestCase, Job, Source
 from .base_repository import BaseRepositoryResource
 from ..schemas import TestCaseSummarySchema
 
-testcases_schema = TestCaseSummarySchema(many=True, strict=True)
+testcases_schema = TestCaseSummarySchema(many=True)
 
 
 class RepositoryTestsResource(BaseRepositoryResource):

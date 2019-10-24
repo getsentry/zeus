@@ -23,7 +23,7 @@ class AggregateFailureReasonSchema(Schema):
     runs = fields.List(fields.Nested(ExecutionSchema), required=True)
 
     @pre_dump
-    def process_aggregates(self, data):
+    def process_aggregates(self, data, **kwargs):
         return {
             "reason": data.reason,
             "runs": [{"id": UUID(e[0]), "job_id": UUID(e[1])} for e in data.runs],

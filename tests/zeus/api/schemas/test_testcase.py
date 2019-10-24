@@ -58,9 +58,7 @@ def test_failure_origin(default_repo):
         date_created=old_build.date_created - timedelta(hours=1),
     )
 
-    schema = AggregateTestCaseSummarySchema(
-        many=True, strict=True, context={"build": new_build}
-    )
+    schema = AggregateTestCaseSummarySchema(many=True, context={"build": new_build})
     result = schema.dump(
         [
             AggregateTestCase(
@@ -88,7 +86,7 @@ def test_failure_origin(default_repo):
                 ],
             ),
         ]
-    ).data
+    )
     assert len(result) == 2
     assert result[0]["hash"] == new_testcase.hash
     assert result[0]["name"] == new_testcase.name

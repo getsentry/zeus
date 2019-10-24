@@ -8,7 +8,7 @@ from ..schemas import FileCoverageSchema
 
 SEPERATOR = "/"
 
-filecoverage_schema = FileCoverageSchema(many=False, strict=True)
+filecoverage_schema = FileCoverageSchema(many=False)
 
 
 class BuildFileCoverageTreeResource(BaseBuildResource):
@@ -38,7 +38,7 @@ class BuildFileCoverageTreeResource(BaseBuildResource):
                     "is_leaf": True,
                 }
             ],
-            "coverage": filecoverage_schema.dump(coverage).data,
+            "coverage": filecoverage_schema.dump(coverage),
             "file_source": file_source,
         }
 

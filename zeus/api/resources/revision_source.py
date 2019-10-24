@@ -4,7 +4,7 @@ from zeus.models import Source, Revision
 from .base_revision import BaseRevisionResource
 from ..schemas import SourceSchema
 
-source_schema = SourceSchema(strict=True)
+source_schema = SourceSchema()
 
 
 class RevisionSourceResource(BaseRevisionResource):

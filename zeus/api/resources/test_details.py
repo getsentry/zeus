@@ -15,5 +15,5 @@ class TestDetailsResource(Resource):
             test_id
         )
 
-        schema = TestCaseSchema(strict=True)
+        schema = TestCaseSchema()
         return self.respond_with_schema(schema, testcase)

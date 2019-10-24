@@ -10,8 +10,8 @@ from zeus.utils import timezone
 from .base_build import BaseBuildResource
 from ..schemas import JobSchema
 
-job_schema = JobSchema(strict=True)
-jobs_schema = JobSchema(many=True, strict=True)
+job_schema = JobSchema()
+jobs_schema = JobSchema(many=True)
 
 
 class BuildJobsResource(BaseBuildResource):
@@ -30,11 +30,7 @@ class BuildJobsResource(BaseBuildResource):
         """
         Create a new job.
         """
-        result = self.schema_from_request(job_schema, partial=True)
-        if result.errors:
-            return self.respond(result.errors, 403)
-
-        data = result.data
+        data = self.schema_from_request(job_schema, partial=True)
         job = Job(build=build, repository_id=build.repository_id, **data)
         if job.status != Status.queued and not job.date_started:
             job.date_started = timezone.now()

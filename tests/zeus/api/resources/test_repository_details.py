@@ -17,7 +17,7 @@ def test_update_cannot_change_provider(
     resp = client.put(
         "/api/repos/{}".format(default_repo.get_full_name()), json={"provider": "git"}
     )
-    assert resp.status_code == 200
+    assert resp.status_code == 403
     repo = Repository.query.unrestricted_unsafe().get(default_repo.id)
     assert repo.provider.name == "github"
 

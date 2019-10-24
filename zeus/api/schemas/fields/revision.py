@@ -7,7 +7,7 @@ from zeus.vcs.base import UnknownRevision
 
 
 class RevisionRefField(fields.Str):
-    def _deserialize(self, value, attr, data):
+    def _deserialize(self, value, attr, data, **kwargs):
         repo = self.context.get("repository")
         if repo:
             try:

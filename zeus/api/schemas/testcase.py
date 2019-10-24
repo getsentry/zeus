@@ -158,7 +158,7 @@ class AggregateTestCaseSummarySchema(Schema):
     )
 
     @pre_dump(pass_many=True)
-    def process_aggregates(self, data, many):
+    def process_aggregates(self, data, many, **kwargs):
         if not many:
             items = [data]
         else:
