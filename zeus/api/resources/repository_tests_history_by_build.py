@@ -55,7 +55,7 @@ class RepositoryTestsHistoryByBuildResource(BaseRepositoryResource):
                 Build.result == Result.passed,
                 Build.status == Status.finished,
             )
-            .order_by(Build.number.asc())
+            .order_by(Build.number.desc())
             .limit(results)
         )
 
