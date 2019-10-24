@@ -3,13 +3,14 @@ from flask.views import View
 from sqlalchemy.orm import joinedload
 
 from zeus import auth
+from zeus.api.resources.base import ApiHelpers
 from zeus.config import nplusone
 from zeus.constants import Permission
 from zeus.exceptions import ApiError
 from zeus.models import Hook
 
 
-class BaseHook(View):
+class BaseHook(View, ApiHelpers):
     public = False
 
     methods = ["GET", "POST", "PUT", "DELETE"]

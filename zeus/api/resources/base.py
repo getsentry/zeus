@@ -13,75 +13,7 @@ from ..authentication import ApiTokenAuthentication, SessionAuthentication
 LINK_HEADER = '<{uri}&page={page}>; rel="{name}" page="{page}" results="{results}"'
 
 
-class Resource(View):
-    methods = ["GET", "POST", "PUT", "DELETE"]
-
-    authentication_classes = (ApiTokenAuthentication, SessionAuthentication)
-
-    auth_required = True
-
-    permission_overrides = {}
-
-    def is_mutation(self) -> bool:
-        return request.method in ("DELETE", "PATCH", "POST", "PUT")
-
-    def select_resource_for_update(self) -> bool:
-        # should the base resource treat it's query operations as locking
-        # and utilize SELECT_FOR_UPDATE?
-        # return self.is_mutation()
-        return False
-
-    def dispatch_request(self, *args, **kwargs) -> Response:
-        delay = current_app.config.get("API_DELAY", 0)
-        if delay:
-            sleep(delay / 1000)
-
-        tenant = request.environ.get("zeus.tenant")
-        if self.authentication_classes:
-            for auth_cls in self.authentication_classes:
-                try:
-                    _tenant = auth_cls().authenticate()
-                    if _tenant:
-                        tenant = _tenant
-                        break
-
-                except auth.AuthenticationFailed:
-                    return self.respond({"error": "invalid_auth"}, 401)
-
-        if tenant:
-            auth.set_current_tenant(tenant)
-        elif self.auth_required:
-            return self.respond({"error": "auth_required"}, 401)
-
-        try:
-            method = getattr(self, request.method.lower())
-        except AttributeError:
-            return self.respond({"message": "resource not found"}, 405)
-
-        try:
-            resp = method(*args, **kwargs)
-            if not isinstance(resp, Response):
-                resp = self.respond(resp)
-            if tenant:
-                resp.headers["X-Stream-Token"] = auth.generate_token(tenant)
-            return resp
-
-        except ValidationError as e:
-            return self.respond(e.messages, 403)
-
-        except ConnectionError as exc:
-            current_app.logger.exception("failed to handle api request")
-            return self.respond(
-                {"error": "connection_error", "url": exc.request.url}, 502
-            )
-
-        except ApiUnauthorized:
-            return self.respond({"error": "auth_required"}, 401)
-
-        except Exception:
-            current_app.logger.exception("failed to handle api request")
-            return self.error("internal server error", 500)
-
+class ApiHelpers(object):
     def not_found(self, message: str = "resource not found") -> Response:
         return self.error(message, 404)
 
@@ -171,3 +103,73 @@ class Resource(View):
 
         response.headers["Link"] = ", ".join(links)
         return response
+
+
+class Resource(View, ApiHelpers):
+    methods = ["GET", "POST", "PUT", "DELETE"]
+
+    authentication_classes = (ApiTokenAuthentication, SessionAuthentication)
+
+    auth_required = True
+
+    permission_overrides = {}
+
+    def is_mutation(self) -> bool:
+        return request.method in ("DELETE", "PATCH", "POST", "PUT")
+
+    def select_resource_for_update(self) -> bool:
+        # should the base resource treat it's query operations as locking
+        # and utilize SELECT_FOR_UPDATE?
+        # return self.is_mutation()
+        return False
+
+    def dispatch_request(self, *args, **kwargs) -> Response:
+        delay = current_app.config.get("API_DELAY", 0)
+        if delay:
+            sleep(delay / 1000)
+
+        tenant = request.environ.get("zeus.tenant")
+        if self.authentication_classes:
+            for auth_cls in self.authentication_classes:
+                try:
+                    _tenant = auth_cls().authenticate()
+                    if _tenant:
+                        tenant = _tenant
+                        break
+
+                except auth.AuthenticationFailed:
+                    return self.respond({"error": "invalid_auth"}, 401)
+
+        if tenant:
+            auth.set_current_tenant(tenant)
+        elif self.auth_required:
+            return self.respond({"error": "auth_required"}, 401)
+
+        try:
+            method = getattr(self, request.method.lower())
+        except AttributeError:
+            return self.respond({"message": "resource not found"}, 405)
+
+        try:
+            resp = method(*args, **kwargs)
+            if not isinstance(resp, Response):
+                resp = self.respond(resp)
+            if tenant:
+                resp.headers["X-Stream-Token"] = auth.generate_token(tenant)
+            return resp
+
+        except ValidationError as e:
+            return self.respond(e.messages, 403)
+
+        except ConnectionError as exc:
+            current_app.logger.exception("failed to handle api request")
+            return self.respond(
+                {"error": "connection_error", "url": exc.request.url}, 502
+            )
+
+        except ApiUnauthorized:
+            return self.respond({"error": "auth_required"}, 401)
+
+        except Exception:
+            current_app.logger.exception("failed to handle api request")
+            return self.error("internal server error", 500)
