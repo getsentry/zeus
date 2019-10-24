@@ -21,5 +21,5 @@ class RepositoryTestDetailsResource(BaseRepositoryResource):
             .first()
         )
 
-        schema = TestCaseSummarySchema(strict=True)
+        schema = TestCaseSummarySchema()
         return self.respond_with_schema(schema, testcase)

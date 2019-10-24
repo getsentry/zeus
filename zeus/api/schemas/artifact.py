@@ -31,6 +31,6 @@ class ArtifactSchema(Schema):
             obj.id,
         )
 
-    @post_load
-    def build_instance(self, data):
+    @post_load(pass_many=False)
+    def build_instance(self, data, **kwargs):
         return Artifact(**data)

@@ -8,7 +8,7 @@ from zeus.models import Author, Build, Email, Repository, User
 from .base import Resource
 from ..schemas import BuildSchema
 
-builds_schema = BuildSchema(many=True, strict=True)
+builds_schema = BuildSchema(many=True)
 
 
 class BuildIndexResource(Resource):

@@ -55,7 +55,5 @@ class RevisionTestsResource(BaseRevisionResource):
             TestCase.name.asc(),
         )
 
-        schema = AggregateTestCaseSummarySchema(
-            many=True, strict=True, exclude=("build",)
-        )
+        schema = AggregateTestCaseSummarySchema(many=True, exclude=("build",))
         return self.paginate_with_schema(schema, query)

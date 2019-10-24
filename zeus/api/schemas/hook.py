@@ -12,10 +12,10 @@ from zeus.providers import InvalidProvider, get_provider, VALID_PROVIDER_NAMES
 
 
 class HookConfigField(fields.Field):
-    def _serialize(self, value, attr, obj):
+    def _serialize(self, value, attr, obj, **kwargs):
         return dict(value) if value else {}
 
-    def _deserialize(self, value, attr, data):
+    def _deserialize(self, value, attr, data, **kwargs):
         provider_name = data.get("provider")
         if provider_name:
             try:
@@ -44,8 +44,8 @@ class HookSchema(Schema):
     created_at = fields.DateTime(attribute="date_created", dump_only=True)
     config = HookConfigField()
 
-    @post_load
-    def make_hook(self, data):
+    @post_load(pass_many=False)
+    def make_hook(self, data, **kwargs):
         if self.context.get("hook"):
             hook = self.context["hook"]
             for key, value in data.items():
@@ -69,4 +69,4 @@ class HookSchema(Schema):
 
     def get_provider_name(self, obj):
         provider_cls = get_provider(obj.provider)
-        return provider_cls.get_name(obj.config)
+        return provider_cls.get_name(obj.config or {})

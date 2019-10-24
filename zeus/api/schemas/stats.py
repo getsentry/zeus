@@ -35,7 +35,7 @@ class StatsSchema(Schema):
     bundle = fields.Nested(BundleStatsSchema(), dump_only=True)
 
     @pre_dump
-    def process_stats(self, data):
+    def process_stats(self, data, **kwargs):
         result = defaultdict(lambda: defaultdict(int))
         for stat in data:
             bits = stat.name.split(".", 1)

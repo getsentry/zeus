@@ -50,7 +50,5 @@ class RepositoryTestHistoryResource(BaseRepositoryResource):
             TestCase.name.asc(),
         )
 
-        schema = AggregateTestCaseSummarySchema(
-            many=True, strict=True, context={"repo": repo}
-        )
+        schema = AggregateTestCaseSummarySchema(many=True, context={"repo": repo})
         return self.paginate_with_schema(schema, query)

@@ -6,7 +6,7 @@ from zeus.models import ItemOption
 from .base import Resource
 from ..schemas import UserSchema
 
-user_schema = UserSchema(strict=True)
+user_schema = UserSchema()
 
 
 class UserDetailsResource(Resource):
@@ -39,10 +39,7 @@ class UserDetailsResource(Resource):
             raise NotImplementedError
 
         result = self.schema_from_request(user_schema, partial=True)
-        if result.errors:
-            return self.respond(result.errors, 403)
-
-        for name, values in result.data.get("options", {}).items():
+        for name, values in result.get("options", {}).items():
             for subname, value in values.items():
                 create_or_update(
                     ItemOption,

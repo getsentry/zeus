@@ -17,9 +17,7 @@ class RepositoryDetailsResource(BaseRepositoryResource):
         """
         Return a repository.
         """
-        schema = RepositorySchema(
-            strict=True, context={"user": auth.get_current_user()}
-        )
+        schema = RepositorySchema(context={"user": auth.get_current_user()})
         return self.respond_with_schema(schema, repo)
 
     def put(self, repo: Repository):
@@ -27,13 +25,9 @@ class RepositoryDetailsResource(BaseRepositoryResource):
         Return a repository.
         """
         schema = RepositorySchema(
-            strict=True,
-            partial=True,
-            context={"repository": repo, "user": auth.get_current_user()},
+            partial=True, context={"repository": repo, "user": auth.get_current_user()}
         )
-        result = self.schema_from_request(schema)
-        if result.errors:
-            return self.respond(result.errors, 403)
+        self.schema_from_request(schema)
 
         if db.session.is_modified(repo):
             db.session.add(repo)

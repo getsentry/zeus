@@ -8,8 +8,8 @@ from zeus.models import Job, TestCase
 from .base_job import BaseJobResource
 from ..schemas import TestCaseSummarySchema
 
-testcase_schema = TestCaseSummarySchema(strict=True, exclude=["job"])
-testcases_schema = TestCaseSummarySchema(many=True, strict=True, exclude=["job"])
+testcase_schema = TestCaseSummarySchema(exclude=["job"])
+testcases_schema = TestCaseSummarySchema(many=True, exclude=["job"])
 
 
 class JobTestsResource(BaseJobResource):
@@ -40,13 +40,10 @@ class JobTestsResource(BaseJobResource):
         Create or overwrite a test. Generally used for streaming test results one at a time.
         """
         result = self.schema_from_request(testcase_schema)
-        if result.errors:
-            return self.respond(result.errors, 403)
-
         try:
             with db.session.begin_nested():
                 test = TestCase(
-                    repository_id=job.repository_id, job_id=job.id, **result.data
+                    repository_id=job.repository_id, job_id=job.id, **result
                 )
                 db.session.add(test)
             status = 201
@@ -54,10 +51,10 @@ class JobTestsResource(BaseJobResource):
             test = TestCase.query.filter(
                 TestCase.repository_id == job.repository_id,
                 TestCase.job_id == job.id,
-                TestCase.name == result.data["name"],
+                TestCase.name == result["name"],
             ).first()
             assert test
-            for key, value in result.data.items():
+            for key, value in result.items():
                 if getattr(test, key) != value:
                     setattr(test, key, value)
             if db.session.is_modified(test):

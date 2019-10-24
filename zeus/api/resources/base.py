@@ -1,4 +1,4 @@
-from marshmallow import Schema
+from marshmallow import Schema, ValidationError
 from flask import current_app, jsonify, request, Response
 from flask.views import View
 from requests.exceptions import ConnectionError
@@ -66,6 +66,9 @@ class Resource(View):
                 resp.headers["X-Stream-Token"] = auth.generate_token(tenant)
             return resp
 
+        except ValidationError as e:
+            return self.respond(e.messages, 403)
+
         except ConnectionError as exc:
             current_app.logger.exception("failed to handle api request")
             return self.respond(
@@ -94,11 +97,12 @@ class Resource(View):
         return schema.load(request.get_json() or request.form, partial=partial)
 
     def respond_with_schema(self, schema: Schema, value, status: int = 200) -> Response:
-        result = schema.dump(value)
-        if result.errors:
+        try:
+            schema.validate(value)
+        except ValidationError:
             return self.error("invalid schema supplied")
-
-        return self.respond(result.data, status)
+        result = schema.dump(value)
+        return self.respond(result, status)
 
     def build_base_url(self, without=["page"]):
         querystring = u"&".join(

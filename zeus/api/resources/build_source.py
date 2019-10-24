@@ -4,7 +4,7 @@ from zeus.models import Build, Source
 from .base_build import BaseBuildResource
 from ..schemas import SourceSchema
 
-source_schema = SourceSchema(strict=True)
+source_schema = SourceSchema()
 
 
 class BuildSourceResource(BaseBuildResource):

@@ -8,7 +8,7 @@ from zeus.utils.builds import fetch_build_for_revision
 from .base_revision import BaseRevisionResource
 from ..schemas import StyleViolationSchema
 
-styleviolation_schema = StyleViolationSchema(many=True, strict=True)
+styleviolation_schema = StyleViolationSchema(many=True)
 
 
 class RevisionStyleViolationsResource(BaseRevisionResource):
