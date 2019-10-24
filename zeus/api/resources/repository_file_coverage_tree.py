@@ -9,7 +9,7 @@ from ..client import api_client
 from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema
 
-build_schema = BuildSchema(strict=True, exclude=["repository"])
+build_schema = BuildSchema(exclude=["repository"])
 
 
 class RepositoryFileCoverageTreeResource(BaseRepositoryResource):
@@ -39,5 +39,5 @@ class RepositoryFileCoverageTreeResource(BaseRepositoryResource):
 
         response = api_client.get(path, request=request)
         data = json.loads(response.data)
-        data["build"] = build_schema.dump(latest_build).data
+        data["build"] = build_schema.dump(latest_build)
         return self.respond(data)

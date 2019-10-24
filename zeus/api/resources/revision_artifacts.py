@@ -12,7 +12,7 @@ class ArtifactWithJobSchema(ArtifactSchema):
     job = fields.Nested(JobSchema(), dump_only=True, required=False)
 
 
-artifacts_schema = ArtifactWithJobSchema(strict=True, many=True)
+artifacts_schema = ArtifactWithJobSchema(many=True)
 
 
 class RevisionArtifactsResource(BaseRevisionResource):

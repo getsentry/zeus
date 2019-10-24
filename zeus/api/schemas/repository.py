@@ -29,7 +29,7 @@ class RepositorySchema(Schema):
     permissions = fields.Nested(PermissionSchema, allow_none=True, dump_only=True)
 
     @pre_dump(pass_many=True)
-    def process_permission(self, data, many):
+    def process_permission(self, data, many, **kwargs):
         user = self.context.get("user")
         if not user:
             return data
@@ -57,7 +57,7 @@ class RepositorySchema(Schema):
         return data
 
     @pre_dump(pass_many=True)
-    def process_latest_build(self, data, many):
+    def process_latest_build(self, data, many, **kwargs):
         if "latest_build" not in self.exclude:
             if many:
                 latest_builds = get_latest_builds(data, Result.passed)
@@ -69,7 +69,7 @@ class RepositorySchema(Schema):
         return data
 
     @post_load
-    def make_instance(self, data):
+    def make_instance(self, data, **kwargs):
         if self.context.get("repository"):
             obj = self.context["repository"]
             for key, value in data.items():

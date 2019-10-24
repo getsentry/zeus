@@ -13,13 +13,13 @@ class EnumField(Field):
 
         Field.__init__(self, *args, **kwargs)
 
-    def _serialize(self, value, attr, obj):
+    def _serialize(self, value, attr, obj, **kwargs):
         if value is None:
             return None
 
         return value.name
 
-    def _deserialize(self, value, attr, data):
+    def _deserialize(self, value, attr, data, **kwargs):
         if value is None:
             return None
 

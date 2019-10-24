@@ -17,7 +17,7 @@ class ChangeRequestWithBuildSchema(ChangeRequestSchema):
     )
 
     @pre_dump(pass_many=True)
-    def get_latest_build(self, results, many):
+    def get_latest_build(self, results, many, **kwargs):
         if results:
             builds = dict(
                 fetch_builds_for_revisions(
@@ -79,5 +79,5 @@ class ChangeRequestIndexResource(Resource):
                 return self.respond([])
             query = query.filter(ChangeRequest.repository_id == repo.id)
 
-        schema = ChangeRequestWithBuildSchema(many=True, strict=True)
+        schema = ChangeRequestWithBuildSchema(many=True)
         return self.paginate_with_schema(schema, query)

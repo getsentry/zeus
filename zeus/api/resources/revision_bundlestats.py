@@ -7,7 +7,7 @@ from zeus.utils.builds import fetch_build_for_revision
 from .base_revision import BaseRevisionResource
 from ..schemas import BundleSchema
 
-bundle_schema = BundleSchema(many=True, strict=True)
+bundle_schema = BundleSchema(many=True)
 
 
 class RevisionBundleStatsResource(BaseRevisionResource):

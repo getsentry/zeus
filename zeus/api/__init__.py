@@ -47,10 +47,6 @@ app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/tests", r.RepositoryTestsResource
 )
 app.add_resource(
-    "/repos/<provider>/<owner_name>/<repo_name>/tests-by-job",
-    r.RepositoryTestsByJobResource,
-)
-app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/test-tree", r.RepositoryTestTreeResource
 )
 app.add_resource(

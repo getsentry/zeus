@@ -5,8 +5,8 @@ from zeus.models import Hook, Repository
 from .base_repository import BaseRepositoryResource
 from ..schemas import HookSchema
 
-hook_schema = HookSchema(strict=True)
-hooks_schema = HookSchema(many=True, strict=True)
+hook_schema = HookSchema()
+hooks_schema = HookSchema(many=True)
 
 
 class RepositoryHooksResource(BaseRepositoryResource):
@@ -34,11 +34,7 @@ class RepositoryHooksResource(BaseRepositoryResource):
         """
         Create a new hook.
         """
-        result = self.schema_from_request(hook_schema)
-        if result.errors:
-            return self.respond(result.errors, 403)
-
-        hook = result.data
+        hook = self.schema_from_request(hook_schema)
         hook.repository = repo
         db.session.add(hook)
         db.session.commit()

@@ -10,7 +10,7 @@ class UserOptionsSchema(Schema):
     mail = fields.Nested(MailOptionsSchema)
 
     @pre_dump
-    def process_options(self, data):
+    def process_options(self, data, **kwargs):
         result = defaultdict(lambda: defaultdict(int))
         result["mail"]["notify_author"] = "1"
         for option in data:

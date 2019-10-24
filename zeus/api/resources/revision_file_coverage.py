@@ -7,7 +7,7 @@ from zeus.utils.builds import fetch_build_for_revision
 from .base_revision import BaseRevisionResource
 from ..schemas import FileCoverageSchema
 
-filecoverage_schema = FileCoverageSchema(many=True, strict=True)
+filecoverage_schema = FileCoverageSchema(many=True)
 
 
 class RevisionFileCoverageResource(BaseRevisionResource):

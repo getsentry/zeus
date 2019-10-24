@@ -15,7 +15,7 @@ class ChangeRequestWithBuildSchema(ChangeRequestSchema):
     )
 
     @pre_dump(pass_many=True)
-    def get_latest_build(self, results, many):
+    def get_latest_build(self, results, many, **kwargs):
         if results:
             builds = dict(
                 fetch_builds_for_revisions(
@@ -35,12 +35,8 @@ class RepositoryChangeRequestsResource(BaseRepositoryResource):
         """
         Create a new change request.
         """
-        schema = ChangeRequestCreateSchema(strict=True, context={"repository": repo})
-        result = self.schema_from_request(schema)
-        if result.errors:
-            return self.respond(result.errors, 403)
-
-        cr = result.data
+        schema = ChangeRequestCreateSchema(context={"repository": repo})
+        cr = self.schema_from_request(schema)
         cr.repository = repo
 
         try:
@@ -52,5 +48,5 @@ class RepositoryChangeRequestsResource(BaseRepositoryResource):
             db.session.rollback()
             return self.respond(status=422)
 
-        schema = ChangeRequestSchema(strict=True)
+        schema = ChangeRequestSchema()
         return self.respond_with_schema(schema, cr, status=201)

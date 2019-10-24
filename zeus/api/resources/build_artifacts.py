@@ -13,7 +13,7 @@ class ArtifactWithJobSchema(ArtifactSchema):
     )
 
 
-artifacts_schema = ArtifactWithJobSchema(strict=True, many=True)
+artifacts_schema = ArtifactWithJobSchema(many=True)
 
 
 class BuildArtifactsResource(BaseBuildResource):

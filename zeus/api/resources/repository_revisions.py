@@ -17,7 +17,7 @@ class RevisionWithBuildSchema(RevisionSchema):
     )
 
     @pre_dump(pass_many=True)
-    def get_latest_build(self, results, many):
+    def get_latest_build(self, results, many, **kwargs):
         if results:
             builds = dict(fetch_builds_for_revisions(results))
             for item in results:
@@ -25,7 +25,7 @@ class RevisionWithBuildSchema(RevisionSchema):
         return results
 
 
-revisions_schema = RevisionWithBuildSchema(many=True, strict=True)
+revisions_schema = RevisionWithBuildSchema(many=True)
 
 
 class RepositoryRevisionsResource(BaseRepositoryResource):

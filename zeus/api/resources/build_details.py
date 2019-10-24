@@ -7,7 +7,7 @@ from zeus.pubsub.utils import publish
 from .base_build import BaseBuildResource
 from ..schemas import BuildSchema
 
-build_schema = BuildSchema(strict=True)
+build_schema = BuildSchema()
 
 
 class BuildDetailsResource(BaseBuildResource):
@@ -30,10 +30,8 @@ class BuildDetailsResource(BaseBuildResource):
         Update a build.
         """
         result = self.schema_from_request(build_schema, partial=True)
-        if result.errors:
-            return self.respond(result.errors, 403)
 
-        for key, value in result.data.items():
+        for key, value in result.items():
             if getattr(build, key) != value:
                 setattr(build, key, value)
         if db.session.is_modified(build):
@@ -41,8 +39,5 @@ class BuildDetailsResource(BaseBuildResource):
             db.session.commit()
 
         result = build_schema.dump(build)
-        if result.errors:
-            return self.error("invalid schema supplied")
-
-        publish("builds", "build.update", result.data)
-        return self.respond(result.data, 200)
+        publish("builds", "build.update", result)
+        return self.respond(result, 200)

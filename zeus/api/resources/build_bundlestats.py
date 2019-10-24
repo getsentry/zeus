@@ -6,7 +6,7 @@ from zeus.models import Job, Build, Bundle
 from .base_build import BaseBuildResource
 from ..schemas import BundleSchema
 
-bundle_schema = BundleSchema(many=True, strict=True)
+bundle_schema = BundleSchema(many=True)
 
 
 class BuildBundleStatsResource(BaseBuildResource):

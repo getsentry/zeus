@@ -19,7 +19,5 @@ class RepositoryIndexResource(Resource):
             .order_by(Repository.owner_name.asc(), Repository.name.asc())
             .limit(100)
         )
-        schema = RepositorySchema(
-            many=True, strict=True, context={"user": auth.get_current_user()}
-        )
+        schema = RepositorySchema(many=True, context={"user": auth.get_current_user()})
         return self.paginate_with_schema(schema, query)

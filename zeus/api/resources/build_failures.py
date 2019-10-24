@@ -7,7 +7,7 @@ from zeus.models import Job, Build, FailureReason
 from .base_build import BaseBuildResource
 from ..schemas import AggregateFailureReasonSchema
 
-failurereasons_schema = AggregateFailureReasonSchema(many=True, strict=True)
+failurereasons_schema = AggregateFailureReasonSchema(many=True)
 
 
 class BuildFailuresResource(BaseBuildResource):

@@ -14,7 +14,7 @@ from zeus.tasks import aggregate_build_stats_for_job
 
 from .base import cli
 
-build_schema = BuildSchema(strict=True)
+build_schema = BuildSchema()
 
 repo_names = ("sentry", "zeus")
 
@@ -181,8 +181,8 @@ def mock_build(
 
     build = factories.BuildFactory.create(source=source, travis=True)
 
-    result = build_schema.dump(build)
-    publish("builds", "build.create", result.data)
+    data = build_schema.dump(build)
+    publish("builds", "build.create", data)
     click.echo("Created {!r}".format(build))
 
     # we need to find some filenames for the repo
@@ -234,8 +234,8 @@ def mock_build(
 
         aggregate_build_stats_for_job(job_id=job.id)
 
-        result = build_schema.dump(build)
-        publish("builds", "build.update", result.data)
+        data = build_schema.dump(build)
+        publish("builds", "build.update", data)
         click.echo("Created {!r}".format(job))
 
     db.session.commit()

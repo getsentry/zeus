@@ -8,7 +8,7 @@ from zeus.utils.trees import build_tree
 from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema
 
-build_schema = BuildSchema(strict=True, exclude=["repository"])
+build_schema = BuildSchema(exclude=["repository"])
 
 
 class RepositoryTestTreeResource(BaseRepositoryResource):
@@ -84,7 +84,7 @@ class RepositoryTestTreeResource(BaseRepositoryResource):
             trail = []
 
         return {
-            "build": build_schema.dump(latest_build).data,
+            "build": build_schema.dump(latest_build),
             "entries": results,
             "trail": trail,
         }
