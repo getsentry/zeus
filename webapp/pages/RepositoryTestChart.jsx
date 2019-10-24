@@ -18,7 +18,6 @@ export default class RepositoryTestChart extends AsyncPage {
   }
 
   renderBody() {
-    console.log(this.state);
     return (
       <Section>
         <TestChart testList={this.state.testList} />
