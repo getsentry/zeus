@@ -26,6 +26,7 @@ import RepositorySettingsLayout from './pages/RepositorySettingsLayout';
 import RepositorySettings from './pages/RepositorySettings';
 import RepositoryStats from './pages/RepositoryStats';
 import RepositoryTests from './pages/RepositoryTests';
+import RepositoryTestChart from './pages/RepositoryTestChart';
 import RepositoryTestList from './pages/RepositoryTestList';
 import RepositoryTestTree from './pages/RepositoryTestTree';
 import RevisionArtifacts from './pages/RevisionArtifacts';
@@ -96,6 +97,7 @@ export default (
       <Route path="tests" component={RepositoryTests}>
         <IndexRoute component={RepositoryTestTree} />
         <Route path="all" component={RepositoryTestList} />
+        <Route path="time" component={RepositoryTestChart} />
       </Route>
       <Route path="builds/:buildNumber" component={BuildDetails}>
         <IndexRoute component={BuildOverview} />
