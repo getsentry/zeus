@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: worker
   minReplicas: 2
-  maxReplicas: 10
+  maxReplicas: 14
   targetCPUUtilizationPercentage: 60
 ---
 apiVersion: extensions/v1beta1
@@ -123,9 +123,9 @@ spec:
               mountPath: '/var/run/secret/cloud.google.com'
           resources:
             requests:
-              cpu: 4
+              cpu: 2
             limits:
-              cpu: 4
+              cpu: 2
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.09
           command:
