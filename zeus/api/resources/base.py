@@ -7,6 +7,7 @@ from urllib.parse import quote
 
 from zeus import auth
 from zeus.exceptions import ApiUnauthorized
+from zeus.utils.sentry import span
 
 from ..authentication import ApiTokenAuthentication, SessionAuthentication
 
@@ -25,9 +26,11 @@ class ApiHelpers(object):
         resp.status_code = status
         return resp
 
+    @span("schema.load")
     def schema_from_request(self, schema: Schema, partial=False):
         return schema.load(request.get_json() or request.form, partial=partial)
 
+    @span("schema.dump")
     def respond_with_schema(self, schema: Schema, value, status: int = 200) -> Response:
         try:
             schema.validate(value)
