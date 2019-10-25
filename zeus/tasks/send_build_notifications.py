@@ -1,4 +1,5 @@
 from datetime import timedelta
+from flask import current_app
 from uuid import UUID
 
 from zeus import auth
@@ -24,12 +25,21 @@ def send_build_notifications(build_id: UUID, time_limit=30):
     # double check that the build is still finished and only send when
     # its failing
     if build.result != Result.failed or build.status != Status.finished:
+        current_app.logger.warn(
+            "send_build_notifications: build %s not marked as failed", build_id
+        )
         return
 
     if build.date_finished < timezone.now() - timedelta(days=1):
+        current_app.logger.warn(
+            "send_build_notifications: build %s fimished a long time ago", build_id
+        )
         return
 
     if build.date_started < timezone.now() - timedelta(days=7):
+        current_app.logger.warn(
+            "send_build_notifications: build %s started a long time ago", build_id
+        )
         return
 
     email.send_email_notification(build=build)
