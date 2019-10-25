@@ -15,7 +15,13 @@ export default class RevisionCoverage extends AsyncPage {
   getEndpoints() {
     let {repo} = this.context;
     let {sha} = this.props.params;
-    return [['coverage', `/repos/${repo.full_name}/revisions/${sha}/file-coverage`]];
+    return [
+      [
+        'coverage',
+        `/repos/${repo.full_name}/revisions/${sha}/file-coverage`,
+        {query: this.props.location.query}
+      ]
+    ];
   }
 
   renderBody() {
