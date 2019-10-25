@@ -92,7 +92,7 @@ spec:
             - name: ALLOWED_ORIGINS
               value: 'updates.zeus.ci,zeus.ci'
             - name: ROLE
-              value: worker
+              value: pubsub
             - name: CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
