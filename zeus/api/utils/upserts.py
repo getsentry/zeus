@@ -58,7 +58,7 @@ def upsert_build(hook: Hook, external_id: str, data: dict = None) -> Response:
         ).first()
 
         if build:
-            for key in ("ref",):
+            for key in ("ref", "url"):
                 if key in json:
                     del json[key]
             return client.put(
