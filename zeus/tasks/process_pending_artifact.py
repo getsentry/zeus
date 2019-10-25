@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
 from zeus.config import celery, db
-from zeus.constants import Status
+from zeus.constants import Result, Status
 from zeus.models import Artifact, Build, Job, PendingArtifact
 
 from .process_artifact import process_artifact
@@ -73,7 +73,7 @@ def process_pending_artifact(pending_artifact_id, **kwargs):
     )
     db.session.add(artifact)
 
-    if job.status == Status.finished:
+    if job.status == Status.finished and job.result != Result.aborted:
         job.status = Status.collecting_results
         db.session.add(job)
 
