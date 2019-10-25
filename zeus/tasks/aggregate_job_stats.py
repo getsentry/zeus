@@ -305,6 +305,18 @@ def aggregate_build_stats(build_id: UUID):
         else:
             build.date_finished = None
 
+        pending_artifact_ids = list(
+            db.session.query(PendingArtifact.id).filter(
+                PendingArtifact.repository_id == build.repository_id,
+                PendingArtifact.provider == build.provider,
+                PendingArtifact.external_build_id == build.external_id,
+            )
+        )
+        if pending_artifact_ids and is_finished:
+            is_finished = False
+            for pa_id in pending_artifact_ids:
+                process_pending_artifact(pending_artifact_id=pa_id)
+
         # if theres any failure, the build failed
         if any(j.result is Result.failed for j in job_list if not j.allow_failure):
             build.result = Result.failed

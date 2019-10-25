@@ -14,8 +14,9 @@ def cleanup_pending_artifacts():
         .limit(1000)
     )
     for result in queryset:
-        current_app.logger.warning("deleting expired PendingArtifact %s", result.id)
-        if result.file:
-            result.file.delete()
-        db.session.delete(result)
+        with db.session.begin_nested():
+            current_app.logger.warning("deleting expired PendingArtifact %s", result.id)
+            if result.file:
+                result.file.delete()
+            db.session.delete(result)
         db.session.commit()

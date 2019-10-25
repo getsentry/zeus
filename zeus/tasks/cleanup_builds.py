@@ -4,15 +4,32 @@ from sqlalchemy import or_
 
 from zeus.config import celery, db
 from zeus.constants import Result, Status
-from zeus.models import Artifact, Build, Job
+from zeus.models import Artifact, Build, Job, PendingArtifact
 from zeus.utils import timezone
 
 from .aggregate_job_stats import aggregate_build_stats
 from .process_artifact import process_artifact
+from .process_pending_artifact import process_pending_artifact
 
 
 @celery.task(name="zeus.cleanup_builds", time_limit=300)
 def cleanup_builds():
+    # find any pending artifacts which seemingly are stuck (not enqueued)
+    queryset = (
+        db.session.query(PendingArtifact.id)
+        .filter(
+            Build.external_id == PendingArtifact.external_build_id,
+            Build.provider == PendingArtifact.provider,
+            Build.repository_id == PendingArtifact.repository_id,
+            Build.status == Status.finished,
+        )
+        .limit(100)
+    )
+
+    for result in queryset:
+        current_app.logger.warning("cleanup: process_pending_artifact  %s", result.id)
+        process_pending_artifact(pending_artifact_id=result.id)
+
     # find any artifacts which seemingly are stuck (not enqueued)
     queryset = (
         Artifact.query.unrestricted_unsafe()
