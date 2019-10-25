@@ -62,6 +62,10 @@ app.add_resource(
     r.RevisionFileCoverageResource,
 )
 app.add_resource(
+    "/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/file-coverage-tree",
+    r.RevisionFileCoverageTreeResource,
+)
+app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/artifacts",
     r.RevisionArtifactsResource,
 )

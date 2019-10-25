@@ -9,6 +9,8 @@ const FIXTURE = {
       is_leaf: false,
       lines_covered: 1,
       lines_uncovered: 0,
+      diff_lines_covered: 0,
+      diff_lines_uncovered: 0,
       name: 'conftest.py',
       path: 'conftest.py'
     },
@@ -16,6 +18,8 @@ const FIXTURE = {
       is_leaf: false,
       lines_covered: 0,
       lines_uncovered: 8,
+      diff_lines_covered: 0,
+      diff_lines_uncovered: 8,
       name: 'setup.py',
       path: 'setup.py'
     },
@@ -23,6 +27,8 @@ const FIXTURE = {
       is_leaf: false,
       lines_covered: 1528,
       lines_uncovered: 2,
+      diff_lines_covered: 1528,
+      diff_lines_uncovered: 2,
       name: 'tests/zeus',
       path: 'tests/zeus'
     },
@@ -30,6 +36,8 @@ const FIXTURE = {
       is_leaf: false,
       lines_covered: 125,
       lines_uncovered: 1715,
+      diff_lines_covered: 50,
+      diff_lines_uncovered: 100,
       name: 'webapp',
       path: 'webapp'
     },
@@ -37,6 +45,8 @@ const FIXTURE = {
       is_leaf: false,
       lines_covered: 4473,
       lines_uncovered: 1335,
+      diff_lines_covered: 50,
+      diff_lines_uncovered: 100,
       name: 'zeus',
       path: 'zeus'
     }

@@ -146,12 +146,23 @@ class CoveredTree extends Component {
         <StyledHeader>
           <Column />
           <Column width={250} textAlign="right">
-            Lines
+            Diff
+          </Column>
+          <Column width={250} textAlign="right">
+            Overall
           </Column>
         </StyledHeader>
         {result.entries.map(entry => {
           let totalLines = entry.lines_covered + entry.lines_uncovered;
-          let pctCovered = parseInt((entry.lines_covered / totalLines) * 100, 10);
+          let diffTotalLines = entry.diff_lines_covered + entry.diff_lines_uncovered;
+          let pctCovered = entry.lines_covered
+            ? parseInt((entry.lines_covered / totalLines) * 100, 10)
+            : 0;
+          let diffPctCovered = diffTotalLines
+            ? entry.diff_lines_covered
+              ? parseInt((entry.diff_lines_covered / diffTotalLines) * 100, 10)
+              : 0
+            : null;
           let className;
           if (pctCovered >= 100) {
             className = 'good';
@@ -170,6 +181,12 @@ class CoveredTree extends Component {
                     {entry.name}
                   </Link>
                 )}
+              </StyledColumn>
+              <StyledColumn width={120} textAlign="right">
+                {diffPctCovered !== null ? `${diffPctCovered}%` : '\u00A0'}
+              </StyledColumn>
+              <StyledColumn width={120} textAlign="right">
+                {`${entry.diff_lines_covered.toLocaleString()} / ${diffTotalLines}`}
               </StyledColumn>
               <StyledColumn
                 width={120}
@@ -200,12 +217,19 @@ export default class BuildCoverage extends Component {
     let {result} = this.props;
     let path = this.props.location.pathname;
     let linesCovered = 0,
-      linesTotal = 0;
+      linesTotal = 0,
+      diffLinesCovered = 0,
+      diffLinesTotal = 0;
     result.entries.forEach(e => {
       linesCovered += e.lines_covered;
       linesTotal += e.lines_covered + e.lines_uncovered;
+      diffLinesCovered += e.diff_lines_covered;
+      diffLinesTotal += e.diff_lines_covered + e.diff_lines_uncovered;
     });
     let pctCovered = parseInt((linesCovered / linesTotal) * 100, 10);
+    let diffPctCovered = diffLinesTotal
+      ? parseInt((diffLinesCovered / diffLinesTotal) * 100, 10)
+      : null;
 
     return (
       <Section>
@@ -232,7 +256,14 @@ export default class BuildCoverage extends Component {
                 }/${repo.name}#${result.build.number}`}</Link>
               </p>
             )}
-            <p>{`${pctCovered}% lines covered (${linesCovered} / ${linesTotal})`}</p>
+            <p>
+              <strong>Diff:</strong>{' '}
+              {`${diffPctCovered}% lines covered (${diffLinesCovered} / ${diffLinesTotal})`}
+            </p>
+            <p>
+              <strong>Overall:</strong>{' '}
+              {`${pctCovered}% lines covered (${linesCovered} / ${linesTotal})`}
+            </p>
           </TreeSummary>
         </TreeWrapper>
         {result.is_leaf ? (
