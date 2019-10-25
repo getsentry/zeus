@@ -84,7 +84,7 @@ window.TestStubs = {
     id: 'aa7097a2-f2fb-11e7-a565-0a580a28057d',
     label: 'fix: Remove break-word behavior on coverage',
     number: 650,
-    provider: 'travis-ci',
+    provider: 'travis',
     result: 'passed',
     source: TestStubs.Source(),
     started_at: '2018-01-06T16:07:16.957093+00:00',

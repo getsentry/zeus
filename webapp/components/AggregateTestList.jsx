@@ -5,55 +5,14 @@ import {Link} from 'react-router';
 import styled from 'styled-components';
 import ExpandIcon from 'react-icons/lib/md/expand-more';
 import CollapseIcon from 'react-icons/lib/md/expand-less';
-
-import {Client} from '../api';
+import HistoryIcon from 'react-icons/lib/md/history';
 
 import Collapsable from './Collapsable';
 import {AggregateDuration} from './ObjectDuration';
 import ObjectResult from './ObjectResult';
 import ResultGridRow from './ResultGridRow';
 import {ResultGrid, Column, Header} from './ResultGrid';
-
-class TestDetails extends Component {
-  static propTypes = {
-    test: PropTypes.object.isRequired,
-    build: PropTypes.object.isRequired
-  };
-
-  constructor(props, context) {
-    super(props, context);
-    this.state = {loading: true};
-    this.api = new Client();
-  }
-
-  componentDidMount() {
-    let {test} = this.props;
-    this.api.request(`/tests/${test.id}`).then(testDetails => {
-      this.setState({loading: false, testDetails});
-    });
-  }
-
-  componentWillUnmount() {
-    this.api.clear();
-  }
-
-  // TODO(dcramer): make this more useful
-  render() {
-    let {build} = this.props;
-    if (this.state.loading) return <TestDetailsWrapper>(loading)</TestDetailsWrapper>;
-    let {testDetails} = this.state;
-    return (
-      <TestDetailsWrapper>
-        <h5>
-          <ObjectResult data={testDetails} size={12} />#{build.number}.
-          {testDetails.job.number}
-          {testDetails.job.label && ` - ${testDetails.job.label}`}
-        </h5>
-        <pre>{testDetails.message || <em>no output captured</em>}</pre>
-      </TestDetailsWrapper>
-    );
-  }
-}
+import TestDetails from './TestDetails';
 
 class TestListItem extends Component {
   static propTypes = {
@@ -103,6 +62,11 @@ class TestListItem extends Component {
           <Box width={90} style={{textAlign: 'right'}}>
             <AggregateDuration data={test.runs} />
           </Box>
+          <Box width={40} style={{textAlign: 'right'}}>
+            <Link to={`/${repo.full_name}/tests/${test.hash}`}>
+              <HistoryIcon size={20} />
+            </Link>
+          </Box>
         </Flex>
         {this.state.expanded && (
           <div>
@@ -138,6 +102,7 @@ export default class AggregateTestList extends Component {
           <Column width={90} textAlign="right">
             Duration
           </Column>
+          <Column width={40} textAlign="right" />
         </Header>
         <Collapsable
           collapsable={this.props.collapsable}
@@ -158,28 +123,6 @@ export default class AggregateTestList extends Component {
     );
   }
 }
-
-const TestDetailsWrapper = styled.div`
-  margin-top: 10px;
-  padding: 5px 0 0 25px;
-  color: #39364e;
-  font-size: 12px;
-  line-height: 1.4em;
-  border-top: 1px solid #eee;
-
-  pre {
-    font-size: inherit;
-    margin: 0;
-    background: #f9f9f9;
-    padding: 5px;
-    border-radius: 4px;
-  }
-
-  h5 {
-    margin-bottom: 5px;
-    font-size: 13px;
-  }
-`;
 
 const TestLink = styled.a`
   display: inline-block;

@@ -73,7 +73,7 @@ class JobFactory(ModelFactory):
         passed = factory.Trait(result=Result.passed, status=Status.finished)
         aborted = factory.Trait(result=Result.aborted, status=Status.finished)
         travis = factory.Trait(
-            provider="travis-ci",
+            provider="travis",
             external_id=factory.LazyAttribute(lambda o: str(randint(10000, 999999))),
             url=factory.LazyAttribute(
                 lambda o: "https://travis-ci.org/{}/{}/jobs/{}".format(

@@ -200,6 +200,7 @@ export default class BuildOverviewBase extends AsyncPage {
           <Section>
             <SectionHeading>Bundles</SectionHeading>
             <BundleList
+              maxVisible={3}
               build={this.context.build}
               bundleList={this.state.bundleStats}
               collapsable={true}
@@ -210,6 +211,7 @@ export default class BuildOverviewBase extends AsyncPage {
           <Section>
             <SectionHeading>Artifacts</SectionHeading>
             <ArtifactsList
+              maxVisible={5}
               build={this.context.build}
               artifacts={this.state.artifacts}
               collapsable={true}

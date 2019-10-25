@@ -21,7 +21,11 @@ export default class RevisionCoverage extends AsyncPage {
   renderBody() {
     return (
       <Section>
-        <CoverageSummary coverage={this.state.coverage} />
+        <CoverageSummary
+          coverage={this.state.coverage}
+          repo={this.context.repo}
+          build={this.props.build}
+        />
       </Section>
     );
   }

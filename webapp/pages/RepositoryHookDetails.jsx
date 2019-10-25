@@ -50,19 +50,37 @@ export default class RepositoryHookDetails extends AsyncPage {
     return `${protocol}//${hostname}${port}${secret ? hook.secret_uri : hook.public_uri}`;
   }
 
-  onChangeDomain = selected => {
+  onChangeIsRequired = e => {
+    let {params} = this.props;
+
+    let data = {
+      is_required: e.target.checked
+    };
+
+    this.api.put(`/hooks/${params.hookId}`, {data});
+  };
+
+  onChangeConfig = (key, value) => {
     let {hook} = this.state;
     let {params} = this.props;
 
     let data = {
-      ...hook,
       config: {
         ...hook.config,
-        domain: selected.value
+        [key]: value
       }
     };
 
-    this.fetchDataForEndpoint('hook', `/hooks/${params.hookId}`, {method: 'PUT', data});
+    this.api.put(
+      `/hooks/${params.hookId}`,
+      {data},
+      this.setState({
+        hook: {
+          ...hook,
+          ...data
+        }
+      })
+    );
   };
 
   renderBody() {
@@ -102,6 +120,18 @@ export default class RepositoryHookDetails extends AsyncPage {
           </Row>
           <Row>
             <Column width={200}>
+              <strong>Required?</strong>
+            </Column>
+            <Column textAlign="left">
+              <input
+                type="checkbox"
+                checked={hook.is_required}
+                onChange={this.onChangeIsRequired}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column width={200}>
               <strong>Created</strong>
             </Column>
             <Column textAlign="left">
@@ -115,12 +145,33 @@ export default class RepositoryHookDetails extends AsyncPage {
               </Column>
               <OverflowColumn textAlign="left">
                 <Select
-                  placeholder="yoyoyo"
+                  placeholder=""
                   clearable={false}
                   options={TRAVIS_DOMAIN_OPTIONS}
-                  onChange={this.onChangeDomain}
+                  onChange={({value}) => this.onChangeConfig('domain', value)}
                   value={hook.config.domain || TRAVIS_DOMAIN_OPTIONS[0]}
                 />
+              </OverflowColumn>
+            </Row>
+          )}
+          {hook.provider === 'custom' && (
+            <Row>
+              <Column width={200}>
+                <strong>Service Name</strong>
+              </Column>
+              <OverflowColumn textAlign="left">
+                <div style={{marginBottom: 5}}>
+                  <input
+                    type="text"
+                    placeholder=""
+                    onChange={e => this.onChangeConfig('name', e.target.value)}
+                    value={hook.config.name || 'custom'}
+                  />
+                </div>
+                <div style={{fontSize: '90%'}}>
+                  Enter a service name unique to this provider. It will be captured and
+                  keyed with each reported build.
+                </div>
               </OverflowColumn>
             </Row>
           )}

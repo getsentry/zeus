@@ -12,11 +12,12 @@ import PageLoadingIndicator from '../components/PageLoadingIndicator';
 export class RepositoryContext extends AsyncComponent {
   static propTypes = {
     repoList: PropTypes.arrayOf(PropTypes.object),
+    loadRepos: PropTypes.func.isRequired,
     ...AsyncComponent.propTypes
   };
 
   static childContextTypes = {
-    ...RepositoryContext.propTypes
+    repoList: PropTypes.arrayOf(PropTypes.object)
   };
 
   getChildContext() {
@@ -25,7 +26,7 @@ export class RepositoryContext extends AsyncComponent {
     };
   }
 
-  fetchData() {
+  loadData() {
     return new Promise(resolve => {
       this.props.loadRepos();
       return resolve();

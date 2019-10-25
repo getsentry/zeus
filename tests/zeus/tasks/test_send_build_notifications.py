@@ -1,12 +1,8 @@
-from zeus import auth, factories
+from zeus import factories
 from zeus.tasks import send_build_notifications
 
 
-def test_sends_failure(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
+def test_sends_failure(mocker, db_session, default_source, default_tenant):
     mock_send_email_notification = mocker.patch(
         "zeus.notifications.email.send_email_notification"
     )
@@ -19,11 +15,7 @@ def test_sends_failure(mocker, db_session, default_source):
     mock_send_email_notification.assert_called_once_with(build=build)
 
 
-def test_does_not_send_passing(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
+def test_does_not_send_passing(mocker, db_session, default_source, default_tenant):
     mock_send_email_notification = mocker.patch(
         "zeus.notifications.email.send_email_notification"
     )

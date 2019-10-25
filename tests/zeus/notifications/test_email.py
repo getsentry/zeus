@@ -1,4 +1,4 @@
-from zeus import auth, factories
+from zeus import factories
 from zeus.models import ItemOption
 from zeus.notifications.email import send_email_notification
 
@@ -10,12 +10,9 @@ def test_success(
     default_repo,
     default_repo_access,
     default_source,
+    default_tenant,
     outbox,
 ):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
     build = factories.BuildFactory(source=default_source, failed=True)
     db_session.add(build)
 
@@ -28,12 +25,14 @@ def test_success(
 
 
 def test_no_repo_access(
-    mocker, db_session, default_user, default_repo, default_source, outbox
+    mocker,
+    db_session,
+    default_tenant,
+    default_user,
+    default_repo,
+    default_source,
+    outbox,
 ):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
     build = factories.BuildFactory(source=default_source, failed=True)
     db_session.add(build)
 
@@ -49,12 +48,9 @@ def test_disabled(
     default_repo,
     default_repo_access,
     default_source,
+    default_tenant,
     outbox,
 ):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
     build = factories.BuildFactory(source=default_source, failed=True)
     db_session.add(build)
     db_session.add(

@@ -3,9 +3,6 @@
 # dependencies
 /node_modules
 
-# local venv
-/venv
-
 # testing
 /coverage
 /htmlcov

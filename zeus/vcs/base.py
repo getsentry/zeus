@@ -5,6 +5,7 @@ import re
 from collections import namedtuple
 from subprocess import Popen, PIPE
 from typing import List, Optional, Tuple
+from uuid import UUID
 
 from zeus.db.utils import create_or_update, get_or_create, try_create
 from zeus.models import Author, Repository, Revision, Source
@@ -15,6 +16,7 @@ RevisionSaveResult = namedtuple("RevisionSaveResult", ["revision", "created"])
 class RevisionResult(object):
     parents = None
     branches = None
+    repository_id = None
 
     def __init__(
         self,
@@ -26,6 +28,7 @@ class RevisionResult(object):
         committer_date=None,
         parents: Optional[List[str]] = None,
         branches: Optional[List[str]] = None,
+        repository_id: UUID = None,
     ):
         self.sha = sha
         self.message = message
@@ -37,6 +40,8 @@ class RevisionResult(object):
             self.parents = parents
         if branches is not None:
             self.branches = branches
+        if repository_id is not None:
+            self.repository_id = repository_id
 
     def __repr__(self):
         return "<%s: sha=%r author=%r subject=%r>" % (
@@ -207,7 +212,7 @@ class Vcs(object):
     def clone(self):
         raise NotImplementedError
 
-    def update(self):
+    def update(self, allow_cleanup=False):
         raise NotImplementedError
 
     def ensure(self, update_if_exists=True):

@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+
+import json
+
+with open("package.json") as fp:
+    data = json.load(fp)
+
+print(data["toolchain"]["node"])

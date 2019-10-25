@@ -65,7 +65,7 @@ def sync_repos_for_owner(
             ).delete(synchronize_session=False)
 
 
-@queue.task(max_retries=5, autoretry_for=(Exception,))
+@queue.task(max_retries=5, autoretry_for=(Exception,), time_limit=60)
 def sync_github_access(user_id: UUID):
     user = User.query.get(user_id)
     if not user:

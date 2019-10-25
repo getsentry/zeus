@@ -4,14 +4,14 @@ from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Email, Repository, Source
+from zeus.models import Author, Build, Email, Hook, Repository, Source
 from zeus.pubsub.utils import publish
 
 from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema, BuildCreateSchema
 
-build_schema = BuildSchema(strict=True)
-builds_schema = BuildSchema(many=True, strict=True, exclude=["repository"])
+build_schema = BuildSchema()
+builds_schema = BuildSchema(many=True, exclude=["repository"])
 
 
 class RepositoryBuildsResource(BaseRepositoryResource):
@@ -26,9 +26,11 @@ class RepositoryBuildsResource(BaseRepositoryResource):
 
         query = (
             Build.query.options(
-                joinedload("source"),
-                joinedload("source").joinedload("author"),
-                joinedload("source").joinedload("revision", innerjoin=True),
+                joinedload("source", innerjoin=True),
+                joinedload("source", innerjoin=True).joinedload("author"),
+                joinedload("source", innerjoin=True).joinedload(
+                    "revision", innerjoin=True
+                ),
                 subqueryload_all("stats"),
             )
             .filter(Build.repository_id == repo.id)
@@ -37,11 +39,11 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         show = request.args.get("show")
         if show == "mine":
             query = query.filter(
-                Source.author_id.in_(
+                Build.author_id.in_(
                     db.session.query(Author.id).filter(
                         Author.email.in_(
                             db.session.query(Email.email).filter(
-                                Email.user_id == user.id
+                                Email.user_id == user.id, Email.verified == True  # NOQA
                             )
                         )
                     )
@@ -54,12 +56,8 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         """
         Create a new build.
         """
-        schema = BuildCreateSchema(strict=True, context={"repository": repo})
-        result = self.schema_from_request(schema, partial=True)
-        if result.errors:
-            return self.respond(result.errors, 403)
-
-        data = result.data
+        schema = BuildCreateSchema(context={"repository": repo})
+        data = self.schema_from_request(schema, partial=True)
 
         # TODO(dcramer): only if we create a source via a patch will we need the author
         # author_data = data.pop('author')
@@ -80,8 +78,17 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             .filter(
                 Source.revision_sha == data.pop("ref"), Source.repository_id == repo.id
             )
-            .first()
+            .one_or_none()
         )
+        assert source
+
+        # we need to write/sync the required hook IDs in case they've changed
+        required_hook_ids = Hook.get_required_hook_ids(repo.id)
+        if (source.data or {}).get("required_hook_ids") != required_hook_ids:
+            if source.data is None:
+                source.data = {}
+            source.data["required_hook_ids"] = required_hook_ids
+            db.session.add(source)
 
         build = Build(repository=repo, **data)
         # TODO(dcramer): we should convert source in the schema
@@ -103,7 +110,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             db.session.rollback()
             return self.respond(status=422)
 
-        result = build_schema.dump(build)
-        assert not result.errors, "this should never happen"
-        publish("builds", "build.create", result.data)
-        return self.respond(result.data, 200)
+        build_schema.validate(build)
+        data = build_schema.dump(build)
+        publish("builds", "build.create", data)
+        return self.respond(data, 200)

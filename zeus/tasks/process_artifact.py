@@ -7,11 +7,11 @@ from zeus.constants import Result
 from zeus.models import Artifact, Job, Status
 from zeus.utils import timezone
 
-from .aggregate_job_stats import aggregate_build_stats_for_job
 
-
-@queue.task(max_retries=5, autoretry_for=(Exception,))
+@queue.task(max_retries=5, autoretry_for=(Exception,), time_limit=60)
 def process_artifact(artifact_id, manager=None, force=False, **kwargs):
+    from zeus.tasks.aggregate_job_stats import aggregate_build_stats_for_job
+
     artifact = Artifact.query.unrestricted_unsafe().get(artifact_id)
     if artifact is None:
         current_app.logger.error("Artifact %s not found", artifact_id)

@@ -6,7 +6,7 @@ from zeus.models import Artifact
 from zeus.utils import timezone
 
 
-@queue.task(name="zeus.cleanup_artifacts")
+@queue.task(name="zeus.cleanup_artifacts", time_limit=300)
 def cleanup_artifacts():
     queryset = (
         Artifact.query.unrestricted_unsafe()

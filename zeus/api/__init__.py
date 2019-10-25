@@ -5,6 +5,7 @@ app = Controller("api", __name__)
 app.add_resource("/", r.IndexResource)
 app.add_resource("/auth", r.AuthIndexResource)
 app.add_resource("/builds", r.BuildIndexResource)
+app.add_resource("/change-requests", r.ChangeRequestIndexResource)
 app.add_resource("/install", r.InstallIndexResource)
 app.add_resource("/user/token", r.UserTokenResource)
 app.add_resource("/github/orgs", r.GitHubOrganizationsResource)
@@ -44,6 +45,10 @@ app.add_resource(
 )
 app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/tests", r.RepositoryTestsResource
+)
+app.add_resource(
+    "/repos/<provider>/<owner_name>/<repo_name>/tests-by-build",
+    r.RepositoryTestsHistoryByBuildResource,
 )
 app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/test-tree", r.RepositoryTestTreeResource
@@ -136,8 +141,15 @@ app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/jobs/<job_number>/tests",
     r.JobTestsResource,
 )
+app.add_resource(
+    "/repos/<provider>/<owner_name>/<repo_name>/tests/<test_hash>",
+    r.RepositoryTestDetailsResource,
+)
+app.add_resource(
+    "/repos/<provider>/<owner_name>/<repo_name>/tests/<test_hash>/history",
+    r.RepositoryTestHistoryResource,
+)
 app.add_resource("/tests/<test_id>", r.TestDetailsResource)
 app.add_resource("/users/<user_id>", r.UserDetailsResource)
-app.add_resource("/users/<user_id>/builds", r.UserBuildsResource)
 app.add_resource("/users/<user_id>/emails", r.UserEmailsResource)
 app.add_resource("/<path:path>", r.CatchallResource)

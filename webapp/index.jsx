@@ -30,6 +30,19 @@ import './index.css';
 // import diff from 'react-syntax-highlighter/dist/languages/diff';
 // registerLanguage('diff', diff);
 
+import * as Sentry from '@sentry/browser';
+import {Tracing} from '@sentry/integrations';
+
+// TODO(dcramer): bind user context
+Sentry.init({
+  ...(window.SENTRY_CONFIG || {}),
+  integrations: [
+    new Tracing({
+      tracingOrigins: ['localhost', 'zeus.ci', /^\//]
+    })
+  ]
+});
+
 render(
   <Provider store={store}>
     <Router history={browserHistory} routes={routes} />

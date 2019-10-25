@@ -57,7 +57,7 @@ exports[`RevisionList renders 1`] = `
           "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
           "label": "fix: Remove break-word behavior on coverage",
           "number": 650,
-          "provider": "travis-ci",
+          "provider": "travis",
           "repository": undefined,
           "result": "passed",
           "source": Object {
@@ -313,7 +313,7 @@ exports[`RevisionList renders 1`] = `
                 "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                 "label": "fix: Remove break-word behavior on coverage",
                 "number": 650,
-                "provider": "travis-ci",
+                "provider": "travis",
                 "repository": undefined,
                 "result": "passed",
                 "source": Object {
@@ -377,7 +377,7 @@ exports[`RevisionList renders 1`] = `
                 "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                 "label": "fix: Remove break-word behavior on coverage",
                 "number": 650,
-                "provider": "travis-ci",
+                "provider": "travis",
                 "repository": undefined,
                 "result": "passed",
                 "source": Object {
@@ -521,7 +521,7 @@ exports[`RevisionList renders 1`] = `
                                                     "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                                     "label": "fix: Remove break-word behavior on coverage",
                                                     "number": 650,
-                                                    "provider": "travis-ci",
+                                                    "provider": "travis",
                                                     "repository": undefined,
                                                     "result": "passed",
                                                     "source": Object {
@@ -665,7 +665,7 @@ exports[`RevisionList renders 1`] = `
                                                             "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                                             "label": "fix: Remove break-word behavior on coverage",
                                                             "number": 650,
-                                                            "provider": "travis-ci",
+                                                            "provider": "travis",
                                                             "repository": undefined,
                                                             "result": "passed",
                                                             "source": Object {
@@ -795,7 +795,7 @@ exports[`RevisionList renders 1`] = `
                                           "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                           "label": "fix: Remove break-word behavior on coverage",
                                           "number": 650,
-                                          "provider": "travis-ci",
+                                          "provider": "travis",
                                           "repository": undefined,
                                           "result": "passed",
                                           "source": Object {
@@ -893,7 +893,7 @@ exports[`RevisionList renders 1`] = `
                                           "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                           "label": "fix: Remove break-word behavior on coverage",
                                           "number": 650,
-                                          "provider": "travis-ci",
+                                          "provider": "travis",
                                           "repository": undefined,
                                           "result": "passed",
                                           "source": Object {
@@ -955,7 +955,7 @@ exports[`RevisionList renders 1`] = `
                                               "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                               "label": "fix: Remove break-word behavior on coverage",
                                               "number": 650,
-                                              "provider": "travis-ci",
+                                              "provider": "travis",
                                               "repository": undefined,
                                               "result": "passed",
                                               "source": Object {
@@ -1017,7 +1017,7 @@ exports[`RevisionList renders 1`] = `
                                                 "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                                 "label": "fix: Remove break-word behavior on coverage",
                                                 "number": 650,
-                                                "provider": "travis-ci",
+                                                "provider": "travis",
                                                 "repository": undefined,
                                                 "result": "passed",
                                                 "source": Object {

@@ -2,7 +2,7 @@ from flask import current_app
 from typing import Callable, List, Mapping, Type
 
 
-def generate_task_name(func):
+def generate_task_name(func) -> str:
     return "{}.{}".format(func.__module__, func.__name__)
 
 
@@ -39,6 +39,8 @@ class Task(object):
         name: str = None,
         max_retries: int = 0,
         autoretry_for: List[Type] = (),
+        # XXX: not yet implemented
+        time_limit: int = 0,
     ):
         self.func = func
         self.name = name or generate_task_name(func)

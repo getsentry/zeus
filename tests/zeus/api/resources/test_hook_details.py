@@ -46,6 +46,7 @@ def test_hook_update(
     assert hook.repository_id == default_repo.id
     assert hook.provider == "travis"
     assert hook.config == {"domain": "api.travis-ci.org"}
+    assert hook.get_provider().get_name(default_hook.config) == "api.travis-ci.org"
 
 
 def test_cannot_update_hook_without_admin(
@@ -67,4 +68,4 @@ def test_hook_update_without_config(
     assert hook.repository_id == default_repo.id
     assert hook.provider == "travis"
     # we're ensuring that the config doesnt get overwritten by the defaults
-    assert hook.config == {"domain": "api.travis-ci.com"}
+    assert hook.config == {"domain": "api.travis-ci.org"}

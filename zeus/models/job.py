@@ -33,11 +33,15 @@ class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
     data = db.Column(JSONEncodedDict, nullable=True)
     provider = db.Column(db.String, nullable=True)
     external_id = db.Column(db.String(64), nullable=True)
+    hook_id = db.Column(
+        GUID, db.ForeignKey("hook.id", ondelete="CASCADE"), nullable=True, index=True
+    )
     url = db.Column(db.String, nullable=True)
 
     build = db.relationship(
         "Build", backref=db.backref("jobs", order_by="Job.date_created"), innerjoin=True
     )
+    hook = db.relationship("Hook")
     stats = db.relationship(
         "ItemStat",
         foreign_keys="[ItemStat.item_id]",

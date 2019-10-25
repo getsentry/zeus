@@ -6,8 +6,8 @@ from zeus.utils.builds import fetch_build_for_revision
 from .base_revision import BaseRevisionResource
 from ..schemas import JobSchema
 
-job_schema = JobSchema(strict=True)
-jobs_schema = JobSchema(many=True, strict=True)
+job_schema = JobSchema()
+jobs_schema = JobSchema(many=True)
 
 
 class RevisionJobsResource(BaseRevisionResource):
@@ -15,7 +15,7 @@ class RevisionJobsResource(BaseRevisionResource):
         """
         Return a list of jobs for a given revision.
         """
-        build = fetch_build_for_revision(revision.repository, revision)
+        build = fetch_build_for_revision(revision)
         if not build:
             return self.respond(status=404)
 

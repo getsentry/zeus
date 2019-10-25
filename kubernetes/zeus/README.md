@@ -14,7 +14,7 @@ In order, apply:
 
 Setup persistent volumes:
 
-- zeus/*-sc.yaml
+- zeus/\*-sc.yaml
 - zeus/nfs-server-pvc.yaml
 - zeus/nfs-server-rc.yaml
 - zeus/nfs-server-service.yaml
@@ -25,17 +25,17 @@ Grab the NFS IP:
 kubectl describe services nfs-server
 ```
 
-Update the ip in ``nfs-pv.yaml``, then apply the NFS disks:
+Update the ip in `nfs-pv.yaml`, then apply the NFS disks:
 
-- zeus/*-pv.yaml
-- zeus/*-pvc.yaml
+- zeus/\*-pv.yaml
+- zeus/\*-pvc.yaml
 
 Lastly, configure services:
 
-- zeus/*-service.yaml
-- zeus/*-rc.yaml
-- zeus/*-deployment.yaml
-- zeus/*-ingress.yaml
+- zeus/\*-service.yaml
+- zeus/\*-rc.yaml
+- zeus/\*-deployment.yaml
+- zeus/\*-ingress.yaml
 
 Create a cluster:
 
@@ -50,7 +50,7 @@ You'll need to create a new pool, and drain the old one:
 https://cloud.google.com/kubernetes-engine/docs/tutorials/migrating-node-pool
 
 ```bash
-gcloud container node-pools create pool-n1-standard-4 --cluster zeus --zone us-central1-b --scopes https://www.googleapis.com/auth/devstorage.read_write --machine-type=n1-standard-4 --num-nodes=1 --enable-autoupgrade --enable-autoscaling --max-nodes=20 --min-nodes=1
+gcloud container node-pools create pool-n1-highcpu-4 --cluster zeus --zone us-central1-b --scopes https://www.googleapis.com/auth/devstorage.read_write --machine-type=n1-highcpu-4 --num-nodes=1 --enable-autoupgrade --enable-autoscaling --max-nodes=20 --min-nodes=1
 ```
 
 ## Secrets

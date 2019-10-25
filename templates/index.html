@@ -1,18 +1,18 @@
 <!doctype html>
 <html lang="en">
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="theme-color" content="#000000">
-  <!--
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+        <meta content="#000000" name="theme-color">
+        <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-  <title>Zeus</title>
-  <style>
+        <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
+        <title>Zeus</title>
+        <style>
     @import url('https://fonts.googleapis.com/css?family=Rubik:400,500');
 
     body {
@@ -126,47 +126,46 @@
       flex: 1;
     }
   </style>
-</head>
+    </head>
 
-<body>
-  <noscript>
-    You need to enable JavaScript to run this app.
-  </noscript>
-  <div id="root">
-    <div class="react-loading-wrapper">
-      <div class="react-loading">
-        <p>Please wait while we load an obnoxious amount of JavaScript.</p>
-        <p>
-          <small>You may need to disable adblocking extensions to run this app.</small>
-        </p>
-        <div class="sk-cube-grid">
-          <div class="sk-cube sk-cube1"></div>
-          <div class="sk-cube sk-cube2"></div>
-          <div class="sk-cube sk-cube3"></div>
-          <div class="sk-cube sk-cube4"></div>
-          <div class="sk-cube sk-cube5"></div>
-          <div class="sk-cube sk-cube6"></div>
-          <div class="sk-cube sk-cube7"></div>
-          <div class="sk-cube sk-cube8"></div>
-          <div class="sk-cube sk-cube9"></div>
+    <body>
+        <noscript>
+            You need to enable JavaScript to run this app.
+        </noscript>
+        <div id="root">
+            <div class="react-loading-wrapper">
+                <div class="react-loading">
+                    <p>Please wait while we load an obnoxious amount of JavaScript.</p>
+                    <p>
+                        <small>You may need to disable adblocking extensions to run this app.</small>
+                    </p>
+                    <div class="sk-cube-grid">
+                        <div class="sk-cube sk-cube1"></div>
+                        <div class="sk-cube sk-cube2"></div>
+                        <div class="sk-cube sk-cube3"></div>
+                        <div class="sk-cube sk-cube4"></div>
+                        <div class="sk-cube sk-cube5"></div>
+                        <div class="sk-cube sk-cube6"></div>
+                        <div class="sk-cube sk-cube7"></div>
+                        <div class="sk-cube sk-cube8"></div>
+                        <div class="sk-cube sk-cube9"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-  <script src="https://cdn.ravenjs.com/3.17.0/raven.min.js" crossorigin="anonymous"></script>
-  <script>window.SENTRY_DSN = '{{ SENTRY_DSN_FRONTEND }}';</script>
-  <script>
-    window.ZEUS_PUBSUB_ENDPOINT = '{{ PUBSUB_ENDPOINT }}';
-    window.ZEUS_RELEASE = '{{ SENTRY_RELEASE }}'
-    window.SENTRY_DSN && Raven.config(window.SENTRY_DSN, {
-      // TODO(dcramer): make this configurable/autobind?
-      whitelistUrls: [/zeus\.ci/],
-      environment: '{{ SENTRY_ENVIRONMENT }}',
-      release: '{{ SENTRY_RELEASE }}',
-    }).install();
-  </script>
-  <script type="text/javascript" src="{{ asset_url('vendor.js') }}"></script>
-  <script type="text/javascript" src="{{ asset_url('app.js') }}"></script>
-</body>
+        <script>
+        window.SENTRY_CONFIG = {
+          dsn: '{{ SENTRY_DSN_FRONTEND }}',
+          environment: '{{ SENTRY_ENVIRONMENT }}',
+          release: '{{ SENTRY_RELEASE }}'
+        };
+        </script>
+        <script>
+          window.ZEUS_PUBSUB_ENDPOINT = '{{ PUBSUB_ENDPOINT }}';
+          window.ZEUS_RELEASE = '{{ SENTRY_RELEASE }}'
+        </script>
+        <script type="text/javascript" src="{{ asset_url('vendor.js') }}"></script>
+        <script type="text/javascript" src="{{ asset_url('app.js') }}"></script>
+    </body>
 
 </html>

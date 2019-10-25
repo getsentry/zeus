@@ -35,15 +35,22 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     data = db.Column(JSONEncodedDict, nullable=True)
     provider = db.Column(db.String, nullable=True)
     external_id = db.Column(db.String(64), nullable=True)
+    hook_id = db.Column(
+        GUID, db.ForeignKey("hook.id", ondelete="CASCADE"), nullable=True, index=True
+    )
     url = db.Column(db.String, nullable=True)
     # author_id is inherited from Source.author_id, and is denormalized to speed up
     # "my builds" type of queries
     author_id = db.Column(
-        GUID, db.ForeignKey("author.id", ondelete="SET NULL"), index=True, nullable=True
+        GUID,
+        db.ForeignKey("author.id", ondelete="SET NULL"),
+        index=False,
+        nullable=True,
     )
 
     author = db.relationship("Author")
     source = db.relationship("Source", innerjoin=True)
+    hook = db.relationship("Hook")
     stats = db.relationship(
         "ItemStat",
         foreign_keys="[ItemStat.item_id]",
@@ -59,6 +66,9 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
             "repository_id", "provider", "external_id", name="unq_build_provider"
         ),
         db.Index("idx_build_author_date", "author_id", "date_created"),
+        db.Index(
+            "idx_build_outcomes", "repository_id", "status", "result", "date_created"
+        ),
     )
     __repr__ = model_repr("number", "status", "result")
 

@@ -8,7 +8,7 @@ from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Repository, RepositoryStatus
 
 
-@queue.task(max_retries=5, autoretry_for=(Exception,))
+@queue.task(max_retries=5, autoretry_for=(Exception,), time_limit=60)
 def import_repo(repo_id, parent=None):
     auth.set_current_tenant(auth.Tenant(access={repo_id: Permission.admin}))
 
@@ -32,7 +32,7 @@ def import_repo(repo_id, parent=None):
     )
     db.session.commit()
 
-    if vcs.exists():
+    if vcs.ensure():
         vcs.update()
     else:
         vcs.clone()

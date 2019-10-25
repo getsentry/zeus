@@ -13,7 +13,7 @@ from zeus.vcs.base import InvalidPublicKey
 # TODO(dcramer): a lot of this code is shared with import_repo
 
 
-@queue.task(max_retries=5, autoretry_for=(Exception,))
+@queue.task(max_retries=5, autoretry_for=(Exception,), time_limit=300)
 def sync_repo(repo_id, max_log_passes=10, force=False):
     auth.set_current_tenant(auth.Tenant(access={repo_id: Permission.admin}))
 
@@ -50,7 +50,7 @@ def sync_repo(repo_id, max_log_passes=10, force=False):
 
     try:
         if vcs.exists():
-            vcs.update()
+            vcs.update(allow_cleanup=True)
         else:
             vcs.clone()
     except InvalidPublicKey:

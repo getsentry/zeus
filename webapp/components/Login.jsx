@@ -36,7 +36,9 @@ class Login extends Component {
       <Modal title="Login">
         <p>To continue you will need to first authenticate using your GitHub account.</p>
         <p style={{textAlign: 'center'}}>
-          <GitHubLoginButton next={idx(this.context.router, _ => _.query.next)} />
+          <GitHubLoginButton
+            next={idx(this.context.router, _ => _.location.query.next)}
+          />
         </p>
         <p style={{textAlign: 'center', marginBottom: 0}}>
           <small>

@@ -15,6 +15,7 @@ import DashboardOrWelcome from './pages/DashboardOrWelcome';
 import OwnerDetails from './pages/OwnerDetails';
 import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
+import RepositoryChangeRequestList from './pages/RepositoryChangeRequestList';
 import RepositoryFileCoverage from './pages/RepositoryFileCoverage';
 import RepositoryHooks from './pages/RepositoryHooks';
 import RepositoryHookCreate from './pages/RepositoryHookCreate';
@@ -25,6 +26,7 @@ import RepositorySettingsLayout from './pages/RepositorySettingsLayout';
 import RepositorySettings from './pages/RepositorySettings';
 import RepositoryStats from './pages/RepositoryStats';
 import RepositoryTests from './pages/RepositoryTests';
+import RepositoryTestChart from './pages/RepositoryTestChart';
 import RepositoryTestList from './pages/RepositoryTestList';
 import RepositoryTestTree from './pages/RepositoryTestTree';
 import RevisionArtifacts from './pages/RevisionArtifacts';
@@ -34,6 +36,7 @@ import RevisionDiff from './pages/RevisionDiff';
 import RevisionOverview from './pages/RevisionOverview';
 import RevisionStyleViolationList from './pages/RevisionStyleViolationList';
 import RevisionTestList from './pages/RevisionTestList';
+import TestDetails from './pages/TestDetails';
 import UserBuildList from './pages/UserBuildList';
 import Welcome from './pages/Welcome';
 
@@ -82,6 +85,7 @@ export default (
       component={requireAuth(RepositoryDetails)}>
       <IndexRoute component={RepositoryOverview} />
       <Route path="builds" component={RepositoryBuildList} />
+      <Route path="change-requests" component={RepositoryChangeRequestList} />
       <Route path="coverage" component={RepositoryFileCoverage} />
       <Route path="stats" component={RepositoryStats} />
       <Route path="settings" component={RepositorySettingsLayout}>
@@ -93,6 +97,7 @@ export default (
       <Route path="tests" component={RepositoryTests}>
         <IndexRoute component={RepositoryTestTree} />
         <Route path="all" component={RepositoryTestList} />
+        <Route path="time" component={RepositoryTestChart} />
       </Route>
       <Route path="builds/:buildNumber" component={BuildDetails}>
         <IndexRoute component={BuildOverview} />
@@ -111,6 +116,7 @@ export default (
         <Route path="tests" component={RevisionTestList} />
         <Route path="artifacts" component={RevisionArtifacts} />
       </Route>
+      <Route path="tests/:testHash" component={TestDetails} />
     </Route>
     <Route path="*" component={NotFoundError} />
   </Route>

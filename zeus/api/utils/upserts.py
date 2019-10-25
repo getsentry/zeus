@@ -1,23 +1,24 @@
 from flask import Response
 
 from zeus.config import redis
-from zeus.models import Repository, Build, ChangeRequest, Job
+from zeus.models import Repository, Build, ChangeRequest, Hook, Job
 from zeus.api import client
+
+BUILD_LOCK_TIMEOUT = 10.0
 
 
 def upsert_job(
-    build: Build, provider: str, external_id: str, data: dict = None
+    build: Build, hook: Hook, external_id: str, data: dict = None
 ) -> Response:
+    provider_name = hook.get_provider().get_name(hook.config)
     lock_key = "upsert:job:{build_id}:{provider}:{job_xid}".format(
-        build_id=build.id, provider=provider, job_xid=external_id
+        build_id=build.id, provider=provider_name, job_xid=external_id
     )
-    with redis.lock(lock_key):
+    with redis.lock(lock_key, expire=30):
         json = data.copy() if data else {}
-        json["external_id"] = external_id
-        json["provider"] = provider
 
         job = Job.query.filter(
-            Job.provider == provider,
+            Job.provider == provider_name,
             Job.external_id == external_id,
             Job.build_id == build.id,
         ).first()
@@ -30,6 +31,10 @@ def upsert_job(
                 json=json,
             )
 
+        json["external_id"] = external_id
+        json["provider"] = provider_name
+        json["hook_id"] = str(hook.id)
+
         return client.post(
             "/repos/{}/builds/{}/jobs".format(
                 build.repository.get_full_name(), build.number
@@ -38,29 +43,37 @@ def upsert_job(
         )
 
 
-def upsert_build(
-    repository: Repository, provider: str, external_id: str, data: dict = None
-) -> Response:
+def upsert_build(hook: Hook, external_id: str, data: dict = None) -> Response:
+    provider_name = hook.get_provider().get_name(hook.config)
     lock_key = "hook:build:{repo_id}:{provider}:{build_xid}".format(
-        repo_id=repository.id, provider=provider, build_xid=external_id
+        repo_id=hook.repository_id, provider=provider_name, build_xid=external_id
     )
-    with redis.lock(lock_key):
+    # TODO (here and in other upsert_* functions): it's better to move all the locking
+    # code to async tasks.
+    with redis.lock(lock_key, timeout=BUILD_LOCK_TIMEOUT, expire=30):
         json = data.copy() if data else {}
-        json["external_id"] = external_id
-        json["provider"] = provider
 
         build = Build.query.filter(
-            Build.provider == provider, Build.external_id == external_id
+            Build.provider == provider_name, Build.external_id == external_id
         ).first()
 
         if build:
+            for key in ("ref",):
+                if key in json:
+                    del json[key]
             return client.put(
-                "/repos/{}/builds/{}".format(repository.get_full_name(), build.number),
+                "/repos/{}/builds/{}".format(
+                    hook.repository.get_full_name(), build.number
+                ),
                 json=json,
             )
 
+        json["external_id"] = external_id
+        json["provider"] = provider_name
+        json["hook_id"] = str(hook.id)
+
         return client.post(
-            "/repos/{}/builds".format(repository.get_full_name()), json=json
+            "/repos/{}/builds".format(hook.repository.get_full_name()), json=json
         )
 
 
@@ -70,10 +83,8 @@ def upsert_change_request(
     lock_key = "hook:cr:{repo_id}:{provider}:{cr_xid}".format(
         repo_id=repository.id, provider=provider, cr_xid=external_id
     )
-    with redis.lock(lock_key):
+    with redis.lock(lock_key, expire=30):
         json = data.copy() if data else {}
-        json["external_id"] = external_id
-        json["provider"] = provider
 
         cr = ChangeRequest.query.filter(
             ChangeRequest.repository_id == repository.id,
@@ -86,8 +97,11 @@ def upsert_change_request(
                 "/repos/{}/change-requests/{}".format(
                     repository.get_full_name(), cr.number
                 ),
-                json=json,
+                json=data,
             )
+
+        json["external_id"] = external_id
+        json["provider"] = provider
 
         return client.post(
             "/repos/{}/change-requests".format(repository.get_full_name()), json=json

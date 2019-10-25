@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 
 import ViewAllIcon from 'react-icons/lib/md/input';
 
-import {loadBuildsForUser} from '../actions/builds';
+import {fetchBuilds} from '../actions/builds';
 import {subscribe} from '../decorators/stream';
 
 import AsyncPage from '../components/AsyncPage';
@@ -105,12 +105,13 @@ const WrappedRepoList = connect(
 
 class BuildListSection extends AsyncComponent {
   static propTypes = {
-    buildList: PropTypes.array
+    buildList: PropTypes.array,
+    fetchBuilds: PropTypes.func.isRequired
   };
 
-  fetchData() {
+  loadData() {
     return new Promise(resolve => {
-      this.props.loadBuildsForUser('me', {per_page: 10});
+      this.props.fetchBuilds({user: 'me', per_page: 10});
       return resolve();
     });
   }
@@ -149,13 +150,13 @@ const WrappedBuildList = connect(
   ({auth, builds}) => {
     let emailSet = new Set((auth.emails || []).map(e => e.email));
     return {
-      buildList: builds.items.filter(
-        build => !!build.repository && emailSet.has(build.source.author.email)
-      ),
+      buildList: builds.items
+        .filter(build => !!build.repository && emailSet.has(build.source.author.email))
+        .slice(0, 10),
       loading: !builds.loaded
     };
   },
-  {loadBuildsForUser}
+  {fetchBuilds}
 )(subscribe(() => ['builds'])(BuildListSection));
 
 export default class Dashboard extends AsyncPage {
@@ -166,8 +167,8 @@ export default class Dashboard extends AsyncPage {
   renderBody() {
     return (
       <Layout>
-        <Flex>
-          <Box flex="1" width={7 / 12} mr={30}>
+        <Flex flex="1">
+          <Box width={7 / 12} mr={30}>
             <WrappedBuildList {...this.props} />
           </Box>
           <Box width={5 / 12}>

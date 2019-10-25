@@ -42,10 +42,15 @@ def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str,
         Build.repository_id == build.repository_id,
         Build.status == Status.finished,
         Source.id != source.id,
-        Source.patch == None,  # NOQA
+        Source.patch_id == None,  # NOQA
     ]
     if valid_revisions:
-        filters.append(Source.revision_sha.in_(valid_revisions))
+        filters.extend(
+            [
+                Source.revision_sha.in_(valid_revisions),
+                Source.repository_id == build.repository_id,
+            ]
+        )
 
     # NOTE(dcramer): many of these queries ignore tenant constraints
     # find any existing failures in the previous runs
@@ -145,17 +150,19 @@ class AggregateTestCaseSummarySchema(Schema):
     runs = fields.List(fields.Nested(ExecutionSchema), required=True)
     result = ResultField(required=True)
     message = fields.Str(required=False)
+    build = fields.Nested(
+        BuildSchema(exclude=("repository", "source", "stats")), required=False
+    )
     origin_build = fields.Nested(
         BuildSchema(exclude=("repository", "source", "stats")), required=False
     )
 
     @pre_dump(pass_many=True)
-    def process_aggregates(self, data, many):
+    def process_aggregates(self, data, many, **kwargs):
         if not many:
             items = [data]
         else:
             items = data
-
         if "origin_build" in self.exclude or "build" not in self.context:
             failure_origins = {}
         else:
@@ -169,6 +176,14 @@ class AggregateTestCaseSummarySchema(Schema):
                     if any(Result(int(e[3])) == Result.failed for e in i.runs)
                 ],
             )
+
+        if "build" in self.exclude or not hasattr(items[0], "build_id"):
+            builds = {}
+        else:
+            builds = {
+                b.id: b
+                for b in Build.query.filter(Build.id.in_(i.build_id for i in items))
+            }
 
         if failure_origins:
             origin_builds = {
@@ -193,6 +208,7 @@ class AggregateTestCaseSummarySchema(Schema):
                     }
                     for e in i.runs
                 ],
+                "build": builds.get(getattr(i, "build_id", None)),
                 "origin_build": origin_builds.get(failure_origins.get(i.hash)),
                 "result": aggregate_result(Result(int(e[3])) for e in i.runs),
             }

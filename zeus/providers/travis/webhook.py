@@ -1,4 +1,3 @@
-import dateutil.parser
 import json
 import requests
 
@@ -8,41 +7,12 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from flask import current_app, request, Response
-from urllib.parse import urlparse
+from time import time
 
-from zeus.api.utils.upserts import upsert_build, upsert_change_request, upsert_job
 from zeus.config import redis
 from zeus.constants import USER_AGENT
-from zeus.exceptions import ApiError
-from zeus.models import Build
 from zeus.web.hooks.base import BaseHook
-
-
-def get_job_label(job: dict) -> str:
-    job_config = job["config"]
-    language = job_config["language"]
-    language_version = job_config.get(language)
-    out = []
-    if language and language_version:
-        out.append("{}: {}".format(language, language_version))
-    else:
-        out.append(language)
-    if job_config.get("env"):
-        out.append(" ".join(job_config["env"]))
-    return " - ".join(out)
-
-
-def get_result(state: str) -> str:
-    return {
-        "pending": "in_progress",
-        "passed": "passed",
-        "fixed": "passed",
-        "failed": "failed",
-        "broken": "failed",
-        "failing": "failed",
-        "errored": "failed",
-        "canceled": "aborted",
-    }.get(state, "unknown")
+from zeus.tasks import process_travis_webhook
 
 
 def get_travis_public_key(domain) -> str:
@@ -103,68 +73,14 @@ class TravisWebhookView(BaseHook):
             current_app.logger.error("travis.webhook-invalid-payload", exc_info=True)
             return Response(status=400)
 
-        data = {"ref": payload["commit"], "url": payload["build_url"]}
-
-        domain = urlparse(data["url"]).netloc
-
         try:
-            if payload["pull_request"]:
-                data["label"] = "PR #{} - {}".format(
-                    payload["pull_request_number"], payload["pull_request_title"]
-                )
-
-                upsert_change_request(
-                    repository=hook.repository,
-                    provider="github",
-                    external_id=str(payload["pull_request_number"]),
-                    data={
-                        "parent_revision_sha": payload["base_commit"],
-                        "head_revision_sha": payload["head_commit"],
-                        "message": payload["pull_request_title"],
-                    },
-                )
-
-            response = upsert_build(
-                repository=hook.repository,
-                provider=hook.provider,
-                external_id=str(payload["id"]),
-                data=data,
+            process_travis_webhook(
+                hook_id=hook.id, payload=payload, timestamp_ms=int(time() * 1000)
             )
-            build = Build.query.get(response.json()["id"])
-            for job_payload in payload["matrix"]:
-                upsert_job(
-                    build=build,
-                    provider=hook.provider,
-                    external_id=str(job_payload["id"]),
-                    data={
-                        "status": (
-                            "finished"
-                            if job_payload["status"] is not None
-                            else "in_progress"
-                        ),
-                        "result": get_result(job_payload["state"]),
-                        "allow_failure": bool(job_payload["allow_failure"]),
-                        "label": get_job_label(job_payload),
-                        "url": "https://{domain}/{owner}/{name}/jobs/{job_id}".format(
-                            domain=domain,
-                            owner=payload["repository"]["owner_name"],
-                            name=payload["repository"]["name"],
-                            job_id=job_payload["id"],
-                        ),
-                        "started_at": (
-                            dateutil.parser.parse(job_payload["started_at"])
-                            if job_payload["started_at"]
-                            else None
-                        ),
-                        "finished_at": (
-                            dateutil.parser.parse(job_payload["finished_at"])
-                            if job_payload["finished_at"]
-                            else None
-                        ),
-                    },
-                )
-        except ApiError:
-            current_app.logger.error("travis.webhook-unexpected-error", exc_info=True)
-            raise
+        except Exception:
+            current_app.logger.error("travis.process-webhook-failed", exc_info=True)
+            process_travis_webhook.delay(
+                hook_id=hook.id, payload=payload, timestamp_ms=int(time() * 1000)
+            )
 
-        return Response(status=200)
+        return Response(status=202)

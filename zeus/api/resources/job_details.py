@@ -1,21 +1,14 @@
 from zeus.config import db
 from zeus.constants import Result, Status
-from zeus.models import Artifact, Job
+from zeus.models import Job
 from zeus.tasks import aggregate_build_stats_for_job
 from zeus.utils import timezone
+from zeus.utils.artifacts import has_unprocessed_artifacts
 
 from .base_job import BaseJobResource
 from ..schemas import JobSchema
 
-job_schema = JobSchema(strict=True)
-
-
-def has_unprocessed_artifacts(job_id):
-    return db.session.query(
-        Artifact.query.filter(
-            Artifact.status != Status.finished, Artifact.job_id == job_id
-        ).exists()
-    ).scalar()
+job_schema = JobSchema()
 
 
 class JobDetailsResource(BaseJobResource):
@@ -37,12 +30,10 @@ class JobDetailsResource(BaseJobResource):
         Update a job.
         """
         result = self.schema_from_request(job_schema, partial=True)
-        if result.errors:
-            return self.respond(result.errors, 403)
 
         prev_status = job.status
 
-        for key, value in result.data.items():
+        for key, value in result.items():
             if getattr(job, key) != value:
                 setattr(job, key, value)
 
@@ -55,21 +46,21 @@ class JobDetailsResource(BaseJobResource):
                 # decide how Zeus should deal with it. We either could orphan/hide/remove the
                 # current job, or alternatively we would want to truncate all of its children
                 # which is fairly complex.
-                if not result.data.get("date_started"):
+                if not result.get("date_started"):
                     job.date_started = timezone.now()
-                if "result" not in result.data:
+                if "result" not in result:
                     job.result = Result.unknown
             if (
                 job.status == Status.finished
                 and prev_status != job.status
-                and not result.data.get("date_finished")
+                and not result.get("date_finished")
             ):
                 job.date_finished = timezone.now()
                 if not job.date_started:
                     job.date_started = job.date_created
             elif job.status != Status.finished:
                 job.date_finished = None
-            if job.status == Status.finished and has_unprocessed_artifacts(job.id):
+            if job.status == Status.finished and has_unprocessed_artifacts(job):
                 job.status = Status.collecting_results
             db.session.add(job)
             db.session.commit()

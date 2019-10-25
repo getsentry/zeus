@@ -3,6 +3,7 @@
 exports[`Dashboard renders with repos and builds loaded 1`] = `
 <RepositoryContext
   error={false}
+  loadRepos={[Function]}
   loading={false}
   repoList={
     Array [
@@ -25,7 +26,10 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
     ]
   }
 >
-  <Dashboard>
+  <Dashboard
+    error={false}
+    loading={true}
+  >
     <SideEffect(DocumentTitle)
       title="Zeus Dashboard"
     >
@@ -271,31 +275,38 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
               <div
                 className="sc-jzJRlG isrNps"
               >
-                <Styled(styled.div)>
+                <Styled(styled.div)
+                  flex="1"
+                >
                   <styled.div
                     className="sc-htpNat eLQHN"
+                    flex="1"
                   >
                     <div
-                      className="sc-htpNat eLQHN sc-bdVaJa iHZvIS"
+                      className="sc-htpNat eLQHN sc-bdVaJa kYmYWE"
                     >
                       <styled.div
-                        flex="1"
                         mr={30}
                         width={0.5833333333333334}
                       >
                         <div
-                          className="sc-bdVaJa cNOuwn"
+                          className="sc-bdVaJa lnzbpU"
                           width={0.5833333333333334}
                         >
-                          <Connect(Connect(StreamSubscription))>
+                          <Connect(Connect(StreamSubscription))
+                            error={false}
+                            loading={true}
+                          >
                             <Connect(StreamSubscription)
                               buildList={Array []}
-                              loadBuildsForUser={[Function]}
+                              error={false}
+                              fetchBuilds={[Function]}
                               loading={false}
                             >
                               <StreamSubscription
                                 buildList={Array []}
-                                loadBuildsForUser={[Function]}
+                                error={false}
+                                fetchBuilds={[Function]}
                                 loading={false}
                                 subscribe={[Function]}
                                 unsubscribe={[Function]}
@@ -303,14 +314,14 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                 <BuildListSection
                                   buildList={Array []}
                                   error={false}
-                                  loadBuildsForUser={[Function]}
+                                  fetchBuilds={[Function]}
                                   loading={false}
                                   subscribe={[Function]}
                                   unsubscribe={[Function]}
                                 >
                                   <styled.div>
                                     <div
-                                      className="sc-kgoBCf bwYjCS"
+                                      className="sc-kgoBCf urgc"
                                     >
                                       <Styled(Component)>
                                         <Component
@@ -398,7 +409,10 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                           className="sc-bdVaJa ctYsmd"
                           width={0.4166666666666667}
                         >
-                          <Connect(RepoListSection)>
+                          <Connect(RepoListSection)
+                            error={false}
+                            loading={true}
+                          >
                             <RepoListSection
                               error={false}
                               loading={false}
@@ -425,7 +439,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                             >
                               <styled.div>
                                 <div
-                                  className="sc-kgoBCf bwYjCS"
+                                  className="sc-kgoBCf urgc"
                                 >
                                   <Styled(Component)>
                                     <Component
@@ -803,6 +817,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
 exports[`Dashboard renders with repos loaded 1`] = `
 <RepositoryContext
   error={false}
+  loadRepos={[Function]}
   loading={false}
   repoList={
     Array [
@@ -825,7 +840,10 @@ exports[`Dashboard renders with repos loaded 1`] = `
     ]
   }
 >
-  <Dashboard>
+  <Dashboard
+    error={false}
+    loading={true}
+  >
     <SideEffect(DocumentTitle)
       title="Zeus Dashboard"
     >
@@ -1071,31 +1089,38 @@ exports[`Dashboard renders with repos loaded 1`] = `
               <div
                 className="sc-jzJRlG isrNps"
               >
-                <Styled(styled.div)>
+                <Styled(styled.div)
+                  flex="1"
+                >
                   <styled.div
                     className="sc-htpNat eLQHN"
+                    flex="1"
                   >
                     <div
-                      className="sc-htpNat eLQHN sc-bdVaJa iHZvIS"
+                      className="sc-htpNat eLQHN sc-bdVaJa kYmYWE"
                     >
                       <styled.div
-                        flex="1"
                         mr={30}
                         width={0.5833333333333334}
                       >
                         <div
-                          className="sc-bdVaJa cNOuwn"
+                          className="sc-bdVaJa lnzbpU"
                           width={0.5833333333333334}
                         >
-                          <Connect(Connect(StreamSubscription))>
+                          <Connect(Connect(StreamSubscription))
+                            error={false}
+                            loading={true}
+                          >
                             <Connect(StreamSubscription)
                               buildList={Array []}
-                              loadBuildsForUser={[Function]}
+                              error={false}
+                              fetchBuilds={[Function]}
                               loading={true}
                             >
                               <StreamSubscription
                                 buildList={Array []}
-                                loadBuildsForUser={[Function]}
+                                error={false}
+                                fetchBuilds={[Function]}
                                 loading={true}
                                 subscribe={[Function]}
                                 unsubscribe={[Function]}
@@ -1103,14 +1128,14 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                 <BuildListSection
                                   buildList={Array []}
                                   error={false}
-                                  loadBuildsForUser={[Function]}
+                                  fetchBuilds={[Function]}
                                   loading={true}
                                   subscribe={[Function]}
                                   unsubscribe={[Function]}
                                 >
                                   <styled.div>
                                     <div
-                                      className="sc-kgoBCf bwYjCS"
+                                      className="sc-kgoBCf urgc"
                                     >
                                       <Styled(Component)>
                                         <Component
@@ -2211,7 +2236,10 @@ exports[`Dashboard renders with repos loaded 1`] = `
                           className="sc-bdVaJa ctYsmd"
                           width={0.4166666666666667}
                         >
-                          <Connect(RepoListSection)>
+                          <Connect(RepoListSection)
+                            error={false}
+                            loading={true}
+                          >
                             <RepoListSection
                               error={false}
                               loading={false}
@@ -2238,7 +2266,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                             >
                               <styled.div>
                                 <div
-                                  className="sc-kgoBCf bwYjCS"
+                                  className="sc-kgoBCf urgc"
                                 >
                                   <Styled(Component)>
                                     <Component

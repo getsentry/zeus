@@ -5,7 +5,7 @@ services:
   - redis-server
   - postgresql
 python:
-  - "3.7"
+  - '3.7'
 cache:
   yarn: true
   directories:
@@ -17,14 +17,13 @@ env:
     - NODE_ENV=production
     - PIP_DISABLE_PIP_VERSION_CHECK=on
 install:
-  - pip install pipenv
-  - nvm install $(cat .nvmrc)
-  - npm install -g yarn@1.7.0
-  - NODE_ENV= make
+  - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/0.12.10/get-poetry.py | python
+  - curl -sSLf https://get.volta.sh | bash
+  - PATH=$HOME/.poetry/bin:$PATH NODE_ENV= make
 script:
   - git --version
-  - PATH=node_modules/.bin:$PATH pre-commit run -a -v
-  - py.test tests -v --cov . --cov-report="xml:.artifacts/coverage.xml" --junit-xml=".artifacts/pytest.junit.xml"
+  - PATH=$HOME/.poetry/bin:$PATH PATH=node_modules/.bin:$PATH pre-commit run -a -v
+  - PATH=$HOME/.poetry/bin:$PATH poetry run py.test tests -v --cov . --cov-report="xml:.artifacts/coverage.xml" --junit-xml=".artifacts/pytest.junit.xml"
   - node_modules/.bin/webpack --json > .artifacts/webpack-stats.json
   - JEST_JUNIT_OUTPUT=.artifacts/jest.junit.xml yarn test --ci --reporters=default --reporters=jest-junit
 after_script:

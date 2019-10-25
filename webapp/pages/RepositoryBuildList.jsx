@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
-import {loadBuildsForRepository} from '../actions/builds';
+import {fetchBuilds} from '../actions/builds';
 import {subscribe} from '../decorators/stream';
 
 import AsyncPage from '../components/AsyncPage';
@@ -28,10 +28,10 @@ class BuildListBody extends AsyncComponent {
     links: PropTypes.object
   };
 
-  fetchData() {
+  loadData() {
     return new Promise(resolve => {
       let {repo} = this.props;
-      this.props.loadBuildsForRepository(repo.full_name, this.props.location.query);
+      this.props.fetchBuilds({repository: repo.full_name, ...this.props.location.query});
       return resolve();
     });
   }
@@ -61,7 +61,7 @@ const DecoratedRepositoryBuildList = connect(
     links: builds.links,
     loading: !builds.loaded
   }),
-  {loadBuildsForRepository}
+  {fetchBuilds}
 )(subscribe(({repo}) => [`repos:${repo.full_name}:builds`])(RepositoryBuildList));
 
 export default class RepositoryBuildListWithRepoProp extends Component {

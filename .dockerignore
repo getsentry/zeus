@@ -1,3 +1,12 @@
 Dockerfile
 .dockerignore
 .envrc
+/.git
+/.venv
+/.kubernetes/zeus
+/node_modules
+/coverage
+/htmlcov
+/dist
+/build
+/static

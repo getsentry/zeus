@@ -5,7 +5,7 @@ from sqlalchemy import event
 from sqlalchemy.orm import Session
 from sqlalchemy.testing import assertions, assertsql
 
-from zeus import config
+from zeus import auth, config
 from zeus.storage.mock import FileStorageCache
 
 
@@ -45,14 +45,18 @@ class AssertionHelper(object):
 
 @pytest.fixture(scope="session")
 def session_config(request):
-    return {"db_name": "test_zeus"}
+    return {"db_name": "test_zeus", "db_host": "127.0.0.1", "db_user": "postgres"}
 
 
 @pytest.fixture(scope="session")
 def app(request, session_config):
     app = config.create_app(
         _read_config=False,
-        SQLALCHEMY_DATABASE_URI="postgresql:///" + session_config["db_name"],
+        SQLALCHEMY_DATABASE_URI="postgresql://{}@{}/{}".format(
+            session_config["db_user"],
+            session_config["db_host"],
+            session_config["db_name"],
+        ),
         FILE_STORAGE={"backend": "zeus.storage.mock.FileStorageCache"},
         SECRET_KEY=os.urandom(24),
         GITHUB_CLIENT_ID="github.client-id",
@@ -67,11 +71,22 @@ def app(request, session_config):
 @pytest.fixture(scope="session", autouse=True)
 def db(request, app, session_config):
     db_name = session_config["db_name"]
+    db_host = session_config["db_host"]
+    db_user = session_config["db_user"]
     with app.app_context():
         # Postgres 9.1 does not support --if-exists
-        if os.system("psql -l | grep '%s'" % db_name) == 0:
-            assert not os.system("dropdb %s" % db_name)
-        assert not os.system("createdb -E utf-8 %s" % db_name)
+        if (
+            os.system(
+                "psql -U {} -h {} -l | grep '{}'".format(db_user, db_host, db_name)
+            )
+            == 0
+        ):
+            assert not os.system(
+                "dropdb -U {} -h {} {}".format(db_user, db_host, db_name)
+            )
+        assert not os.system(
+            "createdb -U {} -E utf-8 -h {} {}".format(db_user, db_host, db_name)
+        )
 
         config.alembic.upgrade()
 
@@ -158,3 +173,8 @@ def public_key_bytes(public_key):
         encoding=serialization.Encoding.PEM,
         format=serialization.PublicFormat.SubjectPublicKeyInfo,
     )
+
+
+@pytest.fixture
+def default_tenant(default_repo):
+    auth.set_current_tenant(auth.RepositoryTenant(repository_id=default_repo.id))

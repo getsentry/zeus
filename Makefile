@@ -2,7 +2,7 @@ develop: setup-git install-requirements
 
 upgrade: install-requirements
 	createdb -E utf-8 zeus || true
-	pipenv run zeus db upgrade
+	poetry run zeus db upgrade
 
 setup-git:
 	pip install "pre-commit>=1.12.0,<1.13.0"
@@ -14,29 +14,35 @@ setup-git:
 install-requirements: install-python-requirements install-js-requirements
 
 install-python-requirements:
-	pipenv install --dev
+	poetry install --extras=test
 
 install-js-requirements:
 	yarn install
 
 test:
-	pipenv run py.test
+	poetry run py.test
+	yarn test
 
 db:
 	$(MAKE) create-db
-	pipenv run zeus db upgrade
+	poetry run zeus db upgrade
 
 drop-db:
-	dropdb --if-exists zeus
+	dropdb --if-exists -U postgres -h 127.0.0.1 zeus
 
 create-db:
-	createdb -E utf-8 zeus
+	createdb -E utf-8 -U postgres -h 127.0.0.1 zeus
 
 reset-db: drop-db db
 
 build-docker-image:
-	docker build -t zeus .
+	docker build \
+		-t zeus \
+		--build-arg NODE_VERSION=$(shell bin/get-node-version | tr -d '\n') \
+		--build-arg YARN_VERSION=$(shell bin/get-yarn-version | tr -d '\n') \
+		--build-arg BUILD_REVISION=$(shell git rev-parse HEAD | tr -d '\n') \
+		.
 
 run-docker-image:
 	docker rm zeus || exit 0
-	docker run --init -d -p 8080:8080/tcp -v ~/.zeus:/workspace --name zeus zeus
+	docker run --init --rm -d -p 8080:8080/tcp -v ~/.zeus:/workspace --name zeus zeus

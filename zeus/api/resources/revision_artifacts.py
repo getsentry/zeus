@@ -12,7 +12,7 @@ class ArtifactWithJobSchema(ArtifactSchema):
     job = fields.Nested(JobSchema(), dump_only=True, required=False)
 
 
-artifacts_schema = ArtifactWithJobSchema(strict=True, many=True)
+artifacts_schema = ArtifactWithJobSchema(many=True)
 
 
 class RevisionArtifactsResource(BaseRevisionResource):
@@ -23,7 +23,7 @@ class RevisionArtifactsResource(BaseRevisionResource):
         """
         Return all artifacts of all builds in a revision.
         """
-        build = fetch_build_for_revision(revision.repository, revision)
+        build = fetch_build_for_revision(revision)
         if not build:
             return self.respond(status=404)
 

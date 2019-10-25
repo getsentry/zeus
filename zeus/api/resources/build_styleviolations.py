@@ -7,7 +7,7 @@ from zeus.models import Job, Build, StyleViolation
 from .base_build import BaseBuildResource
 from ..schemas import StyleViolationSchema
 
-styleviolation_schema = StyleViolationSchema(many=True, strict=True)
+styleviolation_schema = StyleViolationSchema(many=True)
 
 
 class BuildStyleViolationsResource(BaseBuildResource):

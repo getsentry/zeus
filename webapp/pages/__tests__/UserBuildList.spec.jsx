@@ -17,7 +17,7 @@ describe('UserBuildList', () => {
       let {path} = req.url();
 
       switch (path) {
-        case '/api/users/me/builds':
+        case '/api/builds':
           return res.status(200).body(JSON.stringify([build]));
         default:
           return null;
@@ -48,7 +48,7 @@ describe('UserBuildList', () => {
     });
 
     const wrapper = mount(
-      <RepositoryContext repoList={[repo]} loading={false}>
+      <RepositoryContext repoList={[repo]} loading={false} loadRepos={() => {}}>
         <UserBuildList params={{}} location={TestStubs.location()} />
       </RepositoryContext>,
       context
@@ -94,7 +94,7 @@ describe('UserBuildList', () => {
     });
 
     const wrapper = mount(
-      <RepositoryContext repoList={[repo]} loading={false}>
+      <RepositoryContext repoList={[repo]} loading={false} loadRepos={() => {}}>
         <UserBuildList params={{}} location={TestStubs.location()} />
       </RepositoryContext>,
       context

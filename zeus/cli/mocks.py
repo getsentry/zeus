@@ -2,8 +2,9 @@ import click
 
 from random import choice, randint, random, randrange
 from sqlalchemy.exc import IntegrityError
+from typing import Tuple
 
-from zeus import factories, models
+from zeus import auth, factories, models
 from zeus.api.schemas import BuildSchema
 from zeus.config import db
 from zeus.constants import Result, Status
@@ -13,7 +14,7 @@ from zeus.tasks import aggregate_build_stats_for_job
 
 from .base import cli
 
-build_schema = BuildSchema(strict=True)
+build_schema = BuildSchema()
 
 repo_names = ("sentry", "zeus")
 
@@ -82,18 +83,34 @@ def mock_author(repo: models.Repository, user_id) -> models.Author:
     return factories.AuthorFactory(repository=repo, email=user.email)
 
 
-def mock_build(
+def load_revisions(repo: models.Repository, num_passes=100) -> models.Revision:
+    vcs = repo.get_vcs()
+    vcs.ensure()
+    num = 0
+    has_more = True
+    parent = None
+    first_revision = None
+    while has_more and num < num_passes:
+        has_more = False
+        for commit in vcs.log(parent=parent):
+            revision, created = commit.save(repo)
+            if first_revision is None:
+                first_revision = revision
+            db.session.commit()
+            if parent == commit.sha:
+                break
+
+            parent = commit.sha
+            has_more = True
+        num += 1
+    return first_revision
+
+
+def mock_revision(
     repo: models.Repository,
     parent_revision: models.Revision = None,
-    user_ids=(),
-    file_list=(),
-):
-    if user_ids and randint(0, 1) == 0:
-        chosen_user_id = choice(user_ids)
-        author = mock_author(repo, chosen_user_id)
-    else:
-        author = None
-
+    author: models.Author = None,
+) -> Tuple[models.Revision, models.Source]:
     revision = factories.RevisionFactory.create(
         repository=repo,
         parents=[parent_revision.sha] if parent_revision else None,
@@ -105,12 +122,67 @@ def mock_build(
         if parent_revision and random() > 0.8
         else None,
     )
+    return revision, source
+
+
+def mock_build(
+    repo: models.Repository,
+    revision: models.Revision = None,
+    parent_revision: models.Revision = None,
+    user_ids=(),
+    file_list=(),
+    with_change_request=True,
+) -> models.Build:
+    if user_ids and randint(0, 1) == 0:
+        chosen_user_id = choice(user_ids)
+        author = mock_author(repo, chosen_user_id)
+    else:
+        author = None
+
+    if not revision:
+        revision, source = mock_revision(repo, parent_revision, author)
+    else:
+        for n in range(2):
+            source = (
+                models.Source.query.unrestricted_unsafe()
+                .filter(
+                    models.Source.repository_id == repo.id,
+                    models.Source.revision_sha == revision.sha,
+                )
+                .first()
+            )
+            if source:
+                break
+            try_create(
+                models.Source,
+                {
+                    "revision_sha": revision.sha,
+                    "repository": repo,
+                    "author_id": revision.author_id,
+                },
+            )
+        else:
+            raise NotImplementedError
+
+    if with_change_request and parent_revision is None:
+        parent_revision = factories.RevisionFactory.create(repository=repo)
+
+    if with_change_request:
+        factories.ChangeRequestFactory.create(
+            repository=repo,
+            head_revision=revision,
+            head_revision_sha=revision.sha,
+            parent_revision=parent_revision,
+            github=True,
+            **{"author": author} if author else {}
+        )
+
     parent_revision = revision
 
     build = factories.BuildFactory.create(source=source, travis=True)
 
-    result = build_schema.dump(build)
-    publish("builds", "build.create", result.data)
+    data = build_schema.dump(build)
+    publish("builds", "build.create", data)
     click.echo("Created {!r}".format(build))
 
     # we need to find some filenames for the repo
@@ -162,8 +234,8 @@ def mock_build(
 
         aggregate_build_stats_for_job(job_id=job.id)
 
-        result = build_schema.dump(build)
-        publish("builds", "build.update", result.data)
+        data = build_schema.dump(build)
+        publish("builds", "build.update", data)
         click.echo("Created {!r}".format(job))
 
     db.session.commit()
@@ -176,16 +248,31 @@ def mocks():
 
 
 @mocks.command("load-all")
-def load_all():
+def load_all(repos=3, commits_per_repo=10):
     user_ids = [u for u, in db.session.query(models.User.id)]
-    for n in range(3):
-        repo = mock_single_repository(user_ids=user_ids)
-        file_list = find_files_in_repo(repo)
 
+    for n in range(repos):
+        repo = mock_single_repository(user_ids=user_ids)
+        auth.set_current_tenant(auth.RepositoryTenant(repository_id=repo.id))
+        file_list = find_files_in_repo(repo)
+        load_revisions(repo)
+        revision_iter = iter(
+            list(
+                models.Revision.query.unrestricted_unsafe()
+                .filter(models.Revision.repository_id == repo.id)
+                .order_by(models.Revision.date_created.desc())
+                .limit(commits_per_repo)
+            )
+        )
         parent_revision = None
-        for n in range(10):
+        for n in range(commits_per_repo):
+            revision = next(revision_iter)
             build = mock_build(
-                repo, parent_revision, user_ids=user_ids, file_list=file_list
+                repo,
+                parent_revision=parent_revision,
+                revision=revision,
+                user_ids=user_ids,
+                file_list=file_list,
             )
             parent_revision = build.source.revision
 

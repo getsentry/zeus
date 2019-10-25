@@ -145,3 +145,11 @@ class Repository(StandardAttributes, db.Model):
 
     def get_full_name(self):
         return "{}/{}/{}".format(self.provider, self.owner_name, self.name)
+
+    @classmethod
+    def from_full_name(cls, full_name):
+        provider, owner_name, name = full_name.split("/", 2)
+
+        return cls.query.filter_by(
+            provider=RepositoryProvider(provider), owner_name=owner_name, name=name
+        ).first()

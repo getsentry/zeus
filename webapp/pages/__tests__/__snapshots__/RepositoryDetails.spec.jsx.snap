@@ -2,6 +2,8 @@
 
 exports[`RepositoryDetails renders with fetching repo 1`] = `
 <RepositoryDetails
+  error={false}
+  loading={true}
   params={
     Object {
       "ownerName": "getsentry",
@@ -1033,6 +1035,8 @@ exports[`RepositoryDetails renders with fetching repo 1`] = `
 
 exports[`RepositoryDetails renders with repo in context 1`] = `
 <RepositoryDetails
+  error={false}
+  loading={true}
   params={
     Object {
       "ownerName": "getsentry",
@@ -1338,6 +1342,26 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                             style={Object {}}
                           >
                             Commits
+                          </a>
+                        </Link>
+                      </Styled(Link)>
+                      <Styled(Link)
+                        activeClassName="active"
+                        to="/gh/getsentry/zeus/change-requests"
+                      >
+                        <Link
+                          activeClassName="active"
+                          className="sc-ifAKCX fbekww"
+                          onlyActiveOnIndex={false}
+                          style={Object {}}
+                          to="/gh/getsentry/zeus/change-requests"
+                        >
+                          <a
+                            className="sc-ifAKCX fbekww"
+                            onClick={[Function]}
+                            style={Object {}}
+                          >
+                            Change Requests
                           </a>
                         </Link>
                       </Styled(Link)>

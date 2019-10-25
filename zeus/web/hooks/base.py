@@ -3,13 +3,14 @@ from flask.views import View
 from sqlalchemy.orm import joinedload
 
 from zeus import auth
+from zeus.api.resources.base import ApiHelpers
 from zeus.config import nplusone
 from zeus.constants import Permission
 from zeus.exceptions import ApiError
 from zeus.models import Hook
 
 
-class BaseHook(View):
+class BaseHook(View, ApiHelpers):
     public = False
 
     methods = ["GET", "POST", "PUT", "DELETE"]
@@ -23,6 +24,10 @@ class BaseHook(View):
                 .options(joinedload("repository"))
                 .get(hook_id)
             )
+
+        if not hook:
+            return self.respond({"message": "hook not found"}, 404)
+
         if not self.public and not hook.is_valid_signature(signature):
             current_app.logger.warn("invalid webhook signature id=%s", hook_id)
             return "", 403

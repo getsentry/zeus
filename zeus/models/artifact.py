@@ -35,6 +35,7 @@ class Artifact(RepositoryBoundMixin, StandardAttributes, db.Model):
     testcase = db.relationship("TestCase", uselist=False)
 
     __tablename__ = "artifact"
+    __table_args__ = (db.Index("idx_artifact_job", "repository_id", "job_id"),)
 
     def save_base64_content(self, base64):
         content = b64decode(base64)

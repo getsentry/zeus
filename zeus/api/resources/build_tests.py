@@ -49,6 +49,6 @@ class BuildTestsResource(BaseBuildResource):
         )
 
         schema = AggregateTestCaseSummarySchema(
-            many=True, strict=True, context={"build": build}
+            many=True, exclude=("build",), context={"build": build}
         )
         return self.paginate_with_schema(schema, query)

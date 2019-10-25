@@ -3,6 +3,7 @@
 exports[`UserBuildList fetches builds 1`] = `
 <RepositoryContext
   error={false}
+  loadRepos={[Function]}
   loading={false}
   repoList={
     Array [
@@ -36,7 +37,7 @@ exports[`UserBuildList fetches builds 1`] = `
   >
     <Connect(StreamSubscription)
       buildList={Array []}
-      loadBuildsForUser={[Function]}
+      fetchBuilds={[Function]}
       loading={true}
       location={
         Object {
@@ -48,7 +49,7 @@ exports[`UserBuildList fetches builds 1`] = `
     >
       <StreamSubscription
         buildList={Array []}
-        loadBuildsForUser={[Function]}
+        fetchBuilds={[Function]}
         loading={true}
         location={
           Object {
@@ -62,7 +63,8 @@ exports[`UserBuildList fetches builds 1`] = `
       >
         <UserBuildList
           buildList={Array []}
-          loadBuildsForUser={[Function]}
+          error={false}
+          fetchBuilds={[Function]}
           loading={true}
           location={
             Object {
@@ -433,12 +435,12 @@ exports[`UserBuildList fetches builds 1`] = `
                     >
                       <styled.div>
                         <div
-                          className="sc-kpOJdX bOAvbi"
+                          className="sc-kpOJdX fNSmRS"
                         >
                           <BuildListBody
                             buildList={Array []}
                             error={false}
-                            loadBuildsForUser={[Function]}
+                            fetchBuilds={[Function]}
                             loading={true}
                             location={
                               Object {
@@ -1522,6 +1524,7 @@ exports[`UserBuildList fetches builds 1`] = `
 exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
 <RepositoryContext
   error={false}
+  loadRepos={[Function]}
   loading={false}
   repoList={
     Array [
@@ -1563,7 +1566,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
             "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
             "label": "fix: Remove break-word behavior on coverage",
             "number": 650,
-            "provider": "travis-ci",
+            "provider": "travis",
             "repository": Object {
               "backend": "git",
               "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -1629,8 +1632,8 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
           },
         ]
       }
+      fetchBuilds={[Function]}
       links={Object {}}
-      loadBuildsForUser={[Function]}
       loading={false}
       location={
         Object {
@@ -1650,7 +1653,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
               "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
               "label": "fix: Remove break-word behavior on coverage",
               "number": 650,
-              "provider": "travis-ci",
+              "provider": "travis",
               "repository": Object {
                 "backend": "git",
                 "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -1716,8 +1719,8 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
             },
           ]
         }
+        fetchBuilds={[Function]}
         links={Object {}}
-        loadBuildsForUser={[Function]}
         loading={false}
         location={
           Object {
@@ -1739,7 +1742,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                 "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                 "label": "fix: Remove break-word behavior on coverage",
                 "number": 650,
-                "provider": "travis-ci",
+                "provider": "travis",
                 "repository": Object {
                   "backend": "git",
                   "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -1805,8 +1808,9 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
               },
             ]
           }
+          error={false}
+          fetchBuilds={[Function]}
           links={Object {}}
-          loadBuildsForUser={[Function]}
           loading={false}
           location={
             Object {
@@ -2177,7 +2181,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                     >
                       <styled.div>
                         <div
-                          className="sc-kpOJdX bOAvbi"
+                          className="sc-kpOJdX fNSmRS"
                         >
                           <BuildListBody
                             buildList={
@@ -2189,7 +2193,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                   "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                   "label": "fix: Remove break-word behavior on coverage",
                                   "number": 650,
-                                  "provider": "travis-ci",
+                                  "provider": "travis",
                                   "repository": Object {
                                     "backend": "git",
                                     "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -2256,8 +2260,8 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                               ]
                             }
                             error={false}
+                            fetchBuilds={[Function]}
                             links={Object {}}
-                            loadBuildsForUser={[Function]}
                             loading={false}
                             location={
                               Object {
@@ -2283,7 +2287,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                       "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                       "label": "fix: Remove break-word behavior on coverage",
                                       "number": 650,
-                                      "provider": "travis-ci",
+                                      "provider": "travis",
                                       "repository": Object {
                                         "backend": "git",
                                         "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -2518,7 +2522,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                             "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                             "label": "fix: Remove break-word behavior on coverage",
                                             "number": 650,
-                                            "provider": "travis-ci",
+                                            "provider": "travis",
                                             "repository": Object {
                                               "backend": "git",
                                               "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -2661,7 +2665,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                                                                 "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                                                                 "label": "fix: Remove break-word behavior on coverage",
                                                                                 "number": 650,
-                                                                                "provider": "travis-ci",
+                                                                                "provider": "travis",
                                                                                 "repository": Object {
                                                                                   "backend": "git",
                                                                                   "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -2875,7 +2879,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                                                       "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                                                       "label": "fix: Remove break-word behavior on coverage",
                                                                       "number": 650,
-                                                                      "provider": "travis-ci",
+                                                                      "provider": "travis",
                                                                       "repository": Object {
                                                                         "backend": "git",
                                                                         "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -2988,7 +2992,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                                                       "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                                                       "label": "fix: Remove break-word behavior on coverage",
                                                                       "number": 650,
-                                                                      "provider": "travis-ci",
+                                                                      "provider": "travis",
                                                                       "repository": Object {
                                                                         "backend": "git",
                                                                         "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -3065,7 +3069,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                                                           "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                                                           "label": "fix: Remove break-word behavior on coverage",
                                                                           "number": 650,
-                                                                          "provider": "travis-ci",
+                                                                          "provider": "travis",
                                                                           "repository": Object {
                                                                             "backend": "git",
                                                                             "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -3142,7 +3146,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                                                             "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                                                             "label": "fix: Remove break-word behavior on coverage",
                                                                             "number": 650,
-                                                                            "provider": "travis-ci",
+                                                                            "provider": "travis",
                                                                             "repository": Object {
                                                                               "backend": "git",
                                                                               "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -3291,7 +3295,7 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                       "id": "aa7097a2-f2fb-11e7-a565-0a580a28057d",
                                       "label": "fix: Remove break-word behavior on coverage",
                                       "number": 650,
-                                      "provider": "travis-ci",
+                                      "provider": "travis",
                                       "repository": Object {
                                         "backend": "git",
                                         "created_at": "2017-08-15T17:01:33.206772+00:00",
@@ -3358,8 +3362,8 @@ exports[`UserBuildList renders with pre-existing builds loaded 1`] = `
                                   ]
                                 }
                                 error={false}
+                                fetchBuilds={[Function]}
                                 links={Object {}}
-                                loadBuildsForUser={[Function]}
                                 loading={false}
                                 location={
                                   Object {
