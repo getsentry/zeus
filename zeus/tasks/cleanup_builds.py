@@ -4,6 +4,7 @@ from sqlalchemy import or_
 
 from zeus.config import celery, db
 from zeus.constants import Result, Status
+from zeus.exceptions import UnknownJob
 from zeus.models import Artifact, Build, Job, PendingArtifact
 from zeus.utils import timezone
 
@@ -28,7 +29,11 @@ def cleanup_builds():
 
     for result in queryset:
         current_app.logger.warning("cleanup: process_pending_artifact  %s", result.id)
-        process_pending_artifact(pending_artifact_id=result.id)
+        try:
+            process_pending_artifact(pending_artifact_id=result.id)
+        except UnknownJob:
+            # do we just axe it?
+            pass
 
     # find any artifacts which seemingly are stuck (not enqueued)
     queryset = (

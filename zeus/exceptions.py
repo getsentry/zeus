@@ -51,3 +51,11 @@ class IdentityNeedsUpgrade(ApiUnauthorized):
 
 class UnknownRepositoryBackend(Exception):
     pass
+
+
+class UnknownBuild(Exception):
+    pass
+
+
+class UnknownJob(Exception):
+    pass

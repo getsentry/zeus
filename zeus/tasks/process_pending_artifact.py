@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from zeus import auth
 from zeus.config import celery, db
 from zeus.constants import Result, Status
+from zeus.exceptions import UnknownBuild, UnknownJob
 from zeus.models import Artifact, Build, Job, PendingArtifact
 
 from .process_artifact import process_artifact
@@ -31,7 +32,7 @@ def process_pending_artifact(pending_artifact_id, **kwargs):
         Build.external_id == pending_artifact.external_build_id,
     ).first()
     if not build:
-        raise NotImplementedError
+        raise UnknownBuild
 
     job = Job.query.filter(
         Job.repository_id == pending_artifact.repository_id,
@@ -40,7 +41,7 @@ def process_pending_artifact(pending_artifact_id, **kwargs):
         Job.external_id == pending_artifact.external_job_id,
     ).first()
     if not job:
-        raise NotImplementedError
+        raise UnknownJob
 
     artifact = Artifact(
         job_id=job.id,
