@@ -14,7 +14,13 @@ export default class RepositoryTestChart extends AsyncPage {
 
   getEndpoints() {
     let {repo} = this.context;
-    return [['testList', `/repos/${repo.full_name}/tests-by-build`]];
+    return [
+      [
+        'testList',
+        `/repos/${repo.full_name}/tests-by-build`,
+        {query: this.props.location.query}
+      ]
+    ];
   }
 
   renderBody() {
