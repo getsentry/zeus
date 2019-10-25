@@ -17,7 +17,16 @@ exports[`BuildCoverage renders with build 1`] = `
         </a>
       </p>
       <p>
-        66% lines covered (6127 / 9187)
+        <strong>
+          Diff:
+        </strong>
+         88% lines covered (1628 / 1838)
+      </p>
+      <p>
+        <strong>
+          Overall:
+        </strong>
+         66% lines covered (6127 / 9187)
       </p>
     </div>
   </div>
@@ -35,7 +44,14 @@ exports[`BuildCoverage renders with build 1`] = `
         style="text-align:right"
         width="250"
       >
-        Lines
+        Diff
+      </div>
+      <div
+        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH fgSvmL"
+        style="text-align:right"
+        width="250"
+      >
+        Overall
       </div>
     </div>
     <div
@@ -47,6 +63,20 @@ exports[`BuildCoverage renders with build 1`] = `
         <a>
           conftest.py
         </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+         
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        0 / 0
       </div>
       <div
         class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
@@ -87,6 +117,20 @@ exports[`BuildCoverage renders with build 1`] = `
       >
         0 / 8
       </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        0%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        0 / 8
+      </div>
     </div>
     <div
       class="warn sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
@@ -97,6 +141,20 @@ exports[`BuildCoverage renders with build 1`] = `
         <a>
           tests/zeus
         </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        99%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        1,528 / 1530
       </div>
       <div
         class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
@@ -128,6 +186,20 @@ exports[`BuildCoverage renders with build 1`] = `
         style="text-align:right"
         width="120"
       >
+        33%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        50 / 150
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
         6%
       </div>
       <div
@@ -147,6 +219,20 @@ exports[`BuildCoverage renders with build 1`] = `
         <a>
           zeus
         </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        33%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        50 / 150
       </div>
       <div
         class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
@@ -178,7 +264,16 @@ exports[`BuildCoverage renders without build 1`] = `
       class="sc-gZMcBi jtErZf"
     >
       <p>
-        66% lines covered (6127 / 9187)
+        <strong>
+          Diff:
+        </strong>
+         88% lines covered (1628 / 1838)
+      </p>
+      <p>
+        <strong>
+          Overall:
+        </strong>
+         66% lines covered (6127 / 9187)
       </p>
     </div>
   </div>
@@ -196,7 +291,14 @@ exports[`BuildCoverage renders without build 1`] = `
         style="text-align:right"
         width="250"
       >
-        Lines
+        Diff
+      </div>
+      <div
+        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH fgSvmL"
+        style="text-align:right"
+        width="250"
+      >
+        Overall
       </div>
     </div>
     <div
@@ -208,6 +310,20 @@ exports[`BuildCoverage renders without build 1`] = `
         <a>
           conftest.py
         </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+         
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        0 / 0
       </div>
       <div
         class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
@@ -248,6 +364,20 @@ exports[`BuildCoverage renders without build 1`] = `
       >
         0 / 8
       </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        0%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        0 / 8
+      </div>
     </div>
     <div
       class="warn sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
@@ -258,6 +388,20 @@ exports[`BuildCoverage renders without build 1`] = `
         <a>
           tests/zeus
         </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        99%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        1,528 / 1530
       </div>
       <div
         class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
@@ -289,6 +433,20 @@ exports[`BuildCoverage renders without build 1`] = `
         style="text-align:right"
         width="120"
       >
+        33%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        50 / 150
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
         6%
       </div>
       <div
@@ -308,6 +466,20 @@ exports[`BuildCoverage renders without build 1`] = `
         <a>
           zeus
         </a>
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        33%
+      </div>
+      <div
+        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        style="text-align:right"
+        width="120"
+      >
+        50 / 150
       </div>
       <div
         class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"

@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
-import CoverageSummary from '../components/CoverageSummary';
+import BuildCoverage from '../components/BuildCoverage';
 import Section from '../components/Section';
 
 export default class RevisionCoverage extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
-    build: PropTypes.object.isRequired,
     repo: PropTypes.object.isRequired
   };
 
@@ -17,8 +16,8 @@ export default class RevisionCoverage extends AsyncPage {
     let {sha} = this.props.params;
     return [
       [
-        'coverage',
-        `/repos/${repo.full_name}/revisions/${sha}/file-coverage`,
+        'result',
+        `/repos/${repo.full_name}/revisions/${sha}/file-coverage-tree`,
         {query: this.props.location.query}
       ]
     ];
@@ -27,10 +26,10 @@ export default class RevisionCoverage extends AsyncPage {
   renderBody() {
     return (
       <Section>
-        <CoverageSummary
-          coverage={this.state.coverage}
+        <BuildCoverage
+          result={this.state.result}
           repo={this.context.repo}
-          build={this.props.build}
+          {...this.props}
         />
       </Section>
     );

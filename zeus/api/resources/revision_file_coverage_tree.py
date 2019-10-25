@@ -1,9 +1,11 @@
 from flask import request
+from typing import List
 
-from zeus.models import Build, FileCoverage, Source
+from zeus.models import FileCoverage, Revision
+from zeus.utils.builds import fetch_build_for_revision
 from zeus.utils.trees import build_tree
 
-from .base_build import BaseBuildResource
+from .base_revision import BaseRevisionResource
 from ..schemas import FileCoverageSchema
 
 SEPERATOR = "/"
@@ -11,22 +13,18 @@ SEPERATOR = "/"
 filecoverage_schema = FileCoverageSchema(many=False)
 
 
-class BuildFileCoverageTreeResource(BaseBuildResource):
-    def _get_leaf(self, build: Build, coverage: FileCoverage):
-        # TODO(dcramer): support patches
-        source = Source.query.options(
-            # joinedload('patch'),
-            # undefer('patch.diff'),
-        ).get(build.source_id)
-
+class RevisionFileCoverageTreeResource(BaseRevisionResource):
+    def _get_leaf(self, revision: Revision, coverage_list: List[FileCoverage]):
         file_source = None
-        vcs = build.repository.get_vcs()
+        coverage = coverage_list[0]
+        vcs = revision.repository.get_vcs()
         if vcs:
             try:
-                file_source = vcs.show(source.revision_sha, coverage.filename)
+                file_source = vcs.show(revision.sha, coverage.filename)
             except Exception:
                 pass
 
+        # TODO(dcramer): this needs to merge coverage nodes
         return {
             "is_leaf": True,
             "entries": [
@@ -44,27 +42,34 @@ class BuildFileCoverageTreeResource(BaseBuildResource):
             "file_source": file_source,
         }
 
-    def get(self, build: Build):
+    def get(self, revision: Revision):
         """
-        Return a tree of coverage for the given build.
+        Return a tree of file coverage for the given revision.
         """
+        build = fetch_build_for_revision(revision)
+        if not build:
+            return self.respond(status=404)
+
         parent = request.args.get("parent")
 
-        query = FileCoverage.query.filter(FileCoverage.build_id == build.id).order_by(
-            FileCoverage.filename.asc()
-        )
+        build_ids = [original.id for original in build.original]
+
+        query = FileCoverage.query.filter(
+            FileCoverage.build_id.in_(build_ids)
+        ).order_by(FileCoverage.filename.asc())
+
         if parent:
             query = query.filter(FileCoverage.filename.startswith(parent))
 
         coverage_list = list(query)
 
-        is_leaf = len(coverage_list) == 1 and coverage_list[0].filename == parent
+        is_leaf = all(c.filename == parent for c in coverage_list)
 
         if is_leaf:
-            response = self._get_leaf(build, coverage_list[0])
+            response = self._get_leaf(revision, coverage_list)
         elif coverage_list:
             groups = build_tree(
-                [f.filename for f in coverage_list],
+                list(set([f.filename for f in coverage_list])),
                 sep=SEPERATOR,
                 min_children=2,
                 parent=parent,
