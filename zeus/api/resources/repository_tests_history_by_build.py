@@ -20,13 +20,13 @@ class TestCaseHistorySchema(Schema):
     def process_results(self, data, **kwargs):
         results_by_test = defaultdict(dict)
         for test_name, result, build_id in data:
-            results_by_test[test_name][str(build_id)] = result
+            results_by_test[test_name][build_id] = result
 
         results = {}
         for test_name, test_results in results_by_test.items():
             results[test_name] = []
             for build in self.context["builds"]:
-                results[test_name].append(test_results.get(str(build.id), None))
+                results[test_name].append(test_results.get(build.id, None))
 
         output = {"results": results, "builds": self.context["builds"]}
         return output
