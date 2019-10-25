@@ -10,4 +10,4 @@ spec:
   storageClassName: standard
   nfs:
     path: /
-    server: 10.43.247.96
+    server: nfs-server.default.svc.cluster.local
