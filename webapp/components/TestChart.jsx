@@ -54,6 +54,7 @@ const ResultRow = styled('div')`
   display: grid;
   grid-gap: 4px;
   align-items: center;
+  margin-bottom: 20px;
   grid-template-columns: auto repeat(${p => p.builds}, max-content);
 `;
 
