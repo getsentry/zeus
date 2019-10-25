@@ -106,7 +106,7 @@ spec:
             httpGet:
               path: /healthz
               port: 8080
-            periodSeconds: 5
+            periodSeconds: 30
           livenessProbe:
             httpGet:
               path: /healthz
@@ -120,7 +120,7 @@ spec:
               mountPath: '/var/run/secret/cloud.google.com'
           resources:
             requests:
-              cpu: 0.25
+              cpu: 1
             limits:
               cpu: 1
         - name: cloudsql-proxy
