@@ -103,6 +103,7 @@ class Repository(StandardAttributes, db.Model):
     )
     last_update = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     last_update_attempt = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
+    next_update = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
 
     options = db.relationship(
         "ItemOption",

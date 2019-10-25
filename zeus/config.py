@@ -204,7 +204,8 @@ def create_app(_read_config=True, **config):
     app.config["REPO_ROOT"] = os.environ.get(
         "REPO_ROOT", os.path.join(WORKSPACE_ROOT, "zeus-repos")
     )
-    app.config["REPO_SYNC_INTERVAL"] = timedelta(minutes=60)
+    app.config["REPO_MIN_SYNC_INTERVAL"] = timedelta(minutes=60)
+    app.config["REPO_MAX_SYNC_INTERVAL"] = timedelta(hours=24)
 
     app.config["ARTIFACT_RETENTION"] = timedelta(days=30)
 
