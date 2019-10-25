@@ -108,7 +108,7 @@ spec:
             - name: PUBSUB_ENDPOINT
               value: 'https://updates.zeus.ci'
             - name: ROLE
-              value: worker
+              value: web
             - name: CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
