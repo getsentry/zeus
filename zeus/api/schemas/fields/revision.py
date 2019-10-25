@@ -9,6 +9,7 @@ from zeus.vcs.base import UnknownRevision
 class RevisionRefField(fields.Str):
     def __init__(self, validate=True, *args, **kwargs):
         self.validate = validate
+        super().__init__(*args, **kwargs)
 
     def _deserialize(self, value, attr, data, **kwargs):
         repo = self.context.get("repository")
