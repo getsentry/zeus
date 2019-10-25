@@ -1,4 +1,5 @@
 from datetime import timedelta
+from flask import current_app
 from sqlalchemy import or_
 
 from zeus.config import celery, db
@@ -29,6 +30,7 @@ def cleanup_builds():
             Artifact.status != Status.finished, Artifact.id == result.id
         ).update({"date_updated": timezone.now()})
         db.session.flush()
+        current_app.logger.warning("cleanup: process_artifact %s", result.id)
         process_artifact(artifact_id=result.id)
 
     # first we timeout any jobs which have been sitting for far too long
@@ -59,4 +61,5 @@ def cleanup_builds():
         .limit(100)
     )
     for build in queryset:
+        current_app.logger.warning("cleanup: aggregate_build_stats %s", build.id)
         aggregate_build_stats(build_id=build.id)
