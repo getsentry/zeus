@@ -12,9 +12,13 @@ from .process_artifact import process_artifact
 @celery.task(name="zeus.cleanup_builds", time_limit=300)
 def cleanup_builds():
     # find any artifacts which seemingly are stuck (not enqueued)
-    queryset = Artifact.query.unrestricted_unsafe().filter(
-        Artifact.status != Status.finished,
-        Artifact.date_updated < timezone.now() - timedelta(minutes=15),
+    queryset = (
+        Artifact.query.unrestricted_unsafe()
+        .filter(
+            Artifact.status != Status.finished,
+            Artifact.date_updated < timezone.now() - timedelta(minutes=15),
+        )
+        .limit(100)
     )
     for result in queryset:
         Artifact.query.unrestricted_unsafe().filter(
@@ -37,11 +41,15 @@ def cleanup_builds():
     )
     db.session.commit()
 
-    queryset = Build.query.unrestricted_unsafe().filter(
-        Build.status != Status.finished,
-        ~Job.query.filter(
-            Job.build_id == Build.id, Job.status != Status.finished
-        ).exists(),
+    queryset = (
+        Build.query.unrestricted_unsafe()
+        .filter(
+            Build.status != Status.finished,
+            ~Job.query.filter(
+                Job.build_id == Build.id, Job.status != Status.finished
+            ).exists(),
+        )
+        .limit(100)
     )
     for build in queryset:
         aggregate_build_stats(build_id=build.id)
