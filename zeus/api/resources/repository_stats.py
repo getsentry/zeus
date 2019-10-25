@@ -131,7 +131,7 @@ def get_revisions(repo: Repository, branch: str = None, limit: int = 200) -> Lis
     if branch is None:
         branch = vcs.get_default_branch()
 
-    return [r.sha for r in vcs.log(limit=limit, branch=branch)]
+    return [r.sha for r in vcs.log(limit=limit, branch=branch, timeout=10)]
 
 
 class RepositoryStatsResource(BaseRepositoryResource):
