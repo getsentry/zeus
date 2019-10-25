@@ -2,7 +2,7 @@ from flask import current_app, request
 from marshmallow import Schema, fields, pre_dump
 
 from zeus.config import db
-from zeus.constants import Result, Status
+from zeus.constants import Status
 from zeus.models import Build, Repository, TestCase, Job, Source
 
 from .base_repository import BaseRepositoryResource
@@ -42,13 +42,11 @@ class RepositoryTestsHistoryByBuildResource(BaseRepositoryResource):
         results = min(int(request.args.get("results", 20)), 100)
         query = request.args.get("query")
 
-        # use the most recent successful build to fetch test results
         builds = (
             Build.query.join(Source, Source.id == Build.source_id)
             .filter(
                 Source.patch_id == None,  # NOQA
                 Build.repository_id == repo.id,
-                Build.result == Result.passed,
                 Build.status == Status.finished,
             )
             .order_by(Build.number.desc())
@@ -59,7 +57,6 @@ class RepositoryTestsHistoryByBuildResource(BaseRepositoryResource):
             current_app.logger.info("no successful builds found for repository")
             return self.respond([])
 
-        # TODO(dcramer): this will likely need paginated as tests can be in the thousands
         testcase_query = (
             db.session.query(TestCase.name, TestCase.result, Job.build_id)
             .join(Job, TestCase.job_id == Job.id)
