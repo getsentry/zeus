@@ -1,3 +1,4 @@
+from collections import defaultdict
 from flask import current_app, request
 from marshmallow import Schema, fields, pre_dump
 
@@ -17,18 +18,15 @@ class TestCaseHistorySchema(Schema):
 
     @pre_dump(pass_many=False)
     def process_results(self, data, **kwargs):
-        results_by_test = {}
-        for (name, result, build_id) in data:
-            test_name = results_by_test.get(name, {})
-            test_name[str(build_id)] = result
-            results_by_test[name] = test_name
+        results_by_test = defaultdict(dict)
+        for test_name, result, build_id in data:
+            results_by_test[test_name][str(build_id)] = result
 
         results = {}
-        for test_name, result_by_test in results_by_test.items():
+        for test_name, test_results in results_by_test.items():
             results[test_name] = []
             for build in self.context["builds"]:
-                # XXX(dcramer): insert is not optimal
-                results[test_name].insert(0, result_by_test.get(str(build.id), None))
+                results[test_name].append(test_results.get(str(build.id), None))
 
         output = {"results": results, "builds": self.context["builds"]}
         return output
