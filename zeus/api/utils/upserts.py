@@ -14,7 +14,7 @@ def upsert_job(
     lock_key = "upsert:job:{build_id}:{provider}:{job_xid}".format(
         build_id=build.id, provider=provider_name, job_xid=external_id
     )
-    with redis.lock(lock_key, expire=30):
+    with redis.lock(lock_key, timeout=BUILD_LOCK_TIMEOUT, expire=30):
         json = data.copy() if data else {}
 
         job = Job.query.filter(
@@ -83,7 +83,7 @@ def upsert_change_request(
     lock_key = "hook:cr:{repo_id}:{provider}:{cr_xid}".format(
         repo_id=repository.id, provider=provider, cr_xid=external_id
     )
-    with redis.lock(lock_key, expire=30):
+    with redis.lock(lock_key, timeout=BUILD_LOCK_TIMEOUT, expire=30):
         json = data.copy() if data else {}
 
         cr = ChangeRequest.query.filter(
