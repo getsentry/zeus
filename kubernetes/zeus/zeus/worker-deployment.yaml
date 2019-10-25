@@ -8,8 +8,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: worker
-  minReplicas: 1
-  maxReplicas: 6
+  minReplicas: 2
+  maxReplicas: 10
   targetCPUUtilizationPercentage: 60
 ---
 apiVersion: extensions/v1beta1

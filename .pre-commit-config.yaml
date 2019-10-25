@@ -12,7 +12,6 @@ repos:
     - id: check-merge-conflict
     - id: check-symlinks
     - id: check-xml
-    - id: check-yaml
     - id: detect-private-key
     - id: end-of-file-fixer
     - id: fix-encoding-pragma
