@@ -23,18 +23,17 @@ def test_repository_tests_history_by_build(
     factories.TestCaseFactory(job=job4, name=default_testcase.name, passed=True)
 
     resp = client.get(
-        "/api/repos/{}/tests-by-build".format(
+        "/api/repos/{}/tests-by-build?results=3".format(
             default_repo.get_full_name(), default_testcase.hash
         )
     )
     assert resp.status_code == 200
     data = resp.json()
     assert data["results"] == {
-        default_testcase.name: ["passed", None, "failed", "passed"],
-        testcase2.name: [None, "passed", None, None],
+        default_testcase.name: ["passed", None, "failed"],
+        testcase2.name: [None, "passed", None],
     }
-    assert len(data["builds"]) == 4
+    assert len(data["builds"]) == 3
     assert data["builds"][0]["id"] == str(build4.id)
     assert data["builds"][1]["id"] == str(build3.id)
     assert data["builds"][2]["id"] == str(build2.id)
-    assert data["builds"][3]["id"] == str(default_build.id)

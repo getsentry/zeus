@@ -18,8 +18,21 @@ class TestCaseHistorySchema(Schema):
 
     @pre_dump(pass_many=False)
     def process_results(self, data, **kwargs):
+        testcase_query = (
+            db.session.query(TestCase.name, TestCase.result, Job.build_id)
+            .join(Job, TestCase.job_id == Job.id)
+            .filter(
+                TestCase.name.in_(n for n, in data),
+                Job.build_id.in_(b.id for b in self.context["builds"]),
+            )
+        )
+        if self.context["query"]:
+            testcase_query = testcase_query.filter(
+                TestCase.name.contains(self.context["query"])
+            )
+
         results_by_test = defaultdict(dict)
-        for test_name, result, build_id in data:
+        for test_name, result, build_id in testcase_query:
             results_by_test[test_name][build_id] = result
 
         results = {}
@@ -55,14 +68,16 @@ class RepositoryTestsHistoryByBuildResource(BaseRepositoryResource):
             current_app.logger.info("no successful builds found for repository")
             return self.respond([])
 
+        # this only fetches the unique test cases, as we need to paginate them
         testcase_query = (
-            db.session.query(TestCase.name, TestCase.result, Job.build_id)
+            db.session.query(TestCase.name)
             .join(Job, TestCase.job_id == Job.id)
             .filter(Job.build_id.in_(b.id for b in builds))
+            .distinct()
         )
         if query:
             testcase_query = testcase_query.filter(TestCase.name.contains(query))
 
-        schema = TestCaseHistorySchema(context={"builds": builds})
+        schema = TestCaseHistorySchema(context={"builds": builds, "query": query})
 
         return self.paginate_with_schema(schema, testcase_query)
