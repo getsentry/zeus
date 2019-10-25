@@ -2,13 +2,13 @@ from flask import current_app
 
 from zeus import auth
 from zeus.artifacts import manager as default_manager
-from zeus.config import celery, db
+from zeus.config import db, queue
 from zeus.constants import Result
 from zeus.models import Artifact, Job, Status
 from zeus.utils import timezone
 
 
-@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
+@queue.task(max_retries=5, autoretry_for=(Exception,), time_limit=60)
 def process_artifact(artifact_id, manager=None, force=False, **kwargs):
     from zeus.tasks.aggregate_job_stats import aggregate_build_stats_for_job
 

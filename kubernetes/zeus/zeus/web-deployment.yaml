@@ -93,11 +93,6 @@ spec:
               value: 'updates.zeus.ci,zeus.ci'
             - name: PUBSUB_ENDPOINT
               value: 'https://updates.zeus.ci'
-            - name: CELERY_BROKER_URL
-              valueFrom:
-                secretKeyRef:
-                  name: queue
-                  key: broker_url
           ports:
             - containerPort: 8080
           readinessProbe:

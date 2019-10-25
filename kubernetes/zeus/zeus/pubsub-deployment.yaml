@@ -91,11 +91,6 @@ spec:
               value: '/var/run/secret/cloud.google.com/service-account.json'
             - name: ALLOWED_ORIGINS
               value: 'updates.zeus.ci,zeus.ci'
-            - name: CELERY_BROKER_URL
-              valueFrom:
-                secretKeyRef:
-                  name: queue
-                  key: broker_url
           ports:
             - containerPort: 8080
           readinessProbe:

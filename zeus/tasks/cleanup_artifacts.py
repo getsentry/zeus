@@ -1,12 +1,12 @@
 from flask import current_app
 
-from zeus.config import celery, db
+from zeus.config import db, queue
 from zeus.constants import Status
 from zeus.models import Artifact
 from zeus.utils import timezone
 
 
-@celery.task(name="zeus.cleanup_artifacts", time_limit=300)
+@queue.task(name="zeus.cleanup_artifacts", time_limit=300)
 def cleanup_artifacts():
     queryset = (
         Artifact.query.unrestricted_unsafe()

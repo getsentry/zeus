@@ -34,7 +34,7 @@ spec:
         - name: zeus
           image: gcr.io/zeus-176020/zeus:latest
           imagePullPolicy: Always
-          args: ['zeus', 'worker', '--cron']
+          args: ['zeus', 'worker', '--scheduler']
           env:
             - name: GC_PROJECT
               value: zeus-176020
@@ -97,11 +97,6 @@ spec:
               value: '/var/run/secret/cloud.google.com/service-account.json'
             - name: ALLOWED_ORIGINS
               value: 'updates.zeus.ci,zeus.ci'
-            - name: CELERY_BROKER_URL
-              valueFrom:
-                secretKeyRef:
-                  name: queue
-                  key: broker_url
           readinessProbe:
             exec:
               command:

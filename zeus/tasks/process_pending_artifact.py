@@ -2,13 +2,13 @@ from flask import current_app
 from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
-from zeus.config import celery, db
+from zeus.config import db, queue
 from zeus.models import Artifact, Build, Job, PendingArtifact, Status
 
 from .process_artifact import process_artifact
 
 
-@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
+@queue.task(max_retries=5, autoretry_for=(Exception,), time_limit=60)
 def process_pending_artifact(pending_artifact_id, **kwargs):
     pending_artifact = PendingArtifact.query.unrestricted_unsafe().get(
         pending_artifact_id

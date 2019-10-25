@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import current_app
 
 from zeus import auth
-from zeus.config import celery, db
+from zeus.config import db, queue
 from zeus.constants import Permission
 from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import ItemOption, Repository, RepositoryStatus
@@ -13,8 +13,8 @@ from zeus.vcs.base import InvalidPublicKey
 # TODO(dcramer): a lot of this code is shared with import_repo
 
 
-@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True)
-def sync_repo(repo_id, max_log_passes=10, force=False, time_limit=300):
+@queue.task(max_retries=5, autoretry_for=(Exception,), time_limit=300)
+def sync_repo(repo_id, max_log_passes=10, force=False):
     auth.set_current_tenant(auth.Tenant(access={repo_id: Permission.admin}))
 
     repo = Repository.query.get(repo_id)

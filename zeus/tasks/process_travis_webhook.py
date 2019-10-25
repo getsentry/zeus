@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 from zeus import auth
 from zeus.api.utils.upserts import upsert_build, upsert_change_request, upsert_job
-from zeus.config import celery, nplusone
+from zeus.config import nplusone, queue
 from zeus.constants import Permission
 from zeus.exceptions import ApiError
 from zeus.models import Build, Hook
@@ -39,7 +39,7 @@ def get_result(state: str) -> str:
     }.get(state, "unknown")
 
 
-@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
+@queue.task(max_retries=5, autoretry_for=(Exception,), time_limit=60)
 def process_travis_webhook(hook_id: str, payload: dict, timestamp_ms: int):
     # TODO(dcramer): we want to utilize timestamp_ms to act as a version and
     # ensure we dont process older updates after newer updates are already present

@@ -8,7 +8,7 @@ ENV PATH /usr/src/zeus/bin:/root/.poetry/bin:$PATH
 
 ENV NODE_ENV production
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED true
 
 # Sane defaults for pip
 ENV PIP_NO_CACHE_DIR off

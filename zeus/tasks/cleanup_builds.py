@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from zeus.config import celery, db
+from zeus.config import queue, db
 from zeus.constants import Result, Status
 from zeus.models import Artifact, Build, Job
 from zeus.utils import timezone
@@ -9,7 +9,7 @@ from .aggregate_job_stats import aggregate_build_stats
 from .process_artifact import process_artifact
 
 
-@celery.task(name="zeus.cleanup_builds", time_limit=300)
+@queue.task(name="zeus.cleanup_builds", time_limit=300)
 def cleanup_builds():
     # find any artifacts which seemingly are stuck (not enqueued)
     queryset = Artifact.query.unrestricted_unsafe().filter(
