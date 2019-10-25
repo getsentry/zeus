@@ -60,6 +60,7 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
                 offset=(page - 1) * per_page,
                 parent=parent,
                 branch=branch,
+                timeout=10,
             )
         )
 

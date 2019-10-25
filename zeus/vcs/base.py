@@ -181,7 +181,7 @@ class Vcs(object):
     def get_default_env(self) -> dict:
         return {}
 
-    def run(self, cmd, **kwargs) -> str:
+    def run(self, cmd, timeout=None, **kwargs) -> str:
         if self.exists():
             kwargs.setdefault("cwd", self.path)
 
@@ -200,7 +200,7 @@ class Vcs(object):
         kwargs["stderr"] = PIPE
 
         proc = Popen(cmd, **kwargs)
-        (stdout, stderr) = proc.communicate()
+        (stdout, stderr) = proc.communicate(timeout=timeout)
         if proc.returncode != 0:
             raise CommandError(cmd[0], proc.returncode, stdout, stderr)
 
