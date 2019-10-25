@@ -29,10 +29,8 @@ class JobArtifactsResource(BaseJobResource):
             Artifact.query.options(
                 joinedload("job"),
                 joinedload("job").joinedload("build"),
-                joinedload("job").joinedload("build").joinedload("source"),
                 joinedload("job")
                 .joinedload("build")
-                .joinedload("source")
                 .joinedload("repository"),
             )
             .filter(Artifact.job_id == job.id)

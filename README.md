@@ -171,6 +171,7 @@ zeus
 - Most models contain a GUID (UUID) primary key.
 - Some generalized models (such as `ItemStat`) are keyed by GUID, and do not contain backrefs or constraints.
 - Access is controlled at the repository level, and is generally enforced if you use the `{ModelClass}.query` utilities.
+- Refs are unresolved (pointers to shas). They are often resolved asynchronously. Models containing a sha will also often contain a parallel ref field.
 
 ```
 zeus

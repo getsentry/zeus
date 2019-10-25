@@ -22,6 +22,9 @@ class ChangeRequestFactory(ModelFactory):
     author_id = factory.SelfAttribute("author.id")
     parent_revision = factory.SubFactory("zeus.factories.RevisionFactory")
     parent_revision_sha = factory.SelfAttribute("parent_revision.sha")
+    head_revision_sha = None
+    parent_ref = factory.SelfAttribute("parent_revision_sha")
+    head_ref = factory.SelfAttribute("head_revision_sha")
     repository = factory.SelfAttribute("parent_revision.repository")
     repository_id = factory.SelfAttribute("parent_revision.repository_id")
     date_created = factory.LazyAttribute(

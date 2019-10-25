@@ -151,10 +151,10 @@ class AggregateTestCaseSummarySchema(Schema):
     result = ResultField(required=True)
     message = fields.Str(required=False)
     build = fields.Nested(
-        BuildSchema(exclude=("repository", "source", "stats")), required=False
+        BuildSchema(exclude=("repository", "revision", "stats")), required=False
     )
     origin_build = fields.Nested(
-        BuildSchema(exclude=("repository", "source", "stats")), required=False
+        BuildSchema(exclude=("repository", "revision", "stats")), required=False
     )
 
     @pre_dump(pass_many=True)

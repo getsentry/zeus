@@ -4,7 +4,8 @@ from zeus.db.utils import model_repr
 
 
 class Patch(RepositoryBoundMixin, StandardAttributes, db.Model):
-    parent_revision_sha = db.Column(db.String(40), nullable=False)
+    parent_ref = db.Column(db.String, nullable=False)
+    parent_revision_sha = db.Column(db.String(40), nullable=True)
     diff = db.deferred(db.Column(db.Text, nullable=False))
 
     parent_revision = db.relationship(

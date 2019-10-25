@@ -1,8 +1,9 @@
 from marshmallow import Schema, fields
 
+from .author import AuthorSchema
 from .fields import ResultField, RevisionRefField, StatusField
 from .repository import RepositorySchema
-from .source import SourceSchema
+from .revision import RevisionSchema
 from .stats import StatsSchema
 
 
@@ -15,7 +16,6 @@ class BuildSchema(Schema):
     finished_at = fields.DateTime(attribute="date_finished", dump_only=True)
     status = StatusField(dump_only=True)
     result = ResultField(dump_only=True)
-    source = fields.Nested(SourceSchema(exclude=["diff"]), dump_only=True)
     stats = fields.Nested(StatsSchema(), dump_only=True)
     provider = fields.Str(dump_only=True)
     external_id = fields.Str(dump_only=True)
@@ -24,13 +24,17 @@ class BuildSchema(Schema):
     repository = fields.Nested(
         RepositorySchema(exclude=("latest_build",)), dump_only=True
     )
+    author = fields.Nested(AuthorSchema())
+    revision = fields.Nested(RevisionSchema())
+    ref = RevisionRefField(dump_only=True, sha_field='revision_sha')
 
 
 class BuildCreateSchema(Schema):
+    ref = RevisionRefField(validate_ref=False, required=True, sha_field='revision_sha')
+    author = fields.Nested(AuthorSchema(), required=True)
     # label is only required if they're specifying a source with a patch (which they cant do yet)
     label = fields.Str(required=False)
     hook_id = fields.Str()
     provider = fields.Str()
     external_id = fields.Str()
     url = fields.Str(allow_none=True)
-    ref = RevisionRefField(required=True)

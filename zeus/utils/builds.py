@@ -105,9 +105,8 @@ def fetch_builds_for_revisions(
 
     builds = (
         Build.query.options(
-            contains_eager("source"),
-            contains_eager("source").joinedload("author"),
-            contains_eager("source").joinedload("revision", innerjoin=True),
+            joinedload("author"),
+            joinedload("revision"),
             subqueryload_all("stats"),
         )
         .join(Source, Build.source_id == Source.id)

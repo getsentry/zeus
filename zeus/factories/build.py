@@ -20,15 +20,19 @@ faker = Factory.create()
 class BuildFactory(ModelFactory):
     id = GUIDFactory()
     label = factory.faker.Faker("sentence")
-    source = factory.SubFactory("zeus.factories.SourceFactory")
-    source_id = factory.SelfAttribute("source.id")
-    repository = factory.SelfAttribute("source.repository")
+    repository = factory.LazyAttribute(lambda o: o.revision.repository if o.revision_sha else None)
     repository_id = factory.SelfAttribute("repository.id")
-    author = factory.SelfAttribute("source.author")
+    author = factory.SubFactory(
+        "zeus.factories.AuthorFactory", repository=factory.SelfAttribute("..repository")
+    )
     author_id = factory.SelfAttribute("author.id")
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
-    date_created = factory.SelfAttribute("source.date_created")
+    ref = factory.faker.Faker('sha1')
+    revision_sha = factory.SelfAttribute("..ref")
+    date_created = factory.LazyAttribute(
+        lambda o: timezone.now() - timedelta(minutes=30)
+    )
     date_started = factory.LazyAttribute(
         lambda o: (
             faker.date_time_between(

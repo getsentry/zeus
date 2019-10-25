@@ -33,10 +33,8 @@ class RevisionArtifactsResource(BaseRevisionResource):
             Artifact.query.options(
                 joinedload("job"),
                 joinedload("job").joinedload("build"),
-                joinedload("job").joinedload("build").joinedload("source"),
                 joinedload("job")
                 .joinedload("build")
-                .joinedload("source")
                 .joinedload("repository"),
             )
             .join(Job, Job.id == Artifact.job_id)

@@ -19,7 +19,7 @@ class TestResultSchema(Schema):
 class TestCaseHistorySchema(Schema):
     tests = fields.List(fields.Nested(TestResultSchema))
     builds = fields.List(
-        fields.Nested(BuildSchema(exclude=["stats", "source", "repository"]))
+        fields.Nested(BuildSchema(exclude=["stats", "revision", "repository"]))
     )
 
     @pre_dump(pass_many=False)

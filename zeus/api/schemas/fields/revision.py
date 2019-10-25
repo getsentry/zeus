@@ -7,8 +7,9 @@ from zeus.vcs.base import UnknownRevision
 
 
 class RevisionRefField(fields.Str):
-    def __init__(self, validate_ref=True, *args, **kwargs):
+    def __init__(self, validate_ref=True, sha_field=None, *args, **kwargs):
         self.validate_ref = validate_ref
+        self.sha_field = sha_field
         super().__init__(*args, **kwargs)
 
     def _deserialize(self, value, attr, data, **kwargs):

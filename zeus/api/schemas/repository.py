@@ -116,9 +116,8 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
         for b in Build.query.unrestricted_unsafe()
         .filter(Build.id.in_(build_map.values()))
         .options(
-            joinedload("source"),
-            joinedload("source").joinedload("author"),
-            joinedload("source").joinedload("revision"),
+            joinedload("author"),
+            joinedload("revision"),
             subqueryload_all("stats"),
         )
     }

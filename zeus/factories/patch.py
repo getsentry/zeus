@@ -13,6 +13,7 @@ class PatchFactory(ModelFactory):
     repository = factory.SelfAttribute("parent_revision.repository")
     repository_id = factory.SelfAttribute("parent_revision.repository_id")
     parent_revision_sha = factory.SelfAttribute("parent_revision.sha")
+    parent_ref = factory.SelfAttribute("parent_revision_sha")
     diff = factory.LazyAttribute(
         lambda o: open(
             os.path.join(

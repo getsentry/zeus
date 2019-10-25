@@ -13,7 +13,8 @@ class Source(RepositoryBoundMixin, StandardAttributes, db.Model):
     patch_id = db.Column(
         GUID, db.ForeignKey("patch.id", ondelete="CASCADE"), unique=True, nullable=True
     )
-    revision_sha = db.Column(db.String(40), nullable=False)
+    ref = db.Column(db.String, nullable=False)
+    revision_sha = db.Column(db.String(40), nullable=True)
     data = db.Column(JSONEncodedDict, nullable=True)
     author_id = db.Column(
         GUID, db.ForeignKey("author.id", ondelete="SET NULL"), index=True, nullable=True
