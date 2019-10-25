@@ -352,6 +352,7 @@ def configure_sentry(app):
     from sentry_sdk.integrations.aiohttp import AioHttpIntegration
     from sentry_sdk.integrations.celery import CeleryIntegration
     from sentry_sdk.integrations.flask import FlaskIntegration
+    from sentry_sdk.integrations.logging import LoggingIntegration
     from sentry_sdk.integrations.redis import RedisIntegration
     from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
@@ -379,6 +380,7 @@ def configure_sentry(app):
             AioHttpIntegration(),
             FlaskIntegration(transaction_style="url"),
             CeleryIntegration(),
+            LoggingIntegration(event_level=logging.WARN),
             RedisIntegration(),
             SqlalchemyIntegration(),
         ],
