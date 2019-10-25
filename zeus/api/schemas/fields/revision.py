@@ -7,9 +7,12 @@ from zeus.vcs.base import UnknownRevision
 
 
 class RevisionRefField(fields.Str):
+    def __init__(self, validate=True, *args, **kwargs):
+        self.validate = validate
+
     def _deserialize(self, value, attr, data, **kwargs):
         repo = self.context.get("repository")
-        if repo:
+        if repo and self.validate:
             try:
                 revision = revisions.identify_revision(repo, value)
             except UnknownRevision as e:

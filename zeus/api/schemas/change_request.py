@@ -12,8 +12,12 @@ class ChangeRequestSchema(Schema):
     number = fields.Integer(dump_only=True)
     message = fields.Str()
     author = fields.Nested(AuthorSchema(), dump_only=True)
-    head_revision_sha = RevisionRefField(allow_none=True, load_only=True)
-    parent_revision_sha = RevisionRefField(required=True, load_only=True)
+    head_revision_sha = RevisionRefField(
+        validate=False, allow_none=True, load_only=True
+    )
+    parent_revision_sha = RevisionRefField(
+        validate=False, required=True, load_only=True
+    )
     head_revision = fields.Nested(RevisionSchema(), allow_none=True, dump_only=True)
     parent_revision = fields.Nested(RevisionSchema(), required=True, dump_only=True)
     provider = fields.Str(dump_only=True)
@@ -35,8 +39,12 @@ class ChangeRequestSchema(Schema):
 
 class ChangeRequestCreateSchema(Schema):
     author = fields.Nested(AuthorSchema(), allow_none=True)
-    head_revision_sha = RevisionRefField(allow_none=True, load_only=True)
-    parent_revision_sha = RevisionRefField(required=True, load_only=True)
+    head_revision_sha = RevisionRefField(
+        validate=False, allow_none=True, load_only=True
+    )
+    parent_revision_sha = RevisionRefField(
+        validate=False, required=True, load_only=True
+    )
     provider = fields.Str(required=True)
     message = fields.Str(required=True)
     external_id = fields.Str(required=True)
