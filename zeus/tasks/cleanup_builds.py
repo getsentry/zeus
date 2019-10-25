@@ -1,4 +1,5 @@
 from datetime import timedelta
+from sqlalchemy import or_
 
 from zeus.config import celery, db
 from zeus.constants import Result, Status
@@ -16,7 +17,10 @@ def cleanup_builds():
         Artifact.query.unrestricted_unsafe()
         .filter(
             Artifact.status != Status.finished,
-            Artifact.date_updated < timezone.now() - timedelta(minutes=15),
+            or_(
+                Artifact.date_updated < timezone.now() - timedelta(minutes=15),
+                Artifact.date_updated == None,  # NOQA
+            ),
         )
         .limit(100)
     )
@@ -30,7 +34,10 @@ def cleanup_builds():
     # first we timeout any jobs which have been sitting for far too long
     Job.query.unrestricted_unsafe().filter(
         Job.status != Status.finished,
-        Job.date_updated < timezone.now() - timedelta(hours=1),
+        or_(
+            Job.date_updated < timezone.now() - timedelta(hours=1),
+            Job.date_updated == None,  # NOQA
+        ),
     ).update(
         {
             "status": Status.finished,
