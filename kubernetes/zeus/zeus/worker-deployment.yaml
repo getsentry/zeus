@@ -110,7 +110,7 @@ spec:
               mountPath: '/var/run/secret/cloud.google.com'
           resources:
             requests:
-              cpu: 2
+              cpu: 4
             limits:
               cpu: 4
         - name: cloudsql-proxy
