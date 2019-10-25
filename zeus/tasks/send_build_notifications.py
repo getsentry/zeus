@@ -1,3 +1,4 @@
+from datetime import timedelta
 from uuid import UUID
 
 from zeus import auth
@@ -5,6 +6,7 @@ from zeus.config import celery
 from zeus.constants import Result, Status
 from zeus.models import Build
 from zeus.notifications import email
+from zeus.utils import timezone
 
 
 @celery.task(
@@ -22,6 +24,12 @@ def send_build_notifications(build_id: UUID, time_limit=30):
     # double check that the build is still finished and only send when
     # its failing
     if build.result != Result.failed or build.status != Status.finished:
+        return
+
+    if build.date_finished < timezone.now() - timedelta(days=1):
+        return
+
+    if build.date_started < timezone.now() - timedelta(days=7):
         return
 
     email.send_email_notification(build=build)
