@@ -20,13 +20,13 @@ export default class TestChart extends Component {
   };
 
   render() {
-    const buildsList = Object.entries(this.props.testList.builds);
+    const buildsList = this.props.testList.builds;
 
     return (
       <ResultRow builds={buildsList.length}>
         <Header>Test</Header>
-        {buildsList.map(([id, build]) => (
-          <Header key={id}>
+        {buildsList.map(build => (
+          <Header key={build.id}>
             <BuildLink
               href={build.url}
               title={`${build.label} finished at ${build.finished_at}`}>

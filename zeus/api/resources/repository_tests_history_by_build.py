@@ -11,9 +11,8 @@ from ..schemas import ResultField, BuildSchema
 
 class TestCaseHistorySchema(Schema):
     results = fields.Dict(keys=fields.Str(), values=fields.List(ResultField))
-    builds = fields.Dict(
-        keys=fields.Str(),
-        values=fields.Nested(BuildSchema(exclude=["stats", "source", "repository"])),
+    builds = fields.List(
+        fields.Nested(BuildSchema(exclude=["stats", "source", "repository"]))
     )
 
     @pre_dump(pass_many=False)
@@ -31,10 +30,7 @@ class TestCaseHistorySchema(Schema):
                 # XXX(dcramer): insert is not optimal
                 results[test_name].insert(0, result_by_test.get(str(build.id), None))
 
-        output = {
-            "results": results,
-            "builds": {str(b.id): b for b in self.context["builds"]},
-        }
+        output = {"results": results, "builds": self.context["builds"]}
         return output
 
 

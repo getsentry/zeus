@@ -15,5 +15,4 @@ def test_repository_tests_history_by_build(
     data = resp.json()
     assert data["results"] == {default_testcase.name: ["passed"]}
     assert len(data["builds"]) == 1
-    assert str(default_build.id) in data["builds"]
-    assert data["builds"][str(default_build.id)]["result"] == "passed"
+    assert data["builds"][0]["id"] == str(default_build.id)
