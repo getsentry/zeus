@@ -91,6 +91,8 @@ spec:
               value: '/var/run/secret/cloud.google.com/service-account.json'
             - name: ALLOWED_ORIGINS
               value: 'updates.zeus.ci,zeus.ci'
+            - name: ROLE
+              value: worker
             - name: CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:

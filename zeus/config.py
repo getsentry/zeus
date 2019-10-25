@@ -388,3 +388,6 @@ def configure_sentry(app):
         traceparent_v2=True,
         _experiments={"fast_serialize": True},
     )
+
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("role", os.environ.get("ROLE", "unknown"))
