@@ -805,7 +805,7 @@ category = "main"
 description = "C parser in Python"
 name = "pycparser"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+python-versions = "*"
 version = "2.19"
 
 [[package]]
@@ -990,11 +990,11 @@ description = "Python client for Sentry (https://getsentry.com)"
 name = "sentry-sdk"
 optional = false
 python-versions = "*"
-version = "0.12.3"
+version = "0.13.1"
 
 [package.dependencies]
 certifi = "*"
-urllib3 = ">=1.9"
+urllib3 = ">=1.10.0"
 
 [[package]]
 category = "main"
@@ -1148,7 +1148,7 @@ more-itertools = "*"
 test = ["pytest", "pytest-cov", "pytest-mock", "pytest-responses", "pytest-xdist", "responses"]
 
 [metadata]
-content-hash = "c139ae0b043dc9d0c584877cd26ac8b435ab98d03c2a46015c82684946fe6e95"
+content-hash = "79410e9a87e1be51c96a4aa98fe9ca2e81987d5acfb5db04bc5cd102d6b76347"
 python-versions = "~3.7"
 
 [metadata.hashes]
@@ -1247,7 +1247,7 @@ requests = ["6a1b267aa90cac58ac3a765d067950e7dbbf75b1da07e895d1f594193a40a38b", 
 requests-oauthlib = ["50a8ae2ce8273e384895972b56193c7409601a66d4975774c60c2aed869639ca", "883ac416757eada6d3d07054ec7092ac21c7f35cb1d2cf82faf205637081f468"]
 responses = ["98e1c0eb5a7a03d59e73c8ac774428664f319ef35c6ac59479436bbb9c3499be", "a64029dbc6bed7133e2c971ee52153f30e779434ad55a5abf40322bcff91d029"]
 rsa = ["14ba45700ff1ec9eeb206a2ce76b32814958a98e372006c8fb76ba820211be66", "1a836406405730121ae9823e19c6e806c62bbad73f890574fff50efa4122c487"]
-sentry-sdk = ["15e51e74b924180c98bcd636cb4634945b0a99a124d50b433c3a9dc6a582e8db", "1d6a2ee908ec6d8f96c27d78bc39e203df4d586d287c233140af7d8d1aca108a"]
+sentry-sdk = ["cf4b0f8401f4d146e6b8c5579b24397273126c9a0576fa7eb9581ad27b330f13", "f6e850f304382d87c5c52c01db8c0004d2ced6a0b073df2f2257168cf31b31aa"]
 simplegeneric = ["dc972e06094b9af5b855b3df4a646395e43d1c9d0d39ed345b7393560d0b9173"]
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
 sqlalchemy = ["5bb2c4fc2bcc3447ad45716c66581eab982c007dcf925482498d8733f86f17c7"]
