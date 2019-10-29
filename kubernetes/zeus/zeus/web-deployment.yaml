@@ -83,7 +83,7 @@ spec:
             - name: GET_HOSTS_FROM
               value: env
             - name: REPO_ROOT
-              value: '/mnt/repo-cache'
+              value: '/tmp/repo-cache'
             - name: MAIL_SERVER
               value: 'smtp.mailgun.org'
             - name: MAIL_PORT
@@ -128,10 +128,10 @@ spec:
             initialDelaySeconds: 60
             timeoutSeconds: 1
           volumeMounts:
-            - name: nfs
-              mountPath: '/mnt/repo-cache'
             - name: 'service-account'
               mountPath: '/var/run/secret/cloud.google.com'
+            - name: repo-cache
+              mountPath: /tmp/repo-cache
           resources:
             requests:
               cpu: 1
@@ -163,9 +163,9 @@ spec:
             path: /etc/ssl/certs
         - name: cloudsql
           ? emptyDir
-        - name: nfs
-          persistentVolumeClaim:
-            claimName: nfs
         - name: service-account
           secret:
             secretName: 'zeus-service-account'
+        - name: repo-cache
+          hostPath:
+            path: /tmp/repo-cache
