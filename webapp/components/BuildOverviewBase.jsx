@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import marked from 'marked';
+import {sanitize} from 'dompurify';
 
 import ArtifactsList from '../components/ArtifactsList';
 import AsyncPage from '../components/AsyncPage';
@@ -131,7 +132,7 @@ export default class BuildOverviewBase extends AsyncPage {
           {revisionMessage && (
             <RevisionMessage
               dangerouslySetInnerHTML={{
-                __html: marked(revisionMessage)
+                __html: sanitize(marked(revisionMessage))
               }}
             />
           )}

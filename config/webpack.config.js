@@ -125,6 +125,7 @@ function getEntry() {
     'classnames',
     'lodash',
     'marked',
+    'dompurify',
     'moment',
     'react',
     'react-chartjs-2',
