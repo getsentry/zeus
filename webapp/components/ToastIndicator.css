@@ -56,9 +56,13 @@
 .fade-exit {
   opacity: 1;
 }
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
 .fade-exit-active {
   opacity: 0.01;
-  transition: opacity 500ms ease-in;
+  transition: opacity 200ms;
 }
 
 .toast.loading.toast-message {

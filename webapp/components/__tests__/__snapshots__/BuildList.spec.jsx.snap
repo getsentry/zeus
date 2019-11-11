@@ -2,32 +2,32 @@
 
 exports[`BuildList renders 1`] = `
 <div
-  class="sc-bZQynM fHbQJ"
+  class="sc-bxivhb kakZqJ"
 >
   <div
-    class="sc-htoDjs CJFOY ResultGrid-Header sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+    class="sc-EHOje bxhrCT ResultGrid-Header sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
   >
     <div
-      class="sc-gzVnrw jBvblj ResultGrid-Column sc-bdVaJa kYmYWE"
+      class="sc-ifAKCX gVDkew ResultGrid-Column sc-bdVaJa kYmYWE"
     >
       Build
     </div>
     <div
-      class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+      class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa jfzzVE"
       style="text-align:center"
       width="90"
     >
       Coverage
     </div>
     <div
-      class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+      class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa jfzzVE"
       style="text-align:center"
       width="90"
     >
       Duration
     </div>
     <div
-      class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa dYmHol"
+      class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa dYmHol"
       style="text-align:right"
       width="120"
     >
@@ -36,13 +36,13 @@ exports[`BuildList renders 1`] = `
   </div>
   <div>
     <a
-      class="sc-bxivhb kZeKpR"
+      class="sc-bdVaJa eHkXRX"
     >
       <div
-        class="sc-dnqmqq bLWiHU ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+        class="sc-bZQynM kdaNqr ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
       >
         <div
-          class="sc-gzVnrw jBvblj ResultGrid-Column sc-bdVaJa kYmYWE"
+          class="sc-ifAKCX gVDkew ResultGrid-Column sc-bdVaJa kYmYWE"
         >
           <div
             class="sc-htpNat eLQHN sc-bdVaJa iHZvIS"
@@ -52,7 +52,7 @@ exports[`BuildList renders 1`] = `
               width="15"
             >
               <div
-                class="sc-EHOje hJNzZA"
+                class="sc-htpNat dnPFAX"
                 result="passed"
               >
                 <svg
@@ -76,24 +76,24 @@ exports[`BuildList renders 1`] = `
               style="min-width:0"
             >
               <div
-                class="sc-iwsKbI hSUBot"
+                class="sc-gzVnrw iMOCDb"
               >
                 fix: Remove break-word behavior on coverage
               </div>
               <div
-                class="sc-jTzLTM ihWNxQ"
+                class="sc-gZMcBi ewUYYl"
               >
                 <div
-                  class="sc-gqjmRU fKhbCo sc-gZMcBi bDPlgE"
+                  class="sc-htoDjs sc-dnqmqq dIYhNP"
                 >
                   eff634a
                 </div>
                 <div
-                  class="sc-gZMcBi bDPlgE"
+                  class="sc-htoDjs iecDKs"
                 >
                   <span>
                     <span
-                      class="sc-ifAKCX gdcsSa"
+                      class="sc-bwzfXH duylup"
                     >
                       <img
                         alt="Gravatar for dcramer@gmail.com"
@@ -112,14 +112,14 @@ exports[`BuildList renders 1`] = `
           </div>
         </div>
         <div
-          class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+          class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa jfzzVE"
           style="text-align:center"
           width="90"
         >
           <span />
         </div>
         <div
-          class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+          class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa jfzzVE"
           style="text-align:center"
           width="90"
         >
@@ -128,7 +128,7 @@ exports[`BuildList renders 1`] = `
           </span>
         </div>
         <div
-          class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa dYmHol"
+          class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa dYmHol"
           style="text-align:right"
           width="120"
         >

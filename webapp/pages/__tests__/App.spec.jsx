@@ -1,17 +1,14 @@
 import React from 'react';
 import {shallow} from 'enzyme';
-import configureStore from 'redux-mock-store';
+import sinon from 'sinon';
 
-import App from '../App';
-
-const mockStore = configureStore();
+import {App} from '../App';
 
 describe('App', () => {
   it('renders without crashing', () => {
-    let store = mockStore({
-      auth: {}
-    });
-    const tree = shallow(<App store={store} />);
+    let authSession = sinon.spy();
+    const tree = shallow(<App authSession={authSession} />);
     expect(tree).toMatchSnapshot();
+    expect(authSession.called).toBe(true);
   });
 });

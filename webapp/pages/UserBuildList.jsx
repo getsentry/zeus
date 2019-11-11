@@ -11,23 +11,7 @@ import BuildList from '../components/BuildList';
 import Layout from '../components/Layout';
 import Paginator from '../components/Paginator';
 import Section from '../components/Section';
-
-class UserBuildList extends AsyncPage {
-  getTitle() {
-    let {userID} = this.props.params;
-    return userID ? 'Builds' : 'My Builds';
-  }
-
-  renderBody() {
-    return (
-      <Layout title={this.getTitle()}>
-        <Section>
-          <BuildListBody {...this.props} />
-        </Section>
-      </Layout>
-    );
-  }
-}
+import requireAuth from '../utils/requireAuth';
 
 class BuildListBody extends AsyncComponent {
   static propTypes = {
@@ -62,16 +46,35 @@ class BuildListBody extends AsyncComponent {
   }
 }
 
-export default connect(
-  ({auth, builds}) => {
-    let emailSet = new Set((auth.emails || []).map(e => e.email));
-    return {
-      buildList: builds.items
-        .filter(build => !!build.repository && emailSet.has(build.source.author.email))
-        .slice(0, 25),
-      links: builds.links,
-      loading: !builds.loaded
-    };
-  },
-  {fetchBuilds}
-)(subscribe(() => ['builds'])(UserBuildList));
+export class UserBuildList extends AsyncPage {
+  getTitle() {
+    let {userID} = this.props.params;
+    return userID ? 'Builds' : 'My Builds';
+  }
+
+  renderBody() {
+    return (
+      <Layout title={this.getTitle()}>
+        <Section>
+          <BuildListBody {...this.props} />
+        </Section>
+      </Layout>
+    );
+  }
+}
+
+export default requireAuth(
+  connect(
+    ({auth, builds}) => {
+      let emailSet = new Set((auth.emails || []).map(e => e.email));
+      return {
+        buildList: builds.items
+          .filter(build => !!build.repository && emailSet.has(build.source.author.email))
+          .slice(0, 25),
+        links: builds.links,
+        loading: !builds.loaded
+      };
+    },
+    {fetchBuilds}
+  )(subscribe(() => ['builds'])(UserBuildList))
+);

@@ -16,13 +16,15 @@ const FIXTURE = [
 
 describe('CoverageSummary', () => {
   it('renders', () => {
+    let context = TestStubs.standardContext();
     const tree = render(
       <CoverageSummary
         build={TestStubs.Build()}
         repo={TestStubs.Repository()}
         coverage={FIXTURE}
         location={{query: '', pathname: '/path-name'}}
-      />
+      />,
+      context
     );
     expect(tree).toMatchSnapshot();
   });

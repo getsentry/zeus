@@ -2,7 +2,7 @@ import xhrmock from 'xhr-mock';
 import React from 'react';
 import {mount} from 'enzyme';
 
-import Dashboard from '../Dashboard';
+import {Dashboard} from '../Dashboard';
 import {RepositoryContext} from '../App';
 
 describe('Dashboard', () => {

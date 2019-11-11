@@ -5,10 +5,10 @@ exports[`BuildCoverage renders with build 1`] = `
   class="sc-bdVaJa kkDDII"
 >
   <div
-    class="sc-iwsKbI iGcGwU sc-bdVaJa kkDDII"
+    class="sc-bdVaJa sc-gzVnrw djjrht"
   >
     <div
-      class="sc-gZMcBi jtErZf"
+      class="sc-htoDjs jyKrAJ"
     >
       <p>
         Data from 
@@ -31,23 +31,23 @@ exports[`BuildCoverage renders with build 1`] = `
     </div>
   </div>
   <div
-    class="sc-gqjmRU hnZXkc sc-ifAKCX kLhjKP"
+    class="sc-bwzfXH sc-dnqmqq fkbtLh"
   >
     <div
-      class="sc-VigVT dwUuvj sc-bZQynM dtqgRq ResultGrid-Header sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-bxivhb sc-iwsKbI dXJfbL ResultGrid-Header sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat dOzPHG ResultGrid-Column sc-bdVaJa kYmYWE"
       />
       <div
-        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH fgSvmL"
+        class="sc-htpNat dOzPHG ResultGrid-Column sc-bdVaJa iQXtaW"
         style="text-align:right"
         width="250"
       >
         Diff
       </div>
       <div
-        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH fgSvmL"
+        class="sc-htpNat dOzPHG ResultGrid-Column sc-bdVaJa iQXtaW"
         style="text-align:right"
         width="250"
       >
@@ -55,38 +55,38 @@ exports[`BuildCoverage renders with build 1`] = `
       </div>
     </div>
     <div
-      class="good sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-ifAKCX sc-gZMcBi SyeIV good ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa kYmYWE"
       >
         <a>
           conftest.py
         </a>
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
          
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         0 / 0
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         100%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
@@ -94,38 +94,38 @@ exports[`BuildCoverage renders with build 1`] = `
       </div>
     </div>
     <div
-      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-ifAKCX sc-gZMcBi SyeIV bad ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa kYmYWE"
       >
         <a>
           setup.py
         </a>
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         0%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         0 / 8
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         0%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
@@ -133,38 +133,38 @@ exports[`BuildCoverage renders with build 1`] = `
       </div>
     </div>
     <div
-      class="warn sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-ifAKCX sc-gZMcBi SyeIV warn ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa kYmYWE"
       >
         <a>
           tests/zeus
         </a>
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         99%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         1,528 / 1530
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         99%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
@@ -172,38 +172,38 @@ exports[`BuildCoverage renders with build 1`] = `
       </div>
     </div>
     <div
-      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-ifAKCX sc-gZMcBi SyeIV bad ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa kYmYWE"
       >
         <a>
           webapp
         </a>
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         33%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         50 / 150
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         6%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
@@ -211,38 +211,38 @@ exports[`BuildCoverage renders with build 1`] = `
       </div>
     </div>
     <div
-      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-ifAKCX sc-gZMcBi SyeIV bad ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa kYmYWE"
       >
         <a>
           zeus
         </a>
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         33%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         50 / 150
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         77%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
@@ -258,10 +258,10 @@ exports[`BuildCoverage renders without build 1`] = `
   class="sc-bdVaJa kkDDII"
 >
   <div
-    class="sc-iwsKbI iGcGwU sc-bdVaJa kkDDII"
+    class="sc-bdVaJa sc-gzVnrw djjrht"
   >
     <div
-      class="sc-gZMcBi jtErZf"
+      class="sc-htoDjs jyKrAJ"
     >
       <p>
         <strong>
@@ -278,23 +278,23 @@ exports[`BuildCoverage renders without build 1`] = `
     </div>
   </div>
   <div
-    class="sc-gqjmRU hnZXkc sc-ifAKCX kLhjKP"
+    class="sc-bwzfXH sc-dnqmqq fkbtLh"
   >
     <div
-      class="sc-VigVT dwUuvj sc-bZQynM dtqgRq ResultGrid-Header sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-bxivhb sc-iwsKbI dXJfbL ResultGrid-Header sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat dOzPHG ResultGrid-Column sc-bdVaJa kYmYWE"
       />
       <div
-        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH fgSvmL"
+        class="sc-htpNat dOzPHG ResultGrid-Column sc-bdVaJa iQXtaW"
         style="text-align:right"
         width="250"
       >
         Diff
       </div>
       <div
-        class="sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH fgSvmL"
+        class="sc-htpNat dOzPHG ResultGrid-Column sc-bdVaJa iQXtaW"
         style="text-align:right"
         width="250"
       >
@@ -302,38 +302,38 @@ exports[`BuildCoverage renders without build 1`] = `
       </div>
     </div>
     <div
-      class="good sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-ifAKCX sc-gZMcBi SyeIV good ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa kYmYWE"
       >
         <a>
           conftest.py
         </a>
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
          
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         0 / 0
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         100%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
@@ -341,38 +341,38 @@ exports[`BuildCoverage renders without build 1`] = `
       </div>
     </div>
     <div
-      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-ifAKCX sc-gZMcBi SyeIV bad ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa kYmYWE"
       >
         <a>
           setup.py
         </a>
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         0%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         0 / 8
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         0%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
@@ -380,38 +380,38 @@ exports[`BuildCoverage renders without build 1`] = `
       </div>
     </div>
     <div
-      class="warn sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-ifAKCX sc-gZMcBi SyeIV warn ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa kYmYWE"
       >
         <a>
           tests/zeus
         </a>
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         99%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         1,528 / 1530
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         99%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
@@ -419,38 +419,38 @@ exports[`BuildCoverage renders without build 1`] = `
       </div>
     </div>
     <div
-      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-ifAKCX sc-gZMcBi SyeIV bad ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa kYmYWE"
       >
         <a>
           webapp
         </a>
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         33%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         50 / 150
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         6%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
@@ -458,38 +458,38 @@ exports[`BuildCoverage renders without build 1`] = `
       </div>
     </div>
     <div
-      class="bad sc-jTzLTM ctnVPw sc-gzVnrw hEczdR ResultGrid-Row sc-bxivhb bjDEpv sc-bwzfXH ihgQcP"
+      class="sc-ifAKCX sc-gZMcBi SyeIV bad ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
     >
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH kfUZzQ"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa kYmYWE"
       >
         <a>
           zeus
         </a>
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         33%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         50 / 150
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >
         77%
       </div>
       <div
-        class="sc-fjdhpX hsZIYx sc-EHOje ipitnQ ResultGrid-Column sc-bwzfXH TnVyV"
+        class="sc-htpNat sc-gqjmRU bkdLOV ResultGrid-Column sc-bdVaJa dYmHol"
         style="text-align:right"
         width="120"
       >

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import idx from 'idx';
 import {isEqual} from 'lodash';
+import {withRouter} from 'react-router';
 // This is being pulled form the CDN currently
 // import Raven from 'raven-js';
 
@@ -11,34 +12,30 @@ import NetworkError from './NetworkError';
 import NotFoundError from './NotFoundError';
 import * as errors from '../errors';
 
-export default class ErrorBoundary extends Component {
-  static contextTypes = {
-    router: PropTypes.object
-  };
-
+class ErrorBoundary extends Component {
   static propTypes = {
+    router: PropTypes.object,
     children: PropTypes.node,
     location: PropTypes.object
   };
 
   constructor(...params) {
     super(...params);
-    this.state = {error: null, location: null};
+    this.state = {error: null, lastLocation: null};
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
-    let {router} = nextContext;
-    if (!isEqual(this.state.location, router.location)) {
-      this.setState({error: null, location: null});
+  static getDerivedStateFromProps(props, state) {
+    let {router} = props;
+    if (!isEqual(state.lastLocation, router.location)) {
+      return {error: null, lastLocation: null};
     }
-    super.componentWillReceiveProps &&
-      super.componentWillReceiveProps(nextProps, nextContext);
+    return null;
   }
 
   componentDidCatch(error, errorInfo) {
     this.setState({
       error,
-      location: {...(idx(this.context.router, _ => _.location) || {})}
+      lastLocation: {...(idx(this.props.router, _ => _.location) || {})}
     });
     if (window.Raven) {
       window.Sentry.captureException(error, {extra: errorInfo});
@@ -83,3 +80,5 @@ export default class ErrorBoundary extends Component {
     }
   }
 }
+
+export default withRouter(ErrorBoundary);

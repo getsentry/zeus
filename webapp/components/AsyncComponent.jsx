@@ -38,20 +38,20 @@ export default class AsyncComponent extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.api = new Client();
     this.reloadData();
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
-    let isRouterInContext = !!nextContext.router;
-    let isLocationInProps = nextProps.location !== undefined;
+  componentDidUpdate(prevProps) {
+    let isRouterInContext = !!this.context.router;
+    let isLocationInProps = this.props.location !== undefined;
 
-    let prevLocation = isLocationInProps ? this.props.location : this.state.__location;
+    let prevLocation = isLocationInProps ? prevProps.location : this.state.__location;
     let currentLocation = isLocationInProps
-      ? nextProps.location
+      ? this.props.location
       : isRouterInContext
-        ? nextContext.router.location
+        ? this.context.router.location
         : null;
 
     if (!(currentLocation && prevLocation)) {
@@ -60,11 +60,11 @@ export default class AsyncComponent extends Component {
 
     if (
       currentLocation.pathname !== prevLocation.pathname ||
-      !isEqual(this.props.params, nextProps.params) ||
+      !isEqual(this.props.params, prevProps.params) ||
       currentLocation.search !== prevLocation.search ||
       currentLocation.state !== prevLocation.state
     ) {
-      this.remountComponent(nextProps, nextContext);
+      this.remountComponent(this.props, this.context);
     }
   }
 

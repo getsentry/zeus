@@ -20,6 +20,7 @@ import ObjectDuration from '../components/ObjectDuration';
 import {Column, Header, ResultGrid, Row} from '../components/ResultGrid';
 import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
+import requireAuth from '../utils/requireAuth';
 
 const RepoLink = styled(Link)`
   display: block;
@@ -28,6 +29,15 @@ const RepoLink = styled(Link)`
   &:hover {
     background-color: #f0eff5;
   }
+`;
+
+const Name = styled.div`
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 class RepoListSection extends AsyncComponent {
@@ -96,12 +106,9 @@ class RepoListSection extends AsyncComponent {
   }
 }
 
-const WrappedRepoList = connect(
-  function(state) {
-    return {repoList: state.repos.items, loading: !state.repos.loaded};
-  },
-  {}
-)(RepoListSection);
+const WrappedRepoList = connect(function(state) {
+  return {repoList: state.repos.items, loading: !state.repos.loaded};
+}, {})(RepoListSection);
 
 class BuildListSection extends AsyncComponent {
   static propTypes = {
@@ -159,7 +166,7 @@ const WrappedBuildList = connect(
   {fetchBuilds}
 )(subscribe(() => ['builds'])(BuildListSection));
 
-export default class Dashboard extends AsyncPage {
+export class Dashboard extends AsyncPage {
   getTitle() {
     return 'Zeus Dashboard';
   }
@@ -180,11 +187,4 @@ export default class Dashboard extends AsyncPage {
   }
 }
 
-const Name = styled.div`
-  font-size: 15px;
-  line-height: 1.2;
-  font-weight: 500;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-`;
+export default requireAuth(Dashboard);

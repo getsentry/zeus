@@ -2,7 +2,7 @@ import xhrmock from 'xhr-mock';
 import React from 'react';
 import {mount} from 'enzyme';
 
-import RepositoryDetails from '../RepositoryDetails';
+import {RepositoryDetails} from '../RepositoryDetails';
 
 describe('RepositoryDetails', () => {
   // replace the real XHR object with the mock XHR object before each test
