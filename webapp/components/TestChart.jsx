@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
@@ -6,9 +7,10 @@ import {Header} from './ResultGrid';
 
 export default class TestChart extends Component {
   static propTypes = {
-    testList: PropTypes.shape({
+    repo: PropTypes.object.isRequired,
+    results: PropTypes.shape({
       builds: PropTypes.object,
-      results: PropTypes.object
+      tests: PropTypes.array
     }),
     collapsable: PropTypes.bool,
     maxVisible: PropTypes.number,
@@ -20,7 +22,8 @@ export default class TestChart extends Component {
   };
 
   render() {
-    const buildsList = this.props.testList.builds;
+    const buildsList = this.props.results.builds;
+    const {repo} = this.props;
 
     return (
       <ResultRow builds={buildsList.length}>
@@ -35,10 +38,13 @@ export default class TestChart extends Component {
           </Header>
         ))}
 
-        {Object.entries(this.props.testList.results).map(([test, results]) => {
+        {this.props.results.tests.map(({name, hash, results}) => {
           return (
-            <React.Fragment key={test}>
-              <TestName title={test}>{test}</TestName>
+            <React.Fragment key={hash}>
+              <Link to={`/${repo.full_name}/tests/${hash}`}>
+                <TestName title={name}>{name}</TestName>
+              </Link>
+
               {results.map((result, i) => (
                 <ResultBox key={i} result={result} />
               ))}
