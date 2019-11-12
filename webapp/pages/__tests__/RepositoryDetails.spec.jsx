@@ -1,6 +1,5 @@
 import xhrmock from 'xhr-mock';
 import React from 'react';
-import {mount} from 'enzyme';
 
 import {RepositoryDetails} from '../RepositoryDetails';
 
@@ -17,7 +16,7 @@ describe('RepositoryDetails', () => {
     let context = TestStubs.standardContext();
     context.context.repoList = [repo];
 
-    const wrapper = mount(
+    const wrapper = TestStubs.mount(
       <RepositoryDetails
         params={{
           provider: repo.provider,
@@ -43,7 +42,7 @@ describe('RepositoryDetails', () => {
     let context = TestStubs.standardContext();
     context.context.repoList = [];
 
-    const wrapper = mount(
+    const wrapper = TestStubs.mount(
       <RepositoryDetails
         params={{
           provider: repo.provider,
