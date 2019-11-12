@@ -2,32 +2,32 @@
 
 exports[`BuildList renders 1`] = `
 <div
-  class="sc-bxivhb kakZqJ"
+  class="css-pisr0g"
 >
   <div
-    class="sc-EHOje bxhrCT ResultGrid-Header sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+    class="ResultGrid-Header css-1uzfnwq"
   >
     <div
-      class="sc-ifAKCX gVDkew ResultGrid-Column sc-bdVaJa kYmYWE"
+      class="ResultGrid-Column css-73z4cy"
     >
       Build
     </div>
     <div
-      class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa jfzzVE"
+      class="ResultGrid-Column css-1wvmnhy"
       style="text-align:center"
       width="90"
     >
       Coverage
     </div>
     <div
-      class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa jfzzVE"
+      class="ResultGrid-Column css-1wvmnhy"
       style="text-align:center"
       width="90"
     >
       Duration
     </div>
     <div
-      class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa dYmHol"
+      class="ResultGrid-Column css-1df7njv"
       style="text-align:right"
       width="120"
     >
@@ -36,64 +36,64 @@ exports[`BuildList renders 1`] = `
   </div>
   <div>
     <a
-      class="sc-bdVaJa eHkXRX"
+      class="css-1jlugz4"
     >
       <div
-        class="sc-bZQynM kdaNqr ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+        class="ResultGrid-Row css-mnel7i"
       >
         <div
-          class="sc-ifAKCX gVDkew ResultGrid-Column sc-bdVaJa kYmYWE"
+          class="ResultGrid-Column css-73z4cy"
         >
           <div
-            class="sc-htpNat eLQHN sc-bdVaJa iHZvIS"
+            class="css-sncxrr"
           >
             <div
-              class="sc-bdVaJa hGSMoE"
+              class="css-15hxb6p"
               width="15"
             >
               <div
-                class="sc-htpNat dnPFAX"
+                class="css-lquxch"
                 result="passed"
               >
                 <svg
                   fill="currentColor"
                   height="16"
-                  preserveAspectRatio="xMidYMid meet"
-                  style="vertical-align:middle"
-                  viewBox="0 0 40 40"
+                  size="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
                   width="16"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <g>
-                    <path
-                      d="m16.6 28.4l15-15-2.3-2.5-12.7 12.7-5.9-5.9-2.3 2.3z m3.4-25c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
-                    />
-                  </g>
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  />
                 </svg>
               </div>
             </div>
             <div
-              class="sc-bdVaJa kYmYWE"
+              class="css-vti0ei"
               style="min-width:0"
             >
               <div
-                class="sc-gzVnrw iMOCDb"
+                class="css-4el1g6"
               >
                 fix: Remove break-word behavior on coverage
               </div>
               <div
-                class="sc-gZMcBi ewUYYl"
+                class="css-1e4z1dz"
               >
                 <div
-                  class="sc-htoDjs sc-dnqmqq dIYhNP"
+                  class="css-18y4m79"
                 >
                   eff634a
                 </div>
                 <div
-                  class="sc-htoDjs iecDKs"
+                  class="css-1vijwgp"
                 >
                   <span>
                     <span
-                      class="sc-bwzfXH duylup"
+                      class="css-n9g8ud"
                     >
                       <img
                         alt="Gravatar for dcramer@gmail.com"
@@ -112,14 +112,14 @@ exports[`BuildList renders 1`] = `
           </div>
         </div>
         <div
-          class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa jfzzVE"
+          class="ResultGrid-Column css-1wvmnhy"
           style="text-align:center"
           width="90"
         >
           <span />
         </div>
         <div
-          class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa jfzzVE"
+          class="ResultGrid-Column css-1wvmnhy"
           style="text-align:center"
           width="90"
         >
@@ -128,7 +128,7 @@ exports[`BuildList renders 1`] = `
           </span>
         </div>
         <div
-          class="sc-ifAKCX eiLvyf ResultGrid-Column sc-bdVaJa dYmHol"
+          class="ResultGrid-Column css-1df7njv"
           style="text-align:right"
           width="120"
         >

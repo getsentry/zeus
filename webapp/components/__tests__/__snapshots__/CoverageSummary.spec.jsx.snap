@@ -2,25 +2,25 @@
 
 exports[`CoverageSummary renders 1`] = `
 <div
-  class="sc-bdVaJa iuLxvk"
+  class="css-pisr0g"
 >
   <div
-    class="sc-htpNat HiFbU ResultGrid-Header sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+    class="ResultGrid-Header css-1uzfnwq"
   >
     <div
-      class="sc-bwzfXH iDIZBx ResultGrid-Column sc-bdVaJa kYmYWE"
+      class="ResultGrid-Column css-73z4cy"
     >
       File
     </div>
     <div
-      class="sc-bwzfXH iDIZBx ResultGrid-Column sc-bdVaJa hQjYIB"
+      class="ResultGrid-Column css-1409nxk"
       style="text-align:right"
       width="80"
     >
       Diff
     </div>
     <div
-      class="sc-bwzfXH iDIZBx ResultGrid-Column sc-bdVaJa hQjYIB"
+      class="ResultGrid-Column css-1409nxk"
       style="text-align:right"
       width="80"
     >
@@ -29,24 +29,24 @@ exports[`CoverageSummary renders 1`] = `
   </div>
   <div>
     <div
-      class="sc-bxivhb ittSfQ ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+      class="ResultGrid-Row css-mnel7i"
     >
       <div
-        class="sc-bwzfXH iDIZBx ResultGrid-Column sc-bdVaJa kYmYWE"
+        class="ResultGrid-Column css-73z4cy"
       >
         <a>
           webapp/components/Collapsable.jsx
         </a>
       </div>
       <div
-        class="sc-bwzfXH iDIZBx ResultGrid-Column sc-bdVaJa hQjYIB"
+        class="ResultGrid-Column css-1409nxk"
         style="text-align:right"
         width="80"
       >
         100%
       </div>
       <div
-        class="sc-bwzfXH iDIZBx ResultGrid-Column sc-bdVaJa hQjYIB"
+        class="ResultGrid-Column css-1409nxk"
         style="text-align:right"
         width="80"
       >
