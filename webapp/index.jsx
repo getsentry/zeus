@@ -8,10 +8,6 @@ import {Provider} from 'react-redux';
 import routes from './routes';
 import store from './store';
 
-import 'react-select/dist/react-select.css';
-
-import './index.css';
-
 // TODO(dcramer): until we can resolve babel not compiling Error classes correctly
 // in prod this compounds issues
 // we cache the user details in localStorage, but its still fetched on

@@ -5,7 +5,7 @@ exports[`RepositoryHookCreate renders 1`] = `
   <div>
     <div>
       <div
-        class="sc-bxivhb Nbskm"
+        class="sc-ifAKCX jgrrlu"
       >
         Create Hook
       </div>
@@ -24,13 +24,13 @@ exports[`RepositoryHookCreate renders 1`] = `
     </p>
     <p>
       <a
-        class="sc-htpNat jfsIGo"
+        class="sc-bxivhb eBuwtO"
       >
         Travis CI
       </a>
        
       <a
-        class="sc-htpNat jfsIGo"
+        class="sc-bxivhb eBuwtO"
       >
         Custom
       </a>

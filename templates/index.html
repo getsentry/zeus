@@ -1,130 +1,192 @@
 <!doctype html>
 <html lang="en">
-
     <head>
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
         <meta content="#000000" name="theme-color">
-        <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
-    -->
         <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
         <title>Zeus</title>
-        <style>
-    @import url('https://fonts.googleapis.com/css?family=Rubik:400,500');
+        <style type="text/css">
+@import url('https://fonts.googleapis.com/css?family=Rubik:400,500');
 
-    body {
-      font-size: 16px;
-      font-family: 'Rubik', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      padding: 0;
-      margin: 0;
-    }
+body {
+  font-size: 16px;
+  font-family: 'Rubik', Helvetica, sans-serif;
+  font-weight: 400;
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+  padding: 0;
+  margin: 0;
+}
 
-    .sk-cube-grid {
-      width: 40px;
-      height: 40px;
-      margin: 20px auto;
-    }
+pre,
+code {
+  font-size: 14px;
+  font-family: 'Monaco', 'Courier', monospace;
+  font-weight: 400;
+}
 
-    .sk-cube-grid .sk-cube {
-      width: 33%;
-      height: 33%;
-      background-color: #7B6BE6;
-      float: left;
-      -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
-      animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
-    }
+img {
+  max-width: 100%;
+}
 
-    .sk-cube-grid .sk-cube1 {
-      -webkit-animation-delay: 0.2s;
-      animation-delay: 0.2s;
-    }
+a {
+  text-decoration: none;
+  color: #7b6be6;
+}
 
-    .sk-cube-grid .sk-cube2 {
-      -webkit-animation-delay: 0.3s;
-      animation-delay: 0.3s;
-    }
+a:hover {
+  color: #7b6be6;
+}
 
-    .sk-cube-grid .sk-cube3 {
-      -webkit-animation-delay: 0.4s;
-      animation-delay: 0.4s;
-    }
+strong {
+  font-weight: 600;
+}
 
-    .sk-cube-grid .sk-cube4 {
-      -webkit-animation-delay: 0.1s;
-      animation-delay: 0.1s;
-    }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+}
 
-    .sk-cube-grid .sk-cube5 {
-      -webkit-animation-delay: 0.2s;
-      animation-delay: 0.2s;
-    }
+ul,
+ol,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+table,
+form,
+blockquote,
+pre {
+  margin: 0 0 20px 0;
+}
 
-    .sk-cube-grid .sk-cube6 {
-      -webkit-animation-delay: 0.3s;
-      animation-delay: 0.3s;
-    }
+ul,
+ol {
+  padding-left: 20px;
+}
 
-    .sk-cube-grid .sk-cube7 {
-      -webkit-animation-delay: 0s;
-      animation-delay: 0s;
-    }
+li {
+  margin-bottom: 5px;
+}
 
-    .sk-cube-grid .sk-cube8 {
-      -webkit-animation-delay: 0.1s;
-      animation-delay: 0.1s;
-    }
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
 
-    .sk-cube-grid .sk-cube9 {
-      -webkit-animation-delay: 0.2s;
-      animation-delay: 0.2s;
-    }
 
-    @-webkit-keyframes sk-cubeGridScaleDelay {
-      0%,
-      70%,
-      100% {
-        -webkit-transform: scale3D(1, 1, 1);
-        transform: scale3D(1, 1, 1);
-      }
-      35% {
-        -webkit-transform: scale3D(0, 0, 1);
-        transform: scale3D(0, 0, 1);
-      }
-    }
+.sk-cube-grid {
+    width: 40px;
+    height: 40px;
+    margin: 20px auto;
+}
 
-    @keyframes sk-cubeGridScaleDelay {
-      0%,
-      70%,
-      100% {
-        -webkit-transform: scale3D(1, 1, 1);
-        transform: scale3D(1, 1, 1);
-      }
-      35% {
-        -webkit-transform: scale3D(0, 0, 1);
-        transform: scale3D(0, 0, 1);
-      }
-    }
+.sk-cube-grid .sk-cube {
+    width: 33%;
+    height: 33%;
+    background-color: #7B6BE6;
+    float: left;
+    -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+    animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+}
 
-    .react-loading-wrapper {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 100%;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      text-align: center;
-    }
+.sk-cube-grid .sk-cube1 {
+    -webkit-animation-delay: 0.2s;
+    animation-delay: 0.2s;
+}
 
-    .react-loading {
-      flex: 1;
+.sk-cube-grid .sk-cube2 {
+    -webkit-animation-delay: 0.3s;
+    animation-delay: 0.3s;
+}
+
+.sk-cube-grid .sk-cube3 {
+    -webkit-animation-delay: 0.4s;
+    animation-delay: 0.4s;
+}
+
+.sk-cube-grid .sk-cube4 {
+    -webkit-animation-delay: 0.1s;
+    animation-delay: 0.1s;
+}
+
+.sk-cube-grid .sk-cube5 {
+    -webkit-animation-delay: 0.2s;
+    animation-delay: 0.2s;
+}
+
+.sk-cube-grid .sk-cube6 {
+    -webkit-animation-delay: 0.3s;
+    animation-delay: 0.3s;
+}
+
+.sk-cube-grid .sk-cube7 {
+    -webkit-animation-delay: 0s;
+    animation-delay: 0s;
+}
+
+.sk-cube-grid .sk-cube8 {
+    -webkit-animation-delay: 0.1s;
+    animation-delay: 0.1s;
+}
+
+.sk-cube-grid .sk-cube9 {
+    -webkit-animation-delay: 0.2s;
+    animation-delay: 0.2s;
+}
+
+@-webkit-keyframes sk-cubeGridScaleDelay {
+    0%,
+    70%,
+    100% {
+    -webkit-transform: scale3D(1, 1, 1);
+    transform: scale3D(1, 1, 1);
     }
+    35% {
+    -webkit-transform: scale3D(0, 0, 1);
+    transform: scale3D(0, 0, 1);
+    }
+}
+
+@keyframes sk-cubeGridScaleDelay {
+    0%,
+    70%,
+    100% {
+    -webkit-transform: scale3D(1, 1, 1);
+    transform: scale3D(1, 1, 1);
+    }
+    35% {
+    -webkit-transform: scale3D(0, 0, 1);
+    transform: scale3D(0, 0, 1);
+    }
+}
+
+.react-loading-wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.react-loading {
+    flex: 1;
+}
   </style>
     </head>
 
@@ -164,7 +226,6 @@
           window.ZEUS_PUBSUB_ENDPOINT = '{{ PUBSUB_ENDPOINT }}';
           window.ZEUS_RELEASE = '{{ SENTRY_RELEASE }}'
         </script>
-        <script type="text/javascript" src="{{ asset_url('vendor.js') }}"></script>
         <script type="text/javascript" src="{{ asset_url('app.js') }}"></script>
     </body>
 
