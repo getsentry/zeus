@@ -2,6 +2,7 @@ import React from 'react';
 import {Router, browserHistory} from 'react-router';
 import {render} from 'react-dom';
 import {Provider} from 'react-redux';
+import {ThemeProvider} from 'emotion-theming';
 
 // import {setAuth} from './actions/auth';
 
@@ -22,10 +23,6 @@ import store from './store';
 //   }
 // }
 
-// import {registerLanguage} from 'react-syntax-highlighter/dist/light';
-// import diff from 'react-syntax-highlighter/dist/languages/diff';
-// registerLanguage('diff', diff);
-
 import * as Sentry from '@sentry/browser';
 import {Tracing} from '@sentry/integrations';
 
@@ -39,9 +36,15 @@ Sentry.init({
   ]
 });
 
+const theme = {
+  space: [0, 4, 8, 16, 32, 64, 128, 256]
+};
+
 render(
-  <Provider store={store}>
-    <Router history={browserHistory} routes={routes} />
-  </Provider>,
+  <ThemeProvider theme={theme}>
+    <Provider store={store}>
+      <Router history={browserHistory} routes={routes} />
+    </Provider>
+  </ThemeProvider>,
   document.getElementById('root')
 );

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {Flex, Box} from 'grid-styled';
+import {Flex, Box} from '@rebass/grid/emotion';
 
 import {addIndicator, removeIndicator} from '../actions/indicators';
 import {addRepo, removeRepo, updateRepo} from '../actions/repos';
@@ -197,7 +197,7 @@ class GitHubRepositoryList extends AsyncPage {
 
     return (
       <Flex>
-        <Box flex="1" width={3 / 12} pr={15}>
+        <Box flex="1" width={3 / 12} pr={2}>
           <div style={{marginBottom: 10, fontSize: '0.8em'}}>
             {!this.hasPrivateScope() && (
               <Button

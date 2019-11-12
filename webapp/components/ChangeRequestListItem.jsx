@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import {Flex, Box} from 'grid-styled';
+import styled from '@emotion/styled';
+import {Flex, Box} from '@rebass/grid/emotion';
 
 import BuildListItem from './BuildListItem';
 import ListItemLink from './ListItemLink';
@@ -50,7 +50,7 @@ export default class ChangeRequestListItem extends Component {
         <Row>
           <Column>
             <Flex>
-              <Box width={15} mr={8} />
+              <Box width={15} mr={2} />
               <Box flex="1" style={{minWidth: 0}}>
                 <Message>{changeRequest.message.split('\n')[0]}</Message>
                 <Meta>

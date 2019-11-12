@@ -1,5 +1,6 @@
 import {Link} from 'react-router';
-import styled, {css} from 'styled-components';
+import {css} from '@emotion/core';
+import styled from '@emotion/styled';
 
 // TODO(dcramer): how do we avoid copy pasta?
 export const ButtonGroup = styled.div`

@@ -1,11 +1,11 @@
 import React from 'react';
-import {Flex, Box} from 'grid-styled';
+import {Flex, Box} from '@rebass/grid/emotion';
 import {Link} from 'react-router';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
-import ViewAllIcon from 'react-icons/lib/md/input';
+import {MdInput} from 'react-icons/md';
 
 import {fetchBuilds} from '../actions/builds';
 import {subscribe} from '../decorators/stream';
@@ -63,7 +63,7 @@ class RepoListSection extends AsyncComponent {
         <SectionHeading>
           Your Repositories
           <Link to="/settings/github/repos" style={{marginLeft: 10}}>
-            <ViewAllIcon size={18} style={{verticalAlign: 'text-bottom'}} />
+            <MdInput size={18} style={{verticalAlign: 'text-bottom'}} />
           </Link>
         </SectionHeading>
         <ResultGrid>
@@ -129,7 +129,7 @@ class BuildListSection extends AsyncComponent {
         <SectionHeading>
           Your Builds
           <Link to="/builds" style={{marginLeft: 10}}>
-            <ViewAllIcon size={18} style={{verticalAlign: 'text-bottom'}} />
+            <MdInput size={18} style={{verticalAlign: 'text-bottom'}} />
           </Link>
         </SectionHeading>
         {super.renderContent()}
@@ -175,7 +175,7 @@ export class Dashboard extends AsyncPage {
     return (
       <Layout>
         <Flex flex="1">
-          <Box width={7 / 12} mr={30}>
+          <Box width={7 / 12} mr={4}>
             <WrappedBuildList {...this.props} />
           </Box>
           <Box width={5 / 12}>

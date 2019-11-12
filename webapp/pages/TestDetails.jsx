@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Flex, Box} from 'grid-styled';
+import {Flex, Box} from '@rebass/grid/emotion';
 
 import AsyncPage from '../components/AsyncPage';
 import Section from '../components/Section';
@@ -32,7 +32,7 @@ class TestListItem extends Component {
         <Row>
           <Column>
             <Flex>
-              <Box width={15} mr={8}>
+              <Box width={15} mr={2}>
                 <ObjectResult data={test} />
               </Box>
               <Box flex="1">

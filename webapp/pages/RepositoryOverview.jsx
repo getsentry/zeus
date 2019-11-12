@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {Flex, Box} from 'grid-styled';
+import {Flex, Box} from '@rebass/grid/emotion';
 import {Line as LineChart} from 'react-chartjs-2';
-import ViewAllIcon from 'react-icons/lib/md/input';
+import {MdInput} from 'react-icons/md';
 
 import {loadRevisionsForRepository} from '../actions/revisions';
 import AsyncPage from '../components/AsyncPage';
@@ -181,12 +181,12 @@ export class RepositoryOverview extends AsyncPage {
     let {repo} = this.context;
     return (
       <Flex>
-        <Box flex="1" width={8 / 12} pr={15}>
+        <Box flex="1" width={8 / 12} pr={2}>
           <Section>
             <SectionHeading>
               Latest Commits
               <Link to={`/${repo.full_name}/revisions`} style={{marginLeft: 10}}>
-                <ViewAllIcon size={18} style={{verticalAlign: 'text-bottom'}} />
+                <MdInput size={18} style={{verticalAlign: 'text-bottom'}} />
               </Link>
             </SectionHeading>
             <RevisionListBody {...this.props} />

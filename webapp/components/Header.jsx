@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import {connect} from 'react-redux';
 import Select from 'react-select';
 
 import {logout} from '../actions/auth';
 import Logo from '../assets/Logo';
 
-import MdSettings from 'react-icons/lib/md/settings';
-import MdLogout from 'react-icons/lib/md/exit-to-app';
+import {MdExitToApp, MdSettings} from 'react-icons/md';
 
 const NavLink = styled(Link)`
   display: inline-block;
@@ -64,7 +63,7 @@ class UnstyledHeader extends Component {
               <MdSettings size={24} />
             </NavLink>
             <NavLink onClick={props.logout}>
-              <MdLogout size={24} />
+              <MdExitToApp size={24} />
             </NavLink>
           </div>
         )}
