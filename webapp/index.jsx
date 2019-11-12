@@ -4,6 +4,10 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {ThemeProvider} from 'emotion-theming';
 
+// These imports (core-js and regenerator-runtime) are replacements for deprecated `@babel/polyfill`
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+
 // import {setAuth} from './actions/auth';
 
 import routes from './routes';

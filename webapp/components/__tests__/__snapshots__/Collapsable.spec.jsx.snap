@@ -9,14 +9,14 @@ exports[`Collapsable renders collapsed 1`] = `
     2
   </div>
   <a
-    class="css-1vuuepj"
+    class="css-1wt48oc-ExpandLink evss3fd0"
   >
     <div
-      class="ResultGrid-Row css-mnel7i"
+      class="erefeu23 ResultGrid-Row css-1d0bn69-Row"
       style="color:inherit"
     >
       <div
-        class="ResultGrid-Column css-73z4cy"
+        class="erefeu21 ResultGrid-Column css-1oad8ub-Column"
       >
         Show 2 other item(s)
       </div>

@@ -2,32 +2,32 @@
 
 exports[`BuildList renders 1`] = `
 <div
-  class="css-pisr0g"
+  class="css-1mtyvxy-ResultGrid erefeu20"
 >
   <div
-    class="ResultGrid-Header css-1uzfnwq"
+    class="erefeu22 ResultGrid-Header css-1lhqp4g-Header"
   >
     <div
-      class="ResultGrid-Column css-73z4cy"
+      class="erefeu21 ResultGrid-Column css-1oad8ub-Column"
     >
       Build
     </div>
     <div
-      class="ResultGrid-Column css-1wvmnhy"
+      class="erefeu21 ResultGrid-Column css-ji4w07-Column"
       style="text-align:center"
       width="90"
     >
       Coverage
     </div>
     <div
-      class="ResultGrid-Column css-1wvmnhy"
+      class="erefeu21 ResultGrid-Column css-ji4w07-Column"
       style="text-align:center"
       width="90"
     >
       Duration
     </div>
     <div
-      class="ResultGrid-Column css-1df7njv"
+      class="erefeu21 ResultGrid-Column css-gtt9sl-Column"
       style="text-align:right"
       width="120"
     >
@@ -36,13 +36,13 @@ exports[`BuildList renders 1`] = `
   </div>
   <div>
     <a
-      class="css-1jlugz4"
+      class="css-p1ybjw-ListItemLink e1s1r8150"
     >
       <div
-        class="ResultGrid-Row css-mnel7i"
+        class="erefeu23 ResultGrid-Row css-1d0bn69-Row"
       >
         <div
-          class="ResultGrid-Column css-73z4cy"
+          class="erefeu21 ResultGrid-Column css-1oad8ub-Column"
         >
           <div
             class="css-sncxrr"
@@ -52,7 +52,7 @@ exports[`BuildList renders 1`] = `
               width="15"
             >
               <div
-                class="css-lquxch"
+                class="css-svg137-ResultIcon-ResultIcon e1ptbpi30"
                 result="passed"
               >
                 <svg
@@ -76,24 +76,24 @@ exports[`BuildList renders 1`] = `
               style="min-width:0"
             >
               <div
-                class="css-4el1g6"
+                class="css-cs969u-Message e177ytzd0"
               >
                 fix: Remove break-word behavior on coverage
               </div>
               <div
-                class="css-1e4z1dz"
+                class="css-ejf18k-Meta e177ytzd4"
               >
                 <div
-                  class="css-18y4m79"
+                  class="css-rckoyq-Author-Commit e177ytzd2"
                 >
                   eff634a
                 </div>
                 <div
-                  class="css-1vijwgp"
+                  class="css-1e8kzli-Author e177ytzd1"
                 >
                   <span>
                     <span
-                      class="css-n9g8ud"
+                      class="css-15pbbe0-Avatar e1cndffa0"
                     >
                       <img
                         alt="Gravatar for dcramer@gmail.com"
@@ -112,14 +112,14 @@ exports[`BuildList renders 1`] = `
           </div>
         </div>
         <div
-          class="ResultGrid-Column css-1wvmnhy"
+          class="erefeu21 ResultGrid-Column css-ji4w07-Column"
           style="text-align:center"
           width="90"
         >
           <span />
         </div>
         <div
-          class="ResultGrid-Column css-1wvmnhy"
+          class="erefeu21 ResultGrid-Column css-ji4w07-Column"
           style="text-align:center"
           width="90"
         >
@@ -128,7 +128,7 @@ exports[`BuildList renders 1`] = `
           </span>
         </div>
         <div
-          class="ResultGrid-Column css-1df7njv"
+          class="erefeu21 ResultGrid-Column css-gtt9sl-Column"
           style="text-align:right"
           width="120"
         >

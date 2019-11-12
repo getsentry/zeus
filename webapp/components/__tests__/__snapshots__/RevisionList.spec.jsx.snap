@@ -113,50 +113,50 @@ exports[`RevisionList renders 1`] = `
     ]
   }
 >
-  <Styled(div)>
+  <ResultGrid>
     <div
-      className="css-pisr0g"
+      className="css-1mtyvxy-ResultGrid erefeu20"
     >
-      <Styled(Component)>
+      <Header>
         <Component
-          className="css-dlix8h"
+          className="css-a5tn3f-Header erefeu22"
         >
           <Flex
             align="center"
-            className="css-dlix8h ResultGrid-Header"
+            className="css-a5tn3f-Header erefeu22 ResultGrid-Header"
           >
             <div
-              className="ResultGrid-Header css-1uzfnwq"
+              className="erefeu22 ResultGrid-Header css-1lhqp4g-Header"
             >
-              <Styled(Component)>
+              <Column>
                 <Component
-                  className="css-1ue9xs6"
+                  className="css-1n5delt-Column erefeu21"
                 >
                   <Box
-                    className="css-1ue9xs6 ResultGrid-Column"
+                    className="css-1n5delt-Column erefeu21 ResultGrid-Column"
                     flex={1}
                   >
                     <div
-                      className="ResultGrid-Column css-73z4cy"
+                      className="erefeu21 ResultGrid-Column css-1oad8ub-Column"
                     >
                       Revision
                     </div>
                   </Box>
                 </Component>
-              </Styled(Component)>
-              <Styled(Component)
+              </Column>
+              <Column
                 hide="sm"
                 textAlign="center"
                 width={90}
               >
                 <Component
-                  className="css-1m1qnhw"
+                  className="css-1xtos9c-Column erefeu21"
                   hide="sm"
                   textAlign="center"
                   width={90}
                 >
                   <Box
-                    className="css-1m1qnhw ResultGrid-Column"
+                    className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
                     hide="sm"
                     style={
                       Object {
@@ -167,7 +167,7 @@ exports[`RevisionList renders 1`] = `
                     width={90}
                   >
                     <div
-                      className="ResultGrid-Column css-1wvmnhy"
+                      className="erefeu21 ResultGrid-Column css-ji4w07-Column"
                       style={
                         Object {
                           "textAlign": "center",
@@ -179,20 +179,20 @@ exports[`RevisionList renders 1`] = `
                     </div>
                   </Box>
                 </Component>
-              </Styled(Component)>
-              <Styled(Component)
+              </Column>
+              <Column
                 hide="sm"
                 textAlign="center"
                 width={90}
               >
                 <Component
-                  className="css-1m1qnhw"
+                  className="css-1xtos9c-Column erefeu21"
                   hide="sm"
                   textAlign="center"
                   width={90}
                 >
                   <Box
-                    className="css-1m1qnhw ResultGrid-Column"
+                    className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
                     hide="sm"
                     style={
                       Object {
@@ -203,7 +203,7 @@ exports[`RevisionList renders 1`] = `
                     width={90}
                   >
                     <div
-                      className="ResultGrid-Column css-1wvmnhy"
+                      className="erefeu21 ResultGrid-Column css-ji4w07-Column"
                       style={
                         Object {
                           "textAlign": "center",
@@ -215,20 +215,20 @@ exports[`RevisionList renders 1`] = `
                     </div>
                   </Box>
                 </Component>
-              </Styled(Component)>
-              <Styled(Component)
+              </Column>
+              <Column
                 hide="sm"
                 textAlign="right"
                 width={150}
               >
                 <Component
-                  className="css-1m1qnhw"
+                  className="css-1xtos9c-Column erefeu21"
                   hide="sm"
                   textAlign="right"
                   width={150}
                 >
                   <Box
-                    className="css-1m1qnhw ResultGrid-Column"
+                    className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
                     hide="sm"
                     style={
                       Object {
@@ -239,7 +239,7 @@ exports[`RevisionList renders 1`] = `
                     width={150}
                   >
                     <div
-                      className="ResultGrid-Column css-1bx13r9"
+                      className="erefeu21 ResultGrid-Column css-af0z1w-Column"
                       style={
                         Object {
                           "textAlign": "right",
@@ -251,11 +251,11 @@ exports[`RevisionList renders 1`] = `
                     </div>
                   </Box>
                 </Component>
-              </Styled(Component)>
+              </Column>
             </div>
           </Flex>
         </Component>
-      </Styled(Component)>
+      </Header>
       <div>
         <RevisionListItem
           columns={
@@ -450,43 +450,43 @@ exports[`RevisionList renders 1`] = `
               }
             }
           >
-            <Styled(Link)
+            <ListItemLink
               activeClassName="active"
               to="/gh/getsentry/zeus/builds/650"
             >
               <Link
                 activeClassName="active"
-                className="css-1jlugz4"
+                className="css-p1ybjw-ListItemLink e1s1r8150"
                 onlyActiveOnIndex={false}
                 style={Object {}}
                 to="/gh/getsentry/zeus/builds/650"
               >
                 <a
-                  className="css-1jlugz4"
+                  className="css-p1ybjw-ListItemLink e1s1r8150"
                   onClick={[Function]}
                   style={Object {}}
                 >
-                  <Styled(Component)>
+                  <Row>
                     <Component
-                      className="css-s2odsn"
+                      className="css-13puf6i-Row erefeu23"
                     >
                       <Flex
                         align="center"
-                        className="css-s2odsn ResultGrid-Row"
+                        className="css-13puf6i-Row erefeu23 ResultGrid-Row"
                       >
                         <div
-                          className="ResultGrid-Row css-mnel7i"
+                          className="erefeu23 ResultGrid-Row css-1d0bn69-Row"
                         >
-                          <Styled(Component)>
+                          <Column>
                             <Component
-                              className="css-1ue9xs6"
+                              className="css-1n5delt-Column erefeu21"
                             >
                               <Box
-                                className="css-1ue9xs6 ResultGrid-Column"
+                                className="css-1n5delt-Column erefeu21 ResultGrid-Column"
                                 flex={1}
                               >
                                 <div
-                                  className="ResultGrid-Column css-73z4cy"
+                                  className="erefeu21 ResultGrid-Column css-1oad8ub-Column"
                                 >
                                   <Flex>
                                     <div
@@ -561,12 +561,12 @@ exports[`RevisionList renders 1`] = `
                                             }
                                             size={16}
                                           >
-                                            <Styled(div)
+                                            <ResultIcon
                                               result="passed"
                                               status="finished"
                                             >
                                               <div
-                                                className="css-lquxch"
+                                                className="css-svg137-ResultIcon-ResultIcon e1ptbpi30"
                                                 result="passed"
                                               >
                                                 <MdCheckCircle
@@ -603,7 +603,7 @@ exports[`RevisionList renders 1`] = `
                                                   </IconBase>
                                                 </MdCheckCircle>
                                               </div>
-                                            </Styled(div)>
+                                            </ResultIcon>
                                           </ObjectResult>
                                         </div>
                                       </Box>
@@ -623,27 +623,27 @@ exports[`RevisionList renders 1`] = `
                                             }
                                           }
                                         >
-                                          <Styled(div)>
+                                          <Message>
                                             <div
-                                              className="css-4el1g6"
+                                              className="css-cs969u-Message e177ytzd0"
                                             >
                                               fix: Remove break-word behavior on coverage
                                             </div>
-                                          </Styled(div)>
-                                          <Styled(div)>
+                                          </Message>
+                                          <Meta>
                                             <div
-                                              className="css-1e4z1dz"
+                                              className="css-ejf18k-Meta e177ytzd4"
                                             >
-                                              <Styled(div)>
+                                              <Commit>
                                                 <div
-                                                  className="css-18y4m79"
+                                                  className="css-rckoyq-Author-Commit e177ytzd2"
                                                 >
                                                   eff634a
                                                 </div>
-                                              </Styled(div)>
-                                              <Styled(div)>
+                                              </Commit>
+                                              <Author>
                                                 <div
-                                                  className="css-1vijwgp"
+                                                  className="css-1e8kzli-Author e177ytzd1"
                                                 >
                                                   <ObjectAuthor
                                                     data={
@@ -706,9 +706,9 @@ exports[`RevisionList renders 1`] = `
                                                     }
                                                   >
                                                     <span>
-                                                      <Styled(span)>
+                                                      <Avatar>
                                                         <span
-                                                          className="css-n9g8ud"
+                                                          className="css-15pbbe0-Avatar e1cndffa0"
                                                         >
                                                           <Gravatar
                                                             default="retro"
@@ -727,14 +727,14 @@ exports[`RevisionList renders 1`] = `
                                                             />
                                                           </Gravatar>
                                                         </span>
-                                                      </Styled(span)>
+                                                      </Avatar>
                                                       David Cramer
                                                     </span>
                                                   </ObjectAuthor>
                                                 </div>
-                                              </Styled(div)>
+                                              </Author>
                                             </div>
-                                          </Styled(div)>
+                                          </Meta>
                                         </div>
                                       </Box>
                                     </div>
@@ -742,20 +742,20 @@ exports[`RevisionList renders 1`] = `
                                 </div>
                               </Box>
                             </Component>
-                          </Styled(Component)>
-                          <Styled(Component)
+                          </Column>
+                          <Column
                             hide="sm"
                             textAlign="center"
                             width={90}
                           >
                             <Component
-                              className="css-1m1qnhw"
+                              className="css-1xtos9c-Column erefeu21"
                               hide="sm"
                               textAlign="center"
                               width={90}
                             >
                               <Box
-                                className="css-1m1qnhw ResultGrid-Column"
+                                className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
                                 hide="sm"
                                 style={
                                   Object {
@@ -766,7 +766,7 @@ exports[`RevisionList renders 1`] = `
                                 width={90}
                               >
                                 <div
-                                  className="ResultGrid-Column css-1wvmnhy"
+                                  className="erefeu21 ResultGrid-Column css-ji4w07-Column"
                                   style={
                                     Object {
                                       "textAlign": "center",
@@ -840,20 +840,20 @@ exports[`RevisionList renders 1`] = `
                                 </div>
                               </Box>
                             </Component>
-                          </Styled(Component)>
-                          <Styled(Component)
+                          </Column>
+                          <Column
                             hide="sm"
                             textAlign="center"
                             width={90}
                           >
                             <Component
-                              className="css-1m1qnhw"
+                              className="css-1xtos9c-Column erefeu21"
                               hide="sm"
                               textAlign="center"
                               width={90}
                             >
                               <Box
-                                className="css-1m1qnhw ResultGrid-Column"
+                                className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
                                 hide="sm"
                                 style={
                                   Object {
@@ -864,7 +864,7 @@ exports[`RevisionList renders 1`] = `
                                 width={90}
                               >
                                 <div
-                                  className="ResultGrid-Column css-1wvmnhy"
+                                  className="erefeu21 ResultGrid-Column css-ji4w07-Column"
                                   style={
                                     Object {
                                       "textAlign": "center",
@@ -1068,20 +1068,20 @@ exports[`RevisionList renders 1`] = `
                                 </div>
                               </Box>
                             </Component>
-                          </Styled(Component)>
-                          <Styled(Component)
+                          </Column>
+                          <Column
                             hide="sm"
                             textAlign="right"
                             width={120}
                           >
                             <Component
-                              className="css-1m1qnhw"
+                              className="css-1xtos9c-Column erefeu21"
                               hide="sm"
                               textAlign="right"
                               width={120}
                             >
                               <Box
-                                className="css-1m1qnhw ResultGrid-Column"
+                                className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
                                 hide="sm"
                                 style={
                                   Object {
@@ -1092,7 +1092,7 @@ exports[`RevisionList renders 1`] = `
                                 width={120}
                               >
                                 <div
-                                  className="ResultGrid-Column css-1df7njv"
+                                  className="erefeu21 ResultGrid-Column css-gtt9sl-Column"
                                   style={
                                     Object {
                                       "textAlign": "right",
@@ -1115,18 +1115,18 @@ exports[`RevisionList renders 1`] = `
                                 </div>
                               </Box>
                             </Component>
-                          </Styled(Component)>
+                          </Column>
                         </div>
                       </Flex>
                     </Component>
-                  </Styled(Component)>
+                  </Row>
                 </a>
               </Link>
-            </Styled(Link)>
+            </ListItemLink>
           </BuildListItem>
         </RevisionListItem>
       </div>
     </div>
-  </Styled(div)>
+  </ResultGrid>
 </RevisionList>
 `;

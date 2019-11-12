@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import {LightAsync as SyntaxHighlighter} from 'react-syntax-highlighter';
-import {atomOneLight as highlightStyle} from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import {LightAsync as SyntaxHighlighter} from 'react-syntax-highlighter/dist/cjs';
+import {atomOneLight as highlightStyle} from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
 const mapping = {
   py: 'python',
