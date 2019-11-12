@@ -117,24 +117,15 @@
       "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest",
       "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
-    "transformIgnorePatterns": []
+    "transformIgnorePatterns": [
+      "<rootDir>/(node_modules)/?!(react-syntax-highlighter)"
+    ]
   },
   "jest-junit": {
     "ancestorSeparator": " › ",
     "classNameTemplate": "{classname}",
     "titleTemplate": "{title}",
     "usePathForSuiteName": true
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ],
-    "plugins": [
-      "@babel/plugin-proposal-class-properties",
-      "@babel/plugin-transform-runtime",
-      "babel-plugin-idx"
-    ]
   },
   "eslintConfig": {
     "parser": "babel-eslint",
