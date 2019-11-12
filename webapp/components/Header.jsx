@@ -72,8 +72,15 @@ class UnstyledHeader extends Component {
           className="Repo-Selector"
           clearable={false}
           options={this.getRepositoryList()}
+          noOptionsMessage="(no repos configured)"
           onChange={this.onSelectRepo}
           value={this.getActiveRepo()}
+          styles={{
+            option: provided => ({
+              ...provided,
+              cursor: 'pointer'
+            })
+          }}
         />
         {props.children}
         <div style={{clear: 'both'}} />
@@ -89,6 +96,7 @@ const Header = styled(UnstyledHeader)`
   border-bottom: 4px solid #111;
 
   .Repo-Selector {
+    vertical-align: top;
     display: inline-block;
     width: 100%;
     max-width: 300px;
