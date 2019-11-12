@@ -16,7 +16,9 @@ def test_repository_tests_history_by_build(
 
     build3 = factories.BuildFactory(source=default_source, finished=True)
     job3 = factories.JobFactory(build=build3)
-    testcase2 = factories.TestCaseFactory(job=job3, passed=True)
+    testcase2 = factories.TestCaseFactory(
+        job=job3, passed=True, name=default_testcase.name + "2"
+    )
 
     build4 = factories.BuildFactory(source=default_source, finished=True)
     job4 = factories.JobFactory(build=build4)
@@ -29,10 +31,18 @@ def test_repository_tests_history_by_build(
     )
     assert resp.status_code == 200
     data = resp.json()
-    assert data["results"] == {
-        default_testcase.name: ["passed", None, "failed"],
-        testcase2.name: [None, "passed", None],
-    }
+    assert data["tests"] == [
+        {
+            "name": default_testcase.name,
+            "hash": default_testcase.hash,
+            "results": ["passed", None, "failed"],
+        },
+        {
+            "name": testcase2.name,
+            "hash": testcase2.hash,
+            "results": [None, "passed", None],
+        },
+    ]
     assert len(data["builds"]) == 3
     assert data["builds"][0]["id"] == str(build4.id)
     assert data["builds"][1]["id"] == str(build3.id)

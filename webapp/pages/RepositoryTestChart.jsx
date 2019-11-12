@@ -16,7 +16,7 @@ export default class RepositoryTestChart extends AsyncPage {
     let {repo} = this.context;
     return [
       [
-        'testList',
+        'results',
         `/repos/${repo.full_name}/tests-by-build`,
         {query: this.props.location.query}
       ]
@@ -26,8 +26,8 @@ export default class RepositoryTestChart extends AsyncPage {
   renderBody() {
     return (
       <Section>
-        <TestChart testList={this.state.testList} />
-        <Paginator links={this.state.testList.links} {...this.props} />
+        <TestChart results={this.state.results} repo={this.context.repo} />
+        <Paginator links={this.state.results.links} {...this.props} />
       </Section>
     );
   }

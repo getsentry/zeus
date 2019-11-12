@@ -10,8 +10,14 @@ from .base_repository import BaseRepositoryResource
 from ..schemas import ResultField, BuildSchema
 
 
+class TestResultSchema(Schema):
+    name = fields.Str(required=True)
+    hash = fields.Str(dump_only=True)
+    results = fields.List(ResultField)
+
+
 class TestCaseHistorySchema(Schema):
-    results = fields.Dict(keys=fields.Str(), values=fields.List(ResultField))
+    tests = fields.List(fields.Nested(TestResultSchema))
     builds = fields.List(
         fields.Nested(BuildSchema(exclude=["stats", "source", "repository"]))
     )
@@ -19,29 +25,37 @@ class TestCaseHistorySchema(Schema):
     @pre_dump(pass_many=False)
     def process_results(self, data, **kwargs):
         testcase_query = (
-            db.session.query(TestCase.name, TestCase.result, Job.build_id)
+            db.session.query(TestCase.hash, TestCase.result, Job.build_id)
             .join(Job, TestCase.job_id == Job.id)
             .filter(
-                TestCase.name.in_(n for n, in data),
+                TestCase.hash.in_(n[1] for n in data),
                 Job.build_id.in_(b.id for b in self.context["builds"]),
             )
-        )
+        ).order_by(TestCase.name.asc())
         if self.context["query"]:
             testcase_query = testcase_query.filter(
                 TestCase.name.contains(self.context["query"])
             )
 
         results_by_test = defaultdict(dict)
-        for test_name, result, build_id in testcase_query:
-            results_by_test[test_name][build_id] = result
+        for test_hash, result, build_id in testcase_query:
+            results_by_test[test_hash][build_id] = result
 
-        results = {}
-        for test_name, test_results in results_by_test.items():
-            results[test_name] = []
-            for build in self.context["builds"]:
-                results[test_name].append(test_results.get(build.id, None))
+        tests = []
+        # XXX: looping on data to ensure we maintain order of original serialization
+        for test_name, test_hash in data:
+            tests.append(
+                {
+                    "name": test_name,
+                    "hash": test_hash,
+                    "results": [
+                        results_by_test[test_hash].get(b.id, None)
+                        for b in self.context["builds"]
+                    ],
+                }
+            )
 
-        output = {"results": results, "builds": self.context["builds"]}
+        output = {"tests": tests, "builds": self.context["builds"]}
         return output
 
 
@@ -70,7 +84,7 @@ class RepositoryTestsHistoryByBuildResource(BaseRepositoryResource):
 
         # this only fetches the unique test cases, as we need to paginate them
         testcase_query = (
-            db.session.query(TestCase.name)
+            db.session.query(TestCase.name, TestCase.hash)
             .join(Job, TestCase.job_id == Job.id)
             .filter(Job.build_id.in_(b.id for b in builds))
             .distinct()
