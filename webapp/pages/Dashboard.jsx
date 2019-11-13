@@ -1,11 +1,11 @@
 import React from 'react';
-import {Flex, Box} from 'grid-styled';
+import {Flex, Box} from '@rebass/grid/emotion';
 import {Link} from 'react-router';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
-import ViewAllIcon from 'react-icons/lib/md/input';
+import {MdInput} from 'react-icons/md';
 
 import {fetchBuilds} from '../actions/builds';
 import {subscribe} from '../decorators/stream';
@@ -20,6 +20,7 @@ import ObjectDuration from '../components/ObjectDuration';
 import {Column, Header, ResultGrid, Row} from '../components/ResultGrid';
 import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
+import requireAuth from '../utils/requireAuth';
 
 const RepoLink = styled(Link)`
   display: block;
@@ -28,6 +29,15 @@ const RepoLink = styled(Link)`
   &:hover {
     background-color: #f0eff5;
   }
+`;
+
+const Name = styled.div`
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 class RepoListSection extends AsyncComponent {
@@ -53,7 +63,7 @@ class RepoListSection extends AsyncComponent {
         <SectionHeading>
           Your Repositories
           <Link to="/settings/github/repos" style={{marginLeft: 10}}>
-            <ViewAllIcon size={18} style={{verticalAlign: 'text-bottom'}} />
+            <MdInput size={18} style={{verticalAlign: 'text-bottom'}} />
           </Link>
         </SectionHeading>
         <ResultGrid>
@@ -96,12 +106,9 @@ class RepoListSection extends AsyncComponent {
   }
 }
 
-const WrappedRepoList = connect(
-  function(state) {
-    return {repoList: state.repos.items, loading: !state.repos.loaded};
-  },
-  {}
-)(RepoListSection);
+const WrappedRepoList = connect(function(state) {
+  return {repoList: state.repos.items, loading: !state.repos.loaded};
+}, {})(RepoListSection);
 
 class BuildListSection extends AsyncComponent {
   static propTypes = {
@@ -122,7 +129,7 @@ class BuildListSection extends AsyncComponent {
         <SectionHeading>
           Your Builds
           <Link to="/builds" style={{marginLeft: 10}}>
-            <ViewAllIcon size={18} style={{verticalAlign: 'text-bottom'}} />
+            <MdInput size={18} style={{verticalAlign: 'text-bottom'}} />
           </Link>
         </SectionHeading>
         {super.renderContent()}
@@ -159,7 +166,7 @@ const WrappedBuildList = connect(
   {fetchBuilds}
 )(subscribe(() => ['builds'])(BuildListSection));
 
-export default class Dashboard extends AsyncPage {
+export class Dashboard extends AsyncPage {
   getTitle() {
     return 'Zeus Dashboard';
   }
@@ -168,7 +175,7 @@ export default class Dashboard extends AsyncPage {
     return (
       <Layout>
         <Flex flex="1">
-          <Box width={7 / 12} mr={30}>
+          <Box width={7 / 12} mr={4}>
             <WrappedBuildList {...this.props} />
           </Box>
           <Box width={5 / 12}>
@@ -180,11 +187,4 @@ export default class Dashboard extends AsyncPage {
   }
 }
 
-const Name = styled.div`
-  font-size: 15px;
-  line-height: 1.2;
-  font-weight: 500;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-`;
+export default requireAuth(Dashboard);

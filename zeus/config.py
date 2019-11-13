@@ -340,7 +340,7 @@ def configure_webpack(app):
                 app.logger.exception("Unable to load webpack manifest")
                 assets = {}
             app.extensions["webpack"]["assets"] = assets
-        return url_for("static", filename=assets.get(path, path))
+        return url_for("static", filename=assets.get(path, path).lstrip("/static"))
 
     @app.context_processor
     @span("context_processor.webpack_assets")

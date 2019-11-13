@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Flex, Box} from 'grid-styled';
+import {Flex, Box} from '@rebass/grid/emotion';
 import {Link} from 'react-router';
-import styled from 'styled-components';
-import ExpandIcon from 'react-icons/lib/md/expand-more';
-import CollapseIcon from 'react-icons/lib/md/expand-less';
-import HistoryIcon from 'react-icons/lib/md/history';
+import styled from '@emotion/styled';
+import {MdExpandLess, MdExpandMore, MdHistory} from 'react-icons/md';
 
 import Collapsable from './Collapsable';
 import {AggregateDuration} from './ObjectDuration';
@@ -43,9 +41,9 @@ class TestListItem extends Component {
               {test.name}
               <span className="toggle">
                 {this.state.expanded ? (
-                  <CollapseIcon size={12} />
+                  <MdExpandLess size={12} />
                 ) : (
-                  <ExpandIcon size={12} />
+                  <MdExpandMore size={12} />
                 )}
               </span>
             </TestLink>
@@ -64,7 +62,7 @@ class TestListItem extends Component {
           </Box>
           <Box width={40} style={{textAlign: 'right'}}>
             <Link to={`/${repo.full_name}/tests/${test.hash}`}>
-              <HistoryIcon size={20} />
+              <MdHistory size={20} />
             </Link>
           </Box>
         </Flex>

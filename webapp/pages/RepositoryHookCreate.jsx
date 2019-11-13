@@ -57,10 +57,7 @@ export class RepositoryHookCreate extends AsyncPage {
   }
 }
 
-export default connect(
-  null,
-  {
-    addIndicator,
-    removeIndicator
-  }
-)(RepositoryHookCreate);
+export default connect(null, {
+  addIndicator,
+  removeIndicator
+})(RepositoryHookCreate);

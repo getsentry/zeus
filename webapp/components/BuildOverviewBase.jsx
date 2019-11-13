@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import marked from 'marked';
 import {sanitize} from 'dompurify';
 
@@ -121,9 +121,7 @@ export default class BuildOverviewBase extends AsyncPage {
               <Button
                 size="small"
                 type="light"
-                href={`https://github.com/${repo.owner_name}/${repo.name}/commit/${
-                  revision.sha
-                }`}>
+                href={`https://github.com/${repo.owner_name}/${repo.name}/commit/${revision.sha}`}>
                 View on GitHub
               </Button>
             </div>

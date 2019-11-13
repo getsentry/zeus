@@ -30,9 +30,8 @@ export const subscribe = config => {
       }
     }
 
-    return connect(
-      null,
-      {subscribe: subscribeAction, unsubscribe: unsubscribeAction}
-    )(StreamSubscription);
+    return connect(null, {subscribe: subscribeAction, unsubscribe: unsubscribeAction})(
+      StreamSubscription
+    );
   };
 };

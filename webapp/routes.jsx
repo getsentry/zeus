@@ -44,8 +44,6 @@ import Login from './components/Login';
 import NotFoundError from './components/NotFoundError';
 import PageLoading from './components/PageLoading';
 
-import requireAuth from './utils/requireAuth';
-
 const AsyncSettings = Loadable({
   loader: () => import('./pages/Settings'),
   loading: PageLoading
@@ -70,19 +68,17 @@ export default (
   <Route path="/" component={App}>
     <IndexRoute component={DashboardOrWelcome} />
     <Route path="/welcome" component={Welcome} />
-    <Route path="/dashboard" component={requireAuth(Dashboard)} />
-    <Route path="/settings" component={requireAuth(AsyncSettings)}>
+    <Route path="/dashboard" component={Dashboard} />
+    <Route path="/settings" component={AsyncSettings}>
       <IndexRedirect to="/settings/account" />
       <Route path="account" component={AsyncAccountSettings} />
       <Route path="github/repos" component={AsyncGitHubRepositoryList} />
       <Route path="token" component={AsyncTokenSettings} />
     </Route>
-    <Route path="/builds" component={requireAuth(UserBuildList)} />
+    <Route path="/builds" component={UserBuildList} />
     <Route path="/login" component={Login} />
-    <Route path="/:provider/:ownerName" component={requireAuth(OwnerDetails)} />
-    <Route
-      path="/:provider/:ownerName/:repoName"
-      component={requireAuth(RepositoryDetails)}>
+    <Route path="/:provider/:ownerName" component={OwnerDetails} />
+    <Route path="/:provider/:ownerName/:repoName" component={RepositoryDetails}>
       <IndexRoute component={RepositoryOverview} />
       <Route path="builds" component={RepositoryBuildList} />
       <Route path="change-requests" component={RepositoryChangeRequestList} />

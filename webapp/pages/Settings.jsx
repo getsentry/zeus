@@ -5,8 +5,9 @@ import AsyncPage from '../components/AsyncPage';
 import Content from '../components/Content';
 import Header from '../components/Header';
 import Nav, {NavItem} from '../components/Nav';
+import requireAuth from '../utils/requireAuth';
 
-export default class Settings extends AsyncPage {
+export class Settings extends AsyncPage {
   static contextTypes = {
     repoList: PropTypes.arrayOf(PropTypes.object).isRequired,
     router: PropTypes.object.isRequired
@@ -36,3 +37,5 @@ export default class Settings extends AsyncPage {
     return this.props.children;
   }
 }
+
+export default requireAuth(Settings);

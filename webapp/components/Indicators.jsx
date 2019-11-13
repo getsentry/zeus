@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import ToastIndicator from './ToastIndicator';
 
 const FadeTransition = props => (
-  <CSSTransition {...props} classNames="fade" timeout={500} />
+  <CSSTransition {...props} unmountOnExit classNames="fade" timeout={300} />
 );
 
 class Indicators extends Component {
@@ -17,10 +17,7 @@ class Indicators extends Component {
   render() {
     return (
       <div>
-        <TransitionGroup
-          transitionName="toast"
-          transitionEnter={false}
-          transitionLeaveTimeout={500}>
+        <TransitionGroup enter={false}>
           {this.props.items.map(indicator => {
             return (
               <FadeTransition key={indicator.id}>
@@ -40,7 +37,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {}
-)(Indicators);
+export default connect(mapStateToProps, {})(Indicators);

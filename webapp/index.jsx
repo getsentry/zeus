@@ -2,15 +2,16 @@ import React from 'react';
 import {Router, browserHistory} from 'react-router';
 import {render} from 'react-dom';
 import {Provider} from 'react-redux';
+import {ThemeProvider} from 'emotion-theming';
+
+// These imports (core-js and regenerator-runtime) are replacements for deprecated `@babel/polyfill`
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 // import {setAuth} from './actions/auth';
 
 import routes from './routes';
 import store from './store';
-
-import 'react-select/dist/react-select.css';
-
-import './index.css';
 
 // TODO(dcramer): until we can resolve babel not compiling Error classes correctly
 // in prod this compounds issues
@@ -26,10 +27,6 @@ import './index.css';
 //   }
 // }
 
-// import {registerLanguage} from 'react-syntax-highlighter/dist/light';
-// import diff from 'react-syntax-highlighter/dist/languages/diff';
-// registerLanguage('diff', diff);
-
 import * as Sentry from '@sentry/browser';
 import {Tracing} from '@sentry/integrations';
 
@@ -43,9 +40,15 @@ Sentry.init({
   ]
 });
 
+const theme = {
+  space: [0, 4, 8, 16, 32, 64, 128, 256]
+};
+
 render(
-  <Provider store={store}>
-    <Router history={browserHistory} routes={routes} />
-  </Provider>,
+  <ThemeProvider theme={theme}>
+    <Provider store={store}>
+      <Router history={browserHistory} routes={routes} />
+    </Provider>
+  </ThemeProvider>,
   document.getElementById('root')
 );

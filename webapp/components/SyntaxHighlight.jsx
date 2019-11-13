@@ -1,17 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import SyntaxHighlighter from 'react-syntax-highlighter';
 
-import {atomOneLight} from 'react-syntax-highlighter/styles/hljs';
-
-const highlightStyle = {
-  ...atomOneLight,
-  hljs: {
-    ...atomOneLight.hljs,
-    background: '#ffffff',
-    padding: 0
-  }
-};
+import {LightAsync as SyntaxHighlighter} from 'react-syntax-highlighter/dist/cjs';
+import {atomOneLight as highlightStyle} from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
 const mapping = {
   py: 'python',
@@ -95,7 +86,8 @@ export default class SyntaxHighlight extends Component {
     return (
       <SyntaxHighlighter
         style={highlightStyle}
-        lang={lang}
+        language={lang}
+        customStyle={{padding: 0}}
         className={this.props.className}>
         {this.props.children}
       </SyntaxHighlighter>

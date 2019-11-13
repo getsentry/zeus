@@ -1,6 +1,5 @@
 import xhrmock from 'xhr-mock';
 import React from 'react';
-import {mount} from 'enzyme';
 
 import Dashboard from '../Dashboard';
 import {RepositoryContext} from '../App';
@@ -24,7 +23,7 @@ describe('Dashboard', () => {
       store
     });
 
-    const wrapper = mount(
+    const wrapper = TestStubs.mount(
       <RepositoryContext repoList={[repo]} loading={false} loadRepos={() => {}}>
         <Dashboard />
       </RepositoryContext>,
@@ -51,7 +50,7 @@ describe('Dashboard', () => {
       store
     });
 
-    const wrapper = mount(
+    const wrapper = TestStubs.mount(
       <RepositoryContext repoList={[repo]} loading={false} loadRepos={() => {}}>
         <Dashboard />
       </RepositoryContext>,

@@ -55,10 +55,7 @@ class RepositorySettings extends AsyncPage {
   }
 }
 
-export default connect(
-  null,
-  {
-    addIndicator,
-    removeIndicator
-  }
-)(RepositorySettings);
+export default connect(null, {
+  addIndicator,
+  removeIndicator
+})(RepositorySettings);

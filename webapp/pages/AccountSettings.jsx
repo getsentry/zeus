@@ -20,7 +20,10 @@ class AccountSettings extends AsyncPage {
   }
 
   getEndpoints() {
-    return [['emailList', '/users/me/emails'], ['user', '/users/me']];
+    return [
+      ['emailList', '/users/me/emails'],
+      ['user', '/users/me']
+    ];
   }
 
   toggleNotifications = () => {

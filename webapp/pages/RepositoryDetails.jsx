@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 import AsyncPage from '../components/AsyncPage';
 import RepositoryContent from '../components/RepositoryContent';
 import RepositoryHeader from '../components/RepositoryHeader';
+import requireAuth from '../utils/requireAuth';
 
-export default class RepositoryDetails extends AsyncPage {
+export class RepositoryDetails extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
     repoList: PropTypes.arrayOf(PropTypes.object).isRequired
@@ -57,3 +58,5 @@ export default class RepositoryDetails extends AsyncPage {
     );
   }
 }
+
+export default requireAuth(RepositoryDetails);

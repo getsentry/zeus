@@ -16,6 +16,10 @@ env:
   global:
     - NODE_ENV=production
     - PIP_DISABLE_PIP_VERSION_CHECK=on
+    - JEST_JUNIT_OUTPUT_DIR=.artifacts
+    - JEST_JUNIT_OUTPUT_NAME=jest.junit.xml
+    - JEST_JUNIT_INCLUDE_CONSOLE_OUTPUT=true
+    - JEST_JUNIT_ADD_FILE_ATTRIBUTE=true
 install:
   - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/0.12.10/get-poetry.py | python
   - curl -sSLf https://get.volta.sh | bash
@@ -25,7 +29,7 @@ script:
   - PATH=$HOME/.poetry/bin:$PATH PATH=node_modules/.bin:$PATH pre-commit run -a -v
   - PATH=$HOME/.poetry/bin:$PATH poetry run py.test tests -v --cov . --cov-report="xml:.artifacts/coverage.xml" --junit-xml=".artifacts/pytest.junit.xml"
   - node_modules/.bin/webpack --json > .artifacts/webpack-stats.json
-  - JEST_JUNIT_OUTPUT=.artifacts/jest.junit.xml yarn test --ci --reporters=default --reporters=jest-junit
+  - JEST_JUNIT_OUTPUT_DIR=.artifacts JEST_JUNIT_OUTPUT_NAME=jest.junit.xml yarn test --ci --reporters=default --reporters=jest-junit
 after_script:
   - npm install -g @zeus-ci/cli
   - $(npm bin -g)/zeus upload -t "application/x-junit+xml" .artifacts/*.junit.xml

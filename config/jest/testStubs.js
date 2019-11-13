@@ -2,21 +2,51 @@ import sinon from 'sinon';
 import thunk from 'redux-thunk';
 import PropTypes from 'prop-types';
 import configureStore from 'redux-mock-store';
+import {createMount, createShallow} from 'enzyme-context';
+import {routerContext} from 'enzyme-context-react-router-3';
+import {reduxContext} from 'enzyme-context-redux';
 
 const mockStore = configureStore([thunk]);
 
-window.TestStubs = {
-  // react-router's 'router' context
-  router: () => ({
-    push: sinon.spy(),
-    replace: sinon.spy(),
-    go: sinon.spy(),
-    goBack: sinon.spy(),
-    goForward: sinon.spy(),
-    setRouteLeaveHook: sinon.spy(),
-    isActive: sinon.spy(),
-    createHref: sinon.spy()
+const createRouter = () => ({
+  push: sinon.spy(),
+  replace: sinon.spy(),
+  go: sinon.spy(),
+  goBack: sinon.spy(),
+  goForward: sinon.spy(),
+  setRouteLeaveHook: sinon.spy(),
+  isActive: sinon.spy(),
+  createHref: sinon.spy()
+});
+
+const createStore = state =>
+  // TODO(dcramer): It'd be nice if this could be auto generated
+  mockStore({
+    auth: {isAuthenticated: null, user: null},
+    builds: {
+      items: [],
+      loaded: false,
+      links: {}
+    },
+    repos: {
+      items: [],
+      loaded: false
+    },
+    ...state
+  });
+
+const plugins = {
+  store: reduxContext({
+    createStore
   }),
+  history: routerContext()
+};
+
+window.TestStubs = {
+  mount: createMount(plugins),
+  shallow: createShallow(plugins),
+  // react-router's 'router' context
+  router: createRouter,
 
   location: () => ({
     query: {},
@@ -26,33 +56,18 @@ window.TestStubs = {
   routerContext: (location, router) => ({
     context: {
       location: location || TestStubs.location(),
-      router: router || TestStubs.router()
+      router: router || createRouter()
     },
     childContextTypes: {
       router: PropTypes.object,
       location: PropTypes.object
     }
   }),
-
-  store: state =>
-    // TODO(dcramer): It'd be nice if this could be auto generated
-    mockStore({
-      auth: {isAuthenticated: null, user: null},
-      builds: {
-        items: [],
-        loaded: false,
-        links: {}
-      },
-      repos: {
-        items: [],
-        loaded: false
-      },
-      ...state
-    }),
+  store: createStore,
 
   storeContext: store => ({
     context: {
-      store: store || TestStubs.store()
+      store: store || createStore()
     },
     childContextTypes: {
       store: PropTypes.object

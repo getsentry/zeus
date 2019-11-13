@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import idx from 'idx';
 import Gravatar from 'react-gravatar';
-import MdPerson from 'react-icons/lib/md/person';
+import {MdPerson} from 'react-icons/md';
 
 const Avatar = styled.span`
   img {

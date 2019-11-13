@@ -1,6 +1,6 @@
 import React from 'react';
-import {Flex, Box} from 'grid-styled';
-import styled from 'styled-components';
+import {Flex, Box} from '@rebass/grid/emotion';
+import styled from '@emotion/styled';
 
 import media from '../utils/media';
 

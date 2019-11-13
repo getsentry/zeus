@@ -44,7 +44,7 @@ const AuthedContext = connect(
   {loadRepos}
 )(RepositoryContext);
 
-class App extends Component {
+export class App extends Component {
   static propTypes = {
     isAuthenticated: PropTypes.bool,
     children: PropTypes.node,

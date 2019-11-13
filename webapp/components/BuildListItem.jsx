@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import {Flex, Box} from 'grid-styled';
+import styled from '@emotion/styled';
+import {Flex, Box} from '@rebass/grid/emotion';
 
 import ListItemLink from './ListItemLink';
 import ObjectAuthor from './ObjectAuthor';
@@ -37,7 +37,7 @@ export default class BuildListItem extends Component {
         <Row>
           <Column>
             <Flex>
-              <Box width={15} mr={8}>
+              <Box width={15} mr={2}>
                 <ObjectResult data={build} />
               </Box>
               <Box flex="1" style={{minWidth: 0}}>

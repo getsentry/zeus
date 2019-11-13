@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 import {addIndicator, removeIndicator} from '../actions/indicators';
 import AsyncPage from '../components/AsyncPage';
@@ -49,10 +49,7 @@ class TokenSettings extends AsyncPage {
   }
 }
 
-export default connect(
-  null,
-  {
-    addIndicator,
-    removeIndicator
-  }
-)(TokenSettings);
+export default connect(null, {
+  addIndicator,
+  removeIndicator
+})(TokenSettings);

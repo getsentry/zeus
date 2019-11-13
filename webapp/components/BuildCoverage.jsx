@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 import Section from '../components/Section';
 import {ResultGrid, Column, Header, Row} from '../components/ResultGrid';
@@ -251,9 +251,8 @@ export default class BuildCoverage extends Component {
             {!!result.build && (
               <p>
                 Data from{' '}
-                <Link to={`${repo.full_name}/builds/${result.build.number}`}>{`${
-                  repo.owner_name
-                }/${repo.name}#${result.build.number}`}</Link>
+                <Link
+                  to={`${repo.full_name}/builds/${result.build.number}`}>{`${repo.owner_name}/${repo.name}#${result.build.number}`}</Link>
               </p>
             )}
             <p>

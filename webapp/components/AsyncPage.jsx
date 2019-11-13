@@ -4,19 +4,12 @@ import PropTypes from 'prop-types';
 
 import AsyncComponent from './AsyncComponent';
 
-import {Client} from '../api';
-
 // TODO(dcramer): make this simply call AsyncComponent instead of extend
 export default class AsyncPage extends AsyncComponent {
   static propTypes = {
     params: PropTypes.object,
     location: PropTypes.object
   };
-
-  componentWillMount() {
-    this.api = new Client();
-    this.reloadData();
-  }
 
   // XXX: cant call this getInitialState as React whines
   getDefaultState(props, context) {
@@ -105,8 +98,8 @@ export default class AsyncPage extends AsyncComponent {
     return this.state.loading
       ? this.renderLoading()
       : this.state.error
-        ? this.renderError(new Error('Unable to load all required endpoints'))
-        : this.renderBody();
+      ? this.renderError(new Error('Unable to load all required endpoints'))
+      : this.renderBody();
   }
 
   render() {
