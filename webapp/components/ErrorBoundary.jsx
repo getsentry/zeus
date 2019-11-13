@@ -37,7 +37,7 @@ class ErrorBoundary extends Component {
       error,
       lastLocation: {...(idx(this.props.router, _ => _.location) || {})}
     });
-    if (window.Raven) {
+    if (window.Sentry) {
       window.Sentry.captureException(error, {extra: errorInfo});
       window.Sentry.lastEventId() && window.Sentry.showReportDialog();
     }
