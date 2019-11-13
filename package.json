@@ -86,12 +86,15 @@
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-manifest-plugin": "^2.2.0",
-    "whatwg-fetch": "^3.0.0"
+    "whatwg-fetch": "^3.0.0",
+    "snyk": "^1.247.1"
   },
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
   },
   "browserslist": [
     "defaults"
@@ -162,5 +165,6 @@
   "volta": {
     "node": "8.11.3",
     "yarn": "1.17.3"
-  }
+  },
+  "snyk": true
 }
