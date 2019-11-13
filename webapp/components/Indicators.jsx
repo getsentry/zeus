@@ -37,7 +37,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {}
-)(Indicators);
+export default connect(mapStateToProps, {})(Indicators);

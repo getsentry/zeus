@@ -51,8 +51,8 @@ export default class AsyncComponent extends Component {
     let currentLocation = isLocationInProps
       ? this.props.location
       : isRouterInContext
-        ? this.context.router.location
-        : null;
+      ? this.context.router.location
+      : null;
 
     if (!(currentLocation && prevLocation)) {
       return;
@@ -118,8 +118,8 @@ export default class AsyncComponent extends Component {
     return this.props.loading
       ? this.renderLoading()
       : this.props.error
-        ? this.renderError(new Error('Unable to load all required endpoints'))
-        : this.renderBody();
+      ? this.renderError(new Error('Unable to load all required endpoints'))
+      : this.renderBody();
   }
 
   renderBody() {

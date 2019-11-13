@@ -52,9 +52,8 @@ export default class RepositoryTestTree extends AsyncPage {
             {!!result.build && (
               <p>
                 Data from{' '}
-                <Link to={`${repo.full_name}/builds/${result.build.number}`}>{`${
-                  repo.owner_name
-                }/${repo.name}#${result.build.number}`}</Link>
+                <Link
+                  to={`${repo.full_name}/builds/${result.build.number}`}>{`${repo.owner_name}/${repo.name}#${result.build.number}`}</Link>
               </p>
             )}
             <p>

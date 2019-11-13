@@ -98,8 +98,8 @@ export default class AsyncPage extends AsyncComponent {
     return this.state.loading
       ? this.renderLoading()
       : this.state.error
-        ? this.renderError(new Error('Unable to load all required endpoints'))
-        : this.renderBody();
+      ? this.renderError(new Error('Unable to load all required endpoints'))
+      : this.renderBody();
   }
 
   render() {
