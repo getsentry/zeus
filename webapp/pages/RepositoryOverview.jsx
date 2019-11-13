@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {Flex, Box} from '@rebass/grid/emotion';
 import {Line as LineChart} from 'react-chartjs-2';
 import {MdInput} from 'react-icons/md';
+import * as Sentry from '@sentry/browser';
 
 import {loadRevisionsForRepository} from '../actions/revisions';
 import AsyncPage from '../components/AsyncPage';
@@ -152,6 +153,10 @@ class RepositoryChart extends AsyncPage {
       return value.toLocaleString();
     }
   };
+
+  componentDidCatch(error, errorInfo) {
+    Sentry.captureException(error, {extra: errorInfo});
+  }
 
   getEndpoints({repo, stat}) {
     let endpoint = `/repos/${repo.full_name}/stats`;

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import idx from 'idx';
 import {isEqual} from 'lodash';
 import {withRouter} from 'react-router';
-// This is being pulled form the CDN currently
-// import Raven from 'raven-js';
+
+import * as Sentry from '@sentry/browser';
 
 import IdentityNeedsUpgradeError from './IdentityNeedsUpgradeError';
 import InternalError from './InternalError';
@@ -37,10 +37,8 @@ class ErrorBoundary extends Component {
       error,
       lastLocation: {...(idx(this.props.router, _ => _.location) || {})}
     });
-    if (window.Sentry) {
-      window.Sentry.captureException(error, {extra: errorInfo});
-      window.Sentry.lastEventId() && window.Sentry.showReportDialog();
-    }
+    Sentry.captureException(error, {extra: errorInfo});
+    Sentry.lastEventId() && Sentry.showReportDialog();
   }
 
   render() {
