@@ -71,12 +71,6 @@ function getPlugins() {
   return plugins;
 }
 
-function getEntry() {
-  let entry = {};
-  entry.app = paths.appIndexJs;
-  return entry;
-}
-
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
@@ -88,7 +82,9 @@ module.exports = {
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
-  entry: getEntry(),
+  entry: {
+    app: paths.appIndexJs
+  },
   output: {
     // Next line is not used in dev but WebpackDevServer crashes without it:
     path: paths.appBuild,
@@ -206,6 +202,11 @@ module.exports = {
     fs: 'empty',
     net: 'empty',
     tls: 'empty'
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
   },
   mode: process.env.NODE_ENV ? process.env.NODE_ENV : 'development'
 };
