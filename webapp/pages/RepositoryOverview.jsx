@@ -108,6 +108,10 @@ class CoverageChart extends AsyncPage {
     ];
   }
 
+  componentDidCatch(error, errorInfo) {
+    Sentry.captureException(error, {extra: errorInfo});
+  }
+
   renderError() {
     return <div>Error loading chart</div>;
   }
