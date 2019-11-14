@@ -3,6 +3,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
@@ -29,6 +30,12 @@ function getPlugins() {
   // Makes some environment variables available to the JS code, for example:
   // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
   plugins.push(new webpack.DefinePlugin(env.stringified));
+
+  plugins.push(
+    new MiniCssExtractPlugin({
+      filename: 'style.[contenthash].css'
+    })
+  );
 
   // This is necessary to emit hot updates (currently CSS only):
   !isProd && plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -166,6 +173,12 @@ module.exports = {
         ],
         include: paths.appSrc
       },
+
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
+      },
+
       // ** ADDING/UPDATING LOADERS **
       // The "file" loader handles all assets unless explicitly excluded.
       // The `exclude` list *must* be updated with every change to loader extensions.

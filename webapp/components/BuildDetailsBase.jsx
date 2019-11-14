@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 
 import AsyncPage from '../components/AsyncPage';
 import Badge from '../components/Badge';
+import Icon from '../components/Icon';
 import ObjectAuthor from '../components/ObjectAuthor';
 import ObjectCoverage from '../components/ObjectCoverage';
 import ObjectDuration from '../components/ObjectDuration';
@@ -61,7 +62,9 @@ export default class BuildDetailsBase extends AsyncPage {
               </DurationWrapper>
             )}
             <Time>
-              <MdAccessTime size="16" style={{marginRight: 5}} />
+              <Icon mr>
+                <MdAccessTime />
+              </Icon>
               {build.status === 'queued' || build.status === 'unknown' ? (
                 <span>
                   created <TimeSince date={build.created_at} />
@@ -142,6 +145,7 @@ const Branch = styled.div`
 const Meta = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: row;
   margin-top: 5px;
   margin-bottom: 15px;
   color: #7f7d8f;
@@ -158,7 +162,6 @@ const Meta = styled.div`
   svg {
     color: #bfbfcb;
     position: relative;
-    top: -1px;
   }
 `;
 

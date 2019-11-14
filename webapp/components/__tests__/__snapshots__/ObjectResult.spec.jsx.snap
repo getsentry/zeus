@@ -4,14 +4,14 @@ exports[`ObjectResult handles empty data 1`] = `null`;
 
 exports[`ObjectResult handles unknown 1`] = `
 <div
-  class="css-uuz0m0-ResultIcon-ResultIcon e1ptbpi30"
+  class="css-tu801x-ResultIcon-ResultIcon e1ptbpi30"
   result="unknown"
 />
 `;
 
 exports[`ObjectResult renders finished aborted 1`] = `
 <div
-  class="css-uuz0m0-ResultIcon-ResultIcon e1ptbpi30"
+  class="css-tu801x-ResultIcon-ResultIcon e1ptbpi30"
   result="aborted"
 >
   <svg
@@ -33,7 +33,7 @@ exports[`ObjectResult renders finished aborted 1`] = `
 
 exports[`ObjectResult renders finished errored 1`] = `
 <div
-  class="css-14326qw-ResultIcon-ResultIcon e1ptbpi30"
+  class="css-qvthmr-ResultIcon-ResultIcon e1ptbpi30"
   result="errored"
 >
   <svg
@@ -55,7 +55,7 @@ exports[`ObjectResult renders finished errored 1`] = `
 
 exports[`ObjectResult renders finished failed 1`] = `
 <div
-  class="css-1g5vd7-ResultIcon-ResultIcon e1ptbpi30"
+  class="css-jsspjc-ResultIcon-ResultIcon e1ptbpi30"
   result="failed"
 >
   <svg
@@ -77,7 +77,7 @@ exports[`ObjectResult renders finished failed 1`] = `
 
 exports[`ObjectResult renders finished passed 1`] = `
 <div
-  class="css-svg137-ResultIcon-ResultIcon e1ptbpi30"
+  class="css-odhetd-ResultIcon-ResultIcon e1ptbpi30"
   result="passed"
 >
   <svg
@@ -99,7 +99,7 @@ exports[`ObjectResult renders finished passed 1`] = `
 
 exports[`ObjectResult renders finished unknown 1`] = `
 <div
-  class="css-uuz0m0-ResultIcon-ResultIcon e1ptbpi30"
+  class="css-tu801x-ResultIcon-ResultIcon e1ptbpi30"
   result="unknown"
 >
   <svg
@@ -121,7 +121,7 @@ exports[`ObjectResult renders finished unknown 1`] = `
 
 exports[`ObjectResult renders in-progress 1`] = `
 <div
-  class="css-uuz0m0-ResultIcon-ResultIcon e1ptbpi30"
+  class="css-tu801x-ResultIcon-ResultIcon e1ptbpi30"
   result="unknown"
 >
   <svg
@@ -143,7 +143,7 @@ exports[`ObjectResult renders in-progress 1`] = `
 
 exports[`ObjectResult renders queued 1`] = `
 <div
-  class="css-uuz0m0-ResultIcon-ResultIcon e1ptbpi30"
+  class="css-tu801x-ResultIcon-ResultIcon e1ptbpi30"
   result="unknown"
 >
   <svg
@@ -165,7 +165,7 @@ exports[`ObjectResult renders queued 1`] = `
 
 exports[`ObjectResult renders size 1`] = `
 <div
-  class="css-svg137-ResultIcon-ResultIcon e1ptbpi30"
+  class="css-odhetd-ResultIcon-ResultIcon e1ptbpi30"
   result="passed"
 >
   <svg

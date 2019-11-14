@@ -52,7 +52,7 @@ exports[`BuildList renders 1`] = `
               width="15"
             >
               <div
-                class="css-svg137-ResultIcon-ResultIcon e1ptbpi30"
+                class="css-odhetd-ResultIcon-ResultIcon e1ptbpi30"
                 result="passed"
               >
                 <svg

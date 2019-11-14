@@ -562,11 +562,12 @@ exports[`RevisionList renders 1`] = `
                                             size={16}
                                           >
                                             <ResultIcon
+                                              mr={true}
                                               result="passed"
                                               status="finished"
                                             >
                                               <div
-                                                className="css-svg137-ResultIcon-ResultIcon e1ptbpi30"
+                                                className="css-odhetd-ResultIcon-ResultIcon e1ptbpi30"
                                                 result="passed"
                                               >
                                                 <MdCheckCircle
