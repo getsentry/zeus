@@ -2,7 +2,8 @@ from datetime import timedelta
 from flask import current_app
 
 from zeus.config import db, metrics
-from zeus.models import Build, User
+from zeus.constants import Result
+from zeus.models import Build, Job, User
 from zeus.utils import timezone
 
 from .base import Resource
@@ -45,6 +46,23 @@ class InstallIndexResource(Resource):
                     "30d": (
                         Build.query.unrestricted_unsafe()
                         .filter(Build.date_created > thirty_days_ago)
+                        .count()
+                    ),
+                },
+                "jobErrors": {
+                    "24h": (
+                        Job.query.unrestricted_unsafe()
+                        .filter(
+                            Job.date_created > one_day_ago, Job.result == Result.errored
+                        )
+                        .count()
+                    ),
+                    "30d": (
+                        Job.query.unrestricted_unsafe()
+                        .filter(
+                            Job.date_created > thirty_days_ago,
+                            Job.result == Result.errored,
+                        )
                         .count()
                     ),
                 },

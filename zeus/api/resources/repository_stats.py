@@ -17,6 +17,7 @@ STAT_CHOICES = frozenset(
         "builds.aborted",
         "builds.failed",
         "builds.passed",
+        "builds.errored",
         "builds.total",
         "builds.duration",
         "tests.count",
@@ -32,7 +33,16 @@ STAT_CHOICES = frozenset(
 )
 
 ZERO_FILLERS = frozenset(
-    ("builds.total", "tests.count", "tests.count_unique", "style_violations.count")
+    (
+        "builds.total",
+        "builds.errored",
+        "builds.passed",
+        "builds.failed",
+        "builds.aborted",
+        "tests.count",
+        "tests.count_unique",
+        "style_violations.count",
+    )
 )
 
 RESOLUTION_CHOICES = ("1h", "1d", "1w", "1m")
@@ -67,6 +77,7 @@ def build_queryset(repo_id: UUID, stat: str, grouper):
         "builds.aborted",
         "builds.failed",
         "builds.passed",
+        "builds.errored",
         "builds.total",
         "builds.duration",
     ):
@@ -76,6 +87,8 @@ def build_queryset(repo_id: UUID, stat: str, grouper):
             extra_filters = [Build.result == Result.passed]
         elif stat == "builds.aborted":
             extra_filters = [Build.result == Result.aborted]
+        elif stat == "builds.errored":
+            extra_filters = [Build.result == Result.errored]
         else:
             extra_filters = [Build.status == Status.finished]
 
