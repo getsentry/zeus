@@ -3,13 +3,14 @@ import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
+import BuildLink from './BuildLink';
 import {Header} from './ResultGrid';
 
 export default class TestChart extends Component {
   static propTypes = {
     repo: PropTypes.object.isRequired,
     results: PropTypes.shape({
-      builds: PropTypes.object,
+      builds: PropTypes.array,
       tests: PropTypes.array
     }),
     collapsable: PropTypes.bool,
@@ -30,9 +31,7 @@ export default class TestChart extends Component {
         <Header>Test</Header>
         {buildsList.map(build => (
           <Header key={build.id}>
-            <BuildLink
-              href={build.url}
-              title={`${build.label} finished at ${build.finished_at}`}>
+            <BuildLink repo={repo} build={build}>
               i
             </BuildLink>
           </Header>
@@ -41,10 +40,9 @@ export default class TestChart extends Component {
         {this.props.results.tests.map(({name, hash, results}) => {
           return (
             <React.Fragment key={hash}>
-              <Link to={`/${repo.full_name}/tests/${hash}`}>
-                <TestName title={name}>{name}</TestName>
-              </Link>
-
+              <TestName name={name}>
+                <Link to={`/${repo.full_name}/tests/${hash}`}>{name}</Link>
+              </TestName>
               {results.map((result, i) => (
                 <ResultBox key={i} result={result} />
               ))}
@@ -69,14 +67,6 @@ const ResultBox = styled('div')`
   height: 24px;
   background-color: ${p =>
     p.result === 'passed' ? 'green' : p.result === null ? '#ccc' : 'red'};
-`;
-
-const BuildLink = styled('a')`
-  display: flex;
-  justify-content: center;
-  text-transform: none;
-  width: 100%;
-  color: #999;
 `;
 
 const TestName = styled('span')`

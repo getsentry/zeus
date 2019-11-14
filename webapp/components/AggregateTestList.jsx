@@ -7,6 +7,7 @@ import {MdExpandLess, MdExpandMore, MdHistory} from 'react-icons/md';
 
 import Collapsable from './Collapsable';
 import {AggregateDuration} from './ObjectDuration';
+import Icon from './Icon';
 import ObjectResult from './ObjectResult';
 import ResultGridRow from './ResultGridRow';
 import {ResultGrid, Column, Header} from './ResultGrid';
@@ -41,9 +42,13 @@ class TestListItem extends Component {
               {test.name}
               <span className="toggle">
                 {this.state.expanded ? (
-                  <MdExpandLess size={12} />
+                  <Icon>
+                    <MdExpandLess size={12} />
+                  </Icon>
                 ) : (
-                  <MdExpandMore size={12} />
+                  <Icon>
+                    <MdExpandMore size={12} />
+                  </Icon>
                 )}
               </span>
             </TestLink>
@@ -62,7 +67,9 @@ class TestListItem extends Component {
           </Box>
           <Box width={40} style={{textAlign: 'right'}}>
             <Link to={`/${repo.full_name}/tests/${test.hash}`}>
-              <MdHistory size={20} />
+              <Icon>
+                <MdHistory size={20} />
+              </Icon>
             </Link>
           </Box>
         </Flex>

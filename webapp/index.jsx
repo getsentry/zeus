@@ -8,6 +8,8 @@ import {ThemeProvider} from 'emotion-theming';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
+import '@reach/tooltip/styles.css';
+
 // import {setAuth} from './actions/auth';
 
 import routes from './routes';

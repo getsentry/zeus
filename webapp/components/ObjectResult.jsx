@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import {css} from '@emotion/core';
 import styled from '@emotion/styled';
 
+import Icon from './Icon';
+
 import {
   MdCheckCircle,
   MdAvTimer,
@@ -56,17 +58,14 @@ export default class ObjectResult extends Component {
     }
     let {result, status} = this.props.data;
     return (
-      <ResultIcon status={status} result={result}>
+      <ResultIcon status={status} result={result} mr>
         {this.getIcon(result, status)}
       </ResultIcon>
     );
   }
 }
 
-export const ResultIcon = styled.div`
-  display: inline-block;
-  margin-right: 5px;
-
+export const ResultIcon = styled(Icon)`
   ${props => {
     switch (props.result) {
       case 'passed':
