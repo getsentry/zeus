@@ -21,6 +21,7 @@ export default class RepositoryStats extends AsyncPage {
       ['buildsDuration', endpoint, {query: {stat: 'builds.duration', ...params}}],
       ['buildsFailed', endpoint, {query: {stat: 'builds.failed', ...params}}],
       ['buildsPassed', endpoint, {query: {stat: 'builds.passed', ...params}}],
+      ['buildsErrored', endpoint, {query: {stat: 'builds.errored', ...params}}],
       ['buildsTotal', endpoint, {query: {stat: 'builds.total', ...params}}],
       [
         'bundleTotalAssetSize',
@@ -44,6 +45,7 @@ export default class RepositoryStats extends AsyncPage {
       buildsDuration,
       buildsFailed,
       buildsPassed,
+      buildsErrored,
       buildsTotal,
       bundleTotalAssetSize,
       styleViolationsCount,
@@ -73,6 +75,9 @@ export default class RepositoryStats extends AsyncPage {
     buildsPassed.forEach(
       ({time, value}) => (groupedStats[time]['builds.passed'] = value)
     );
+    buildsErrored.forEach(
+      ({time, value}) => (groupedStats[time]['builds.errored'] = value)
+    );
     bundleTotalAssetSize.forEach(
       ({time, value}) => (groupedStats[time]['bundle.total_asset_size'] = value)
     );
@@ -96,7 +101,12 @@ export default class RepositoryStats extends AsyncPage {
           <Column width={100} textAlign="right">
             Pct
             <br />
-            Green Builds
+            Green
+          </Column>
+          <Column width={100} textAlign="right">
+            Build
+            <br />
+            Errors
           </Column>
           <Column width={100} textAlign="right">
             Avg
@@ -144,6 +154,9 @@ export default class RepositoryStats extends AsyncPage {
                       10
                     ) / 10}%`
                   : ''}
+              </Column>
+              <Column width={100} textAlign="right">
+                {stat['builds.errored'].toLocaleString()}
               </Column>
               <Column width={100} textAlign="right">
                 {totalLines
