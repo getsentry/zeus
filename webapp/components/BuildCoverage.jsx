@@ -257,7 +257,9 @@ export default class BuildCoverage extends Component {
             )}
             <p>
               <strong>Diff:</strong>{' '}
-              {`${diffPctCovered}% lines covered (${diffLinesCovered} / ${diffLinesTotal})`}
+              {diffPctCovered !== null
+                ? `${diffPctCovered}% lines covered (${diffLinesCovered} / ${diffLinesTotal})`
+                : 'n/a'}
             </p>
             <p>
               <strong>Overall:</strong>{' '}
