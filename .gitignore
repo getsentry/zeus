@@ -19,6 +19,7 @@ coverage.xml
 *.junit.xml
 junit.xml
 .cache/
+__pycache__/
 .mypy_cache/
 .DS_Store
 .env.local
