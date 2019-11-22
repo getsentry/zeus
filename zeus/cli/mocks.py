@@ -141,28 +141,6 @@ def mock_build(
 
     if not revision:
         revision, source = mock_revision(repo, parent_revision, author)
-    else:
-        for n in range(2):
-            source = (
-                models.Source.query.unrestricted_unsafe()
-                .filter(
-                    models.Source.repository_id == repo.id,
-                    models.Source.revision_sha == revision.sha,
-                )
-                .first()
-            )
-            if source:
-                break
-            try_create(
-                models.Source,
-                {
-                    "revision_sha": revision.sha,
-                    "repository": repo,
-                    "author_id": revision.author_id,
-                },
-            )
-        else:
-            raise NotImplementedError
 
     if with_change_request and parent_revision is None:
         parent_revision = factories.RevisionFactory.create(repository=repo)

@@ -1,12 +1,13 @@
 from collections import defaultdict
 from marshmallow import Schema, fields, pre_dump
+from sqlalchemy import and_
 from typing import List, Mapping
 from uuid import UUID
 
 from zeus.config import db
 from zeus.constants import Result, Status
 from zeus.exceptions import UnknownRepositoryBackend
-from zeus.models import Build, Job, Source, TestCase
+from zeus.models import Build, Job, Revision, TestCase
 from zeus.utils.aggregation import aggregate_result
 from zeus.vcs.base import UnknownRevision
 
@@ -24,7 +25,6 @@ def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str,
     if not test_failures:
         return {}
 
-    source = build.source
     repo = build.repository
     try:
         vcs = repo.get_vcs()
@@ -33,7 +33,7 @@ def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str,
     else:
         try:
             valid_revisions = [
-                c.sha for c in vcs.log(limit=100, parent=source.revision_sha)
+                c.sha for c in vcs.log(limit=100, parent=build.revision_sha)
             ]
         except UnknownRevision:
             valid_revisions = []
@@ -41,58 +41,70 @@ def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str,
     filters = [
         Build.repository_id == build.repository_id,
         Build.status == Status.finished,
-        Source.id != source.id,
-        Source.patch_id == None,  # NOQA
+        Build.revision_sha != build.revision_sha,
     ]
     if valid_revisions:
-        filters.extend(
-            [
-                Source.revision_sha.in_(valid_revisions),
-                Source.repository_id == build.repository_id,
-            ]
-        )
+        filters.extend([Build.revision_sha.in_(valid_revisions)])
 
     # NOTE(dcramer): many of these queries ignore tenant constraints
     # find any existing failures in the previous runs
     # to do this we first need to find the last passing build
     last_pass = (
-        db.session.query(Source.id, Source.date_created)
-        .join(Build, Source.id == Build.source_id)
+        db.session.query(Revision.sha, Revision.date_created)
+        .join(
+            Build,
+            and_(
+                Revision.sha == Build.revision_sha,
+                Revision.repository_id == Build.repository_id,
+            ),
+        )
         .filter(
             Build.result == Result.passed,
-            Source.date_created <= source.date_created,
+            Revision.date_created <= build.revision.date_created,
             Build.date_created <= build.date_created,
             *filters,
         )
-        .order_by(Source.date_created.desc())
+        .order_by(Revision.date_created.desc())
         .first()
     )
 
     if last_pass:
-        last_pass_source_id, last_pass_date = last_pass
+        last_pass_revision_sha, last_pass_date = last_pass
 
         # We have to query all runs between build and last_pass. Because we're
         # paranoid about performance, we limit this to 100 results.
         previous_build_ids = [
             r
             for r, in db.session.query(Build.id)
-            .join(Source, Source.id == Build.source_id)
+            .join(
+                Revision,
+                and_(
+                    Revision.sha == Build.revision_sha,
+                    Revision.repository_id == Build.repository_id,
+                ),
+            )
             .filter(
                 Build.result == Result.failed,
                 Build.date_created >= last_pass_date,
-                Source.date_created >= last_pass_date,
-                Source.id != last_pass_source_id,
+                Revision.date_created >= last_pass_date,
+                Revision.sha != last_pass_revision_sha,
                 *filters,
             )
-            .order_by(Source.date_created.desc())[:100]
+            .order_by(Revision.date_created.desc())[:100]
         ]
     else:
         previous_build_ids = [
             r
             for r, in db.session.query(Build.id)
-            .join(Source, Source.id == build.source_id)
+            .join(
+                Revision,
+                and_(
+                    Revision.sha == Build.revision_sha,
+                    Revision.repository_id == Build.repository_id,
+                ),
+            )
             .filter(Build.result == Result.failed, *filters)
-            .order_by(Source.date_created.desc())[:100]
+            .order_by(Revision.date_created.desc())[:100]
         ]
 
     if not previous_build_ids:

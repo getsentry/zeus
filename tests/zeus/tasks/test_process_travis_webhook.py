@@ -70,8 +70,6 @@ def test_commit(
 def test_pull_request(
     default_repo, default_hook, default_revision, sample_travis_build_pr, mocker
 ):
-    source = factories.SourceFactory.create(revision=default_revision)
-
     mock_identify_revision = mocker.patch("zeus.utils.revisions.identify_revision")
     mock_identify_revision.return_value = default_revision
 
@@ -88,8 +86,8 @@ def test_pull_request(
     )
     assert cr
     assert cr.message == "The title of the pull request"
-    assert cr.parent_revision_sha == source.revision_sha
-    assert cr.head_revision_sha == source.revision_sha
+    assert cr.parent_revision_sha == default_revision.sha
+    assert cr.head_revision_sha == default_revision.sha
 
     build = (
         Build.query.unrestricted_unsafe()
@@ -98,7 +96,8 @@ def test_pull_request(
     )
     assert build
     assert build.repository_id == default_repo.id
-    assert build.source_id == source.id
+    assert build.revision_sha == default_revision.sha
+    assert build.ref == default_revision.sha
     assert build.label == "PR #123 - The title of the pull request"
     assert (
         build.url

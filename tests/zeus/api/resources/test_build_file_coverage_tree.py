@@ -9,14 +9,12 @@ def test_simple(
     default_repo_access,
     default_revision,
 ):
-    source = factories.SourceFactory(revision=default_revision)
-
     # finished build
-    build = factories.BuildFactory(source=source, passed=True)
+    build = factories.BuildFactory(revision=default_revision, passed=True)
     db_session.add(build)
 
     # an unfinished build which shouldn't be used
-    factories.BuildFactory(source=source)
+    factories.BuildFactory(revision=default_revision)
     db_session.add(build)
 
     coverage1 = factories.FileCoverageFactory(

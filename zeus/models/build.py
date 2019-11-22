@@ -17,9 +17,9 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     """
 
     source_id = db.Column(
-        GUID, db.ForeignKey("source.id", ondelete="CASCADE"), nullable=False, index=True
+        GUID, db.ForeignKey("source.id", ondelete="CASCADE"), nullable=True, index=True
     )
-    ref = db.Column(db.String, nullable=False)
+    ref = db.Column(db.String, nullable=True)
     revision_sha = db.Column(db.String(40), nullable=True)
 
     number = db.Column(db.Integer, nullable=False)

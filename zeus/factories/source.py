@@ -12,7 +12,6 @@ class SourceFactory(ModelFactory):
     repository = factory.SelfAttribute("revision.repository")
     repository_id = factory.SelfAttribute("revision.repository_id")
     revision_sha = factory.SelfAttribute("revision.sha")
-    ref = factory.SelfAttribute("revision_sha")
     author = factory.SelfAttribute("revision.author")
     author_id = factory.SelfAttribute("author.id")
     date_created = factory.SelfAttribute("revision.date_created")

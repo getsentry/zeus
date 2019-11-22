@@ -3,9 +3,9 @@ from zeus.constants import Result, Status
 from zeus.models import Job
 
 
-def test_new_job(client, default_source, default_repo, default_hook):
+def test_new_job(client, default_revision, default_repo, default_hook):
     build = factories.BuildFactory(
-        source=default_source,
+        revision=default_revision,
         provider=default_hook.get_provider().get_name(default_hook.config),
         external_id="3",
     )
@@ -31,9 +31,9 @@ def test_new_job(client, default_source, default_repo, default_hook):
     assert job.status == Status.finished
 
 
-def test_existing_job(client, default_source, default_repo, default_hook):
+def test_existing_job(client, default_revision, default_repo, default_hook):
     build = factories.BuildFactory(
-        source=default_source,
+        revision=default_revision,
         provider=default_hook.get_provider().get_name(default_hook.config),
         external_id="3",
     )

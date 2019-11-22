@@ -4,7 +4,7 @@ from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Email, Hook, Repository, Source
+from zeus.models import Author, Build, Email, Hook, Repository
 from zeus.pubsub.utils import publish
 
 from .base_repository import BaseRepositoryResource
@@ -26,9 +26,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
 
         query = (
             Build.query.options(
-                joinedload("author"),
-                joinedload("revision"),
-                subqueryload_all("stats"),
+                joinedload("author"), joinedload("revision"), subqueryload_all("stats")
             )
             .filter(Build.repository_id == repo.id)
             .order_by(Build.number.desc())
@@ -61,7 +59,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             build.data = {}
         build.data["required_hook_ids"] = Hook.get_required_hook_ids(repo.id)
         if not build.label:
-            build.label = source.revision.message.split("\n")[0]
+            build.label = build.revision.message.split("\n")[0]
 
         if not build.label:
             return self.error("missing build label")

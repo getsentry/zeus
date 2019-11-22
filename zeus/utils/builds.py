@@ -2,10 +2,10 @@ from functools import reduce
 from itertools import groupby
 from operator import and_, or_
 from typing import Any, List, Mapping, Tuple
-from sqlalchemy.orm import contains_eager, subqueryload_all
+from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus.constants import Status, Result
-from zeus.models import Build, Revision, Source
+from zeus.models import Build, Revision
 
 
 def merge_builds(target: Build, build: Build) -> Build:
@@ -85,9 +85,7 @@ def merge_build_group(
     return reduce(merge_builds, latest_builds, build)
 
 
-def fetch_builds_for_revisions(
-    revisions: List[Revision], required_hook_ids: List[str] = None
-) -> Mapping[str, Build]:
+def fetch_builds_for_revisions(revisions: List[Revision]) -> Mapping[str, Build]:
     # we query extra builds here, but its a lot easier than trying to get
     # sqlalchemy to do a ``select (subquery)`` clause and maintain tenant
     # constraints
@@ -98,24 +96,24 @@ def fetch_builds_for_revisions(
     for revision in revisions:
         lookups.append(
             and_(
-                Source.repository_id == revision.repository_id,
-                Source.revision_sha == revision.sha,
+                Build.repository_id == revision.repository_id,
+                Build.revision_sha == revision.sha,
             )
         )
 
     builds = (
         Build.query.options(
-            joinedload("author"),
-            joinedload("revision"),
-            subqueryload_all("stats"),
+            joinedload("author"), joinedload("revision"), subqueryload_all("stats")
         )
-        .join(Source, Build.source_id == Source.id)
-        .filter(Source.patch_id == None, reduce(or_, lookups))  # NOQA
-        .order_by(Source.revision_sha)
+        .filter(reduce(or_, lookups))  # NOQA
+        .order_by(Build.revision_sha)
     )
     build_groups = groupby(
-        builds, lambda build: (build.source.repository_id, build.source.revision_sha)
+        builds, lambda build: (build.repository_id, build.revision_sha)
     )
+    required_hook_ids = set()
+    for build in builds:
+        required_hook_ids.update(build.data.get("required_hook_ids") or ())
     return [
         (ident, merge_build_group(list(group), required_hook_ids))
         for ident, group in build_groups
@@ -123,20 +121,7 @@ def fetch_builds_for_revisions(
 
 
 def fetch_build_for_revision(revision: Revision) -> Build:
-    source = (
-        Source.query.unrestricted_unsafe()
-        .filter(
-            Source.revision_sha == revision.sha,
-            Source.repository_id == revision.repository_id,
-        )
-        .first()
-    )
-    if source:
-        required_hook_ids = source.data.get("required_hook_ids") or ()
-    else:
-        required_hook_ids = ()
-
-    builds = fetch_builds_for_revisions([revision], required_hook_ids)
+    builds = fetch_builds_for_revisions([revision])
     if len(builds) < 1:
         return None
 

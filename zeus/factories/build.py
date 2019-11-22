@@ -6,8 +6,11 @@ from random import randint
 
 from zeus import models
 from zeus.constants import Result, Status
+from zeus.utils import timezone
 
+from .author import AuthorFactory
 from .base import ModelFactory
+from .repository import RepositoryFactory
 from .types import GUIDFactory
 
 faker = Factory.create()
@@ -20,16 +23,24 @@ faker = Factory.create()
 class BuildFactory(ModelFactory):
     id = GUIDFactory()
     label = factory.faker.Faker("sentence")
-    repository = factory.LazyAttribute(lambda o: o.revision.repository if o.revision_sha else None)
+    repository = factory.LazyAttribute(
+        lambda o: o.revision.repository
+        if getattr(o, "revision", None)
+        else RepositoryFactory()
+    )
     repository_id = factory.SelfAttribute("repository.id")
-    author = factory.SubFactory(
-        "zeus.factories.AuthorFactory", repository=factory.SelfAttribute("..repository")
+    author = factory.LazyAttribute(
+        lambda o: o.revision.author
+        if getattr(o, "revision", None)
+        else AuthorFactory(repository=o.repository)
     )
     author_id = factory.SelfAttribute("author.id")
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
-    ref = factory.faker.Faker('sha1')
-    revision_sha = factory.SelfAttribute("..ref")
+    ref = factory.faker.Faker("sha1")
+    revision_sha = factory.LazyAttribute(
+        lambda o: o.revision.sha if getattr(o, "revision", None) else None
+    )
     date_created = factory.LazyAttribute(
         lambda o: timezone.now() - timedelta(minutes=30)
     )

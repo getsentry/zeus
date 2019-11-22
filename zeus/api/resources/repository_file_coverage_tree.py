@@ -1,7 +1,7 @@
 from flask import request
 
 from zeus.constants import Result, Status
-from zeus.models import Build, FileCoverage, Repository, Source
+from zeus.models import Build, FileCoverage, Repository
 from zeus.utils.trees import build_tree
 
 from .base_repository import BaseRepositoryResource
@@ -14,17 +14,11 @@ filecoverage_schema = FileCoverageSchema(many=False)
 
 class RepositoryFileCoverageTreeResource(BaseRepositoryResource):
     def _get_leaf(self, build: Build, coverage: FileCoverage):
-        # TODO(dcramer): support patches
-        source = Source.query.options(
-            # joinedload('patch'),
-            # undefer('patch.diff'),
-        ).get(build.source_id)
-
         file_source = None
         vcs = build.repository.get_vcs()
         if vcs:
             try:
-                file_source = vcs.show(source.revision_sha, coverage.filename)
+                file_source = vcs.show(build.revision_sha, coverage.filename)
             except Exception:
                 pass
 
@@ -50,9 +44,7 @@ class RepositoryFileCoverageTreeResource(BaseRepositoryResource):
         Return a tree of coverage for the given revision.
         """
         build = (
-            Build.query.join(Source, Source.id == Build.source_id)
-            .filter(
-                Source.patch_id == None,  # NOQA
+            Build.query.filter(
                 Build.repository_id == repo.id,
                 Build.result == Result.passed,
                 Build.status == Status.finished,

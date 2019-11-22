@@ -4,7 +4,7 @@ from marshmallow import Schema, fields, pre_dump
 
 from zeus.config import db
 from zeus.constants import Status
-from zeus.models import Build, Repository, TestCase, Job, Source
+from zeus.models import Build, Repository, TestCase, Job
 
 from .base_repository import BaseRepositoryResource
 from ..schemas import ResultField, BuildSchema
@@ -68,11 +68,8 @@ class RepositoryTestsHistoryByBuildResource(BaseRepositoryResource):
         query = request.args.get("query")
 
         builds = (
-            Build.query.join(Source, Source.id == Build.source_id)
-            .filter(
-                Source.patch_id == None,  # NOQA
-                Build.repository_id == repo.id,
-                Build.status == Status.finished,
+            Build.query.filter(
+                Build.repository_id == repo.id, Build.status == Status.finished
             )
             .order_by(Build.number.desc())
             .limit(results)
