@@ -101,12 +101,14 @@ def fetch_builds_for_revisions(revisions: List[Revision]) -> Mapping[str, Build]
             )
         )
 
-    builds = (
-        Build.query.options(
-            joinedload("author"), joinedload("revision"), subqueryload_all("stats")
+    builds = list(
+        (
+            Build.query.options(
+                joinedload("author"), joinedload("revision"), subqueryload_all("stats")
+            )
+            .filter(reduce(or_, lookups))  # NOQA
+            .order_by(Build.revision_sha)
         )
-        .filter(reduce(or_, lookups))  # NOQA
-        .order_by(Build.revision_sha)
     )
     build_groups = groupby(
         builds, lambda build: (build.repository_id, build.revision_sha)
