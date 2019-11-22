@@ -57,12 +57,8 @@ def test_merge_build_group_empty_dates(client, default_login, default_revision):
 def test_fetch_build_with_required_hooks(
     client, db_session, default_login, default_tenant, default_repo, default_revision
 ):
-    hook1 = factories.HookFactory.create(
-        repository_id=default_repo.id, revision=default_revision
-    )
-    hook2 = factories.HookFactory.create(
-        repository_id=default_repo.id, revision=default_revision
-    )
+    hook1 = factories.HookFactory.create(repository_id=default_repo.id)
+    hook2 = factories.HookFactory.create(repository_id=default_repo.id)
     db_session.commit()
 
     factories.BuildFactory.create(
