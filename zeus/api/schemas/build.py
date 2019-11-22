@@ -26,11 +26,12 @@ class BuildSchema(Schema):
     )
     author = fields.Nested(AuthorSchema())
     revision = fields.Nested(RevisionSchema())
-    ref = RevisionRefField(dump_only=True, sha_field='revision_sha')
+    ref = RevisionRefField(dump_only=True, sha_field="revision_sha")
 
 
 class BuildCreateSchema(Schema):
-    ref = RevisionRefField(validate_ref=False, required=True, sha_field='revision_sha')
+    ref = RevisionRefField(validate_ref=False, required=True, sha_field="revision_sha")
+    revision_sha = fields.Str()
     author = fields.Nested(AuthorSchema(), required=True)
     # label is only required if they're specifying a source with a patch (which they cant do yet)
     label = fields.Str(required=False)

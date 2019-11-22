@@ -14,13 +14,19 @@ class RevisionRefField(fields.Str):
 
     def _deserialize(self, value, attr, data, **kwargs):
         repo = self.context.get("repository")
-        if repo and self.validate_ref:
-            try:
-                revision = revisions.identify_revision(repo, value)
-            except UnknownRevision as e:
+        if not repo:
+            return value
+
+        try:
+            revision = revisions.identify_revision(
+                repo, value, with_vcs=self.validate_ref
+            )
+        except UnknownRevision as e:
+            if self.validate_ref:
                 current_app.logger.warn("invalid ref received", exc_info=True)
                 raise ValidationError("unknown revision: {}".format(value)) from e
-
-            return revision.sha
+        else:
+            if self.sha_field:
+                data[self.sha_field] = revision.sha
 
         return value

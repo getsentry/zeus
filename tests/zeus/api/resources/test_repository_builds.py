@@ -61,6 +61,7 @@ def test_repo_build_create(
     build = Build.query.unrestricted_unsafe().get(resp.json()["id"])
     assert build
     assert build.repository_id == default_repo.id
+    assert build.ref == default_revision.sha
     assert build.revision_sha == default_revision.sha
     assert build.label == "test build"
 
@@ -77,10 +78,15 @@ def test_repo_build_create_missing_revision(
     )
     assert resp.status_code == 200, repr(resp.data)
 
+    mock_identify_revision.assert_called_once_with(
+        default_repo, "master", with_vcs=False
+    )
+
     build = Build.query.unrestricted_unsafe().get(resp.json()["id"])
     assert build
     assert build.repository_id == default_repo.id
-    assert build.revision_sha == default_revision.id
+    assert build.ref == "master"
+    assert build.revision_sha is None
     assert build.label == "test build"
 
 
