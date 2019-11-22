@@ -1,8 +1,7 @@
 import click
 
-from random import choice, randint, random, randrange
+from random import choice, randint, randrange
 from sqlalchemy.exc import IntegrityError
-from typing import Tuple
 
 from zeus import auth, factories, models
 from zeus.api.schemas import BuildSchema
@@ -110,19 +109,13 @@ def mock_revision(
     repo: models.Repository,
     parent_revision: models.Revision = None,
     author: models.Author = None,
-) -> Tuple[models.Revision, models.Source]:
+) -> models.Revision:
     revision = factories.RevisionFactory.create(
         repository=repo,
         parents=[parent_revision.sha] if parent_revision else None,
         **{"author": author} if author else {}
     )
-    source = factories.SourceFactory.create(
-        revision=revision,
-        patch=factories.PatchFactory(parent_revision=parent_revision)
-        if parent_revision and random() > 0.8
-        else None,
-    )
-    return revision, source
+    return revision
 
 
 def mock_build(
@@ -140,7 +133,7 @@ def mock_build(
         author = None
 
     if not revision:
-        revision, source = mock_revision(repo, parent_revision, author)
+        revision = mock_revision(repo, parent_revision, author)
 
     if with_change_request and parent_revision is None:
         parent_revision = factories.RevisionFactory.create(repository=repo)
@@ -157,7 +150,7 @@ def mock_build(
 
     parent_revision = revision
 
-    build = factories.BuildFactory.create(source=source, travis=True)
+    build = factories.BuildFactory.create(revision=revision, travis=True)
 
     data = build_schema.dump(build)
     publish("builds", "build.create", data)
@@ -252,7 +245,7 @@ def load_all(repos=3, commits_per_repo=10):
                 user_ids=user_ids,
                 file_list=file_list,
             )
-            parent_revision = build.source.revision
+            parent_revision = build.revision
 
 
 @mocks.command()
@@ -265,4 +258,4 @@ def stream():
         build = mock_build(
             repo, parent_revision, user_ids=user_ids, file_list=file_list
         )
-        parent_revision = build.source.revision
+        parent_revision = build.revision

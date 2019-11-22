@@ -19,11 +19,12 @@ def test_revision_artifacts(
     revision = factories.RevisionFactory.create(
         sha=git_repo_config.commits[0], repository=repo
     )
-    source = factories.SourceFactory.create(revision=revision)
     factories.BuildFactory.create(
-        source=source, date_created=timezone.now() - timedelta(minutes=1)
+        revision=revision, date_created=timezone.now() - timedelta(minutes=1)
     )
-    build = factories.BuildFactory.create(source=source, date_created=timezone.now())
+    build = factories.BuildFactory.create(
+        revision=revision, date_created=timezone.now()
+    )
     job = factories.JobFactory.create(build=build)
     artifact = factories.ArtifactFactory.create(job=job)
 

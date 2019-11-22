@@ -3,10 +3,10 @@ from zeus.models import Build
 
 
 def test_repo_build_list(
-    client, default_login, default_source, default_repo, default_repo_access
+    client, default_login, default_revision, default_repo, default_repo_access
 ):
-    build1 = factories.BuildFactory.create(source=default_source)
-    build2 = factories.BuildFactory.create(source=default_source)
+    build1 = factories.BuildFactory.create(revision=default_revision)
+    build2 = factories.BuildFactory.create(revision=default_revision)
 
     resp = client.get(
         "/api/repos/{}/builds?show=all".format(default_repo.get_full_name())
@@ -40,8 +40,7 @@ def test_repo_build_list_mine_without_match(
     client, default_login, default_repo, default_repo_access
 ):
     revision = factories.RevisionFactory(repository=default_repo)
-    source = factories.SourceFactory(revision=revision)
-    factories.BuildFactory(source=source)
+    factories.BuildFactory(revision=revision)
     resp = client.get(
         "/api/repos/{}/builds?show=mine".format(default_repo.get_full_name())
     )

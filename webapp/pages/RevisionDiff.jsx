@@ -15,17 +15,17 @@ export default class RevisionDiff extends AsyncPage {
   getEndpoints() {
     let {repo} = this.context;
     let {sha} = this.props.params;
-    return [['source', `/repos/${repo.full_name}/revisions/${sha}/source`]];
+    return [['diff', `/repos/${repo.full_name}/revisions/${sha}/diff`]];
   }
 
   renderBody() {
     return (
       <Section>
-        {this.state.source.diff ? (
-          <Diff diff={this.state.source.diff} />
+        {this.state.diff.diff ? (
+          <Diff diff={this.state.diff.diff} />
         ) : (
           <Section>
-            <em>No source information was available for this build.</em>
+            <em>No diff information was available for this build.</em>
           </Section>
         )}
       </Section>

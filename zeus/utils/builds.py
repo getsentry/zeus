@@ -19,8 +19,8 @@ def merge_builds(target: Build, build: Build) -> Build:
     # These properties should theoretically always be the same within a build
     # group, so merging is not necessary.  We assign here so the initial build
     # gets populated.
-    target.source = build.source
-    target.label = build.source.revision.message
+    target.revision = build.revision
+    target.label = build.revision.message
 
     # Merge properties, if they already exist.  In the first run, everything
     # will be empty, since every group is initialized with an empty build.

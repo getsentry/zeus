@@ -10,14 +10,12 @@ def test_simple(
     default_repo_access,
     default_revision,
 ):
-    source = factories.SourceFactory(revision=default_revision)
-
     # finished build
-    build = factories.BuildFactory(source=source, passed=True)
+    build = factories.BuildFactory(revision=default_revision, passed=True)
     db_session.add(build)
 
     # an unfinished build which shouldn't be used
-    factories.BuildFactory(source=source, status=Status.in_progress)
+    factories.BuildFactory(revision=default_revision, status=Status.in_progress)
     db_session.add(build)
 
     # a couple of needed jobs that split the tests

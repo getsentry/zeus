@@ -9,11 +9,11 @@ def test_success(
     default_user,
     default_repo,
     default_repo_access,
-    default_source,
+    default_revision,
     default_tenant,
     outbox,
 ):
-    build = factories.BuildFactory(source=default_source, failed=True)
+    build = factories.BuildFactory(revision=default_revision, failed=True)
     db_session.add(build)
 
     send_email_notification(build)
@@ -30,10 +30,10 @@ def test_no_repo_access(
     default_tenant,
     default_user,
     default_repo,
-    default_source,
+    default_revision,
     outbox,
 ):
-    build = factories.BuildFactory(source=default_source, failed=True)
+    build = factories.BuildFactory(revision=default_revision, failed=True)
     db_session.add(build)
 
     send_email_notification(build)
@@ -47,11 +47,11 @@ def test_disabled(
     default_user,
     default_repo,
     default_repo_access,
-    default_source,
+    default_revision,
     default_tenant,
     outbox,
 ):
-    build = factories.BuildFactory(source=default_source, failed=True)
+    build = factories.BuildFactory(revision=default_revision, failed=True)
     db_session.add(build)
     db_session.add(
         ItemOption(item_id=default_user.id, name="mail.notify_author", value="0")

@@ -4,7 +4,6 @@ import pytest
 
 from time import time
 
-from zeus import factories
 from zeus.constants import Result, Status
 from zeus.models import Build, ChangeRequest, Job
 from zeus.tasks import process_travis_webhook
@@ -25,8 +24,6 @@ def sample_travis_build_pr(fixture_path):
 def test_commit(
     default_hook, default_repo, default_revision, sample_travis_build_commit, mocker
 ):
-    source = factories.SourceFactory.create(revision=default_revision)
-
     mock_identify_revision = mocker.patch("zeus.utils.revisions.identify_revision")
     mock_identify_revision.return_value = default_revision
 
@@ -43,7 +40,7 @@ def test_commit(
     )
     assert build
     assert build.repository_id == default_repo.id
-    assert build.source_id == source.id
+    assert build.revision_sha == default_revision.sha
     assert build.label == default_revision.subject
     assert (
         build.url

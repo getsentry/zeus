@@ -4,9 +4,9 @@ from zeus import factories
 
 
 def test_time_aggregate(
-    client, default_login, default_repo, default_repo_access, default_source
+    client, default_login, default_repo, default_repo_access, default_revision
 ):
-    factories.BuildFactory(source=default_source, passed=True)
+    factories.BuildFactory(revision=default_revision, passed=True)
 
     resp = client.get(
         "/api/repos/{}/stats?aggregate=time&points=30&resolution=1d&stat=builds.total".format(
@@ -22,9 +22,9 @@ def test_time_aggregate(
 
 
 def test_build_aggregate(
-    client, default_login, default_repo, default_repo_access, default_source
+    client, default_login, default_repo, default_repo_access, default_revision
 ):
-    build = factories.BuildFactory(source=default_source, passed=True)
+    build = factories.BuildFactory(revision=default_revision, passed=True)
 
     current_app.config["MOCK_REVISIONS"] = True
     try:

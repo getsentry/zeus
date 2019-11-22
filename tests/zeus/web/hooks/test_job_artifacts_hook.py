@@ -4,9 +4,11 @@ from zeus import factories
 from zeus.models import Artifact, PendingArtifact
 
 
-def test_new_artifact(client, default_source, default_repo, default_hook, sample_xunit):
+def test_new_artifact(
+    client, default_revision, default_repo, default_hook, sample_xunit
+):
     build = factories.BuildFactory(
-        source=default_source,
+        revision=default_revision,
         provider=default_hook.get_provider().get_name(default_hook.config),
         external_id="3",
     )
@@ -42,7 +44,7 @@ def test_new_artifact(client, default_source, default_repo, default_hook, sample
 
 
 def test_new_artifact_missing_job(
-    client, default_source, default_repo, default_hook, sample_xunit
+    client, default_revision, default_repo, default_hook, sample_xunit
 ):
     path = "/hooks/{}/{}/builds/{}/jobs/{}/artifacts".format(
         default_hook.id, default_hook.get_signature(), "3", "2"

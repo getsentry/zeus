@@ -102,7 +102,7 @@ export default class BuildOverviewBase extends AsyncPage {
       job => job.result == 'failed' && job.allow_failure
     );
     let unallowedFailures = this.state.jobList.filter(job => !job.allow_failure);
-    let revision = this.context.build.source.revision;
+    let revision = this.context.build.revision;
     let {build, repo} = this.context;
     let revisionBits = revision.message.split('\n');
     let revisionSubject = revisionBits[0];
