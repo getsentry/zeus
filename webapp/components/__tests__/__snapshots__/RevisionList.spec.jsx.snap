@@ -621,7 +621,7 @@ exports[`RevisionList renders 1`] = `
                                             >
                                               <Commit>
                                                 <div
-                                                  className="css-yt8330-Author-Commit e177ytzd2"
+                                                  className="css-80frp2-Author-Commit e177ytzd2"
                                                 >
                                                   eff634a
                                                 </div>
