@@ -135,14 +135,8 @@ export default class BuildOverviewBase extends AsyncPage {
             />
           )}
           <RevisionAuthor>
-            {revision.author ? (
-              <ObjectAuthor data={revision} />
-            ) : (
-              <strong>
-                <em>Unknown Author</em>
-              </strong>
-            )}{' '}
-            committed <TimeSince date={revision.committed_at} />
+            <ObjectAuthor data={build} /> committed{' '}
+            <TimeSince date={revision.committed_at} />
           </RevisionAuthor>
         </RevisionSection>
         {!!this.state.testFailures.length && (

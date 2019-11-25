@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import idx from 'idx';
 import Gravatar from 'react-gravatar';
 import {MdPerson} from 'react-icons/md';
 
@@ -37,7 +36,7 @@ export default class ObjectAuthor extends Component {
 
   render() {
     let {data} = this.props;
-    let author = idx(data, _ => _.revision.author) || data.author;
+    let author = data.author;
     if (!author || !(author.name || author.email)) return null;
     return (
       <span>
