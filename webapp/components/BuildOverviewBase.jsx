@@ -116,7 +116,7 @@ export default class BuildOverviewBase extends AsyncPage {
     return (
       <div>
         <RevisionSection>
-          {repo.provider === 'gh' && (
+          {repo.provider === 'gh' && revision && (
             <div style={{float: 'right'}}>
               <Button
                 size="small"

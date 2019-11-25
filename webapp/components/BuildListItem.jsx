@@ -29,9 +29,13 @@ export default class BuildListItem extends Component {
   render() {
     let {build, columns, includeAuthor, includeRepo} = this.props;
     let repo = this.props.repo || build.repository;
-    let link = build.number
-      ? `/${repo.full_name}/builds/${build.number}`
-      : `/${repo.full_name}/revisions/${build.revision.sha}`;
+    let link = build
+      ? build.number
+        ? `/${repo.full_name}/builds/${build.number}`
+        : build.revision
+        ? `/${repo.full_name}/revisions/${build.revision.sha}`
+        : this.context.router.location.pathname
+      : this.context.router.location.pathname;
     return (
       <ListItemLink to={link}>
         <Row>

@@ -33,7 +33,9 @@ export default class CoverageSummary extends Component {
     let link = build
       ? build.number
         ? `/${repo.full_name}/builds/${build.number}/coverage`
-        : `/${repo.full_name}/revisions/${build.revision.sha}/coverage`
+        : build.revision
+        ? `/${repo.full_name}/revisions/${build.revision.sha}/coverage`
+        : this.context.router.location.pathname
       : this.context.router.location.pathname;
 
     return (

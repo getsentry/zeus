@@ -24,6 +24,10 @@ export default class ChangeRequestListItem extends Component {
     columns: ['coverage', 'duration', 'date']
   };
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
   render() {
     let {changeRequest, columns, includeAuthor, includeRepo} = this.props;
     let repo = this.props.repo || changeRequest.repository;
@@ -33,7 +37,9 @@ export default class ChangeRequestListItem extends Component {
     //   ? `/${repo.full_name}/change-requests/${changeRequest.number}`
     //   : `/${repo.full_name}/revisions/${changeRequest.head_revision.sha}`;
 
-    let link = `/${repo.full_name}/revisions/${changeRequest.head_revision.sha}`;
+    let link = changeRequest.head_revision
+      ? `/${repo.full_name}/revisions/${changeRequest.head_revision.sha}`
+      : this.context.router.location.pathname;
 
     if (changeRequest.latest_build)
       return (
@@ -59,7 +65,11 @@ export default class ChangeRequestListItem extends Component {
                       {repo.owner_name}/{repo.name}
                     </RepoLink>
                   ) : null}
-                  <Commit>{changeRequest.head_revision.sha.substr(0, 7)}</Commit>
+                  <Commit>
+                    {changeRequest.head_revision
+                      ? changeRequest.head_revision.sha.substr(0, 7)
+                      : changeRequest.head_ref}
+                  </Commit>
                   {includeAuthor ? (
                     <Author>
                       <ObjectAuthor data={changeRequest} />

@@ -78,7 +78,9 @@ export default class BuildDetailsBase extends AsyncPage {
             <Author>
               <ObjectAuthor data={build} />
             </Author>
-            <Commit>{build.revision.sha.substr(0, 7)}</Commit>
+            <Commit>
+              {build.revision ? build.revision.sha.substr(0, 7) : build.ref}
+            </Commit>
           </Meta>
           <TabbedNav>
             <TabbedNavItem to={this.getBaseRoute()} onlyActiveOnIndex={true}>
