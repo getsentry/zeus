@@ -4,7 +4,7 @@ from zeus import auth
 from zeus.artifacts import manager as default_manager
 from zeus.config import celery, db
 from zeus.constants import Result
-from zeus.models import Artifact, Job, Status
+from zeus.models import Artifact, Build, Job, Status
 from zeus.utils import timezone
 
 
@@ -41,6 +41,10 @@ def process_artifact(artifact_id, manager=None, force=False, **kwargs):
         db.session.add(artifact)
         db.session.commit()
         return
+
+    build = Build.query.get(job.build_id)
+    if not build.revision_sha:
+        raise Exception("Cannot process artifact until revision is resolved")
 
     if artifact.file:
         if manager is None:
