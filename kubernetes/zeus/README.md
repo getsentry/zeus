@@ -12,24 +12,6 @@ In order, apply:
 - kube-lego/configmap.yaml
 - kube-lego/deployment.yaml
 
-Setup persistent volumes:
-
-- zeus/\*-sc.yaml
-- zeus/nfs-server-pvc.yaml
-- zeus/nfs-server-rc.yaml
-- zeus/nfs-server-service.yaml
-
-Grab the NFS IP:
-
-```bash
-kubectl describe services nfs-server
-```
-
-Update the ip in `nfs-pv.yaml`, then apply the NFS disks:
-
-- zeus/\*-pv.yaml
-- zeus/\*-pvc.yaml
-
 Lastly, configure services:
 
 - zeus/\*-service.yaml
