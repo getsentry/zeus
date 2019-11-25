@@ -41,9 +41,9 @@ Source = sa.Table(
 def upgrade():
     connection = op.get_bind()
     for build in connection.execute(Build.select().where(Build.c.source_id != None)):
-        source = connection.execute(
-            Source.select().where(Source.c.id == Build.c.source_id)
-        )[0]
+        source = next(
+            connection.execute(Source.select().where(Source.c.id == Build.c.source_id))
+        )
         connection.execute(
             Build.update()
             .where(Build.c.id == build.id)
