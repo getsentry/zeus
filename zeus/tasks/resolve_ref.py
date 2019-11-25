@@ -40,18 +40,18 @@ def resolve_ref_for_change_request(change_request_id: UUID):
 
     auth.set_current_tenant(auth.RepositoryTenant(repository_id=cr.repository_id))
 
-    if not cr.head_revision_sha:
-        revision = revisions.identify_revision(
-            cr.repository, cr.head_ref, with_vcs=True
-        )
-        cr.head_revision_sha = revision.sha
-        db.session.add(cr)
-        db.session.commit()
-
     if not cr.parent_revision_sha:
         revision = revisions.identify_revision(
             cr.repository, cr.parent_ref, with_vcs=True
         )
         cr.parent_revision_sha = revision.sha
+        db.session.add(cr)
+        db.session.commit()
+
+    if not cr.head_revision_sha and cr.head_ref:
+        revision = revisions.identify_revision(
+            cr.repository, cr.head_ref, with_vcs=True
+        )
+        cr.head_revision_sha = revision.sha
         db.session.add(cr)
         db.session.commit()
