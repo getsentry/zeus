@@ -57,7 +57,7 @@ def test_upsert_change_request_different_repos(
         new_repo,
         default_change_request.provider,
         default_change_request.external_id,
-        data={"message": "Hello", "parent_revision_sha": default_revision.sha},
+        data={"message": "Hello", "parent_ref": default_revision.sha},
     ).json()
 
     assert ChangeRequest.query.count() == 2
@@ -65,7 +65,6 @@ def test_upsert_change_request_different_repos(
         ChangeRequest.id != default_change_request.id
     ).first()
     assert cr["id"] == str(new_change_request.id)
-
 
 
 def test_upsert_change_request_ref_only_existing_revision(
@@ -77,31 +76,21 @@ def test_upsert_change_request_ref_only_existing_revision(
     default_user,
     mocker,
 ):
-    auth.set_current_tenant(
-        auth.Tenant(
-            access={default_repo.id: Permission.write}
-        )
-    )
+    auth.set_current_tenant(auth.Tenant(access={default_repo.id: Permission.write}))
 
-    mock_identify_revision = mocker.patch("zeus.utils.revisions.identify_revision")
-    mock_identify_revision.return_value = factories.RevisionFactory(
-        repository=default_repo, sha="1234567"
-    )
     assert ChangeRequest.query.count() == 1
 
     data = upsert_change_request(
         default_repo,
         default_change_request.provider,
         default_change_request.external_id,
-        data={"message": "Hello", "parent_ref": default_revision.sha[:8]},
+        data={"message": "Hello", "parent_ref": default_change_request.parent_ref},
     ).json()
 
-    assert not mock_identify_revision.mock_calls
-
     assert ChangeRequest.query.count() == 1
-    cr = ChangeRequest.query.get(data['id'])
-    assert cr.parent_ref == default_revision.sha[:8]
-    assert cr.parent_revision_sha == default_revision.sha
+    cr = ChangeRequest.query.get(data["id"])
+    assert cr.parent_ref == default_change_request.parent_ref
+    assert cr.parent_revision_sha is default_change_request.parent_revision_sha
 
 
 def test_upsert_change_request_ref_only_new_revision(
@@ -113,28 +102,18 @@ def test_upsert_change_request_ref_only_new_revision(
     default_user,
     mocker,
 ):
-    auth.set_current_tenant(
-        auth.Tenant(
-            access={default_repo.id: Permission.write}
-        )
-    )
+    auth.set_current_tenant(auth.Tenant(access={default_repo.id: Permission.write}))
 
-    mock_identify_revision = mocker.patch("zeus.utils.revisions.identify_revision")
-    mock_identify_revision.return_value = factories.RevisionFactory(
-        repository=default_repo, sha="1234567"
-    )
     assert ChangeRequest.query.count() == 1
 
     data = upsert_change_request(
         default_repo,
         default_change_request.provider,
         default_change_request.external_id,
-        data={"message": "Hello", "parent_ref": 'abcdefg'},
+        data={"message": "Hello", "parent_ref": "abcdefg"},
     ).json()
 
-    assert not mock_identify_revision.mock_calls
-
     assert ChangeRequest.query.count() == 1
-    cr = ChangeRequest.query.get(data['id'])
-    assert cr.parent_ref == 'abcdefg'
+    cr = ChangeRequest.query.get(data["id"])
+    assert cr.parent_ref == "abcdefg"
     assert cr.parent_revision_sha is None

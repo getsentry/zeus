@@ -37,7 +37,9 @@ class BuildFactory(ModelFactory):
     author_id = factory.SelfAttribute("author.id")
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
-    ref = factory.faker.Faker("sha1")
+    ref = factory.LazyAttribute(
+        lambda o: o.revision.sha if getattr(o, "revision", None) else faker.sha1()
+    )
     revision_sha = factory.LazyAttribute(
         lambda o: o.revision.sha if getattr(o, "revision", None) else None
     )

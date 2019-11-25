@@ -23,7 +23,7 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     revision_sha = db.Column(db.String(40), nullable=True)
 
     number = db.Column(db.Integer, nullable=False)
-    label = db.Column(db.String, nullable=False)
+    label = db.Column(db.String, nullable=True)
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
     result = db.Column(Enum(Result), nullable=False, default=Result.unknown)
     date_created = db.Column(

@@ -28,8 +28,8 @@ class BuildIndexResource(Resource):
         query = (
             Build.query.options(
                 joinedload("repository"),
-                joinedload("author"),
                 joinedload("revision"),
+                joinedload("revision").joinedload("author"),
                 subqueryload_all("stats"),
             )
             .filter(Build.repository_id.in_(tenant.repository_ids))

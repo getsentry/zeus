@@ -21,4 +21,10 @@ class ChangeRequestDetailsResource(BaseChangeRequestResource):
         if db.session.is_modified(cr):
             db.session.add(cr)
             db.session.commit()
+
+        if not cr.parent_revision_sha or (not cr.head_revision_sha and cr.head_ref):
+            from zeus.tasks import resolve_ref_for_change_request
+
+            resolve_ref_for_change_request.delay(change_request_id=cr.id)
+
         return self.respond_with_schema(schema, cr)

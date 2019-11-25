@@ -113,19 +113,27 @@ class RevisionResult(object):
 
 
 class CommandError(Exception):
-    def __init__(self, cmd, retcode, stdout=None, stderr=None):
+    def __init__(
+        self,
+        cmd: str = None,
+        retcode: int = None,
+        stdout: bytes = None,
+        stderr: bytes = None,
+    ):
         self.cmd = cmd
         self.retcode = retcode
         self.stdout = stdout
         self.stderr = stderr
 
     def __str__(self):
-        return "%s returned %d:\nSTDOUT: %r\nSTDERR: %r" % (
-            self.cmd,
-            self.retcode,
-            self.stdout.decode("utf-8"),
-            self.stderr.decode("utf-8"),
-        )
+        if self.cmd:
+            return "%s returned %d:\nSTDOUT: %r\nSTDERR: %r" % (
+                self.cmd,
+                self.retcode,
+                self.stdout.decode("utf-8"),
+                self.stderr.decode("utf-8"),
+            )
+        return ""
 
 
 class UnknownRevision(CommandError):

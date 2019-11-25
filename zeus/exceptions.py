@@ -24,7 +24,9 @@ class ApiError(Exception):
                 self.json = None
         else:
             self.json = None
-        super(ApiError, self).__init__((text or "")[:128])
+        super(ApiError, self).__init__(
+            "code={} reason={}".format(self.code, (text or "")[:128])
+        )
 
     @classmethod
     def from_response(cls, response):

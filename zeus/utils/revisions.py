@@ -1,5 +1,3 @@
-from typing import Optional
-
 from zeus.config import redis
 from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Repository, Revision
@@ -8,7 +6,7 @@ from zeus.vcs.base import UnknownRevision
 
 def identify_revision(
     repository: Repository, ref: str, with_vcs: bool = True
-) -> Optional[Revision]:
+) -> Revision:
     """
     Attempt to transform a a commit-like reference into a valid revision.
     """

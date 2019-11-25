@@ -1,5 +1,6 @@
 from zeus import factories
 from zeus.models import Build
+from zeus.vcs.base import UnknownRevision
 
 
 def test_repo_build_list(
@@ -50,13 +51,20 @@ def test_repo_build_list_mine_without_match(
 
 
 def test_repo_build_create(
-    client, default_login, default_revision, default_repo, default_repo_access
+    client, default_login, default_revision, default_repo, default_repo_access, mocker
 ):
+    mock_identify_revision = mocker.patch("zeus.utils.revisions.identify_revision")
+    mock_identify_revision.return_value = default_revision
+
     resp = client.post(
         "/api/repos/{}/builds".format(default_repo.get_full_name()),
         json={"ref": default_revision.sha, "label": "test build"},
     )
     assert resp.status_code == 200, repr(resp.data)
+
+    mock_identify_revision.assert_called_once_with(
+        default_repo, default_revision.sha, with_vcs=False
+    )
 
     build = Build.query.unrestricted_unsafe().get(resp.json()["id"])
     assert build
@@ -70,7 +78,7 @@ def test_repo_build_create_missing_revision(
     client, default_login, default_revision, default_repo, default_repo_access, mocker
 ):
     mock_identify_revision = mocker.patch("zeus.utils.revisions.identify_revision")
-    mock_identify_revision.return_value = default_revision
+    mock_identify_revision.side_effect = UnknownRevision()
 
     resp = client.post(
         "/api/repos/{}/builds".format(default_repo.get_full_name()),

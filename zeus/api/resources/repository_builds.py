@@ -4,7 +4,7 @@ from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Email, Hook, Repository
+from zeus.models import Author, Build, Email, Repository, Revision
 from zeus.pubsub.utils import publish
 
 from .base_repository import BaseRepositoryResource
@@ -26,7 +26,9 @@ class RepositoryBuildsResource(BaseRepositoryResource):
 
         query = (
             Build.query.options(
-                joinedload("author"), joinedload("revision"), subqueryload_all("stats")
+                joinedload("revision"),
+                joinedload("revision").joinedload("author"),
+                subqueryload_all("stats"),
             )
             .filter(Build.repository_id == repo.id)
             .order_by(Build.number.desc())
@@ -34,7 +36,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         show = request.args.get("show")
         if show == "mine":
             query = query.filter(
-                Build.author_id.in_(
+                Revision.author_id.in_(
                     db.session.query(Author.id).filter(
                         Author.email.in_(
                             db.session.query(Email.email).filter(
@@ -52,27 +54,24 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         Create a new build.
         """
         schema = BuildCreateSchema(context={"repository": repo})
-        data = self.schema_from_request(schema, partial=True)
-
-        build = Build(repository=repo, **data)
-        if build.data is None:
-            build.data = {}
-        build.data["required_hook_ids"] = Hook.get_required_hook_ids(repo.id)
-        if not build.label:
-            build.label = build.revision.message.split("\n")[0]
-
-        if not build.label:
-            return self.error("missing build label")
-
+        build = self.schema_from_request(schema)
         db.session.add(build)
 
         try:
             db.session.commit()
-        except IntegrityError:
-            db.session.rollback()
-            return self.respond(status=422)
+        except IntegrityError as exc:
+            if "duplicate" in str(exc):
+                db.session.rollback()
+                return self.respond(status=422)
+            raise
+
+        if not build.revision_sha:
+            from zeus.tasks import resolve_ref_for_build
+
+            resolve_ref_for_build.delay(build_id=build.id)
 
         build_schema.validate(build)
         data = build_schema.dump(build)
         publish("builds", "build.create", data)
+
         return self.respond(data, 200)

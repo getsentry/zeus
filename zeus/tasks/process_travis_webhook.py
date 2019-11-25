@@ -67,8 +67,8 @@ def process_travis_webhook(hook_id: str, payload: dict, timestamp_ms: int):
                 provider="github",
                 external_id=str(payload["pull_request_number"]),
                 data={
-                    "parent_revision_sha": payload["base_commit"],
-                    "head_revision_sha": payload["head_commit"],
+                    "parent_ref": payload["base_commit"],
+                    "head_ref": payload["head_commit"],
                     "message": payload["pull_request_title"],
                 },
             )

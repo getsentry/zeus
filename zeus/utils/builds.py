@@ -8,7 +8,7 @@ from zeus.constants import Status, Result
 from zeus.models import Build, Revision
 
 
-def merge_builds(target: Build, build: Build) -> Build:
+def merge_builds(target: Build, build: Build, with_relations=True) -> Build:
     # explicitly unset the default id as target should begin as an empty instance
     target.id = None
 
@@ -19,14 +19,21 @@ def merge_builds(target: Build, build: Build) -> Build:
     # These properties should theoretically always be the same within a build
     # group, so merging is not necessary.  We assign here so the initial build
     # gets populated.
-    target.revision = build.revision
-    target.label = build.revision.message
+    if with_relations:
+        target.revision = build.revision
+    if build.revision_sha:
+        target.revision_sha = build.revision_sha
+    if not target.ref:
+        target.ref = build.ref
+    if not target.label:
+        target.label = build.label
 
     # Merge properties, if they already exist.  In the first run, everything
     # will be empty, since every group is initialized with an empty build.
     # Afterwards, we always use the more extreme value (e.g. earlier start
     # date or worse result).
-    target.stats = target.stats + build.stats if target.stats else build.stats
+    if with_relations:
+        target.stats = target.stats + build.stats if target.stats else build.stats
     target.status = (
         Status(max(target.status.value, build.status.value))
         if target.status
@@ -64,7 +71,9 @@ def merge_builds(target: Build, build: Build) -> Build:
 
 
 def merge_build_group(
-    build_group: Tuple[Any, List[Build]], required_hook_ids: List[str] = None
+    build_group: Tuple[Any, List[Build]],
+    required_hook_ids: List[str] = None,
+    with_relations=True,
 ) -> Build:
     # XXX(dcramer): required_hook_ids is still dirty here, but its our simplest way
     # to get it into place
@@ -82,10 +91,16 @@ def merge_build_group(
     ):
         build.result = Result.failed
 
-    return reduce(merge_builds, latest_builds, build)
+    return reduce(
+        lambda *x: merge_builds(x[0], x[1], with_relations=with_relations),
+        latest_builds,
+        build,
+    )
 
 
-def fetch_builds_for_revisions(revisions: List[Revision]) -> Mapping[str, Build]:
+def fetch_builds_for_revisions(
+    revisions: List[Revision], with_relations=True
+) -> Mapping[str, Build]:
     # we query extra builds here, but its a lot easier than trying to get
     # sqlalchemy to do a ``select (subquery)`` clause and maintain tenant
     # constraints
@@ -101,14 +116,16 @@ def fetch_builds_for_revisions(revisions: List[Revision]) -> Mapping[str, Build]
             )
         )
 
-    builds = list(
-        (
-            Build.query.options(
-                joinedload("author"), joinedload("revision"), subqueryload_all("stats")
-            )
-            .filter(reduce(or_, lookups))  # NOQA
-            .order_by(Build.revision_sha)
+    base_qs = Build.query
+    if with_relations:
+        base_qs = base_qs.options(
+            joinedload("revision"),
+            joinedload("revision").joinedload("author"),
+            subqueryload_all("stats"),
         )
+
+    builds = list(
+        (base_qs.filter(reduce(or_, lookups)).order_by(Build.revision_sha))  # NOQA
     )
     build_groups = groupby(
         builds, lambda build: (build.repository_id, build.revision_sha)
@@ -117,13 +134,18 @@ def fetch_builds_for_revisions(revisions: List[Revision]) -> Mapping[str, Build]
     for build in builds:
         required_hook_ids.update(build.data.get("required_hook_ids") or ())
     return [
-        (ident, merge_build_group(list(group), required_hook_ids))
+        (
+            ident,
+            merge_build_group(
+                list(group), required_hook_ids, with_relations=with_relations
+            ),
+        )
         for ident, group in build_groups
     ]
 
 
-def fetch_build_for_revision(revision: Revision) -> Build:
-    builds = fetch_builds_for_revisions([revision])
+def fetch_build_for_revision(revision: Revision, with_relations=True) -> Build:
+    builds = fetch_builds_for_revisions([revision], with_relations=with_relations)
     if len(builds) < 1:
         return None
 

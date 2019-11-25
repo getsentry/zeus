@@ -23,8 +23,9 @@ def test_merge_build_group_different_providers(client, default_login, default_re
 
     merged_build = merge_build_group([build1, build2])
 
-    assert merged_build.revision_sha == default_revision.sha
-    assert merged_build.label == default_revision.message
+    assert merged_build.ref == build1.ref
+    assert merged_build.revision_sha is build1.revision_sha
+    assert merged_build.label == build1.label
     assert merged_build.original == [build1, build2]
     assert merged_build.status == Status(max(build1.status.value, build2.status.value))
     assert merged_build.result == Result(max(build1.result.value, build2.result.value))
@@ -62,6 +63,7 @@ def test_fetch_build_with_required_hooks(
     db_session.commit()
 
     factories.BuildFactory.create(
+        revision=default_revision,
         data={"required_hook_ids": [str(hook1.id), str(hook2.id)]},
         hook_id=hook1.id,
         passed=True,
@@ -72,6 +74,7 @@ def test_fetch_build_with_required_hooks(
     assert merged_build.result == Result.failed
 
     factories.BuildFactory.create(
+        revision=default_revision,
         data={"required_hook_ids": [str(hook1.id), str(hook2.id)]},
         hook_id=hook2.id,
         passed=True,
