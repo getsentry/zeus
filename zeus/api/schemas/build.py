@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, post_load
+from marshmallow import Schema, fields, post_load, post_dump
 
 from zeus.models import Build, Hook
 
@@ -29,6 +29,12 @@ class BuildSchema(Schema):
     revision = fields.Nested(RevisionSchema())
     ref = RevisionRefField(dump_only=True)
 
+    @post_dump(pass_many=True)
+    def build_output(self, data, many, **kwargs):
+        if not data.get("label"):
+            data["label"] = "unknown build"
+        return data
+
 
 class BuildCreateSchema(Schema):
     ref = RevisionRefField(validate_ref=False, required=True, resolve_to="revision")
@@ -56,3 +62,9 @@ class BuildCreateSchema(Schema):
         if not build.label and revision:
             build.label = revision.message.split("\n")[0]
         return build
+
+    @post_dump(pass_many=True)
+    def build_output(self, data, many, **kwargs):
+        if not data.get("label"):
+            data["label"] = "unknown build"
+        return data
