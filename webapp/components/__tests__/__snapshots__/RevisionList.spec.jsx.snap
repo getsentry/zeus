@@ -51,6 +51,11 @@ exports[`RevisionList renders 1`] = `
         "committed_at": "2018-06-08T16:45:55+00:00",
         "created_at": "2018-06-08T16:45:55+00:00",
         "latest_build": Object {
+          "author": Object {
+            "email": "dcramer@gmail.com",
+            "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+            "name": "David Cramer",
+          },
           "created_at": "2018-01-06T16:07:16.830829+00:00",
           "external_id": "325812408",
           "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -60,26 +65,17 @@ exports[`RevisionList renders 1`] = `
           "provider": "travis",
           "repository": undefined,
           "result": "passed",
-          "source": Object {
+          "revision": Object {
             "author": Object {
               "email": "dcramer@gmail.com",
               "id": "659dc21c-81db-11e7-988a-0a580a28047a",
               "name": "David Cramer",
             },
-            "created_at": "2018-01-06T16:07:16.814650+00:00",
-            "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
-            "revision": Object {
-              "author": Object {
-                "email": "dcramer@gmail.com",
-                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                "name": "David Cramer",
-              },
-              "committed_at": "2018-01-06T16:06:52+00:00",
-              "created_at": "2018-01-06T16:06:52+00:00",
-              "message": "fix: Remove break-word behavior on coverage
+            "committed_at": "2018-01-06T16:06:52+00:00",
+            "created_at": "2018-01-06T16:06:52+00:00",
+            "message": "fix: Remove break-word behavior on coverage
 ",
-              "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
-            },
+            "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
           },
           "started_at": "2018-01-06T16:07:16.957093+00:00",
           "stats": Object {
@@ -302,6 +298,11 @@ exports[`RevisionList renders 1`] = `
               "committed_at": "2018-06-08T16:45:55+00:00",
               "created_at": "2018-06-08T16:45:55+00:00",
               "latest_build": Object {
+                "author": Object {
+                  "email": "dcramer@gmail.com",
+                  "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                  "name": "David Cramer",
+                },
                 "created_at": "2018-01-06T16:07:16.830829+00:00",
                 "external_id": "325812408",
                 "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -311,26 +312,17 @@ exports[`RevisionList renders 1`] = `
                 "provider": "travis",
                 "repository": undefined,
                 "result": "passed",
-                "source": Object {
+                "revision": Object {
                   "author": Object {
                     "email": "dcramer@gmail.com",
                     "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                     "name": "David Cramer",
                   },
-                  "created_at": "2018-01-06T16:07:16.814650+00:00",
-                  "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
-                  "revision": Object {
-                    "author": Object {
-                      "email": "dcramer@gmail.com",
-                      "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                      "name": "David Cramer",
-                    },
-                    "committed_at": "2018-01-06T16:06:52+00:00",
-                    "created_at": "2018-01-06T16:06:52+00:00",
-                    "message": "fix: Remove break-word behavior on coverage
+                  "committed_at": "2018-01-06T16:06:52+00:00",
+                  "created_at": "2018-01-06T16:06:52+00:00",
+                  "message": "fix: Remove break-word behavior on coverage
 ",
-                    "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
-                  },
+                  "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
                 },
                 "started_at": "2018-01-06T16:07:16.957093+00:00",
                 "stats": Object {
@@ -366,6 +358,11 @@ exports[`RevisionList renders 1`] = `
           <BuildListItem
             build={
               Object {
+                "author": Object {
+                  "email": "dcramer@gmail.com",
+                  "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                  "name": "David Cramer",
+                },
                 "created_at": "2018-01-06T16:07:16.830829+00:00",
                 "external_id": "325812408",
                 "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -375,26 +372,17 @@ exports[`RevisionList renders 1`] = `
                 "provider": "travis",
                 "repository": undefined,
                 "result": "passed",
-                "source": Object {
+                "revision": Object {
                   "author": Object {
                     "email": "dcramer@gmail.com",
                     "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                     "name": "David Cramer",
                   },
-                  "created_at": "2018-01-06T16:07:16.814650+00:00",
-                  "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
-                  "revision": Object {
-                    "author": Object {
-                      "email": "dcramer@gmail.com",
-                      "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                      "name": "David Cramer",
-                    },
-                    "committed_at": "2018-01-06T16:06:52+00:00",
-                    "created_at": "2018-01-06T16:06:52+00:00",
-                    "message": "fix: Remove break-word behavior on coverage
+                  "committed_at": "2018-01-06T16:06:52+00:00",
+                  "created_at": "2018-01-06T16:06:52+00:00",
+                  "message": "fix: Remove break-word behavior on coverage
 ",
-                    "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
-                  },
+                  "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
                 },
                 "started_at": "2018-01-06T16:07:16.957093+00:00",
                 "stats": Object {
@@ -503,6 +491,11 @@ exports[`RevisionList renders 1`] = `
                                           <ObjectResult
                                             data={
                                               Object {
+                                                "author": Object {
+                                                  "email": "dcramer@gmail.com",
+                                                  "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                  "name": "David Cramer",
+                                                },
                                                 "created_at": "2018-01-06T16:07:16.830829+00:00",
                                                 "external_id": "325812408",
                                                 "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -512,26 +505,17 @@ exports[`RevisionList renders 1`] = `
                                                 "provider": "travis",
                                                 "repository": undefined,
                                                 "result": "passed",
-                                                "source": Object {
+                                                "revision": Object {
                                                   "author": Object {
                                                     "email": "dcramer@gmail.com",
                                                     "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                                                     "name": "David Cramer",
                                                   },
-                                                  "created_at": "2018-01-06T16:07:16.814650+00:00",
-                                                  "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
-                                                  "revision": Object {
-                                                    "author": Object {
-                                                      "email": "dcramer@gmail.com",
-                                                      "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                                      "name": "David Cramer",
-                                                    },
-                                                    "committed_at": "2018-01-06T16:06:52+00:00",
-                                                    "created_at": "2018-01-06T16:06:52+00:00",
-                                                    "message": "fix: Remove break-word behavior on coverage
+                                                  "committed_at": "2018-01-06T16:06:52+00:00",
+                                                  "created_at": "2018-01-06T16:06:52+00:00",
+                                                  "message": "fix: Remove break-word behavior on coverage
 ",
-                                                    "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
-                                                  },
+                                                  "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
                                                 },
                                                 "started_at": "2018-01-06T16:07:16.957093+00:00",
                                                 "stats": Object {
@@ -637,7 +621,7 @@ exports[`RevisionList renders 1`] = `
                                             >
                                               <Commit>
                                                 <div
-                                                  className="css-rckoyq-Author-Commit e177ytzd2"
+                                                  className="css-s301i4-Author-Commit e177ytzd2"
                                                 >
                                                   eff634a
                                                 </div>
@@ -649,6 +633,11 @@ exports[`RevisionList renders 1`] = `
                                                   <ObjectAuthor
                                                     data={
                                                       Object {
+                                                        "author": Object {
+                                                          "email": "dcramer@gmail.com",
+                                                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                          "name": "David Cramer",
+                                                        },
                                                         "created_at": "2018-01-06T16:07:16.830829+00:00",
                                                         "external_id": "325812408",
                                                         "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -658,26 +647,17 @@ exports[`RevisionList renders 1`] = `
                                                         "provider": "travis",
                                                         "repository": undefined,
                                                         "result": "passed",
-                                                        "source": Object {
+                                                        "revision": Object {
                                                           "author": Object {
                                                             "email": "dcramer@gmail.com",
                                                             "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                                                             "name": "David Cramer",
                                                           },
-                                                          "created_at": "2018-01-06T16:07:16.814650+00:00",
-                                                          "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
-                                                          "revision": Object {
-                                                            "author": Object {
-                                                              "email": "dcramer@gmail.com",
-                                                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                                              "name": "David Cramer",
-                                                            },
-                                                            "committed_at": "2018-01-06T16:06:52+00:00",
-                                                            "created_at": "2018-01-06T16:06:52+00:00",
-                                                            "message": "fix: Remove break-word behavior on coverage
+                                                          "committed_at": "2018-01-06T16:06:52+00:00",
+                                                          "created_at": "2018-01-06T16:06:52+00:00",
+                                                          "message": "fix: Remove break-word behavior on coverage
 ",
-                                                            "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
-                                                          },
+                                                          "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
                                                         },
                                                         "started_at": "2018-01-06T16:07:16.957093+00:00",
                                                         "stats": Object {
@@ -778,6 +758,11 @@ exports[`RevisionList renders 1`] = `
                                   <ObjectCoverage
                                     data={
                                       Object {
+                                        "author": Object {
+                                          "email": "dcramer@gmail.com",
+                                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                          "name": "David Cramer",
+                                        },
                                         "created_at": "2018-01-06T16:07:16.830829+00:00",
                                         "external_id": "325812408",
                                         "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -787,26 +772,17 @@ exports[`RevisionList renders 1`] = `
                                         "provider": "travis",
                                         "repository": undefined,
                                         "result": "passed",
-                                        "source": Object {
+                                        "revision": Object {
                                           "author": Object {
                                             "email": "dcramer@gmail.com",
                                             "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                                             "name": "David Cramer",
                                           },
-                                          "created_at": "2018-01-06T16:07:16.814650+00:00",
-                                          "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
-                                          "revision": Object {
-                                            "author": Object {
-                                              "email": "dcramer@gmail.com",
-                                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                              "name": "David Cramer",
-                                            },
-                                            "committed_at": "2018-01-06T16:06:52+00:00",
-                                            "created_at": "2018-01-06T16:06:52+00:00",
-                                            "message": "fix: Remove break-word behavior on coverage
+                                          "committed_at": "2018-01-06T16:06:52+00:00",
+                                          "created_at": "2018-01-06T16:06:52+00:00",
+                                          "message": "fix: Remove break-word behavior on coverage
 ",
-                                            "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
-                                          },
+                                          "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
                                         },
                                         "started_at": "2018-01-06T16:07:16.957093+00:00",
                                         "stats": Object {
@@ -876,6 +852,11 @@ exports[`RevisionList renders 1`] = `
                                   <ObjectDuration
                                     data={
                                       Object {
+                                        "author": Object {
+                                          "email": "dcramer@gmail.com",
+                                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                          "name": "David Cramer",
+                                        },
                                         "created_at": "2018-01-06T16:07:16.830829+00:00",
                                         "external_id": "325812408",
                                         "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -885,26 +866,17 @@ exports[`RevisionList renders 1`] = `
                                         "provider": "travis",
                                         "repository": undefined,
                                         "result": "passed",
-                                        "source": Object {
+                                        "revision": Object {
                                           "author": Object {
                                             "email": "dcramer@gmail.com",
                                             "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                                             "name": "David Cramer",
                                           },
-                                          "created_at": "2018-01-06T16:07:16.814650+00:00",
-                                          "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
-                                          "revision": Object {
-                                            "author": Object {
-                                              "email": "dcramer@gmail.com",
-                                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                              "name": "David Cramer",
-                                            },
-                                            "committed_at": "2018-01-06T16:06:52+00:00",
-                                            "created_at": "2018-01-06T16:06:52+00:00",
-                                            "message": "fix: Remove break-word behavior on coverage
+                                          "committed_at": "2018-01-06T16:06:52+00:00",
+                                          "created_at": "2018-01-06T16:06:52+00:00",
+                                          "message": "fix: Remove break-word behavior on coverage
 ",
-                                            "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
-                                          },
+                                          "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
                                         },
                                         "started_at": "2018-01-06T16:07:16.957093+00:00",
                                         "stats": Object {
@@ -938,6 +910,11 @@ exports[`RevisionList renders 1`] = `
                                       data={
                                         Array [
                                           Object {
+                                            "author": Object {
+                                              "email": "dcramer@gmail.com",
+                                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                              "name": "David Cramer",
+                                            },
                                             "created_at": "2018-01-06T16:07:16.830829+00:00",
                                             "external_id": "325812408",
                                             "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -947,26 +924,17 @@ exports[`RevisionList renders 1`] = `
                                             "provider": "travis",
                                             "repository": undefined,
                                             "result": "passed",
-                                            "source": Object {
+                                            "revision": Object {
                                               "author": Object {
                                                 "email": "dcramer@gmail.com",
                                                 "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                                                 "name": "David Cramer",
                                               },
-                                              "created_at": "2018-01-06T16:07:16.814650+00:00",
-                                              "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
-                                              "revision": Object {
-                                                "author": Object {
-                                                  "email": "dcramer@gmail.com",
-                                                  "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                                  "name": "David Cramer",
-                                                },
-                                                "committed_at": "2018-01-06T16:06:52+00:00",
-                                                "created_at": "2018-01-06T16:06:52+00:00",
-                                                "message": "fix: Remove break-word behavior on coverage
+                                              "committed_at": "2018-01-06T16:06:52+00:00",
+                                              "created_at": "2018-01-06T16:06:52+00:00",
+                                              "message": "fix: Remove break-word behavior on coverage
 ",
-                                                "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
-                                              },
+                                              "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
                                             },
                                             "started_at": "2018-01-06T16:07:16.957093+00:00",
                                             "stats": Object {
@@ -1000,6 +968,11 @@ exports[`RevisionList renders 1`] = `
                                         data={
                                           Array [
                                             Object {
+                                              "author": Object {
+                                                "email": "dcramer@gmail.com",
+                                                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                "name": "David Cramer",
+                                              },
                                               "created_at": "2018-01-06T16:07:16.830829+00:00",
                                               "external_id": "325812408",
                                               "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -1009,26 +982,17 @@ exports[`RevisionList renders 1`] = `
                                               "provider": "travis",
                                               "repository": undefined,
                                               "result": "passed",
-                                              "source": Object {
+                                              "revision": Object {
                                                 "author": Object {
                                                   "email": "dcramer@gmail.com",
                                                   "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                                                   "name": "David Cramer",
                                                 },
-                                                "created_at": "2018-01-06T16:07:16.814650+00:00",
-                                                "id": "aa6e1f90-f2fb-11e7-a565-0a580a28057d",
-                                                "revision": Object {
-                                                  "author": Object {
-                                                    "email": "dcramer@gmail.com",
-                                                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                                    "name": "David Cramer",
-                                                  },
-                                                  "committed_at": "2018-01-06T16:06:52+00:00",
-                                                  "created_at": "2018-01-06T16:06:52+00:00",
-                                                  "message": "fix: Remove break-word behavior on coverage
+                                                "committed_at": "2018-01-06T16:06:52+00:00",
+                                                "created_at": "2018-01-06T16:06:52+00:00",
+                                                "message": "fix: Remove break-word behavior on coverage
 ",
-                                                  "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
-                                                },
+                                                "sha": "eff634a68a01d081c0bdc51752dfa0709781f0e4",
                                               },
                                               "started_at": "2018-01-06T16:07:16.957093+00:00",
                                               "stats": Object {
