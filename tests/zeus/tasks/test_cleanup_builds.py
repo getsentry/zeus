@@ -7,14 +7,16 @@ from zeus.tasks import cleanup_builds
 from zeus.utils import timezone
 
 
-def test_cleanup_builds(mocker, db_session):
+def test_cleanup_builds(mocker, db_session, default_build, default_revision):
     job = factories.JobFactory.create(
-        in_progress=True, date_started=timezone.now() - timedelta(minutes=90)
+        build=default_build,
+        in_progress=True,
+        date_started=timezone.now() - timedelta(minutes=90),
     )
-
-    build = Build.query.unrestricted_unsafe().get(job.build_id)
-    build.status = Status.in_progress
-    db_session.add(build)
+    # prevent resolve_ref
+    default_build.revision_sha = default_revision.sha
+    default_build.status = Status.in_progress
+    db_session.add(default_build)
     db_session.flush()
 
     cleanup_builds()
