@@ -101,7 +101,6 @@ window.TestStubs = {
     number: 650,
     provider: 'travis',
     result: 'passed',
-    source: TestStubs.Source(),
     started_at: '2018-01-06T16:07:16.957093+00:00',
     stats: {
       coverage: {
