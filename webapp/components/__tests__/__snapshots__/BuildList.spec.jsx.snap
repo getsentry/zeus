@@ -141,6 +141,112 @@ exports[`BuildList renders 1`] = `
         </div>
       </div>
     </a>
+    <a
+      class="css-p1ybjw-ListItemLink e1s1r8150"
+    >
+      <div
+        class="erefeu23 ResultGrid-Row css-1d0bn69-Row"
+      >
+        <div
+          class="erefeu21 ResultGrid-Column css-1oad8ub-Column"
+        >
+          <div
+            class="css-sncxrr"
+          >
+            <div
+              class="css-15hxb6p"
+              width="15"
+            >
+              <div
+                class="css-odhetd-ResultIcon-ResultIcon e1ptbpi30"
+                result="passed"
+              >
+                <svg
+                  fill="currentColor"
+                  height="16"
+                  size="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div
+              class="css-vti0ei"
+              style="min-width:0"
+            >
+              <div
+                class="css-cs969u-Message e177ytzd0"
+              >
+                fix: Remove break-word behavior on coverage
+              </div>
+              <div
+                class="css-ejf18k-Meta e177ytzd4"
+              >
+                <div
+                  class="css-1uukuqo-Author-Commit e177ytzd2"
+                >
+                  master
+                </div>
+                <div
+                  class="css-1e8kzli-Author e177ytzd1"
+                >
+                  <span>
+                    <span
+                      class="css-15pbbe0-Avatar e1cndffa0"
+                    >
+                      <img
+                        alt="Gravatar for dcramer@gmail.com"
+                        class="react-gravatar"
+                        height="16"
+                        src="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=16"
+                        srcset="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=32 2x"
+                        width="16"
+                      />
+                    </span>
+                    David Cramer
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="erefeu21 ResultGrid-Column css-ji4w07-Column"
+          style="text-align:center"
+          width="90"
+        >
+          <span />
+        </div>
+        <div
+          class="erefeu21 ResultGrid-Column css-ji4w07-Column"
+          style="text-align:center"
+          width="90"
+        >
+          <span>
+            4m
+          </span>
+        </div>
+        <div
+          class="erefeu21 ResultGrid-Column css-gtt9sl-Column"
+          style="text-align:right"
+          width="120"
+        >
+          <time
+            datetime="2018-01-06T16:07:16.830Z"
+            title="January 6, 2018 11:07 AM "
+          >
+            in 3 months
+          </time>
+        </div>
+      </div>
+    </a>
   </div>
 </div>
 `;

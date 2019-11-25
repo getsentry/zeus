@@ -105,6 +105,7 @@ window.TestStubs = {
       result: 'passed',
       started_at: '2018-01-06T16:07:16.957093+00:00',
       author: author,
+      ref: 'master',
       revision: {
         author: author,
         committed_at: '2018-01-06T16:06:52+00:00',
