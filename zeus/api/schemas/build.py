@@ -29,7 +29,7 @@ class BuildSchema(Schema):
     revision = fields.Nested(RevisionSchema())
     ref = RevisionRefField(dump_only=True)
 
-    @post_dump(pass_many=True)
+    @post_dump(pass_many=False)
     def build_output(self, data, many, **kwargs):
         if not data.get("label"):
             data["label"] = "unknown build"
