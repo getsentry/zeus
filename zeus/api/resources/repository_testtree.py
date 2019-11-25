@@ -2,7 +2,7 @@ from flask import current_app, request
 
 from zeus.config import db
 from zeus.constants import Result, Status
-from zeus.models import Build, Repository, TestCase, Job, Source
+from zeus.models import Build, Repository, TestCase, Job
 from zeus.utils.trees import build_tree
 
 from .base_repository import BaseRepositoryResource
@@ -19,9 +19,7 @@ class RepositoryTestTreeResource(BaseRepositoryResource):
         parent = request.args.get("parent")
 
         latest_build = (
-            Build.query.join(Source, Source.id == Build.source_id)
-            .filter(
-                Source.patch_id == None,  # NOQA
+            Build.query.filter(
                 Build.repository_id == repo.id,
                 Build.result == Result.passed,
                 Build.status == Status.finished,

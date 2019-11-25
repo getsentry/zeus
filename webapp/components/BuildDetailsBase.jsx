@@ -50,7 +50,7 @@ export default class BuildDetailsBase extends AsyncPage {
         <BuildSummary>
           <BuildHeader>
             <Message>
-              {(build.label || build.source.revision.message || '').split('\n')[0]}
+              {(build.label || build.revision.message || '').split('\n')[0]}
             </Message>
           </BuildHeader>
           <Meta>
@@ -78,7 +78,7 @@ export default class BuildDetailsBase extends AsyncPage {
             <Author>
               <ObjectAuthor data={build} />
             </Author>
-            <Commit>{build.source.revision.sha.substr(0, 7)}</Commit>
+            <Commit>{build.revision.sha.substr(0, 7)}</Commit>
           </Meta>
           <TabbedNav>
             <TabbedNavItem to={this.getBaseRoute()} onlyActiveOnIndex={true}>

@@ -8,8 +8,8 @@ from zeus.tasks import (
 )
 
 
-def test_unfinished_job(mocker, db_session, default_source, default_tenant):
-    build = factories.BuildFactory(source=default_source, queued=True)
+def test_unfinished_job(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, queued=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, in_progress=True)
@@ -21,8 +21,8 @@ def test_unfinished_job(mocker, db_session, default_source, default_tenant):
     assert build.result == Result.unknown
 
 
-def test_finished_job(mocker, db_session, default_source, default_tenant):
-    build = factories.BuildFactory(source=default_source, in_progress=True)
+def test_finished_job(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, failed=True)
@@ -40,8 +40,8 @@ def test_finished_job(mocker, db_session, default_source, default_tenant):
     mock_send_build_notifications.assert_called_once_with(build_id=build.id)
 
 
-def test_failing_tests(mocker, db_session, default_source, default_tenant):
-    build = factories.BuildFactory(source=default_source, in_progress=True)
+def test_failing_tests(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, passed=True)
@@ -61,9 +61,9 @@ def test_failing_tests(mocker, db_session, default_source, default_tenant):
 
 
 def test_failing_tests_duplicate_reason(
-    mocker, db_session, default_source, default_tenant
+    mocker, db_session, default_revision, default_tenant
 ):
-    build = factories.BuildFactory(source=default_source, in_progress=True)
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, passed=True)
@@ -88,8 +88,10 @@ def test_failing_tests_duplicate_reason(
     assert reasons[0].reason == FailureReason.Reason.failing_tests
 
 
-def test_failure_with_allow_failure(mocker, db_session, default_source, default_tenant):
-    build = factories.BuildFactory(source=default_source, in_progress=True)
+def test_failure_with_allow_failure(
+    mocker, db_session, default_revision, default_tenant
+):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, failed=True, allow_failure=True)
@@ -101,8 +103,8 @@ def test_failure_with_allow_failure(mocker, db_session, default_source, default_
     assert build.result == Result.passed
 
 
-def test_newly_unfinished_job(mocker, db_session, default_source, default_tenant):
-    build = factories.BuildFactory(source=default_source, finished=True)
+def test_newly_unfinished_job(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, finished=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, in_progress=True)
@@ -114,8 +116,8 @@ def test_newly_unfinished_job(mocker, db_session, default_source, default_tenant
     assert build.result == Result.unknown
 
 
-def test_coverage_stats(mocker, db_session, default_source, default_tenant):
-    build = factories.BuildFactory(source=default_source)
+def test_coverage_stats(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, passed=True)
@@ -162,8 +164,8 @@ def test_coverage_stats(mocker, db_session, default_source, default_tenant):
     assert stats["coverage.diff_lines_uncovered"] == 2
 
 
-def test_test_stats(mocker, db_session, default_source, default_tenant):
-    build = factories.BuildFactory(source=default_source, in_progress=True)
+def test_test_stats(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, passed=True)
@@ -203,8 +205,8 @@ def test_test_stats(mocker, db_session, default_source, default_tenant):
     assert job_stats["tests.duration"] == 10
 
 
-def test_record_bundle_stats(mocker, db_session, default_source, default_tenant):
-    build = factories.BuildFactory(source=default_source, in_progress=True)
+def test_record_bundle_stats(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, passed=True)

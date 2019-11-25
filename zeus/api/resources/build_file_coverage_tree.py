@@ -1,6 +1,6 @@
 from flask import request
 
-from zeus.models import Build, FileCoverage, Source
+from zeus.models import Build, FileCoverage
 from zeus.utils.trees import build_tree
 
 from .base_build import BaseBuildResource
@@ -13,17 +13,11 @@ filecoverage_schema = FileCoverageSchema(many=False)
 
 class BuildFileCoverageTreeResource(BaseBuildResource):
     def _get_leaf(self, build: Build, coverage: FileCoverage):
-        # TODO(dcramer): support patches
-        source = Source.query.options(
-            # joinedload('patch'),
-            # undefer('patch.diff'),
-        ).get(build.source_id)
-
         file_source = None
         vcs = build.repository.get_vcs()
         if vcs:
             try:
-                file_source = vcs.show(source.revision_sha, coverage.filename)
+                file_source = vcs.show(build.revision_sha, coverage.filename)
             except Exception:
                 pass
 

@@ -8,19 +8,19 @@ def test_repository_tests_history_by_build(
     default_testcase,
     default_repo,
     default_repo_access,
-    default_source,
+    default_revision,
 ):
-    build2 = factories.BuildFactory(source=default_source, finished=True)
+    build2 = factories.BuildFactory(revision=default_revision, finished=True)
     job2 = factories.JobFactory(build=build2)
     factories.TestCaseFactory(job=job2, name=default_testcase.name, failed=True)
 
-    build3 = factories.BuildFactory(source=default_source, finished=True)
+    build3 = factories.BuildFactory(revision=default_revision, finished=True)
     job3 = factories.JobFactory(build=build3)
     testcase2 = factories.TestCaseFactory(
         job=job3, passed=True, name=default_testcase.name + "2"
     )
 
-    build4 = factories.BuildFactory(source=default_source, finished=True)
+    build4 = factories.BuildFactory(revision=default_revision, finished=True)
     job4 = factories.JobFactory(build=build4)
     factories.TestCaseFactory(job=job4, name=default_testcase.name, passed=True)
 

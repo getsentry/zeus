@@ -5,14 +5,17 @@ from zeus.constants import Status, Result
 from zeus.utils.builds import fetch_build_for_revision, merge_build_group
 
 
-def test_merge_build_group_different_providers(client, default_login, default_source):
+def test_merge_build_group_different_providers(client, default_login, default_revision):
     now = datetime.now()
     later = now + timedelta(minutes=1)
     build1 = factories.BuildFactory.create(
-        source=default_source, provider="provider1", date_started=now, date_finished=now
+        revision=default_revision,
+        provider="provider1",
+        date_started=now,
+        date_finished=now,
     )
     build2 = factories.BuildFactory.create(
-        source=default_source,
+        revision=default_revision,
         provider="provider2",
         date_started=later,
         date_finished=later,
@@ -20,8 +23,9 @@ def test_merge_build_group_different_providers(client, default_login, default_so
 
     merged_build = merge_build_group([build1, build2])
 
-    assert merged_build.source == default_source
-    assert merged_build.label == default_source.revision.message
+    assert merged_build.ref == build1.ref
+    assert merged_build.revision_sha is build1.revision_sha
+    assert merged_build.label == build1.label
     assert merged_build.original == [build1, build2]
     assert merged_build.status == Status(max(build1.status.value, build2.status.value))
     assert merged_build.result == Result(max(build1.result.value, build2.result.value))
@@ -30,13 +34,16 @@ def test_merge_build_group_different_providers(client, default_login, default_so
     assert merged_build.provider == "provider1, provider2"
 
 
-def test_merge_build_group_empty_dates(client, default_login, default_source):
+def test_merge_build_group_empty_dates(client, default_login, default_revision):
     now = datetime.now()
     build1 = factories.BuildFactory.create(
-        source=default_source, provider="provider1", date_started=now, date_finished=now
+        revision=default_revision,
+        provider="provider1",
+        date_started=now,
+        date_finished=now,
     )
     build2 = factories.BuildFactory.create(
-        source=default_source,
+        revision=default_revision,
         provider="provider2",
         date_started=None,
         date_finished=None,
@@ -49,22 +56,30 @@ def test_merge_build_group_empty_dates(client, default_login, default_source):
 
 
 def test_fetch_build_with_required_hooks(
-    client, db_session, default_login, default_tenant, default_repo, default_source
+    client, db_session, default_login, default_tenant, default_repo, default_revision
 ):
     hook1 = factories.HookFactory.create(repository_id=default_repo.id)
     hook2 = factories.HookFactory.create(repository_id=default_repo.id)
-    default_source.data = {"required_hook_ids": [str(hook1.id), str(hook2.id)]}
-    db_session.add(default_source)
     db_session.commit()
 
-    factories.BuildFactory.create(source=default_source, hook_id=hook1.id, passed=True)
+    factories.BuildFactory.create(
+        revision=default_revision,
+        data={"required_hook_ids": [str(hook1.id), str(hook2.id)]},
+        hook_id=hook1.id,
+        passed=True,
+    )
 
-    merged_build = fetch_build_for_revision(default_source.revision)
+    merged_build = fetch_build_for_revision(default_revision)
 
     assert merged_build.result == Result.failed
 
-    factories.BuildFactory.create(source=default_source, hook_id=hook2.id, passed=True)
+    factories.BuildFactory.create(
+        revision=default_revision,
+        data={"required_hook_ids": [str(hook1.id), str(hook2.id)]},
+        hook_id=hook2.id,
+        passed=True,
+    )
 
-    merged_build = fetch_build_for_revision(default_source.revision)
+    merged_build = fetch_build_for_revision(default_revision)
 
     assert merged_build.result == Result.passed

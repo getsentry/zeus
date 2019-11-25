@@ -11,16 +11,19 @@ from zeus.utils import timezone
 
 class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     """
-    A single build linked to a source.
+    A single build.
 
     Each Build contains many Jobs.
     """
 
     source_id = db.Column(
-        GUID, db.ForeignKey("source.id", ondelete="CASCADE"), nullable=False, index=True
+        GUID, db.ForeignKey("source.id", ondelete="CASCADE"), nullable=True, index=True
     )
+    ref = db.Column(db.String, nullable=True)
+    revision_sha = db.Column(db.String(40), nullable=True)
+
     number = db.Column(db.Integer, nullable=False)
-    label = db.Column(db.String, nullable=False)
+    label = db.Column(db.String, nullable=True)
     status = db.Column(Enum(Status), nullable=False, default=Status.unknown)
     result = db.Column(Enum(Result), nullable=False, default=Result.unknown)
     date_created = db.Column(
@@ -49,7 +52,11 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     )
 
     author = db.relationship("Author")
-    source = db.relationship("Source", innerjoin=True)
+    revision = db.relationship(
+        "Revision",
+        foreign_keys="[Build.repository_id, Build.revision_sha]",
+        viewonly=True,
+    )
     hook = db.relationship("Hook")
     stats = db.relationship(
         "ItemStat",
@@ -65,6 +72,11 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
         db.UniqueConstraint(
             "repository_id", "provider", "external_id", name="unq_build_provider"
         ),
+        db.ForeignKeyConstraint(
+            ("repository_id", "revision_sha"),
+            ("revision.repository_id", "revision.sha"),
+        ),
+        db.Index("idx_build_repo_sha", "repository_id", "revision_sha"),
         db.Index("idx_build_author_date", "author_id", "date_created"),
         db.Index(
             "idx_build_outcomes", "repository_id", "status", "result", "date_created"

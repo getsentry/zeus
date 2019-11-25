@@ -16,7 +16,6 @@ from zeus.models import (
     Repository,
     RepositoryAccess,
     Revision,
-    Source,
     StyleViolation,
     TestCase,
     User,
@@ -27,11 +26,9 @@ from zeus.utils.email import inline_css
 def find_linked_emails(build: Build) -> List[Tuple[UUID, str]]:
     return list(
         db.session.query(User.id, Email.email)
-        .filter(Email.user_id == User.id)
         .join(RepositoryAccess, RepositoryAccess.user_id == User.id)
-        .join(Source, Source.id == build.source_id)
-        .join(Author, Source.author_id == Author.id)
         .filter(
+            Email.user_id == User.id,
             Email.email == Author.email,
             Email.verified == True,  # NOQA
             RepositoryAccess.repository_id == build.repository_id,
@@ -60,11 +57,7 @@ def send_email_notification(build: Build):
 
 
 def build_message(build: Build, force=False) -> Message:
-    author = (
-        Author.query.join(Source, Source.author_id == Author.id)
-        .filter(Source.id == build.source_id)
-        .first()
-    )
+    author = build.author
     if not author:
         current_app.logger.info("mail.missing-author", extra={"build_id": build.id})
         return
@@ -90,14 +83,11 @@ def build_message(build: Build, force=False) -> Message:
         current_app.logger.info("mail.no-enabed-accounts", extra={"build_id": build.id})
         return
 
-    source = Source.query.get(build.source_id)
-    assert source
-
     repo = Repository.query.get(build.repository_id)
     assert repo
 
     revision = Revision.query.filter(
-        Revision.sha == source.revision_sha,
+        Revision.sha == build.revision_sha,
         Revision.repository_id == build.repository_id,
     ).first()
     assert revision

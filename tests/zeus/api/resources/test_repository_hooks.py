@@ -28,9 +28,7 @@ def test_repo_hook_list_without_access(
     assert resp.status_code == 404
 
 
-def test_repo_hook_create(
-    client, default_login, default_source, default_repo, default_repo_access
-):
+def test_repo_hook_create(client, default_login, default_repo, default_repo_access):
     resp = client.post(
         "/api/repos/{}/hooks".format(default_repo.get_full_name()),
         json={"provider": "travis"},
@@ -55,7 +53,7 @@ def test_cannot_create_hooks_without_admin(
 
 
 def test_repo_hook_create_custom_schema(
-    client, default_login, default_source, default_repo, default_repo_access
+    client, default_login, default_repo, default_repo_access
 ):
     resp = client.post(
         "/api/repos/{}/hooks".format(default_repo.get_full_name()),
@@ -72,7 +70,7 @@ def test_repo_hook_create_custom_schema(
 
 
 def test_repo_hook_create_travis_schema(
-    client, default_login, default_source, default_repo, default_repo_access
+    client, default_login, default_repo, default_repo_access
 ):
     resp = client.post(
         "/api/repos/{}/hooks".format(default_repo.get_full_name()),

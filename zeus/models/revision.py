@@ -5,6 +5,7 @@ from zeus.config import db
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import GUID
 from zeus.db.utils import model_repr
+from zeus.exceptions import UnknownRepositoryBackend
 from zeus.utils import timezone
 
 
@@ -42,3 +43,15 @@ class Revision(RepositoryBoundMixin, db.Model):
     @property
     def subject(self):
         return self.message.splitlines()[0]
+
+    def generate_diff(self):
+        try:
+            vcs = self.repository.get_vcs()
+        except UnknownRepositoryBackend:
+            return None
+
+        try:
+            return vcs.export(self.revision_sha)
+        except Exception:
+            # TODO
+            pass

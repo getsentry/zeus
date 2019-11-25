@@ -31,7 +31,7 @@ export default class BuildListItem extends Component {
     let repo = this.props.repo || build.repository;
     let link = build.number
       ? `/${repo.full_name}/builds/${build.number}`
-      : `/${repo.full_name}/revisions/${build.source.revision.sha}`;
+      : `/${repo.full_name}/revisions/${build.revision.sha}`;
     return (
       <ListItemLink to={link}>
         <Row>
@@ -41,16 +41,14 @@ export default class BuildListItem extends Component {
                 <ObjectResult data={build} />
               </Box>
               <Box flex="1" style={{minWidth: 0}}>
-                <Message>
-                  {build.label || build.source.revision.message.split('\n')[0]}
-                </Message>
+                <Message>{build.label || build.revision.message.split('\n')[0]}</Message>
                 <Meta>
                   {includeRepo ? (
                     <RepoLink to={`/${repo.full_name}`}>
                       {repo.owner_name}/{repo.name}
                     </RepoLink>
                   ) : null}
-                  <Commit>{build.source.revision.sha.substr(0, 7)}</Commit>
+                  <Commit>{build.revision.sha.substr(0, 7)}</Commit>
                   {includeAuthor ? (
                     <Author>
                       <ObjectAuthor data={build} />

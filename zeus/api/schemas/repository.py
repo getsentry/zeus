@@ -4,7 +4,7 @@ from typing import List
 
 from zeus.config import db
 from zeus.constants import Permission, Result, Status
-from zeus.models import Build, Repository, RepositoryAccess, RepositoryBackend, Source
+from zeus.models import Build, Repository, RepositoryAccess, RepositoryBackend
 
 from .fields import EnumField
 
@@ -90,12 +90,7 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
 
     build_query = (
         db.session.query(Build.id)
-        .join(Source, Build.source_id == Source.id)
-        .filter(
-            Source.patch_id == None,  # NOQA
-            Build.status == Status.finished,
-            Build.result == result,
-        )
+        .filter(Build.status == Status.finished, Build.result == result)
         .order_by(Build.date_created.desc())
     )
 
@@ -116,9 +111,8 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
         for b in Build.query.unrestricted_unsafe()
         .filter(Build.id.in_(build_map.values()))
         .options(
-            joinedload("source"),
-            joinedload("source").joinedload("author"),
-            joinedload("source").joinedload("revision"),
+            joinedload("revision"),
+            joinedload("revision").joinedload("author"),
             subqueryload_all("stats"),
         )
     }

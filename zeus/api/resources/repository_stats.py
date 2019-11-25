@@ -6,7 +6,7 @@ from uuid import UUID
 
 from zeus.config import db
 from zeus.exceptions import UnknownRepositoryBackend
-from zeus.models import Build, ItemStat, Repository, Result, Source, Status
+from zeus.models import Build, ItemStat, Repository, Result, Revision, Status
 from zeus.utils import timezone
 
 from .base_repository import BaseRepositoryResource
@@ -129,9 +129,9 @@ def build_queryset(repo_id: UUID, stat: str, grouper):
 def get_revisions(repo: Repository, branch: str = None, limit: int = 200) -> List[str]:
     if current_app.config.get("MOCK_REVISIONS"):
         return (
-            db.session.query(Source.revision_sha)
-            .filter(Source.repository_id == repo.id)
-            .order_by(Source.date_created.desc())
+            db.session.query(Revision.sha)
+            .filter(Revision.repository_id == repo.id)
+            .order_by(Revision.date_created.desc())
             .limit(limit)
             .all()
         )
@@ -209,10 +209,8 @@ class RepositoryStatsResource(BaseRepositoryResource):
             )
         elif aggregate == "build":
             revision_shas = get_revisions(repo, branch, limit=points * 2)
-            queryset = (
-                queryset.join(Source, Source.id == Build.source_id)
-                .filter(Source.revision_sha.in_(revision_shas))
-                .order_by(Build.number.desc())
+            queryset = queryset.filter(Build.revision_sha.in_(revision_shas)).order_by(
+                Build.number.desc()
             )
 
         queryset = queryset.limit(points)

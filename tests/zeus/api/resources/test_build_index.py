@@ -13,10 +13,10 @@ def test_build_list(
     # - Build Count (paginator)
     with sqla_assertions.assert_statement_count(5):
         resp = client.get("/api/builds")
-    assert resp.status_code == 200
-    data = resp.json()
-    assert len(data) == 1
-    assert data[0]["id"] == str(default_build.id)
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data) == 1
+        assert data[0]["id"] == str(default_build.id)
 
 
 def test_build_list_without_access(
@@ -24,9 +24,9 @@ def test_build_list_without_access(
 ):
     with sqla_assertions.assert_statement_count(1):
         resp = client.get("/api/builds")
-    assert resp.status_code == 200
-    data = resp.json()
-    assert len(data) == 0
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data) == 0
 
 
 def test_build_list_excludes_public(
@@ -36,9 +36,9 @@ def test_build_list_excludes_public(
     factories.BuildFactory(repository=repo)
     with sqla_assertions.assert_statement_count(3):
         resp = client.get("/api/builds")
-    assert resp.status_code == 200
-    data = resp.json()
-    assert len(data) == 0
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data) == 0
 
 
 def test_build_list_user(
@@ -48,16 +48,15 @@ def test_build_list_user(
     default_repo,
     default_repo_access,
     default_revision,
-    default_source,
 ):
     # unrelated build
     factories.BuildFactory(repository=default_repo)
 
     # "my" builds
-    build2 = factories.BuildFactory(repository=default_repo, source=default_source)
+    build2 = factories.BuildFactory(repository=default_repo, revision=default_revision)
     build1 = factories.BuildFactory(
         repository=default_repo,
-        source=default_source,
+        revision=default_revision,
         date_created=build2.date_created - timedelta(minutes=1),
     )
 
@@ -68,12 +67,12 @@ def test_build_list_user(
     # - Build Count (paginator)
     with sqla_assertions.assert_statement_count(4):
         resp = client.get("/api/builds?user=me")
-    assert resp.status_code == 200
-    data = resp.json()
-    # newly created build should not be present due to author email
-    assert len(data) == 2
-    assert data[0]["id"] == str(build2.id)
-    assert data[1]["id"] == str(build1.id)
+        assert resp.status_code == 200
+        data = resp.json()
+        # newly created build should not be present due to author email
+        assert len(data) == 2
+        assert data[0]["id"] == str(build2.id)
+        assert data[1]["id"] == str(build1.id)
 
 
 def test_build_list_repository(
@@ -83,16 +82,15 @@ def test_build_list_repository(
     default_repo,
     default_repo_access,
     default_revision,
-    default_source,
 ):
     # unrelated build
     factories.BuildFactory()
 
     # repo-specific builds
-    build2 = factories.BuildFactory(repository=default_repo, source=default_source)
+    build2 = factories.BuildFactory(repository=default_repo, revision=default_revision)
     build1 = factories.BuildFactory(
         repository=default_repo,
-        source=default_source,
+        revision=default_revision,
         date_created=build2.date_created - timedelta(minutes=1),
     )
 
@@ -106,9 +104,9 @@ def test_build_list_repository(
         resp = client.get(
             "/api/builds?repository={}".format(default_repo.get_full_name())
         )
-    assert resp.status_code == 200
-    data = resp.json()
-    # newly created build should not be present due to author email
-    assert len(data) == 2
-    assert data[0]["id"] == str(build2.id)
-    assert data[1]["id"] == str(build1.id)
+        assert resp.status_code == 200
+        data = resp.json()
+        # newly created build should not be present due to author email
+        assert len(data) == 2
+        assert data[0]["id"] == str(build2.id)
+        assert data[1]["id"] == str(build1.id)

@@ -4,7 +4,6 @@ import pytest
 
 from time import time
 
-from zeus import factories
 from zeus.constants import Result, Status
 from zeus.models import Build, ChangeRequest, Job
 from zeus.tasks import process_travis_webhook
@@ -25,8 +24,6 @@ def sample_travis_build_pr(fixture_path):
 def test_commit(
     default_hook, default_repo, default_revision, sample_travis_build_commit, mocker
 ):
-    source = factories.SourceFactory.create(revision=default_revision)
-
     mock_identify_revision = mocker.patch("zeus.utils.revisions.identify_revision")
     mock_identify_revision.return_value = default_revision
 
@@ -43,7 +40,7 @@ def test_commit(
     )
     assert build
     assert build.repository_id == default_repo.id
-    assert build.source_id == source.id
+    assert build.revision_sha == default_revision.sha
     assert build.label == default_revision.subject
     assert (
         build.url
@@ -67,14 +64,7 @@ def test_commit(
     )
 
 
-def test_pull_request(
-    default_repo, default_hook, default_revision, sample_travis_build_pr, mocker
-):
-    source = factories.SourceFactory.create(revision=default_revision)
-
-    mock_identify_revision = mocker.patch("zeus.utils.revisions.identify_revision")
-    mock_identify_revision.return_value = default_revision
-
+def test_pull_request(default_repo, default_hook, sample_travis_build_pr):
     process_travis_webhook(
         hook_id=default_hook.id,
         payload=sample_travis_build_pr,
@@ -88,8 +78,10 @@ def test_pull_request(
     )
     assert cr
     assert cr.message == "The title of the pull request"
-    assert cr.parent_revision_sha == source.revision_sha
-    assert cr.head_revision_sha == source.revision_sha
+    assert cr.parent_ref == "d79e3a6ff0cada29d731ed93de203f76a81d02c0"
+    assert cr.parent_revision_sha is None
+    assert cr.head_ref == "d79e3a6ff0cada29d731ed93de203f76a81d02c0"
+    assert cr.head_revision_sha is None
 
     build = (
         Build.query.unrestricted_unsafe()
@@ -98,7 +90,8 @@ def test_pull_request(
     )
     assert build
     assert build.repository_id == default_repo.id
-    assert build.source_id == source.id
+    assert build.ref == cr.parent_ref
+    assert build.revision_sha == cr.parent_revision_sha
     assert build.label == "PR #123 - The title of the pull request"
     assert (
         build.url

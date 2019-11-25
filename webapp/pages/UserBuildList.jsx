@@ -69,7 +69,7 @@ export default requireAuth(
       let emailSet = new Set((auth.emails || []).map(e => e.email));
       return {
         buildList: builds.items
-          .filter(build => !!build.repository && emailSet.has(build.source.author.email))
+          .filter(build => !!build.repository && emailSet.has(build.author.email))
           .slice(0, 25),
         links: builds.links,
         loading: !builds.loaded

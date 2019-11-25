@@ -74,8 +74,8 @@ app.add_resource(
     r.RevisionJobsResource,
 )
 app.add_resource(
-    "/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/source",
-    r.RevisionSourceResource,
+    "/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/diff",
+    r.RevisionDiffResource,
 )
 app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/style-violations",
@@ -110,12 +110,12 @@ app.add_resource(
     r.BuildArtifactsResource,
 )
 app.add_resource(
-    "/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/jobs",
-    r.BuildJobsResource,
+    "/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/diff",
+    r.BuildDiffResource,
 )
 app.add_resource(
-    "/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/source",
-    r.BuildSourceResource,
+    "/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/jobs",
+    r.BuildJobsResource,
 )
 app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/builds/<build_number>/style-violations",

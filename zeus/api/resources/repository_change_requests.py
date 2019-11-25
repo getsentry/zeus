@@ -42,11 +42,16 @@ class RepositoryChangeRequestsResource(BaseRepositoryResource):
         try:
             db.session.add(cr)
             db.session.commit()
-        except IntegrityError:
+        except IntegrityError as exc:
+            if "duplicate" in str(exc):
+                db.session.rollback()
+                return self.respond(status=422)
             raise
 
-            db.session.rollback()
-            return self.respond(status=422)
+        if not cr.parent_revision_sha or (not cr.head_revision_sha and cr.head_ref):
+            from zeus.tasks import resolve_ref_for_change_request
+
+            resolve_ref_for_change_request.delay(change_request_id=cr.id)
 
         schema = ChangeRequestSchema()
         return self.respond_with_schema(schema, cr, status=201)

@@ -19,8 +19,7 @@ def test_failure_origin(default_repo):
     auth.set_current_tenant(auth.Tenant(access={default_repo.id: Permission.read}))
 
     new_revision = factories.RevisionFactory(repository=default_repo)
-    new_source = factories.SourceFactory(revision=new_revision)
-    new_build = factories.BuildFactory(source=new_source, failed=True)
+    new_build = factories.BuildFactory(revision=new_revision, failed=True)
     new_job = factories.JobFactory(build=new_build, failed=True)
     new_testcase = factories.TestCaseFactory(job=new_job, failed=True)
     new_testcase2 = factories.TestCaseFactory(job=new_job, passed=True)
@@ -29,11 +28,8 @@ def test_failure_origin(default_repo):
         repository=default_repo,
         date_created=new_revision.date_created - timedelta(hours=1),
     )
-    old_source = factories.SourceFactory(
-        revision=old_revision, date_created=new_source.date_created - timedelta(hours=1)
-    )
     old_build = factories.BuildFactory(
-        source=old_source,
+        revision=old_revision,
         failed=True,
         date_created=new_build.date_created - timedelta(hours=1),
     )
@@ -48,12 +44,8 @@ def test_failure_origin(default_repo):
         repository=default_repo,
         date_created=old_revision.date_created - timedelta(hours=1),
     )
-    oldold_source = factories.SourceFactory(
-        revision=oldold_revision,
-        date_created=old_source.date_created - timedelta(hours=1),
-    )
     factories.BuildFactory(
-        source=oldold_source,
+        revision=oldold_revision,
         passed=True,
         date_created=old_build.date_created - timedelta(hours=1),
     )

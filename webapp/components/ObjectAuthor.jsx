@@ -37,7 +37,7 @@ export default class ObjectAuthor extends Component {
 
   render() {
     let {data} = this.props;
-    let author = idx(data, _ => _.source.author) || data.author;
+    let author = idx(data, _ => _.revision.author) || data.author;
     if (!author || !(author.name || author.email)) return null;
     return (
       <span>

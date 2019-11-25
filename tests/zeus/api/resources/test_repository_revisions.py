@@ -19,11 +19,10 @@ def test_repo_revision_list(
     revision = factories.RevisionFactory.create(
         sha=git_repo_config.commits[0], repository=repo
     )
-    source = factories.SourceFactory.create(revision=revision)
     factories.BuildFactory.create(
-        source=source, date_created=timezone.now() - timedelta(minutes=1)
+        revision=revision, date_created=timezone.now() - timedelta(minutes=1)
     )
-    factories.BuildFactory.create(source=source, passed=True)
+    factories.BuildFactory.create(revision=revision, passed=True)
 
     resp = client.get("/api/repos/{}/revisions".format(repo.get_full_name()))
 
