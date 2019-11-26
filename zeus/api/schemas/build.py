@@ -39,7 +39,6 @@ class BuildSchema(Schema):
 class BuildCreateSchema(Schema):
     ref = RevisionRefField(validate_ref=False, required=True, resolve_to="revision")
     author = fields.Nested(AuthorSchema(), required=False)
-    # label is only required if they're specifying a source with a patch (which they cant do yet)
     label = fields.Str(required=False)
     hook_id = fields.Str(required=False)
     provider = fields.Str(required=False)
