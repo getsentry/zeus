@@ -101,7 +101,7 @@ window.TestStubs = {
       id: 'aa7097a2-f2fb-11e7-a565-0a580a28057d',
       label: 'fix: Remove break-word behavior on coverage',
       number: 650,
-      provider: 'travis',
+      provider: 'api.travis-ci.org',
       result: 'passed',
       started_at: '2018-01-06T16:07:16.957093+00:00',
       author: author,
@@ -136,6 +136,48 @@ window.TestStubs = {
       },
       status: 'finished',
       url: 'https://travis-ci.org/getsentry/zeus/builds/325812408',
+      ...params
+    };
+  },
+
+  Job: params => {
+    return {
+      created_at: '2018-01-06T16:07:16.830829+00:00',
+      external_id: '325812408',
+      finished_at: '2018-01-06T16:11:04.393590+00:00',
+      id: 'ea7097a2-f2fb-11e7-a565-0a580a28057e',
+      hook_id: 'za7097a2-f2fb-11e7-a565-0a580a28057z',
+      allow_failure: false,
+      label: 'python: 3.7',
+      number: 1,
+      provider: 'api.travis-ci.org',
+      result: 'passed',
+      started_at: '2018-01-06T16:07:16.957093+00:00',
+      updated_at: '2018-01-06T16:11:04.393590+00:00',
+      failures: [],
+      stats: {
+        coverage: {
+          diff_lines_covered: 0,
+          diff_lines_uncovered: 0,
+          lines_covered: 6127,
+          lines_uncovered: 3060
+        },
+        style_violations: {
+          count: 0
+        },
+        tests: {
+          count: 153,
+          count_unique: 153,
+          duration: 14673.0,
+          failures: 0,
+          failures_unique: 0
+        },
+        webpack: {
+          total_asset_size: 0
+        }
+      },
+      status: 'finished',
+      url: 'https://travis-ci.org/getsentry/zeus/jobs/325812408',
       ...params
     };
   },
