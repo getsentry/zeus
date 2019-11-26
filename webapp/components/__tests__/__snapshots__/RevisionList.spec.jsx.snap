@@ -63,6 +63,7 @@ exports[`RevisionList renders 1`] = `
           "label": "fix: Remove break-word behavior on coverage",
           "number": 650,
           "provider": "travis",
+          "ref": "master",
           "repository": undefined,
           "result": "passed",
           "revision": Object {
@@ -310,6 +311,7 @@ exports[`RevisionList renders 1`] = `
                 "label": "fix: Remove break-word behavior on coverage",
                 "number": 650,
                 "provider": "travis",
+                "ref": "master",
                 "repository": undefined,
                 "result": "passed",
                 "revision": Object {
@@ -370,6 +372,7 @@ exports[`RevisionList renders 1`] = `
                 "label": "fix: Remove break-word behavior on coverage",
                 "number": 650,
                 "provider": "travis",
+                "ref": "master",
                 "repository": undefined,
                 "result": "passed",
                 "revision": Object {
@@ -503,6 +506,7 @@ exports[`RevisionList renders 1`] = `
                                                 "label": "fix: Remove break-word behavior on coverage",
                                                 "number": 650,
                                                 "provider": "travis",
+                                                "ref": "master",
                                                 "repository": undefined,
                                                 "result": "passed",
                                                 "revision": Object {
@@ -645,6 +649,7 @@ exports[`RevisionList renders 1`] = `
                                                         "label": "fix: Remove break-word behavior on coverage",
                                                         "number": 650,
                                                         "provider": "travis",
+                                                        "ref": "master",
                                                         "repository": undefined,
                                                         "result": "passed",
                                                         "revision": Object {
@@ -770,6 +775,7 @@ exports[`RevisionList renders 1`] = `
                                         "label": "fix: Remove break-word behavior on coverage",
                                         "number": 650,
                                         "provider": "travis",
+                                        "ref": "master",
                                         "repository": undefined,
                                         "result": "passed",
                                         "revision": Object {
@@ -864,6 +870,7 @@ exports[`RevisionList renders 1`] = `
                                         "label": "fix: Remove break-word behavior on coverage",
                                         "number": 650,
                                         "provider": "travis",
+                                        "ref": "master",
                                         "repository": undefined,
                                         "result": "passed",
                                         "revision": Object {
@@ -922,6 +929,7 @@ exports[`RevisionList renders 1`] = `
                                             "label": "fix: Remove break-word behavior on coverage",
                                             "number": 650,
                                             "provider": "travis",
+                                            "ref": "master",
                                             "repository": undefined,
                                             "result": "passed",
                                             "revision": Object {
@@ -980,6 +988,7 @@ exports[`RevisionList renders 1`] = `
                                               "label": "fix: Remove break-word behavior on coverage",
                                               "number": 650,
                                               "provider": "travis",
+                                              "ref": "master",
                                               "repository": undefined,
                                               "result": "passed",
                                               "revision": Object {
