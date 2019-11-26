@@ -17,8 +17,8 @@ def test_time_aggregate(
     data = resp.json()
     assert len(data) == 30
     for item in data[1:]:
-        assert item["value"] == 0
-    assert data[0]["value"] == 1
+        assert item["stats"]["builds.total"] == 0
+    assert data[0]["stats"]["builds.total"] == 1
 
 
 def test_build_aggregate(
@@ -39,4 +39,4 @@ def test_build_aggregate(
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 1
-    assert data[0] == {"build": build.number, "value": 1}
+    assert data[0] == {"build": build.number, "stats": {"builds.total": 1}}

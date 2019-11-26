@@ -119,12 +119,13 @@ class CoverageChart extends AsyncPage {
 
   renderBody() {
     let {covered, uncovered} = this.state;
+    let error = false;
     let data = covered.map((coveredPoint, idx) => {
       let uncoveredPoint = uncovered[idx];
       if (!uncoveredPoint || coveredPoint.build !== uncoveredPoint.build) {
-        Sentry.captureMessage('Mismatched builds for CoverageChart', 'error');
-        return this.renderError();
+        error = true;
       }
+      if (error) return;
       return {
         build: coveredPoint.build,
         value: coveredPoint.value
@@ -135,6 +136,12 @@ class CoverageChart extends AsyncPage {
           : coveredPoint.value
       };
     });
+    if (error) {
+      // TODO(dcramer): we'd like to avoid this
+      Sentry.captureMessage('Mismatched builds for CoverageChart', 'error');
+      return this.renderError();
+    }
+
     if (!data.length) return null;
     let currentValue = data.length && data[0].value;
     return (

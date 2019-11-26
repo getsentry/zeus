@@ -152,12 +152,13 @@ class RepositoryStatsResource(BaseRepositoryResource):
         """
         Return various stats per-day for the given repository.
         """
-        stat = request.args.get("stat")
-        if not stat:
+        stat_list = request.args.getlist("stat")
+        if not stat_list:
             return self.error({"stat": "invalid stat"})
 
-        if stat not in STAT_CHOICES:
-            return self.error({"stat": "invalid stat"})
+        for stat in stat_list:
+            if stat not in STAT_CHOICES:
+                return self.error({"stat": "invalid stat"})
 
         aggregate = request.args.get("aggregate", "time")
         if aggregate not in ("time", "build"):
@@ -198,56 +199,79 @@ class RepositoryStatsResource(BaseRepositoryResource):
             grouper = Build.number
             points = int(request.args.get("points") or 100)
 
-        queryset = build_queryset(repo.id, stat, grouper)
-
+        # build our initial queryset filters
+        build_qs = (
+            db.session.query(Build.number)
+            .filter(Build.repository_id == repo.id)
+            .order_by(Build.number.desc())
+        )
         if aggregate == "time":
             date_begin = date_end
             for _ in range(points):
                 date_begin = decr_res(date_begin)
-            queryset = queryset.filter(
+            build_qs = build_qs.filter(
                 Build.date_created >= date_begin, Build.date_created < date_end
             )
-        elif aggregate == "build":
-            revision_shas = get_revisions(repo, branch, limit=points * 2)
-            queryset = queryset.filter(Build.revision_sha.in_(revision_shas)).order_by(
-                Build.number.desc()
-            )
-
-        queryset = queryset.limit(points)
-
-        if aggregate == "time":
-            results = {
-                # HACK(dcramer): force (but dont convert) the timezone to be utc
-                # while this isnt correct, we're not looking for correctness yet
-                k.replace(tzinfo=timezone.utc): v
-                for k, v in queryset
-            }
-
             data = []
             cur_date = date_end
             for _ in range(points):
                 cur_date = decr_res(cur_date)
-                data.append(
-                    {
-                        "time": int(float(cur_date.strftime("%s.%f")) * 1000),
-                        "value": (
-                            int(float(results[cur_date]))
-                            if results.get(cur_date)
-                            else (0 if stat in ZERO_FILLERS else None)
-                        ),
-                    }
-                )
+                data.append({"time": int(float(cur_date.strftime("%s.%f")) * 1000)})
+
         elif aggregate == "build":
-            data = [
-                {
-                    "build": k,
-                    "value": (
+            revision_shas = get_revisions(repo, branch, limit=points * 2)
+            build_qs = build_qs.filter(Build.revision_sha.in_(revision_shas)).limit(
+                points
+            )
+
+            data = [{"build": b_id} for b_id, in sorted(build_qs, key=lambda x: -x[0])]
+
+        results = {}
+        for stat in stat_list:
+            queryset = (
+                build_queryset(repo.id, stat, grouper)
+                .filter(Build.number.in_(build_qs))
+                .limit(points)
+            )
+
+            if aggregate == "time":
+                results[stat] = {
+                    # HACK(dcramer): force (but dont convert) the timezone to be utc
+                    # while this isnt correct, we're not looking for correctness yet
+                    (k.replace(tzinfo=timezone.utc).strftime("%s.%f") * 1000): v
+                    for k, v in queryset
+                }
+            elif aggregate == "build":
+                results[stat] = {k: v for k, v in queryset}
+
+        if aggregate == "time":
+            for row in data:
+                row["stats"] = {
+                    k: (
                         int(float(v))
                         if v is not None
                         else (0 if stat in ZERO_FILLERS else None)
-                    ),
+                    )
+                    for k, v in (
+                        (stat, results[stat].get(row["time"])) for stat in stat_list
+                    )
                 }
-                for k, v in sorted(queryset, key=lambda x: -x[0])
+        elif aggregate == "build":
+            data = [
+                {
+                    "build": number,
+                    "stats": {
+                        k: (
+                            int(float(v))
+                            if v is not None
+                            else (0 if stat in ZERO_FILLERS else None)
+                        )
+                        for k, v in (
+                            (stat, results[stat].get(number)) for stat in stat_list
+                        )
+                    },
+                }
+                for number, in sorted(build_qs, key=lambda x: -x[0])
             ]
 
         return self.respond(data)
