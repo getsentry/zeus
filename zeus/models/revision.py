@@ -56,9 +56,9 @@ class Revision(RepositoryBoundMixin, db.Model):
 
         try:
             try:
-                return vcs.export(self.revision_sha)
+                return vcs.export(self.sha)
             except UnknownRevision:
                 vcs.update()
-                return vcs.export(self.revision_sha)
+                return vcs.export(self.sha)
         except Exception:
             current_app.logger.exception("generate_diff failure")
