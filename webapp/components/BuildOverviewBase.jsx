@@ -74,6 +74,45 @@ const RevisionAuthor = styled.div`
   }
 `;
 
+const RevisionSummary = ({repo, build}) => {
+  let revision = build.revision;
+  if (!revision) return null;
+  let revisionBits = revision ? revision.message.split('\n') : [];
+  let revisionSubject = revisionBits[0];
+  let revisionMessage =
+    revisionBits.length > 1
+      ? revisionBits
+          .slice(1)
+          .join('\n')
+          .replace(/^\s+|\s+$/g, '')
+      : null;
+  return (
+    <RevisionSection>
+      {repo.provider === 'gh' && revision && (
+        <div style={{float: 'right'}}>
+          <Button
+            size="small"
+            type="light"
+            href={`https://github.com/${repo.owner_name}/${repo.name}/commit/${revision.sha}`}>
+            View on GitHub
+          </Button>
+        </div>
+      )}
+      <RevisionSubject>{revisionSubject}</RevisionSubject>
+      {revisionMessage && (
+        <RevisionMessage
+          dangerouslySetInnerHTML={{
+            __html: sanitize(marked(revisionMessage))
+          }}
+        />
+      )}
+      <RevisionAuthor>
+        <ObjectAuthor data={build} /> committed <TimeSince date={revision.committed_at} />
+      </RevisionAuthor>
+    </RevisionSection>
+  );
+};
+
 export default class BuildOverviewBase extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
@@ -102,43 +141,11 @@ export default class BuildOverviewBase extends AsyncPage {
       job => job.result == 'failed' && job.allow_failure
     );
     let unallowedFailures = this.state.jobList.filter(job => !job.allow_failure);
-    let revision = this.context.build.revision;
     let {build, repo} = this.context;
-    let revisionBits = revision.message.split('\n');
-    let revisionSubject = revisionBits[0];
-    let revisionMessage =
-      revisionBits.length > 1
-        ? revisionBits
-            .slice(1)
-            .join('\n')
-            .replace(/^\s+|\s+$/g, '')
-        : null;
+
     return (
       <div>
-        <RevisionSection>
-          {repo.provider === 'gh' && revision && (
-            <div style={{float: 'right'}}>
-              <Button
-                size="small"
-                type="light"
-                href={`https://github.com/${repo.owner_name}/${repo.name}/commit/${revision.sha}`}>
-                View on GitHub
-              </Button>
-            </div>
-          )}
-          <RevisionSubject>{revisionSubject}</RevisionSubject>
-          {revisionMessage && (
-            <RevisionMessage
-              dangerouslySetInnerHTML={{
-                __html: sanitize(marked(revisionMessage))
-              }}
-            />
-          )}
-          <RevisionAuthor>
-            <ObjectAuthor data={build} /> committed{' '}
-            <TimeSince date={revision.committed_at} />
-          </RevisionAuthor>
-        </RevisionSection>
+        <RevisionSummary repo={repo} build={build} />
         {!!this.state.testFailures.length && (
           <Section>
             <SectionHeading>Failing Tests</SectionHeading>

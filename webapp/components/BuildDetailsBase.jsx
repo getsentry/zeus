@@ -49,9 +49,7 @@ export default class BuildDetailsBase extends AsyncPage {
       <div>
         <BuildSummary>
           <BuildHeader>
-            <Message>
-              {(build.label || build.revision.message || '').split('\n')[0]}
-            </Message>
+            <Message>{build.label}</Message>
           </BuildHeader>
           <Meta>
             {build.status === 'finished' && (
