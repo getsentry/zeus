@@ -24,12 +24,6 @@ export default class ObjectAuthor extends Component {
       author: PropTypes.shape({
         name: PropTypes.string,
         email: PropTypes.email
-      }),
-      source: PropTypes.shape({
-        author: PropTypes.shape({
-          name: PropTypes.string,
-          email: PropTypes.email
-        })
       })
     }).isRequired
   };
