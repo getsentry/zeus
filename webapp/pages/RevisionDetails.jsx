@@ -13,10 +13,6 @@ export default class RevisionDetails extends BuildDetailsBase {
     return `/${repo.full_name}/revisions/${sha}`;
   }
 
-  getBuildIdentifier() {
-    return this.props.params.sha.substr(0, 7);
-  }
-
   getTitle() {
     return 'Build Details';
   }
