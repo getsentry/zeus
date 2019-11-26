@@ -34,6 +34,7 @@ Revision = sa.Table(
     sa.Column("repository_id", postgresql.UUID()),
     sa.Column("sha", postgresql.UUID()),
     sa.Column("message", sa.String()),
+    sa.Column("author_id", postgresql.UUID()),
 )
 
 
