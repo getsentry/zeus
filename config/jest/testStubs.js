@@ -92,6 +92,21 @@ window.TestStubs = {
     ...params
   }),
 
+  Artifact: params => ({
+    created_at: '2019-11-25T23:04:20.322797+00:00',
+    download_url:
+      '/api/repos/gh/getsentry/zeus/builds/1757/jobs/1/artifacts/e9ce7284-0fd7-11ea-b03f-ce6c6e2f7236/download',
+    file: {
+      name:
+        '56a3/b3d40fd711ea881cee2686f8b362/e9ce72840fd711eab03fce6c6e2f7236_cobertura-coverage.xml',
+      size: 221343
+    },
+    finished_at: '2019-11-25T23:04:21.810095+00:00',
+    id: 'e9ce7284-0fd7-11ea-b03f-ce6c6e2f7236',
+    job: TestStubs.Job(),
+    ...params
+  }),
+
   Build: params => {
     let author = (params || {}).author || TestStubs.Author();
     return {
