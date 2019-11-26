@@ -4,16 +4,21 @@ from zeus.tasks import resolve_ref_for_build, resolve_ref_for_change_request
 
 def test_resolve_ref_for_build(default_revision):
     build = factories.BuildFactory.create(
-        repository=default_revision.repository, ref=default_revision.sha, author=None
+        repository=default_revision.repository,
+        ref=default_revision.sha,
+        author=None,
+        label=None,
     )
 
     assert build.revision_sha is None
     assert build.author_id is None
+    assert build.label is None
 
     resolve_ref_for_build(build.id)
 
     assert build.revision_sha == default_revision.sha
     assert build.author_id == default_revision.author_id
+    assert build.label == "ref: Remove outdated comment"
 
 
 def test_resolve_ref_for_change_request_parent_only(default_revision):

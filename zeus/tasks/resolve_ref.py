@@ -25,6 +25,8 @@ def resolve_ref_for_build(build_id: UUID):
         build.revision_sha = revision.sha
         if not build.author_id:
             build.author_id = revision.author_id
+        if not build.label:
+            build.label = revision.message.split("\n")[0]
         db.session.add(build)
         db.session.commit()
 

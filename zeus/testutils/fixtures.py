@@ -105,6 +105,7 @@ def default_revision(default_repo, default_author):
         repository=default_repo,
         author=default_author,
         sha="884ea9e17b53933febafd7e02d8bd28f3c9d479d",
+        message="ref: Remove outdated comment\n\nThis removes an outdated comment.",
     )
 
 
