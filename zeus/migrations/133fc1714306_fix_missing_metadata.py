@@ -24,7 +24,7 @@ Build = sa.Table(
     sa.Column("id", postgresql.UUID(), primary_key=True),
     sa.Column("repository_id", postgresql.UUID()),
     sa.Column("author_id", postgresql.UUID()),
-    sa.Column("label", postgresql.UUID()),
+    sa.Column("label", sa.String()),
     sa.Column("revision_sha", sa.String()),
 )
 
@@ -32,7 +32,7 @@ Revision = sa.Table(
     "revision",
     sa.MetaData(),
     sa.Column("repository_id", postgresql.UUID()),
-    sa.Column("sha", postgresql.UUID()),
+    sa.Column("sha", sa.String()),
     sa.Column("message", sa.String()),
     sa.Column("author_id", postgresql.UUID()),
 )
