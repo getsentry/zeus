@@ -29,6 +29,7 @@ class ChangeRequestSchema(Schema):
 
     @post_load(pass_many=False)
     def make_hook(self, data, **kwargs):
+        parent_revision = self.context.get("resolved_parent_revision")
         if self.context.get("change_request"):
             cr = self.context["change_request"]
             for key, value in data.items():
@@ -39,10 +40,10 @@ class ChangeRequestSchema(Schema):
                             head_revision.sha if head_revision else None
                         )
                     if key == "parent_ref":
-                        parent_revision = self.context.get("resolved_parent_revision")
                         cr.parent_revision_sha = (
                             parent_revision.sha if parent_revision else None
                         )
+                        cr.author_id = None
                     setattr(cr, key, value)
         else:
             cr = ChangeRequest(
@@ -50,11 +51,12 @@ class ChangeRequestSchema(Schema):
                 head_revision_sha=self.context["resolved_head_revision"].sha
                 if self.context.get("resolved_head_revision")
                 else None,
-                parent_revision_sha=self.context["resolved_parent_revision"].sha
-                if self.context.get("resolved_parent_revision")
-                else None,
+                parent_revision_sha=parent_revision.sha if parent_revision else None,
                 **data
             )
+        if not cr.author_id and parent_revision:
+            cr.author_id = parent_revision.author_id
+
         return cr
 
 

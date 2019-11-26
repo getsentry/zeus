@@ -7,6 +7,7 @@ from random import randint
 from zeus import models
 from zeus.utils import timezone
 
+from .author import AuthorFactory
 from .base import ModelFactory
 from .types import GUIDFactory
 from .repository import RepositoryFactory
@@ -23,10 +24,12 @@ class ChangeRequestFactory(ModelFactory):
         else RepositoryFactory()
     )
     repository_id = factory.SelfAttribute("repository.id")
-    author = factory.SubFactory(
-        "zeus.factories.AuthorFactory", repository=factory.SelfAttribute("..repository")
+    author = factory.LazyAttribute(
+        lambda o: o.parent_revision.author
+        if getattr(o, "parent_revision", None)
+        else AuthorFactory(repository=o.repository)
     )
-    author_id = factory.SelfAttribute("author.id")
+    author_id = factory.LazyAttribute(lambda o: o.author.id if o.author else None)
     parent_ref = factory.LazyAttribute(
         lambda o: o.parent_revision.sha
         if getattr(o, "parent_revision", None)

@@ -61,6 +61,8 @@ class BuildCreateSchema(Schema):
         )
         if not build.label and revision:
             build.label = revision.message.split("\n")[0]
+        if not build.author_id and revision:
+            build.author_id = revision.author_id
         return build
 
     @post_dump(pass_many=True)

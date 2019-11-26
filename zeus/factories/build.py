@@ -34,7 +34,7 @@ class BuildFactory(ModelFactory):
         if getattr(o, "revision", None)
         else AuthorFactory(repository=o.repository)
     )
-    author_id = factory.SelfAttribute("author.id")
+    author_id = factory.LazyAttribute(lambda o: o.author.id if o.author else None)
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
     ref = factory.LazyAttribute(

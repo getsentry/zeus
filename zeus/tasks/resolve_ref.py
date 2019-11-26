@@ -23,6 +23,8 @@ def resolve_ref_for_build(build_id: UUID):
             build.repository, build.ref, with_vcs=True
         )
         build.revision_sha = revision.sha
+        if not build.author_id:
+            build.author_id = revision.author_id
         db.session.add(build)
         db.session.commit()
 
@@ -45,6 +47,8 @@ def resolve_ref_for_change_request(change_request_id: UUID):
             cr.repository, cr.parent_ref, with_vcs=True
         )
         cr.parent_revision_sha = revision.sha
+        if not cr.author_id:
+            cr.author_id = revision.author_id
         db.session.add(cr)
         db.session.commit()
 
