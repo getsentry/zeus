@@ -31,7 +31,6 @@ Build = sa.Table(
 Revision = sa.Table(
     "revision",
     sa.MetaData(),
-    sa.Column("id", postgresql.UUID(), primary_key=True),
     sa.Column("repository_id", postgresql.UUID()),
     sa.Column("sha", postgresql.UUID()),
     sa.Column("message", sa.String()),
