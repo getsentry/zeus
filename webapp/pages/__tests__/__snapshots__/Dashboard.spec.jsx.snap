@@ -1443,10 +1443,10 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                       >
                                         <Styled(Component)>
                                           <Component
-                                            className="css-c3rzo4 e1htp3kp0"
+                                            className="css-1khh740 e1htp3kp0"
                                           >
                                             <div
-                                              className="css-c3rzo4 e1htp3kp0"
+                                              className="css-1khh740 e1htp3kp0"
                                             >
                                               Your Builds
                                               <Link
@@ -5080,10 +5080,10 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                       >
                                         <Styled(Component)>
                                           <Component
-                                            className="css-c3rzo4 e1htp3kp0"
+                                            className="css-1khh740 e1htp3kp0"
                                           >
                                             <div
-                                              className="css-c3rzo4 e1htp3kp0"
+                                              className="css-1khh740 e1htp3kp0"
                                             >
                                               Your Builds
                                               <Link

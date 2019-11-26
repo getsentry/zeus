@@ -96,7 +96,8 @@ class GenericLineChart extends Component {
 
 class CoverageChart extends AsyncPage {
   static propTypes = {
-    repo: PropTypes.object.isRequired
+    repo: PropTypes.object.isRequired,
+    title: PropTypes.string
   };
 
   getEndpoints({repo}) {
@@ -134,14 +135,24 @@ class CoverageChart extends AsyncPage {
           : coveredPoint.value
       };
     });
+    if (!data.length) return null;
+    let currentValue = data.length && data[0].value;
     return (
-      <GenericLineChart
-        {...this.props}
-        formatValue={v => v + '%'}
-        data={data}
-        maxValue={100}
-        label="% Coverage"
-      />
+      <Section>
+        {!!this.props.title && (
+          <SectionHeading>
+            {this.props.title}
+            {currentValue !== false && <small>{currentValue}%</small>}
+          </SectionHeading>
+        )}
+        <GenericLineChart
+          {...this.props}
+          formatValue={v => v + '%'}
+          data={data}
+          maxValue={100}
+          label="% Coverage"
+        />
+      </Section>
     );
   }
 }
@@ -150,7 +161,9 @@ class RepositoryChart extends AsyncPage {
   static propTypes = {
     repo: PropTypes.object.isRequired,
     label: PropTypes.string,
-    stat: PropTypes.string.isRequired
+    stat: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    formatValue: PropTypes.func
   };
 
   static defaultProps = {
@@ -175,8 +188,20 @@ class RepositoryChart extends AsyncPage {
 
   renderBody() {
     let {label, stat} = this.props;
+    if (!this.state.data.length) return null;
+    let currentValue = this.state.data.length && this.state.data[0].value;
     return (
-      <GenericLineChart {...this.props} data={this.state.data} label={label || stat} />
+      <Section>
+        {!!this.props.title && (
+          <SectionHeading>
+            {this.props.title}
+            {currentValue !== false && (
+              <small>{this.props.formatValue(currentValue)}</small>
+            )}
+          </SectionHeading>
+        )}
+        <GenericLineChart {...this.props} data={this.state.data} label={label || stat} />
+      </Section>
     );
   }
 }
@@ -203,28 +228,21 @@ export class RepositoryOverview extends AsyncPage {
           </Section>
         </Box>
         <Box width={4 / 12}>
-          <Section>
-            <SectionHeading>Duration</SectionHeading>
-            <RepositoryChart
-              {...this.props}
-              repo={repo}
-              formatValue={v => getDuration(v, true)}
-              stat="builds.duration"
-            />
-          </Section>
-          <Section>
-            <SectionHeading>Coverage</SectionHeading>
-            <CoverageChart {...this.props} repo={repo} />
-          </Section>
-          <Section>
-            <SectionHeading>Bundle Size</SectionHeading>
-            <RepositoryChart
-              {...this.props}
-              repo={repo}
-              formatValue={getSize}
-              stat="bundle.total_asset_size"
-            />
-          </Section>
+          <RepositoryChart
+            {...this.props}
+            title="Duration"
+            repo={repo}
+            formatValue={v => getDuration(v, true)}
+            stat="builds.duration"
+          />
+          <CoverageChart title="Coverage" {...this.props} repo={repo} />
+          <RepositoryChart
+            {...this.props}
+            title="Bundle Size"
+            repo={repo}
+            formatValue={getSize}
+            stat="bundle.total_asset_size"
+          />
         </Box>
       </Flex>
     );
