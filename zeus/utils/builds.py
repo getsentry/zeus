@@ -21,6 +21,7 @@ def merge_builds(target: Build, build: Build, with_relations=True) -> Build:
     # gets populated.
     if with_relations:
         target.revision = build.revision
+        target.author = build.author
     if build.revision_sha:
         target.revision_sha = build.revision_sha
     if not target.ref:
@@ -121,6 +122,7 @@ def fetch_builds_for_revisions(
         base_qs = base_qs.options(
             joinedload("revision"),
             joinedload("revision").joinedload("author"),
+            joinedload("author"),
             subqueryload_all("stats"),
         )
 
