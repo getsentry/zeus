@@ -1,3 +1,5 @@
+
+from flask import current_app
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.sql import func
 
@@ -45,13 +47,18 @@ class Revision(RepositoryBoundMixin, db.Model):
         return self.message.splitlines()[0]
 
     def generate_diff(self):
+        from zeus.vcs.base import UnknownRevision
+
         try:
             vcs = self.repository.get_vcs()
         except UnknownRepositoryBackend:
             return None
 
         try:
-            return vcs.export(self.revision_sha)
+            try:
+                return vcs.export(self.revision_sha)
+            except UnknownRevision:
+                vcs.update()
+                return vcs.export(self.revision_sha)
         except Exception:
-            # TODO
-            pass
+            current_app.logger.exception("generate_diff failure")
