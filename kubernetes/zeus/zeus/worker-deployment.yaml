@@ -125,9 +125,11 @@ spec:
               mountPath: '/var/run/secret/cloud.google.com'
           resources:
             requests:
-              cpu: 2
+              cpu: 1200m
+              memory: 600Mi
             limits:
-              cpu: 2
+              cpu: 2000m
+              memory: 800Mi
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.09
           command:

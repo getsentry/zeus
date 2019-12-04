@@ -134,9 +134,11 @@ spec:
               mountPath: /tmp/repo-cache
           resources:
             requests:
-              cpu: 1
+              cpu: 900m
+              memory: 600Mi
             limits:
-              cpu: 1
+              cpu: 1000m
+              memory: 800Mi
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.09
           command:
