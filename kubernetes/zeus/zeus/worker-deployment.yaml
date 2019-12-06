@@ -126,10 +126,10 @@ spec:
           resources:
             requests:
               cpu: 1200m
-              memory: 600Mi
+              memory: 1000Mi
             limits:
               cpu: 2000m
-              memory: 800Mi
+              memory: 1200Mi
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.09
           command:
