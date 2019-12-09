@@ -1,14 +1,14 @@
 {
-    // See http://go.microsoft.com/fwlink/?LinkId=827846
-    // for the documentation about the extensions.json format
-    "recommendations": [
-        "dzannotti.vscode-babel-coloring",
-        "esbenp.prettier-vscode",
-        "ms-python.python",
-        "dbaeumer.vscode-eslint",
-        "lextudio.restructuredtext",
-        "PeterJausovec.vscode-docker",
-        "DavidAnson.vscode-markdownlint",
-        "bungcip.better-toml"
-    ]
+  // See http://go.microsoft.com/fwlink/?LinkId=827846
+  // for the documentation about the extensions.json format
+  "recommendations": [
+    "dzannotti.vscode-babel-coloring",
+    "esbenp.prettier-vscode",
+    "ms-python.python",
+    "dbaeumer.vscode-eslint",
+    "lextudio.restructuredtext",
+    "ms-azuretools.vscode-docker",
+    "DavidAnson.vscode-markdownlint",
+    "bungcip.better-toml"
+  ]
 }
