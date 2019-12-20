@@ -1,0 +1,15 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cleanup-evicted-pods
+spec:
+  schedule: "*/30 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: kubectl-runner
+            image: wernight/kubectl
+            command: ["sh", "-c", "kubectl get pods | grep Evicted | awk '{print $1}' | xargs kubectl delete pod"]
+          restartPolicy: Never
