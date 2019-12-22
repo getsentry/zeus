@@ -38,55 +38,96 @@ class InstallIndexResource(Resource):
             },
             "stats": {
                 "builds": {
-                    "24h": (
-                        Build.query.unrestricted_unsafe()
-                        .filter(Build.date_created > one_day_ago)
-                        .count()
-                    ),
-                    "30d": (
-                        Build.query.unrestricted_unsafe()
-                        .filter(Build.date_created > thirty_days_ago)
-                        .count()
-                    ),
+                    "created": {
+                        "24h": (
+                            Build.query.unrestricted_unsafe()
+                            .filter(Build.date_created > one_day_ago)
+                            .count()
+                        ),
+                        "30d": (
+                            Build.query.unrestricted_unsafe()
+                            .filter(Build.date_created > thirty_days_ago)
+                            .count()
+                        ),
+                    },
+                    "errored": {
+                        "24h": (
+                            Build.query.unrestricted_unsafe()
+                            .filter(
+                                Build.date_created > one_day_ago,
+                                Build.result == Result.errored,
+                            )
+                            .count()
+                        ),
+                        "30d": (
+                            Build.query.unrestricted_unsafe()
+                            .filter(
+                                Build.date_created > thirty_days_ago,
+                                Build.result == Result.errored,
+                            )
+                            .count()
+                        ),
+                    },
                 },
-                "jobErrors": {
-                    "24h": (
-                        Job.query.unrestricted_unsafe()
-                        .filter(
-                            Job.date_created > one_day_ago, Job.result == Result.errored
-                        )
-                        .count()
-                    ),
-                    "30d": (
-                        Job.query.unrestricted_unsafe()
-                        .filter(
-                            Job.date_created > thirty_days_ago,
-                            Job.result == Result.errored,
-                        )
-                        .count()
-                    ),
+                "jobs": {
+                    "created": {
+                        "24h": (
+                            Job.query.unrestricted_unsafe()
+                            .filter(Job.date_created > one_day_ago)
+                            .count()
+                        ),
+                        "30d": (
+                            Job.query.unrestricted_unsafe()
+                            .filter(Job.date_created > thirty_days_ago)
+                            .count()
+                        ),
+                    },
+                    "errored": {
+                        "24h": (
+                            Job.query.unrestricted_unsafe()
+                            .filter(
+                                Job.date_created > one_day_ago,
+                                Job.result == Result.errored,
+                            )
+                            .count()
+                        ),
+                        "30d": (
+                            Job.query.unrestricted_unsafe()
+                            .filter(
+                                Job.date_created > thirty_days_ago,
+                                Job.result == Result.errored,
+                            )
+                            .count()
+                        ),
+                    },
                 },
                 "repos": {
-                    "24h": (
-                        db.session.query(Build.repository_id)
-                        .distinct()
-                        .filter(Build.date_created > one_day_ago)
-                        .distinct()
-                        .count()
-                    ),
-                    "30d": (
-                        db.session.query(Build.repository_id)
-                        .distinct()
-                        .filter(Build.date_created > thirty_days_ago)
-                        .distinct()
-                        .count()
-                    ),
+                    "active": {
+                        "24h": (
+                            db.session.query(Build.repository_id)
+                            .distinct()
+                            .filter(Build.date_created > one_day_ago)
+                            .distinct()
+                            .count()
+                        ),
+                        "30d": (
+                            db.session.query(Build.repository_id)
+                            .distinct()
+                            .filter(Build.date_created > thirty_days_ago)
+                            .distinct()
+                            .count()
+                        ),
+                    }
                 },
                 "users": {
-                    "24h": User.query.filter(User.date_active > one_day_ago).count(),
-                    "30d": User.query.filter(
-                        User.date_active > thirty_days_ago
-                    ).count(),
+                    "active": {
+                        "24h": User.query.filter(
+                            User.date_active > one_day_ago
+                        ).count(),
+                        "30d": User.query.filter(
+                            User.date_active > thirty_days_ago
+                        ).count(),
+                    }
                 },
             },
         }
