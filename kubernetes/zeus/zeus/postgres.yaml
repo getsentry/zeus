@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgbouncer
+  namespace: default
+  labels:
+    app: pgbouncer
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+      name: postgres
+  selector:
+    app: pgbouncer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgbouncer
+  namespace: default
+  labels:
+    app: pgbouncer
+spec:
+  revisionHistoryLimit: 10  # removes old replicasets for deployment rollbacks
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0  # Avoid Terminating and ContainerCreating at the same time
+  selector:
+    matchLabels:
+      app: pgbouncer
+  template:
+    metadata:
+      labels:
+        app: pgbouncer
+    spec:
+      # Optional: keep the POD close to the apps:
+      #nodeSelector:
+      #  purpose: apps
+      containers:
+        - name: pgbouncer
+          image: edoburu/pgbouncer:1.9.0
+          #imagePullPolicy: Always
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POOL_MODE
+              value: session
+            - name: SERVER_RESET_QUERY
+              value: DISCARD ALL
+            - name: DB_HOST
+              value: 127.0.0.1
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql-db-credentials
+                  key: password
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            periodSeconds: 60
+          lifecycle:
+            preStop:
+              exec:
+                # Allow existing queries clients to complete within 120 seconds
+                command: ["/bin/sh", "-c", "killall -INT pgbouncer && sleep 120"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ['all']
+        - name: cloudsql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.09
+          command:
+            [
+              '/cloud_sql_proxy',
+              '--dir=/cloudsql',
+              '-instances=zeus-176020:us-central1:zeus-prod-06947e6=tcp:5432',
+              '-credential_file=/secrets/cloudsql/credentials.json',
+            ]
+          volumeMounts:
+            - name: cloudsql-instance-credentials
+              mountPath: /secrets/cloudsql
+              readOnly: true
+            - name: ssl-certs
+              mountPath: /etc/ssl/certs
+            - name: cloudsql
+              mountPath: /cloudsql
+      volumes:
+        - name: cloudsql-instance-credentials
+          secret:
+            secretName: cloudsql-instance-credentials
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+        - name: cloudsql
+          ? emptyDir
