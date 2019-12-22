@@ -5,6 +5,7 @@ import re
 from collections import namedtuple
 from subprocess import Popen, PIPE
 from typing import List, Optional, Tuple
+from uuid import UUID
 
 from zeus.db.utils import create_or_update, get_or_create, try_create
 from zeus.models import Author, Repository, Revision, Source
@@ -15,6 +16,7 @@ RevisionSaveResult = namedtuple("RevisionSaveResult", ["revision", "created"])
 class RevisionResult(object):
     parents = None
     branches = None
+    repository_id = None
 
     def __init__(
         self,
@@ -26,6 +28,7 @@ class RevisionResult(object):
         committer_date=None,
         parents: Optional[List[str]] = None,
         branches: Optional[List[str]] = None,
+        repository_id: UUID = None,
     ):
         self.sha = sha
         self.message = message
@@ -37,6 +40,8 @@ class RevisionResult(object):
             self.parents = parents
         if branches is not None:
             self.branches = branches
+        if repository_id is not None:
+            self.repository_id = repository_id
 
     def __repr__(self):
         return "<%s: sha=%r author=%r subject=%r>" % (
@@ -108,19 +113,27 @@ class RevisionResult(object):
 
 
 class CommandError(Exception):
-    def __init__(self, cmd, retcode, stdout=None, stderr=None):
+    def __init__(
+        self,
+        cmd: str = None,
+        retcode: int = None,
+        stdout: bytes = None,
+        stderr: bytes = None,
+    ):
         self.cmd = cmd
         self.retcode = retcode
         self.stdout = stdout
         self.stderr = stderr
 
     def __str__(self):
-        return "%s returned %d:\nSTDOUT: %r\nSTDERR: %r" % (
-            self.cmd,
-            self.retcode,
-            self.stdout.decode("utf-8"),
-            self.stderr.decode("utf-8"),
-        )
+        if self.cmd:
+            return "%s returned %d:\nSTDOUT: %r\nSTDERR: %r" % (
+                self.cmd,
+                self.retcode,
+                self.stdout.decode("utf-8"),
+                self.stderr.decode("utf-8"),
+            )
+        return ""
 
 
 class UnknownRevision(CommandError):
@@ -164,7 +177,7 @@ class Vcs(object):
         )
     )
 
-    def __init__(self, id: str, path: str, url: str, username: str = None):
+    def __init__(self, id: str, path: str, url: str, username: Optional[str] = None):
         self.id = id
         self.path = path
         self.url = url
@@ -176,7 +189,7 @@ class Vcs(object):
     def get_default_env(self) -> dict:
         return {}
 
-    def run(self, *args, **kwargs) -> str:
+    def run(self, cmd, timeout=None, **kwargs) -> str:
         if self.exists():
             kwargs.setdefault("cwd", self.path)
 
@@ -194,10 +207,10 @@ class Vcs(object):
         kwargs["stdout"] = PIPE
         kwargs["stderr"] = PIPE
 
-        proc = Popen(*args, **kwargs)
-        (stdout, stderr) = proc.communicate()
+        proc = Popen(cmd, **kwargs)
+        (stdout, stderr) = proc.communicate(timeout=timeout)
         if proc.returncode != 0:
-            raise CommandError(args[0], proc.returncode, stdout, stderr)
+            raise CommandError(cmd[0], proc.returncode, stdout, stderr)
 
         return stdout.decode("utf-8")
 
@@ -207,7 +220,7 @@ class Vcs(object):
     def clone(self):
         raise NotImplementedError
 
-    def update(self):
+    def update(self, allow_cleanup=False):
         raise NotImplementedError
 
     def ensure(self, update_if_exists=True):

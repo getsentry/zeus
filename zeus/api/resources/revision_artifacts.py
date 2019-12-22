@@ -12,7 +12,7 @@ class ArtifactWithJobSchema(ArtifactSchema):
     job = fields.Nested(JobSchema(), dump_only=True, required=False)
 
 
-artifacts_schema = ArtifactWithJobSchema(strict=True, many=True)
+artifacts_schema = ArtifactWithJobSchema(many=True)
 
 
 class RevisionArtifactsResource(BaseRevisionResource):
@@ -23,7 +23,7 @@ class RevisionArtifactsResource(BaseRevisionResource):
         """
         Return all artifacts of all builds in a revision.
         """
-        build = fetch_build_for_revision(revision.repository, revision)
+        build = fetch_build_for_revision(revision, with_relations=False)
         if not build:
             return self.respond(status=404)
 
@@ -33,11 +33,7 @@ class RevisionArtifactsResource(BaseRevisionResource):
             Artifact.query.options(
                 joinedload("job"),
                 joinedload("job").joinedload("build"),
-                joinedload("job").joinedload("build").joinedload("source"),
-                joinedload("job")
-                .joinedload("build")
-                .joinedload("source")
-                .joinedload("repository"),
+                joinedload("job").joinedload("build").joinedload("repository"),
             )
             .join(Job, Job.id == Artifact.job_id)
             .filter(Job.build_id.in_(build_ids))

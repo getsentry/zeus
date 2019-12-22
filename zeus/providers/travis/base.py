@@ -13,3 +13,6 @@ class TravisProvider(Provider):
             },
             "required": ["domain"],
         }
+
+    def get_name(self, config):
+        return config.get("domain", "api.travis-ci.org")

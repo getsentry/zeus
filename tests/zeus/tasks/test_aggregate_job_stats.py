@@ -1,15 +1,15 @@
-from zeus import auth, factories
+from zeus import factories
 from zeus.constants import Result, Status
 from zeus.models import FailureReason, ItemStat
-from zeus.tasks import aggregate_build_stats, aggregate_build_stats_for_job
+from zeus.tasks import (
+    aggregate_build_stats,
+    aggregate_build_stats_for_job,
+    record_bundle_stats,
+)
 
 
-def test_unfinished_job(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
-    build = factories.BuildFactory(source=default_source, queued=True)
+def test_unfinished_job(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, queued=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, in_progress=True)
@@ -21,12 +21,8 @@ def test_unfinished_job(mocker, db_session, default_source):
     assert build.result == Result.unknown
 
 
-def test_finished_job(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
-    build = factories.BuildFactory(source=default_source, in_progress=True)
+def test_finished_job(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, failed=True)
@@ -44,12 +40,8 @@ def test_finished_job(mocker, db_session, default_source):
     mock_send_build_notifications.assert_called_once_with(build_id=build.id)
 
 
-def test_failing_tests(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
-    build = factories.BuildFactory(source=default_source, in_progress=True)
+def test_failing_tests(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, passed=True)
@@ -68,12 +60,10 @@ def test_failing_tests(mocker, db_session, default_source):
     assert reasons[0].reason == FailureReason.Reason.failing_tests
 
 
-def test_failing_tests_duplicate_reason(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
-    build = factories.BuildFactory(source=default_source, in_progress=True)
+def test_failing_tests_duplicate_reason(
+    mocker, db_session, default_revision, default_tenant
+):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, passed=True)
@@ -98,12 +88,10 @@ def test_failing_tests_duplicate_reason(mocker, db_session, default_source):
     assert reasons[0].reason == FailureReason.Reason.failing_tests
 
 
-def test_failure_with_allow_failure(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
-    build = factories.BuildFactory(source=default_source, in_progress=True)
+def test_failure_with_allow_failure(
+    mocker, db_session, default_revision, default_tenant
+):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, failed=True, allow_failure=True)
@@ -115,12 +103,8 @@ def test_failure_with_allow_failure(mocker, db_session, default_source):
     assert build.result == Result.passed
 
 
-def test_newly_unfinished_job(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
-    build = factories.BuildFactory(source=default_source, finished=True)
+def test_newly_unfinished_job(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, finished=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, in_progress=True)
@@ -132,12 +116,8 @@ def test_newly_unfinished_job(mocker, db_session, default_source):
     assert build.result == Result.unknown
 
 
-def test_coverage_stats(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
-    build = factories.BuildFactory(source=default_source)
+def test_coverage_stats(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, passed=True)
@@ -184,12 +164,8 @@ def test_coverage_stats(mocker, db_session, default_source):
     assert stats["coverage.diff_lines_uncovered"] == 2
 
 
-def test_test_stats(mocker, db_session, default_source):
-    auth.set_current_tenant(
-        auth.RepositoryTenant(repository_id=default_source.repository_id)
-    )
-
-    build = factories.BuildFactory(source=default_source, in_progress=True)
+def test_test_stats(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
 
     job = factories.JobFactory(build=build, passed=True)
@@ -227,3 +203,23 @@ def test_test_stats(mocker, db_session, default_source):
     assert job_stats["tests.count"] == 2
     assert job_stats["tests.failures"] == 1
     assert job_stats["tests.duration"] == 10
+
+
+def test_record_bundle_stats(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
+    db_session.add(build)
+
+    job = factories.JobFactory(build=build, passed=True)
+    db_session.add(job)
+
+    bundle = factories.BundleFactory(job=job)
+    db_session.add(factories.BundleFactory(job=job))
+    db_session.add(factories.BundleAssetFactory(bundle=bundle, size=1000))
+    db_session.add(factories.BundleAssetFactory(bundle=bundle, size=1500))
+
+    record_bundle_stats(job.id)
+
+    job_stats = {
+        i.name: i.value for i in ItemStat.query.filter(ItemStat.item_id == job.id)
+    }
+    assert job_stats["bundle.total_asset_size"] == 2500

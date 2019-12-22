@@ -1,64 +1,24 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Flex, Box} from 'grid-styled';
-import styled from 'styled-components';
-
-import {Client} from '../api';
+import {Flex, Box} from '@rebass/grid/emotion';
+import {Link} from 'react-router';
+import styled from '@emotion/styled';
+import {MdExpandLess, MdExpandMore, MdHistory} from 'react-icons/md';
 
 import Collapsable from './Collapsable';
 import {AggregateDuration} from './ObjectDuration';
+import Icon from './Icon';
 import ObjectResult from './ObjectResult';
 import ResultGridRow from './ResultGridRow';
 import {ResultGrid, Column, Header} from './ResultGrid';
-
-class TestDetails extends Component {
-  static propTypes = {
-    test: PropTypes.object.isRequired,
-    build: PropTypes.object.isRequired
-  };
-
-  constructor(props, context) {
-    super(props, context);
-    this.state = {loading: true};
-  }
-
-  componentWillMount() {
-    this.api = new Client();
-  }
-
-  componentDidMount() {
-    let {test} = this.props;
-    this.api.request(`/tests/${test.id}`).then(testDetails => {
-      this.setState({loading: false, testDetails});
-    });
-  }
-
-  componentWillUnmount() {
-    this.api.clear();
-  }
-
-  // TODO(dcramer): make this more useful
-  render() {
-    let {build} = this.props;
-    if (this.state.loading) return <TestDetailsWrapper>(loading)</TestDetailsWrapper>;
-    let {testDetails} = this.state;
-    return (
-      <TestDetailsWrapper>
-        <h5>
-          <ObjectResult data={testDetails} size={12} />
-          #{build.number}.{testDetails.job.number}
-          {testDetails.job.label && ` - ${testDetails.job.label}`}
-        </h5>
-        <pre>{testDetails.message || <em>no output captured</em>}</pre>
-      </TestDetailsWrapper>
-    );
-  }
-}
+import TestDetails from './TestDetails';
 
 class TestListItem extends Component {
   static propTypes = {
     test: PropTypes.object.isRequired,
-    build: PropTypes.object.isRequired
+    build: PropTypes.object.isRequired,
+    repo: PropTypes.object.isRequired,
+    params: PropTypes.object
   };
 
   constructor(props, context) {
@@ -67,32 +27,60 @@ class TestListItem extends Component {
   }
 
   render() {
-    let {build, params, test} = this.props;
+    let {build, params, repo, test} = this.props;
+    let {origin_build} = test;
     return (
-      <TestListItemLink
-        onClick={() =>
-          window.getSelection().toString().length === 0 &&
-          this.setState({expanded: !this.state.expanded})
-        }>
-        <ResultGridRow>
-          <Flex align="center">
-            <Box flex="1">
-              <ObjectResult data={test} />
+      <ResultGridRow>
+        <Flex align="center">
+          <Box flex="1">
+            <ObjectResult data={test} />
+            <TestLink
+              onClick={() => {
+                window.getSelection().toString().length === 0 &&
+                  this.setState({expanded: !this.state.expanded});
+              }}>
               {test.name}
-            </Box>
-            <Box width={90} style={{textAlign: 'right'}}>
-              <AggregateDuration data={test.runs} />
-            </Box>
-          </Flex>
-          {this.state.expanded && (
-            <div>
-              {test.runs.map(run => (
-                <TestDetails build={build} test={run} params={params} key={run.id} />
-              ))}
-            </div>
-          )}
-        </ResultGridRow>
-      </TestListItemLink>
+              <span className="toggle">
+                {this.state.expanded ? (
+                  <Icon>
+                    <MdExpandLess size={12} />
+                  </Icon>
+                ) : (
+                  <Icon>
+                    <MdExpandMore size={12} />
+                  </Icon>
+                )}
+              </span>
+            </TestLink>
+            {!!origin_build && (
+              <OriginBuild>
+                {' '}
+                Originated in{' '}
+                <Link to={`/${repo.full_name}/builds/${origin_build.number}`}>
+                  #{origin_build.number}
+                </Link>
+              </OriginBuild>
+            )}
+          </Box>
+          <Box width={90} style={{textAlign: 'right'}}>
+            <AggregateDuration data={test.runs} />
+          </Box>
+          <Box width={40} style={{textAlign: 'right'}}>
+            <Link to={`/${repo.full_name}/tests/${test.hash}`}>
+              <Icon>
+                <MdHistory size={20} />
+              </Icon>
+            </Link>
+          </Box>
+        </Flex>
+        {this.state.expanded && (
+          <div>
+            {test.runs.map(run => (
+              <TestDetails build={build} test={run} params={params} key={run.id} />
+            ))}
+          </div>
+        )}
+      </ResultGridRow>
     );
   }
 }
@@ -100,9 +88,11 @@ class TestListItem extends Component {
 export default class AggregateTestList extends Component {
   static propTypes = {
     build: PropTypes.object.isRequired,
+    repo: PropTypes.object.isRequired,
     testList: PropTypes.arrayOf(PropTypes.object).isRequired,
     collapsable: PropTypes.bool,
-    maxVisible: PropTypes.number
+    maxVisible: PropTypes.number,
+    params: PropTypes.object
   };
 
   static defaultProps = {
@@ -117,6 +107,7 @@ export default class AggregateTestList extends Component {
           <Column width={90} textAlign="right">
             Duration
           </Column>
+          <Column width={40} textAlign="right" />
         </Header>
         <Collapsable
           collapsable={this.props.collapsable}
@@ -125,6 +116,7 @@ export default class AggregateTestList extends Component {
             return (
               <TestListItem
                 build={this.props.build}
+                repo={this.props.repo}
                 params={this.props.params}
                 test={test}
                 key={test.name}
@@ -137,32 +129,24 @@ export default class AggregateTestList extends Component {
   }
 }
 
-const TestDetailsWrapper = styled.div`
-  margin-top: 10px;
-  padding: 10px 0 0 25px;
-  color: #39364e;
-  font-size: 13px;
-  line-height: 1.4em;
-  border-top: 1px solid #eee;
+const TestLink = styled.a`
+  display: inline-block;
+  cursor: pointer;
 
-  pre {
-    font-size: inherit;
-    margin: 0;
-    background: #f9f9f9;
-    padding: 5px;
-    border-radius: 4px;
+  .toggle {
+    margin-left: 5px;
+    visibility: hidden;
   }
 
-  h5 {
-    margin-bottom: 5px;
+  &:hover .toggle {
+    visibility: visible;
   }
 `;
 
-const TestListItemLink = styled.a`
-  display: block;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f0eff5;
-  }
+const OriginBuild = styled.span`
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 12px;
+  background: #eee;
+  padding: 1px 5px;
 `;

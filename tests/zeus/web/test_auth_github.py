@@ -1,6 +1,6 @@
 from urllib.parse import parse_qs
 
-from zeus import factories
+from zeus import auth, factories
 from zeus.constants import GITHUB_AUTH_URI, GITHUB_TOKEN_URI, Permission
 from zeus.models import Email, Identity, RepositoryAccess, User
 
@@ -15,6 +15,19 @@ def test_login(client):
     assert qs["redirect_uri"] == ["http://localhost/auth/github/complete"]
     assert qs["response_type"] == ["code"]
     assert sorted(qs["scope"][0].split(",")) == ["read:org", "repo", "user:email"]
+
+
+def test_login_binds_next_target(client):
+    resp = client.get("/auth/github?next=/gh/github/zeus")
+    assert resp.status_code == 302
+    location, querystring = resp.headers["Location"].split("?", 1)
+    assert location == GITHUB_AUTH_URI
+    qs = parse_qs(querystring)
+    assert qs["client_id"] == ["github.client-id"]
+    assert qs["redirect_uri"] == ["http://localhost/auth/github/complete"]
+    assert qs["response_type"] == ["code"]
+    assert sorted(qs["scope"][0].split(",")) == ["read:org", "repo", "user:email"]
+    assert auth.get_redirect_target(False) == "/gh/github/zeus"
 
 
 def test_login_complete(client, db_session, mocker, responses):
@@ -77,6 +90,48 @@ def test_login_complete(client, db_session, mocker, responses):
     assert emails.get("foo@example.com") is True
     assert emails.get("foo.bar@example.com") is False
     assert emails.get("test@users.noreply.github.com") is True
+
+
+def test_login_complete_with_next_target(client, db_session, mocker, responses):
+
+    responses.add(
+        "POST",
+        GITHUB_TOKEN_URI,
+        json={
+            "token_type": "bearer",
+            "scope": "user:email,read:org",
+            "access_token": "access-token",
+        },
+    )
+
+    # TOOD(dcramer): ideally we could test the header easily, but responses
+    # doesnt make that highly accessible yet
+    responses.add(
+        "GET",
+        "https://api.github.com/user",
+        match_querystring=True,
+        json={"id": 1, "login": "test", "email": "foo@example.com"},
+    )
+    responses.add(responses.GET, "https://api.github.com/user/orgs", json=[])
+    responses.add(
+        "GET",
+        "https://api.github.com/user/emails",
+        match_querystring=True,
+        json=[
+            {"email": "foo@example.com", "verified": True, "primary": True},
+            {"email": "foo.bar@example.com", "verified": False, "primary": False},
+        ],
+    )
+
+    with client.session_transaction() as session:
+        auth.bind_redirect_target("/gh/getsentry/zeus", session=session)
+
+    resp = client.get("/auth/github/complete?code=abc")
+
+    assert resp.status_code == 302, repr(resp)
+    assert resp.headers["Location"] == "http://localhost/gh/getsentry/zeus"
+
+    assert auth.get_redirect_target() is None
 
 
 def test_login_complete_no_visible_email(client, mocker, responses):

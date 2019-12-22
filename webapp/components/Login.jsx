@@ -15,13 +15,17 @@ class Login extends Component {
     router: PropTypes.object.isRequired
   };
 
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.isAuthenticated) {
       this.context.router.push('/');
     }
   }
 
-  componentWillUpdate(nextProps) {
+  shouldComponentUpdate(nextProps) {
+    return this.props.isAuthenticated === nextProps.isAuthenticated;
+  }
+
+  componentDidUpdate(nextProps) {
     if (nextProps.isAuthenticated) {
       this.context.router.push('/');
     }
@@ -32,7 +36,9 @@ class Login extends Component {
       <Modal title="Login">
         <p>To continue you will need to first authenticate using your GitHub account.</p>
         <p style={{textAlign: 'center'}}>
-          <GitHubLoginButton next={idx(this.context.router, _ => _.query.next)} />
+          <GitHubLoginButton
+            next={idx(this.context.router, _ => _.location.query.next)}
+          />
         </p>
         <p style={{textAlign: 'center', marginBottom: 0}}>
           <small>
@@ -45,9 +51,6 @@ class Login extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    isAuthenticated: state.auth.isAuthenticated
-  }),
-  {}
-)(Login);
+export default connect(({auth}) => ({
+  isAuthenticated: auth.isAuthenticated
+}))(Login);

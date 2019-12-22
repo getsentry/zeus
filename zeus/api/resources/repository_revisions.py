@@ -1,8 +1,9 @@
 from flask import request, current_app
-from marshmallow import fields
+from marshmallow import fields, pre_dump
 from sqlalchemy.orm import joinedload
 from typing import Tuple
 
+from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Repository, Revision
 from zeus.utils.builds import fetch_builds_for_revisions
 
@@ -12,29 +13,43 @@ from ..schemas import BuildSchema, RevisionSchema
 
 class RevisionWithBuildSchema(RevisionSchema):
     latest_build = fields.Nested(
-        BuildSchema(exclude=["repository"]), dump_only=True, required=False
+        BuildSchema(exclude=["repository", "id"]), dump_only=True, required=False
     )
 
+    @pre_dump(pass_many=True)
+    def get_latest_build(self, results, many, **kwargs):
+        if results:
+            builds = dict(fetch_builds_for_revisions(results))
+            for item in results:
+                item.latest_build = builds.get((item.repository_id, item.sha))
+        return results
 
-revisions_schema = RevisionWithBuildSchema(many=True, strict=True)
+
+revisions_schema = RevisionWithBuildSchema(many=True)
 
 
 class RepositoryRevisionsResource(BaseRepositoryResource):
     def fetch_revisions(
         self, repo: Repository, page: int, parent: str = None
     ) -> Tuple[list, bool]:
+        per_page = min(int(request.args.get("per_page", 50)), 50)
+
         if current_app.config.get("MOCK_REVISIONS"):
-            return (
+            results = (
                 Revision.query.filter(Revision.repository_id == repo.id)
                 .order_by(Revision.date_created.desc())
+                .offset((page - 1) * per_page)
+                .limit(per_page + 1)
                 .all()
             )
+            has_more = len(results) > per_page
+            return results[:per_page], has_more
 
-        vcs = repo.get_vcs()
-        if not vcs:
-            return []
+        try:
+            vcs = repo.get_vcs()
+        except UnknownRepositoryBackend:
+            return [], False
 
-        per_page = min(int(request.args.get("per_page", 50)), 50)
         branch = request.args.get("branch")
         if not parent and branch is None:
             branch = vcs.get_default_branch()
@@ -45,6 +60,7 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
                 offset=(page - 1) * per_page,
                 parent=parent,
                 branch=branch,
+                timeout=10,
             )
         )
 
@@ -59,7 +75,14 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
         )
 
         revisions_map = {r.sha: r for r in existing}
-        return [revisions_map.get(item.sha, item) for item in vcs_log], has_more
+        results = []
+        for item in vcs_log:
+            try:
+                results.append(revisions_map[item.sha])
+            except KeyError:
+                item.repository_id = repo.id
+                results.append(item)
+        return results, has_more
 
     def get(self, repo: Repository):
         """
@@ -72,10 +95,6 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
         parent = request.args.get("parent")
 
         revisions, has_more = self.fetch_revisions(repo, page, parent=parent)
-        if revisions:
-            builds = dict(fetch_builds_for_revisions(repo, revisions))
-            for revision in revisions:
-                revision.latest_build = builds.get(revision.sha)
 
         if not parent:
             base_url = self.build_base_url(without=["page", "parent"])

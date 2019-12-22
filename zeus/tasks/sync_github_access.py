@@ -62,10 +62,10 @@ def sync_repos_for_owner(
             RepositoryAccess.query.filter(
                 RepositoryAccess.repository_id == repo.id,
                 RepositoryAccess.user_id == user.id,
-            ).delete()
+            ).delete(synchronize_session=False)
 
 
-@celery.task(max_retries=None, autoretry_for=(Exception,), acks_late=True)
+@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
 def sync_github_access(user_id: UUID):
     user = User.query.get(user_id)
     if not user:
@@ -77,5 +77,4 @@ def sync_github_access(user_id: UUID):
     if owner_list:
         for owner_name in owner_list:
             sync_repos_for_owner(provider, user, owner_name)
-
-    db.session.commit()
+            db.session.commit()

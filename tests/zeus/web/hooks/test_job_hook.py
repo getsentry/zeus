@@ -3,9 +3,11 @@ from zeus.constants import Result, Status
 from zeus.models import Job
 
 
-def test_new_job(client, default_source, default_repo, default_hook):
+def test_new_job(client, default_revision, default_repo, default_hook):
     build = factories.BuildFactory(
-        source=default_source, provider=default_hook.provider, external_id="3"
+        revision=default_revision,
+        provider=default_hook.get_provider().get_name(default_hook.config),
+        external_id="3",
     )
 
     job_xid = "2"
@@ -23,19 +25,24 @@ def test_new_job(client, default_source, default_repo, default_hook):
     assert job
     assert job.build_id == build.id
     assert job.repository_id == build.repository_id
-    assert job.provider == default_hook.provider
+    assert job.provider == default_hook.get_provider().get_name(default_hook.config)
     assert job.external_id == job_xid
     assert job.result == Result.passed
     assert job.status == Status.finished
 
 
-def test_existing_job(client, default_source, default_repo, default_hook):
+def test_existing_job(client, default_revision, default_repo, default_hook):
     build = factories.BuildFactory(
-        source=default_source, provider=default_hook.provider, external_id="3"
+        revision=default_revision,
+        provider=default_hook.get_provider().get_name(default_hook.config),
+        external_id="3",
     )
 
     job = factories.JobFactory(
-        build=build, provider=default_hook.provider, external_id="2", in_progress=True
+        build=build,
+        provider=default_hook.get_provider().get_name(default_hook.config),
+        external_id="2",
+        in_progress=True,
     )
 
     path = "/hooks/{}/{}/builds/{}/jobs/{}".format(

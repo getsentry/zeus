@@ -7,7 +7,7 @@ from zeus.models import UserApiToken
 from .base import Resource
 from ..schemas import TokenSchema
 
-token_schema = TokenSchema(strict=True)
+token_schema = TokenSchema()
 
 
 class UserTokenResource(Resource):

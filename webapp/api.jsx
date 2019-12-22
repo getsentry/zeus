@@ -63,7 +63,9 @@ export class Request {
           responseData.links = parseLinkHeader(xhr.getResponseHeader('Link'));
           responseData.getResponseHeader = (...args) => xhr.getResponseHeader(...args);
         } catch (ex) {
+          /* eslint-disable no-console */
           console.error(ex);
+          /* eslint-enable no-console */
         }
         if (xhr.status >= 200 && xhr.status < 300) {
           // XXX(dcramer): this keeps the xhr ref around when
@@ -90,7 +92,9 @@ export class Request {
       try {
         return JSON.parse(xhr.responseText);
       } catch (ex) {
+        /* eslint-disable no-console */
         console.error(ex);
+        /* eslint-enable no-console */
         return {};
       }
     }

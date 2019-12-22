@@ -1,18 +1,15 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 import {Logo} from '../assets/Logo';
 import BuildDetailsScreenshot from '../assets/screenshots/BuildDetails.png';
 import GitHubLoginButton from '../components/GitHubLoginButton';
+import Section from '../components/Section';
 import SyntaxHighlight from '../components/SyntaxHighlight';
 
 const TRAVIS_EXAMPLE = `
-after_success:
-  - npm install -g @zeus-ci/cli
-  - $(npm bin -g)/zeus upload -t "application/x-junit+xml" junit.xml
-  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" coverage.xml
-after_failure:
+after_script:
   - npm install -g @zeus-ci/cli
   - $(npm bin -g)/zeus upload -t "application/x-junit+xml" junit.xml
   - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" coverage.xml
@@ -51,11 +48,12 @@ export default class Welcome extends Component {
         </Hero>
         <Body>
           <Container>
-            <Section>
+            <Section style={{marginBottom: 40}}>
               <h3>Setup is Easy</h3>
               <ol>
                 <li>
-                  You&apos;ll login to Zeus using your GitHub credentials<br />
+                  You&apos;ll login to Zeus using your GitHub credentials
+                  <br />
                   <small>
                     We ask for a lot of permissions, not because we&apos;re untrustworty,
                     but because the GitHub API makes it hard to do otherwise
@@ -91,7 +89,7 @@ export default class Welcome extends Component {
                 GitHub
               </p>
             </Section>
-            <Section>
+            <Section style={{marginBottom: 40}}>
               <h3>Zeus is Open Source</h3>
               <p>
                 The entirety of Zeus &mdash; including the infrastructure that runs
@@ -174,14 +172,6 @@ const HeroImage = styled.div`
 
 const Body = styled.div`
   margin-bottom: 40px;
-`;
-
-const Section = styled.div`
-  margin-bottom: 40px;
-
-  > ol > li {
-    margin-bottom: 20px;
-  }
 `;
 
 const GetStarted = styled.div`

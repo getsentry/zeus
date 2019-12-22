@@ -33,7 +33,7 @@ If you want to use Zeus with a build system that's not currently supported, see 
 
 ### Supported Artifact Types
 
-While you can upload any kind of Artifact to zeus (e.g. ``.html`` output), the platform has knowledge of certain types
+While you can upload any kind of Artifact to zeus (e.g. `.html` output), the platform has knowledge of certain types
 and will grant additional functionality if they're present.
 
 The recommended way to support artifacts is to configure a post-build step (on both failure and success) to do something similar to the following:
@@ -70,43 +70,46 @@ Webpack stats can be generated with:
 webpack --profile --json > webpack-stats.json
 ```
 
-They should be submitted with the ``application/x-webpack-stats+json`` type.
+They should be submitted with the `application/x-webpack-stats+json` type.
 
 ## Contributing
 
 ### Requirements
 
-- Python 3 (3.6+)
-- Node
+- Python 3.7
+- Node (and [Volta](https://volta.sh/))
 - Postgres 9.4+
+
+Note: If you're using pyenv for Python and macOS Mojave and having issues installing 3.7.1, take a look here:
+
+https://github.com/pyenv/pyenv/issues/1219
 
 ### Setup
 
 ```shell
-# create a new python environment
-python3 -m venv venv
-
-# load the environment as the active
-source venv/bin/activate
+# install poetry
+curl -sSL https://raw.githubusercontent.com/sdispater/poetry/0.12.10/get-poetry.py | python
 
 # load dependencies
 make
 
 # initialize config
-zeus init
+poetry run zeus init
 ```
 
-Note, before running any future Python commands (including ``zeus``), you'll
+Note, before running any future Python commands (including `zeus`), you'll
 need to activate the environment:
 
 ```shell
-source venv/bin/activate
+poetry shell
 ```
 
-Bootstrap the database (see ``Makefile`` for details):
+You can also setup [direnv](https://direnv.net/) to automatically activate the environment.
+
+Once dependencies are resolved, bootstrap the database (see `Makefile` for details):
 
 ```shell
-make reset-db
+make db
 ```
 
 Finally, launch the webserver:
@@ -166,8 +169,9 @@ zeus
 ### Data Model
 
 - Most models contain a GUID (UUID) primary key.
-- Some generalized models (such as ``ItemStat``) are keyed by GUID, and do not contain backrefs or constraints.
-- Access is controlled at the repository level, and is generally enforced if you use the ``{ModelClass}.query`` utilities.
+- Some generalized models (such as `ItemStat`) are keyed by GUID, and do not contain backrefs or constraints.
+- Access is controlled at the repository level, and is generally enforced if you use the `{ModelClass}.query` utilities.
+- Refs are unresolved (pointers to shas). They are often resolved asynchronously. Models containing a sha will also often contain a parallel ref field.
 
 ```
 zeus
@@ -199,7 +203,6 @@ zeus
     └── Identity
 ```
 
-
 ### Hooks
 
 A subset of APIs are exposed using simple hook credentials. These credentials are coupled to a provider (e.g. `travis-ci`) and a single repository.
@@ -216,7 +219,7 @@ Using the subpath, you'll be able to access several endpoints:
 - `{prefix}/builds/{build-external-id}/jobs/{job-external-id}`
 - `{prefix}/builds/{build-external-id}/jobs/{job-external-id}/artifacts`
 
-The prefix will be generated for you as part of the a new hook, and is made up of the Hook's GUID and it's signature:
+The prefix will be generated for you as part of the new hook, and is made up of the Hook's GUID and it's signature:
 
 http://example.com/hooks/{hook-id}/{hook-signature}/{path}
 
@@ -261,7 +264,6 @@ And here's how you upload an artifact:
 zeus upload -b $MY_BUILD_ID -j $MY_JOB_ID -t 'text/xml+coverage' coverage.xml
 ```
 
-
 ### Updating data with `curl`
 
 Here's an example of how you can publish job details without the native webhooks with `curl` from Travis:
@@ -287,4 +289,4 @@ curl $ZEUS_HOOK_BASE/builds/$TRAVIS_BUILD_NUMBER/jobs/$TRAVIS_JOB_NUMBER \
     -d "{\"status\": \"$1\", \"result\": \"$2\", \"url\": \"https://travis-ci.org/${TRAVIS_REPO_SLUG}/jobs/${TRAVIS_JOB_ID}\", \"allow_failure\": ${TRAVIS_ALLOW_FAILURE}}"
 ```
 
-From there you can submit artifacts using ``zeus-cli`` and its standard mechanisms.
+From there you can submit artifacts using `zeus-cli` and its standard mechanisms.

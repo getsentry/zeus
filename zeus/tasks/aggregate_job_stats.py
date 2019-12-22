@@ -7,19 +7,23 @@ from zeus.config import celery, db, redis
 from zeus.constants import Result, Status
 from zeus.db.utils import create_or_update
 from zeus.models import (
-    Artifact,
     Build,
     FailureReason,
     FileCoverage,
     ItemStat,
     Job,
+    PendingArtifact,
     StyleViolation,
     TestCase,
     BundleAsset,
 )
-from zeus.tasks.send_build_notifications import send_build_notifications
 from zeus.utils import timezone
 from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
+from zeus.utils.artifacts import has_unprocessed_artifacts
+from zeus.utils.sentry import span
+
+from .send_build_notifications import send_build_notifications
+from .process_pending_artifact import process_pending_artifact
 
 AGGREGATED_BUILD_STATS = (
     "tests.count",
@@ -35,7 +39,7 @@ AGGREGATED_BUILD_STATS = (
 # TODO(dcramer): put a lock around this
 
 
-@celery.task(max_retries=None, autoretry_for=(Exception,), acks_late=True)
+@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
 def aggregate_build_stats_for_job(job_id: UUID):
     """
     Given a job, aggregate its data upwards into the Build.abs
@@ -58,22 +62,30 @@ def aggregate_build_stats_for_job(job_id: UUID):
 
         # we need to handle the race between when the mutations were made to <Job> and
         # when the only remaining artifact may have finished processing
-        if job.status == Status.collecting_results and not has_unprocessed_artifacts(
-            job.id
-        ):
-            job.status = Status.finished
-            if not job.date_finished:
-                job.date_finished = timezone.now()
-            db.session.add(job)
-            db.session.commit()
+        if job.status == Status.collecting_results:
+            if not has_unprocessed_artifacts(job):
+                job.status = Status.finished
+                if not job.date_finished:
+                    job.date_finished = timezone.now()
+                db.session.add(job)
+                db.session.commit()
+            else:
+                pending_artifact_ids = db.session.query(PendingArtifact.id).filter(
+                    PendingArtifact.repository_id == job.repository_id,
+                    PendingArtifact.provider == job.provider,
+                    PendingArtifact.external_build_id == job.build.external_id,
+                    PendingArtifact.external_job_id == job.external_id,
+                )
+                for pa_id in pending_artifact_ids:
+                    process_pending_artifact.delay(pending_artifact_id=pa_id)
 
         # record any job-specific stats that might not have been taken care elsewhere
-        # (we might want to move TestResult's stats here as well)
         if job.status == Status.finished:
             record_test_stats(job.id)
             record_style_violation_stats(job.id)
             record_bundle_stats(job.id)
             record_failure_reasons(job)
+            db.session.commit()
 
     lock_key = "aggstatsbuild:{build_id}".format(build_id=job.build_id.hex)
     with redis.lock(lock_key):
@@ -117,14 +129,7 @@ def aggregate_stat_for_build(build: Build, name: str, func_=func.sum):
     )
 
 
-def has_unprocessed_artifacts(job_id: UUID):
-    return db.session.query(
-        Artifact.query.filter(
-            Artifact.status != Status.finished, Artifact.job_id == job_id
-        ).exists()
-    ).scalar()
-
-
+@span("record_failure_reasons")
 def record_failure_reasons(job: Job):
     has_failures = db.session.query(
         TestCase.query.filter(
@@ -154,6 +159,7 @@ def record_failure_reasons(job: Job):
     db.session.flush()
 
 
+@span("record_test_stats")
 def record_test_stats(job_id: UUID):
     create_or_update(
         ItemStat,
@@ -185,6 +191,7 @@ def record_test_stats(job_id: UUID):
     db.session.flush()
 
 
+@span("record_coverage_stats")
 def record_coverage_stats(build_id: UUID):
     """
     Aggregates all FileCoverage stats for the given build.
@@ -225,6 +232,7 @@ def record_coverage_stats(build_id: UUID):
             )
 
 
+@span("record_style_violation_stats")
 def record_style_violation_stats(job_id: UUID):
     create_or_update(
         ItemStat,
@@ -238,6 +246,7 @@ def record_style_violation_stats(job_id: UUID):
     db.session.flush()
 
 
+@span("record_bundle_stats")
 def record_bundle_stats(job_id: UUID):
     create_or_update(
         ItemStat,
@@ -256,6 +265,7 @@ def record_bundle_stats(job_id: UUID):
     max_retries=None,
     autoretry_for=(Exception,),
     acks_late=True,
+    time_limit=60,
 )
 def aggregate_build_stats(build_id: UUID):
     """
@@ -294,6 +304,18 @@ def aggregate_build_stats(build_id: UUID):
             )
         else:
             build.date_finished = None
+
+        pending_artifact_ids = list(
+            db.session.query(PendingArtifact.id).filter(
+                PendingArtifact.repository_id == build.repository_id,
+                PendingArtifact.provider == build.provider,
+                PendingArtifact.external_build_id == build.external_id,
+            )
+        )
+        if pending_artifact_ids and is_finished:
+            is_finished = False
+            for pa_id in pending_artifact_ids:
+                process_pending_artifact(pending_artifact_id=pa_id)
 
         # if theres any failure, the build failed
         if any(j.result is Result.failed for j in job_list if not j.allow_failure):

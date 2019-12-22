@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 import {addIndicator, removeIndicator} from '../actions/indicators';
 import AsyncPage from '../components/AsyncPage';
@@ -21,7 +21,7 @@ class TokenSettings extends AsyncPage {
     this.api
       .post('/user/token')
       .then(token => this.setState({token}))
-      .catch(e =>
+      .catch(() =>
         this.props.addIndicator('Could not create a new token.', 'error', 5000)
       );
   };
@@ -31,7 +31,10 @@ class TokenSettings extends AsyncPage {
     return token && token.key ? (
       <div>
         <SectionHeading>This is your API token:</SectionHeading>
-        <pre>zeus-u-{token.key}</pre>
+        <pre>
+          zeus-u-
+          {token.key}
+        </pre>
         <Button type="danger" onClick={this.renewToken}>
           Refresh API Token
         </Button>

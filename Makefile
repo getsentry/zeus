@@ -1,14 +1,11 @@
-CPUS ?= $(shell sysctl -n hw.ncpu || echo 1)
-MAKEFLAGS += --jobs=$(CPUS)
-
 develop: setup-git install-requirements
 
 upgrade: install-requirements
 	createdb -E utf-8 zeus || true
-	zeus db upgrade
+	poetry run zeus db upgrade
 
 setup-git:
-	pip install "pre-commit>=1.10.1,<1.11.0"
+	pip install "pre-commit>=1.12.0,<1.13.0"
 	pre-commit install
 	git config branch.autosetuprebase always
 	git config --bool flake8.strict true
@@ -17,32 +14,35 @@ setup-git:
 install-requirements: install-python-requirements install-js-requirements
 
 install-python-requirements:
-	pip install "setuptools>=17.0"
-	pip install "pip>=9.0.0,<10.0.0"
-	pip install -e .
-	pip install "file://`pwd`#egg=zeus[tests]"
-	pip install -e git+https://github.com/pallets/werkzeug.git@8eb665a94aea9d9b56371663075818ca2546e152#egg=werkzeug
+	poetry install --extras=test
 
 install-js-requirements:
 	yarn install
 
 test:
-	py.test tests
+	poetry run py.test
+	yarn test
 
-reset-db:
-	$(MAKE) drop-db
+db:
 	$(MAKE) create-db
-	zeus db upgrade
+	poetry run zeus db upgrade
 
 drop-db:
-	dropdb --if-exists zeus
+	dropdb --if-exists -U postgres -h 127.0.0.1 zeus
 
 create-db:
-	createdb -E utf-8 zeus
+	createdb -E utf-8 -U postgres -h 127.0.0.1 zeus
+
+reset-db: drop-db db
 
 build-docker-image:
-	docker build -t zeus .
+	docker build \
+		-t zeus \
+		--build-arg NODE_VERSION=$(shell bin/get-node-version | tr -d '\n') \
+		--build-arg YARN_VERSION=$(shell bin/get-yarn-version | tr -d '\n') \
+		--build-arg BUILD_REVISION=$(shell git rev-parse HEAD | tr -d '\n') \
+		.
 
 run-docker-image:
 	docker rm zeus || exit 0
-	docker run  -d -p 8080:8080/tcp -v ~/.zeus:/workspace --name zeus zeus
+	docker run --init --rm -d -p 8080:8080/tcp -v ~/.zeus:/workspace --name zeus zeus

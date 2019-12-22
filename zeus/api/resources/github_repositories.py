@@ -20,7 +20,7 @@ from zeus.vcs.providers.github import GitHubRepositoryProvider
 from .base import Resource
 from ..schemas import RepositorySchema
 
-repo_schema = RepositorySchema(strict=True)
+repo_schema = RepositorySchema(exclude=("latest_build",))
 
 
 class GitHubRepositoriesResource(Resource):
@@ -47,15 +47,15 @@ class GitHubRepositoriesResource(Resource):
                 401,
             )
 
-        active_repo_ids = frozenset(
-            r[0]
-            for r in db.session.query(Repository.external_id)
+        known_repo_ids = {
+            r[0]: r[1].name
+            for r in db.session.query(Repository.external_id, Repository.status)
             .join(RepositoryAccess, RepositoryAccess.repository_id == Repository.id)
             .filter(
                 Repository.provider == RepositoryProvider.github,
                 RepositoryAccess.user_id == user.id,
             )
-        )
+        }
 
         return [
             {
@@ -65,7 +65,7 @@ class GitHubRepositoriesResource(Resource):
                     "write": Permission.write in r["permission"],
                     "admin": Permission.admin in r["permission"],
                 },
-                "active": str(r["id"]) in active_repo_ids,
+                "status": known_repo_ids.get(str(r["id"])),
             }
             for r in repo_list
         ]

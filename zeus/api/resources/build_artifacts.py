@@ -8,10 +8,12 @@ from ..schemas import ArtifactSchema, JobSchema
 
 
 class ArtifactWithJobSchema(ArtifactSchema):
-    job = fields.Nested(JobSchema(), dump_only=True, required=False)
+    job = fields.Nested(
+        JobSchema(exclude=("stats", "failures")), dump_only=True, required=False
+    )
 
 
-artifacts_schema = ArtifactWithJobSchema(strict=True, many=True)
+artifacts_schema = ArtifactWithJobSchema(many=True)
 
 
 class BuildArtifactsResource(BaseBuildResource):
@@ -23,11 +25,7 @@ class BuildArtifactsResource(BaseBuildResource):
             Artifact.query.options(
                 joinedload("job"),
                 joinedload("job").joinedload("build"),
-                joinedload("job").joinedload("build").joinedload("source"),
-                joinedload("job")
-                .joinedload("build")
-                .joinedload("source")
-                .joinedload("repository"),
+                joinedload("job").joinedload("build").joinedload("repository"),
             )
             .join(Job, Job.id == Artifact.job_id)
             .filter(Job.build_id == build.id)

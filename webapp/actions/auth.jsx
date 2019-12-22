@@ -37,7 +37,7 @@ export function authSession() {
           }
         });
       },
-      error => {
+      () => {
         localStorage.removeItem('auth');
         dispatch(setAuth({isAuthenticated: false, user: null}));
       }

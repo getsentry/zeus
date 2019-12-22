@@ -8,9 +8,9 @@ from zeus.models import Email, Identity
 from .base import Resource
 from ..schemas import EmailSchema, IdentitySchema, UserSchema
 
-emails_schema = EmailSchema(many=True, strict=True)
-identities_schema = IdentitySchema(many=True, strict=True)
-user_schema = UserSchema(strict=True)
+emails_schema = EmailSchema(many=True)
+identities_schema = IdentitySchema(many=True)
+user_schema = UserSchema()
 
 
 class AuthIndexResource(Resource):
@@ -37,8 +37,8 @@ class AuthIndexResource(Resource):
         return {
             "isAuthenticated": True,
             "user": user,
-            "emails": emails_schema.dump(email_list).data,
-            "identities": identities_schema.dump(identity_list).data,
+            "emails": emails_schema.dump(email_list),
+            "identities": identities_schema.dump(identity_list),
         }
 
     def delete(self):

@@ -21,6 +21,10 @@ def get_revision():
     :returns: Revision number of this branch/checkout, if available. None if
         no revision number can be determined.
     """
+    revision = os.environ.get("BUILD_REVISION")
+    if revision:
+        return revision
+
     package_dir = os.path.dirname(__file__)
     checkout_dir = os.path.normpath(os.path.join(package_dir, os.pardir))
     path = os.path.join(checkout_dir, ".git")

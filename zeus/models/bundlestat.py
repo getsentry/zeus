@@ -6,7 +6,7 @@ from zeus.db.utils import model_repr
 
 class Bundle(RepositoryBoundMixin, StandardAttributes, db.Model):
     job_id = db.Column(
-        GUID, db.ForeignKey("job.id", ondelete="CASCADE"), nullable=False
+        GUID, db.ForeignKey("job.id", ondelete="CASCADE"), nullable=False, index=True
     )
     name = db.Column(db.Text, nullable=False)
 
@@ -23,7 +23,7 @@ class BundleAsset(RepositoryBoundMixin, StandardAttributes, db.Model):
         GUID, db.ForeignKey("bundle.id", ondelete="CASCADE"), nullable=False
     )
     job_id = db.Column(
-        GUID, db.ForeignKey("job.id", ondelete="CASCADE"), nullable=False
+        GUID, db.ForeignKey("job.id", ondelete="CASCADE"), nullable=False, index=True
     )
     name = db.Column(db.Text, nullable=False)
     size = db.Column(db.Integer, nullable=True)

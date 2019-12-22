@@ -8,7 +8,7 @@ from zeus.utils.builds import fetch_build_for_revision
 from .base_revision import BaseRevisionResource
 from ..schemas import StyleViolationSchema
 
-styleviolation_schema = StyleViolationSchema(many=True, strict=True)
+styleviolation_schema = StyleViolationSchema(many=True)
 
 
 class RevisionStyleViolationsResource(BaseRevisionResource):
@@ -16,7 +16,7 @@ class RevisionStyleViolationsResource(BaseRevisionResource):
         """
         Return a list of style violations for a given revision.
         """
-        build = fetch_build_for_revision(revision.repository, revision)
+        build = fetch_build_for_revision(revision)
         if not build:
             return self.respond(status=404)
 

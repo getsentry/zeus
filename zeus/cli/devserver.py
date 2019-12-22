@@ -14,12 +14,15 @@ DEFAULT_HOST_NAME = socket.gethostname().split(".", 1)[0].lower()
 @cli.command()
 @click.option("--environment", default="development", help="The environment name.")
 @click.option("--workers/--no-workers", default=False)
+@click.option("--host", "-h", default="127.0.0.1")
 @click.option("--port", "-p", default=8080)
 @click.option("--ngrok/--no-ngrok", default=False)
 @click.option("--ngrok-domain", default="zeus-{}".format(DEFAULT_HOST_NAME))
 @click.option("--pubsub/--no-pubsub", default=True)
 @click.option("--pubsub-port", default=8090)
-def devserver(environment, workers, port, ngrok, ngrok_domain, pubsub, pubsub_port):
+def devserver(
+    environment, workers, host, port, ngrok, ngrok_domain, pubsub, pubsub_port
+):
     os.environ.setdefault("FLASK_DEBUG", "1")
     os.environ["NODE_ENV"] = environment
     if pubsub:
@@ -30,14 +33,14 @@ def devserver(environment, workers, port, ngrok, ngrok_domain, pubsub, pubsub_po
         os.environ["SSL"] = "1"
         os.environ["SERVER_NAME"] = "{}.ngrok.io".format(ngrok_domain)
     else:
-        root_url = "http://localhost:{}".format(port)
+        root_url = "http://{}:{}".format(host, port)
 
     click.echo("Launching Zeus on {}".format(root_url))
 
     # TODO(dcramer): pass required attributes to 'run' directly instead
     # of relying on FLASK_DEBUG
     daemons = [
-        ("web", ["zeus", "run", "--port={}".format(port)]),
+        ("web", ["zeus", "run", "--host={}".format(host), "--port={}".format(port)]),
         (
             "webpack",
             [
@@ -48,10 +51,21 @@ def devserver(environment, workers, port, ngrok, ngrok_domain, pubsub, pubsub_po
         ),
     ]
     if pubsub:
-        daemons.append(("pubsub", ["zeus", "pubsub", "--port={}".format(pubsub_port)]))
+        daemons.append(
+            (
+                "pubsub",
+                [
+                    "zeus",
+                    "pubsub",
+                    "--host={}".format(host),
+                    "--port={}".format(pubsub_port),
+                ],
+            )
+        )
 
     if workers:
         daemons.append(("worker", ["zeus", "worker", "--cron", "--log-level=INFO"]))
+
     if ngrok:
         daemons.append(
             (

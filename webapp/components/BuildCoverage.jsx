@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 import Section from '../components/Section';
 import {ResultGrid, Column, Header, Row} from '../components/ResultGrid';
@@ -42,6 +42,8 @@ const StyledColumn = styled(Column)`
 
 const FileWithCoverageTable = styled.table`
   width: 100%;
+
+  a { color: inherit; }
 
   pre {
     margin-bottom: 0;
@@ -100,7 +102,13 @@ class CoveredFile extends Component {
         <tr>
           <td>
             {lines.map((l, n) => {
-              return <pre key={n}>{n + 1}</pre>;
+              return (
+                <div key={n}>
+                  <a href={`#L${n + 1}`} id={`L${n + 1}`}>
+                    <code key={n}>{n + 1}</code>
+                  </a>
+                </div>
+              );
             })}
           </td>
           <td>
@@ -138,12 +146,23 @@ class CoveredTree extends Component {
         <StyledHeader>
           <Column />
           <Column width={250} textAlign="right">
-            Lines
+            Diff
+          </Column>
+          <Column width={250} textAlign="right">
+            Overall
           </Column>
         </StyledHeader>
         {result.entries.map(entry => {
           let totalLines = entry.lines_covered + entry.lines_uncovered;
-          let pctCovered = parseInt(entry.lines_covered / totalLines * 100, 10);
+          let diffTotalLines = entry.diff_lines_covered + entry.diff_lines_uncovered;
+          let pctCovered = entry.lines_covered
+            ? parseInt((entry.lines_covered / totalLines) * 100, 10)
+            : 0;
+          let diffPctCovered = diffTotalLines
+            ? entry.diff_lines_covered
+              ? parseInt((entry.diff_lines_covered / diffTotalLines) * 100, 10)
+              : 0
+            : null;
           let className;
           if (pctCovered >= 100) {
             className = 'good';
@@ -162,6 +181,12 @@ class CoveredTree extends Component {
                     {entry.name}
                   </Link>
                 )}
+              </StyledColumn>
+              <StyledColumn width={120} textAlign="right">
+                {diffPctCovered !== null ? `${diffPctCovered}%` : '\u00A0'}
+              </StyledColumn>
+              <StyledColumn width={120} textAlign="right">
+                {`${entry.diff_lines_covered.toLocaleString()} / ${diffTotalLines}`}
               </StyledColumn>
               <StyledColumn
                 width={120}
@@ -183,6 +208,7 @@ export default class BuildCoverage extends Component {
   };
 
   static propTypes = {
+    location: PropTypes.object.isRequired,
     result: PropTypes.object.isRequired
   };
 
@@ -191,12 +217,19 @@ export default class BuildCoverage extends Component {
     let {result} = this.props;
     let path = this.props.location.pathname;
     let linesCovered = 0,
-      linesTotal = 0;
+      linesTotal = 0,
+      diffLinesCovered = 0,
+      diffLinesTotal = 0;
     result.entries.forEach(e => {
       linesCovered += e.lines_covered;
       linesTotal += e.lines_covered + e.lines_uncovered;
+      diffLinesCovered += e.diff_lines_covered;
+      diffLinesTotal += e.diff_lines_covered + e.diff_lines_uncovered;
     });
-    let pctCovered = parseInt(linesCovered / linesTotal * 100, 10);
+    let pctCovered = parseInt((linesCovered / linesTotal) * 100, 10);
+    let diffPctCovered = diffLinesTotal
+      ? parseInt((diffLinesCovered / diffLinesTotal) * 100, 10)
+      : null;
 
     return (
       <Section>
@@ -218,12 +251,20 @@ export default class BuildCoverage extends Component {
             {!!result.build && (
               <p>
                 Data from{' '}
-                <Link to={`${repo.full_name}/builds/${result.build.number}`}>{`${
-                  repo.owner_name
-                }/${repo.name}#${result.build.number}`}</Link>
+                <Link
+                  to={`${repo.full_name}/builds/${result.build.number}`}>{`${repo.owner_name}/${repo.name}#${result.build.number}`}</Link>
               </p>
             )}
-            <p>{`${pctCovered}% lines covered (${linesCovered} / ${linesTotal})`}</p>
+            <p>
+              <strong>Diff:</strong>{' '}
+              {diffPctCovered !== null
+                ? `${diffPctCovered}% lines covered (${diffLinesCovered} / ${diffLinesTotal})`
+                : 'n/a'}
+            </p>
+            <p>
+              <strong>Overall:</strong>{' '}
+              {`${pctCovered}% lines covered (${linesCovered} / ${linesTotal})`}
+            </p>
           </TreeSummary>
         </TreeWrapper>
         {result.is_leaf ? (

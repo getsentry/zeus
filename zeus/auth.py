@@ -1,4 +1,5 @@
 import re
+import sentry_sdk
 
 from cached_property import cached_property
 from datetime import datetime
@@ -54,6 +55,8 @@ class Tenant(object):
             return cls()
 
         g.current_user = user
+        with sentry_sdk.configure_scope() as scope:
+            scope.user = {"id": str(user.id), "email": user.email}
         return UserTenant(user_id=user.id)
 
     @classmethod
@@ -233,19 +236,25 @@ def login_user(user_id: str, session=session, current_datetime=None):
         ).strftime("%s")
     )
     session.permanent = True
+    with sentry_sdk.configure_scope() as scope:
+        scope.user = {"id": str(user_id)}
 
 
 def logout():
     session.clear()
     g.current_user = None
     g.current_tenant = None
+    with sentry_sdk.configure_scope() as scope:
+        scope.user = None
 
 
-def get_current_user() -> Optional[User]:
+def get_current_user(fetch=True) -> Optional[User]:
     rv = getattr(g, "current_user", None)
-    if not rv:
+    if not rv and fetch:
         rv = get_user_from_request()
         g.current_user = rv
+        with sentry_sdk.configure_scope() as scope:
+            scope.user = {"id": str(rv.id), "email": rv.email} if rv else None
     return rv
 
 
@@ -261,6 +270,14 @@ def get_tenant_from_request():
 def set_current_tenant(tenant: Tenant):
     current_app.logger.info("Binding tenant as %r", tenant)
     g.current_tenant = tenant
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag(
+            "repository_id",
+            str(tenant.repository_ids[0]) if len(tenant.repository_ids) == 1 else None,
+        )
+        scope.set_context(
+            "tenant", {"repository_ids": [str(i) for i in tenant.repository_ids]}
+        )
 
 
 def get_current_tenant() -> Tenant:
@@ -303,7 +320,7 @@ def is_safe_url(target: str) -> bool:
     )
 
 
-def get_redirect_target(clear=True) -> str:
+def get_redirect_target(clear=True, session=session) -> str:
     if clear:
         session_target = session.pop("next", None)
     else:
@@ -317,9 +334,11 @@ def get_redirect_target(clear=True) -> str:
             return target
 
 
-def bind_redirect_target(target: str = None):
+def bind_redirect_target(target: str = None, session=session):
     if not target:
-        target = request.values.get("next") or request.referrer
+        target = request.values.get("next")
+    if not target and request.referrer != request.url:
+        target = request.referrer
     if target and is_safe_url(target):
         session["next"] = target
     else:

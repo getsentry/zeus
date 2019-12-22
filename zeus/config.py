@@ -1,7 +1,7 @@
 import json
 import logging
-import raven
 import os
+import sentry_sdk
 import sys
 import tempfile
 
@@ -10,11 +10,12 @@ from flask import Flask
 from flask_alembic import Alembic
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
-from raven.contrib.flask import Sentry
 
 from zeus.utils.celery import Celery
+from zeus.utils.metrics import Metrics
 from zeus.utils.nplusone import NPlusOne
 from zeus.utils.redis import Redis
+from zeus.utils.sentry import span
 from zeus.utils.ssl import SSL
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -32,16 +33,19 @@ db = SQLAlchemy()
 mail = Mail()
 nplusone = NPlusOne()
 redis = Redis()
-sentry = Sentry(logging=True, level=logging.ERROR, wrap_wsgi=True)
 ssl = SSL()
+metrics = Metrics()
 
 
 def with_health_check(app):
     def middleware(environ, start_response):
+        path_info = environ.get("PATH_INFO", "")
+        if path_info:
+            with sentry_sdk.configure_scope() as scope:
+                scope.transaction = path_info
         if environ.get("PATH_INFO", "") == "/healthz":
             start_response("200 OK", [("Content-Type", "application/json")])
-            return [json.dumps({"ok": True})]
-
+            return [b'{"ok": true}']
         return app(environ, start_response)
 
     return middleware
@@ -99,9 +103,9 @@ def create_app(_read_config=True, **config):
             ],
         )
     else:
-        REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost/0")
+        REDIS_URL = os.environ.get("REDIS_URL", "redis://127.0.0.1/0")
         SQLALCHEMY_URI = os.environ.get(
-            "SQLALCHEMY_DATABASE_URI", "postgresql+psycopg2:///zeus"
+            "SQLALCHEMY_DATABASE_URI", "postgresql+psycopg2://postgres@127.0.0.1/zeus"
         )
         app.config["FILE_STORAGE"] = {
             "backend": "zeus.storage.base.FileStorage",
@@ -137,19 +141,13 @@ def create_app(_read_config=True, **config):
     app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_URI
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+    app.config["MOCK_REVISIONS"] = bool(os.environ.get("MOCK_REVISIONS"))
+
     app.config["REDIS_URL"] = REDIS_URL
 
-    app.config["STREAM_URL"] = "http://localhost:8090/stream"
-
-    app.config["SENTRY_DSN"] = os.environ.get("SENTRY_DSN") or None
-    app.config["SENTRY_DSN_FRONTEND"] = os.environ.get("SENTRY_DSN_FRONTEND") or None
-    app.config["SENTRY_INCLUDE_PATHS"] = ["zeus"]
-    try:
-        app.config["SENTRY_RELEASE"] = raven.fetch_git_sha(ROOT)
-    except Exception:
-        app.logger.warn("unable to bind sentry.release context", exc_info=True)
-    app.config["SENTRY_ENVIRONMENT"] = os.environ.get("NODE_ENV", "development")
-
+    app.config["SENTRY_DSN_FRONTEND"] = (
+        os.environ.get("SENTRY_DSN_FRONTEND") or os.environ.get("SENTRY_DSN") or None
+    )
     app.config["GITHUB_CLIENT_ID"] = os.environ.get("GITHUB_CLIENT_ID") or None
     app.config["GITHUB_CLIENT_SECRET"] = os.environ.get("GITHUB_CLIENT_SECRET") or None
 
@@ -195,6 +193,10 @@ def create_app(_read_config=True, **config):
             "task": "zeus.cleanup_artifacts",
             "schedule": timedelta(minutes=60),
         },
+        "cleanup-pending-artifacts": {
+            "task": "zeus.cleanup_pending_artifacts",
+            "schedule": timedelta(minutes=60),
+        },
     }
     app.config["REDBEAT_REDIS_URL"] = app.config["REDIS_URL"]
 
@@ -202,6 +204,8 @@ def create_app(_read_config=True, **config):
     app.config["REPO_ROOT"] = os.environ.get(
         "REPO_ROOT", os.path.join(WORKSPACE_ROOT, "zeus-repos")
     )
+    app.config["REPO_MIN_SYNC_INTERVAL"] = timedelta(minutes=60)
+    app.config["REPO_MAX_SYNC_INTERVAL"] = timedelta(hours=24)
 
     app.config["ARTIFACT_RETENTION"] = timedelta(days=30)
 
@@ -247,30 +251,35 @@ def create_app(_read_config=True, **config):
     app.config["GITHUB_CONSUMER_KEY"] = app.config["GITHUB_CLIENT_ID"]
     app.config["GITHUB_CONSUMER_SECRET"] = app.config["GITHUB_CLIENT_SECRET"]
 
-    # init sentry first
-    sentry.init_app(app)
-    # XXX(dcramer): Sentry + Flask + Logging integration is broken
-    # https://github.com/getsentry/raven-python/issues/1030
-    from raven.handlers.logging import SentryHandler
-
-    app.logger.addHandler(SentryHandler(client=sentry.client, level=logging.WARN))
-
     if app.config["SSL"]:
         ssl.init_app(app)
 
-    configure_db(app)
+    metrics.init_app(app)
 
-    # needs to happen after db
-    configure_scout(app)
+    configure_db(app)
 
     redis.init_app(app)
     mail.init_app(app)
-    celery.init_app(app, sentry)
+    celery.init_app(app)
 
     configure_webpack(app)
+    configure_sentry(app)
 
     configure_api(app)
     configure_web(app)
+
+    @app.after_request
+    @span("middleware.track_user")
+    def track_user(response):
+        from zeus import auth
+        from zeus.utils import timezone
+
+        user = auth.get_current_user(fetch=False)
+        if user and user.date_active < timezone.now() - timedelta(minutes=5):
+            user.date_active = timezone.now()
+            db.session.add(user)
+            db.session.commit()
+        return response
 
     from . import models  # NOQA
 
@@ -331,22 +340,57 @@ def configure_webpack(app):
                 app.logger.exception("Unable to load webpack manifest")
                 assets = {}
             app.extensions["webpack"]["assets"] = assets
-        return url_for("static", filename=assets.get(path, path))
+        return url_for("static", filename=assets.get(path, path).lstrip("/static"))
 
     @app.context_processor
+    @span("context_processor.webpack_assets")
     def webpack_assets():
         return {"asset_url": get_asset}
 
 
-def configure_scout(app):
-    try:
-        from scout_apm.flask import ScoutApm
-        from scout_apm.flask.sqlalchemy import instrument_sqlalchemy
-    except ImportError:
-        return False
+def configure_sentry(app):
+    from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+    from sentry_sdk.integrations.celery import CeleryIntegration
+    from sentry_sdk.integrations.flask import FlaskIntegration
+    from sentry_sdk.integrations.logging import LoggingIntegration
+    from sentry_sdk.integrations.redis import RedisIntegration
+    from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
-    app.config.setdefault("SCOUT_NAME", "Zeus")
-    app.config.setdefault("SCOUT_MONITOR", True)
+    release = os.environ.get("BUILD_REVISION") or None
+    if not release:
+        try:
+            import subprocess
 
-    ScoutApm(app)
-    instrument_sqlalchemy(db)
+            release = (
+                (subprocess.check_output(["git", "describe", "--always"]))
+                .decode("utf-8")
+                .strip()
+            )
+        except Exception:
+            app.logger.warn("Unable to get release from git", exc_info=True)
+
+    # set into env for compatibility with existing code
+    app.config["SENTRY_RELEASE"] = release
+    app.config["SENTRY_ENVIRONMENT"] = environment = (
+        os.environ.get("NODE_ENV", "development") or None
+    )
+
+    sentry_sdk.init(
+        integrations=[
+            AioHttpIntegration(),
+            FlaskIntegration(transaction_style="url"),
+            CeleryIntegration(),
+            LoggingIntegration(event_level=logging.WARN),
+            RedisIntegration(),
+            SqlalchemyIntegration(),
+        ],
+        in_app_include=["zeus"],
+        release=release,
+        environment=environment,
+        traces_sample_rate=1.0,
+        traceparent_v2=True,
+        _experiments={"fast_serialize": True},
+    )
+
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("role", os.environ.get("ROLE", "unknown"))

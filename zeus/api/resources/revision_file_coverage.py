@@ -7,7 +7,7 @@ from zeus.utils.builds import fetch_build_for_revision
 from .base_revision import BaseRevisionResource
 from ..schemas import FileCoverageSchema
 
-filecoverage_schema = FileCoverageSchema(many=True, strict=True)
+filecoverage_schema = FileCoverageSchema(many=True)
 
 
 class RevisionFileCoverageResource(BaseRevisionResource):
@@ -15,7 +15,7 @@ class RevisionFileCoverageResource(BaseRevisionResource):
         """
         Return a list of file coverage objects for a given revision.
         """
-        build = fetch_build_for_revision(revision.repository, revision)
+        build = fetch_build_for_revision(revision)
         if not build:
             return self.respond(status=404)
 

@@ -4,10 +4,11 @@
     "recommendations": [
         "dzannotti.vscode-babel-coloring",
         "esbenp.prettier-vscode",
-        "donjayamanne.python",
+        "ms-python.python",
         "dbaeumer.vscode-eslint",
         "lextudio.restructuredtext",
         "PeterJausovec.vscode-docker",
-        "DavidAnson.vscode-markdownlint"
+        "DavidAnson.vscode-markdownlint",
+        "bungcip.better-toml"
     ]
 }

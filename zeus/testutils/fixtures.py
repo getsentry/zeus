@@ -5,7 +5,7 @@ from collections import namedtuple
 from datetime import datetime, timedelta
 from subprocess import check_call, check_output
 
-from zeus import factories, models
+from zeus import factories, models, auth
 from zeus.constants import Permission
 from zeus.utils import timezone
 
@@ -48,7 +48,7 @@ def default_repo():
         owner_name="getsentry",
         name="zeus",
         url="https://github.com/getsentry/zeus.git",
-        backend=models.RepositoryBackend.git,
+        backend=models.RepositoryBackend.unknown,
         status=models.RepositoryStatus.active,
         provider=models.RepositoryProvider.github,
         github=True,
@@ -83,6 +83,16 @@ def default_repo_write_access(db_session, default_repo, default_user):
 
 
 @pytest.fixture(scope="function")
+def default_repo_tenant(default_repo):
+    auth.set_current_tenant(auth.Tenant(access={default_repo.id: Permission.read}))
+
+
+@pytest.fixture(scope="function")
+def default_repo_write_tenant(default_repo):
+    auth.set_current_tenant(auth.Tenant(access={default_repo.id: Permission.write}))
+
+
+@pytest.fixture(scope="function")
 def default_author(default_repo, default_user):
     return factories.AuthorFactory(
         repository=default_repo, name="Fizz Buzz", email=default_user.email
@@ -95,6 +105,7 @@ def default_revision(default_repo, default_author):
         repository=default_repo,
         author=default_author,
         sha="884ea9e17b53933febafd7e02d8bd28f3c9d479d",
+        message="ref: Remove outdated comment\n\nThis removes an outdated comment.",
     )
 
 
@@ -109,26 +120,20 @@ def default_parent_revision(default_author, default_repo, default_revision):
 
 
 @pytest.fixture(scope="function")
-def default_source(default_revision, default_patch):
-    return factories.SourceFactory(revision=default_revision, patch=default_patch)
-
-
-@pytest.fixture(scope="function")
-def default_patch(default_parent_revision):
-    return factories.PatchFactory(parent_revision=default_parent_revision)
-
-
-@pytest.fixture(scope="function")
-def default_change_request(default_author, default_parent_revision):
+def default_change_request(default_author, default_revision, default_parent_revision):
     return factories.ChangeRequestFactory(
-        author=default_author, parent_revision=default_parent_revision
+        github=True,
+        external_id="1",
+        author=default_author,
+        parent_revision=default_parent_revision,
+        head_revision=default_revision,
     )
 
 
 @pytest.fixture(scope="function")
-def default_build(default_source):
+def default_build(default_revision):
     return factories.BuildFactory(
-        source=default_source,
+        revision=default_revision,
         date_started=datetime.now(timezone.utc) - timedelta(minutes=6),
         date_finished=datetime.now(timezone.utc),
         passed=True,
@@ -147,7 +152,7 @@ def default_job(default_build):
 
 @pytest.fixture(scope="function")
 def default_artifact(default_job):
-    return factories.ArtifactFactory(job=default_job, name="junit.xml")
+    return factories.ArtifactFactory(job=default_job, name="junit.xml", finished=True)
 
 
 @pytest.fixture(scope="function")
@@ -173,7 +178,7 @@ def default_api_token():
 
 @pytest.fixture(scope="function")
 def default_hook(default_repo):
-    return factories.HookFactory(repository=default_repo, travis_com=True)
+    return factories.HookFactory(repository=default_repo, travis_org=True)
 
 
 @pytest.fixture(scope="session")
@@ -239,6 +244,12 @@ def sample_gotest(fixture_path):
 @pytest.fixture(scope="session")
 def sample_webpack_stats(fixture_path):
     with open(os.path.join(fixture_path, "webpack-stats.json")) as fp:
+        return fp.read()
+
+
+@pytest.fixture(scope="session")
+def sample_webpack_children_stats(fixture_path):
+    with open(os.path.join(fixture_path, "webpack-stats-children.json")) as fp:
         return fp.read()
 
 

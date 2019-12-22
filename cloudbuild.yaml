@@ -5,6 +5,7 @@ steps:
   args: [
     'build',
     '--cache-from', 'gcr.io/$PROJECT_ID/zeus:latest',
+    '--build-arg', 'BUILD_REVISION=$COMMIT_SHA',
     '-t', 'gcr.io/$PROJECT_ID/zeus:$COMMIT_SHA',
     '-t', 'gcr.io/$PROJECT_ID/zeus:latest',
     '.'

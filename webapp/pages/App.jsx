@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import {authSession} from '../actions/auth';
 import {loadRepos} from '../actions/repos';
 
@@ -9,13 +10,15 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import Indicators from '../components/Indicators';
 import PageLoadingIndicator from '../components/PageLoadingIndicator';
 
-class RepositoryContext extends AsyncComponent {
+export class RepositoryContext extends AsyncComponent {
   static propTypes = {
-    repoList: PropTypes.arrayOf(PropTypes.object)
+    repoList: PropTypes.arrayOf(PropTypes.object),
+    loadRepos: PropTypes.func.isRequired,
+    ...AsyncComponent.propTypes
   };
 
   static childContextTypes = {
-    ...RepositoryContext.propTypes
+    repoList: PropTypes.arrayOf(PropTypes.object)
   };
 
   getChildContext() {
@@ -24,8 +27,8 @@ class RepositoryContext extends AsyncComponent {
     };
   }
 
-  fetchData() {
-    return new Promise((resolve, reject) => {
+  loadData() {
+    return new Promise(resolve => {
       this.props.loadRepos();
       return resolve();
     });
@@ -42,14 +45,15 @@ const AuthedContext = connect(
   {loadRepos}
 )(RepositoryContext);
 
-class App extends Component {
+export class App extends Component {
   static propTypes = {
     isAuthenticated: PropTypes.bool,
+    children: PropTypes.node,
     user: PropTypes.object,
     authSession: PropTypes.func.isRequired
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.authSession();
   }
 

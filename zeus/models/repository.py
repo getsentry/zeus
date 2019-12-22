@@ -8,6 +8,7 @@ from zeus.config import db
 from zeus.db.mixins import StandardAttributes
 from zeus.db.types import Enum, StrEnum, JSONEncodedDict
 from zeus.db.utils import model_repr
+from zeus.exceptions import UnknownRepositoryBackend
 
 
 class RepositoryBackend(enum.IntEnum):
@@ -102,6 +103,7 @@ class Repository(StandardAttributes, db.Model):
     )
     last_update = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     last_update_attempt = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
+    next_update = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
 
     options = db.relationship(
         "ItemOption",
@@ -140,8 +142,7 @@ class Repository(StandardAttributes, db.Model):
         if self.backend == RepositoryBackend.git:
             return GitVcs(**kwargs)
 
-        else:
-            raise NotImplementedError("Invalid backend: {}".format(self.backend))
+        raise UnknownRepositoryBackend("Invalid backend: {}".format(self.backend))
 
     def get_full_name(self):
         return "{}/{}/{}".format(self.provider, self.owner_name, self.name)
@@ -151,3 +152,11 @@ class Repository(StandardAttributes, db.Model):
         return "repo:{provider}/{owner_name}/{repo_name}".format(
             provider="github", owner_name=owner_name, repo_name=repo_name
         )
+
+    @classmethod
+    def from_full_name(cls, full_name):
+        provider, owner_name, name = full_name.split("/", 2)
+
+        return cls.query.filter_by(
+            provider=RepositoryProvider(provider), owner_name=owner_name, name=name
+        ).first()

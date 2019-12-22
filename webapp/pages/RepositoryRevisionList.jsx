@@ -30,8 +30,8 @@ class RevisionListBody extends AsyncComponent {
     repo: PropTypes.object.isRequired
   };
 
-  fetchData(refresh) {
-    return new Promise((resolve, reject) => {
+  loadData(refresh) {
+    return new Promise(resolve => {
       let {repo} = this.context;
       this.props.loadRevisionsForRepository(
         repo.full_name,

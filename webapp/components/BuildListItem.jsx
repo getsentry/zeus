@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import {Flex, Box} from 'grid-styled';
+import styled from '@emotion/styled';
+import {Flex, Box} from '@rebass/grid/emotion';
 
 import ListItemLink from './ListItemLink';
 import ObjectAuthor from './ObjectAuthor';
@@ -15,40 +15,46 @@ export default class BuildListItem extends Component {
   static propTypes = {
     build: PropTypes.object.isRequired,
     repo: PropTypes.object,
-    date: PropTypes.object,
+    date: PropTypes.any,
     includeAuthor: PropTypes.bool,
-    includeRepo: PropTypes.bool
+    includeRepo: PropTypes.bool,
+    columns: PropTypes.array
   };
 
   static defaultProps = {
-    includeAuthor: true
+    includeAuthor: true,
+    columns: ['coverage', 'duration', 'date']
   };
 
   render() {
-    let {build, includeAuthor, includeRepo} = this.props;
+    let {build, columns, includeAuthor, includeRepo} = this.props;
     let repo = this.props.repo || build.repository;
-    let link = build.number
-      ? `/${repo.full_name}/builds/${build.number}`
-      : `/${repo.full_name}/revisions/${build.source.revision.sha}`;
+    let link = build
+      ? build.number
+        ? `/${repo.full_name}/builds/${build.number}`
+        : build.revision
+        ? `/${repo.full_name}/revisions/${build.revision.sha}`
+        : this.context.router.location.pathname
+      : this.context.router.location.pathname;
     return (
       <ListItemLink to={link}>
         <Row>
           <Column>
             <Flex>
-              <Box width={15} mr={8}>
+              <Box width={15} mr={2}>
                 <ObjectResult data={build} />
               </Box>
               <Box flex="1" style={{minWidth: 0}}>
-                <Message>
-                  {build.label || build.source.revision.message.split('\n')[0]}
-                </Message>
+                <Message>{build.label}</Message>
                 <Meta>
                   {includeRepo ? (
                     <RepoLink to={`/${repo.full_name}`}>
-                      {build.repository.owner_name}/{build.repository.name}
+                      {repo.owner_name}/{repo.name}
                     </RepoLink>
                   ) : null}
-                  <Commit>{build.source.revision.sha.substr(0, 7)}</Commit>
+                  <Commit>
+                    {build.revision ? build.revision.sha.substr(0, 7) : build.ref}
+                  </Commit>
                   {includeAuthor ? (
                     <Author>
                       <ObjectAuthor data={build} />
@@ -58,15 +64,21 @@ export default class BuildListItem extends Component {
               </Box>
             </Flex>
           </Column>
-          <Column width={90} textAlign="center" hide="sm">
-            <ObjectCoverage data={build} />
-          </Column>
-          <Column width={90} textAlign="center" hide="sm">
-            <ObjectDuration data={build} short={true} />
-          </Column>
-          <Column width={150} textAlign="right" hide="sm">
-            <TimeSince date={this.props.date || build.created_at} />
-          </Column>
+          {columns.indexOf('coverage') !== -1 && (
+            <Column width={90} textAlign="center" hide="sm">
+              <ObjectCoverage data={build} />
+            </Column>
+          )}
+          {columns.indexOf('duration') !== -1 && (
+            <Column width={90} textAlign="center" hide="sm">
+              <ObjectDuration data={build} short={true} />
+            </Column>
+          )}
+          {columns.indexOf('date') !== -1 && (
+            <Column width={120} textAlign="right" hide="sm">
+              <TimeSince date={this.props.date || build.created_at} />
+            </Column>
+          )}
         </Row>
       </ListItemLink>
     );

@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
+import styled from '@emotion/styled';
 
-import './PageLoadingIndicator.css';
-
-export default class PageLoadingIndicator extends Component {
+class PageLoadingIndicator extends Component {
   render() {
     let points = 50;
     let duration = 1; // seconds
@@ -46,3 +45,20 @@ export default class PageLoadingIndicator extends Component {
     );
   }
 }
+
+const StyledPageLoadingIndicator = styled(PageLoadingIndicator)`
+  @keyframes pageLoadingAnim {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      background-color: #7b6be6;
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+`;
+
+export default StyledPageLoadingIndicator;

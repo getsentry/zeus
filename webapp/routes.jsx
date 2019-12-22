@@ -15,15 +15,18 @@ import DashboardOrWelcome from './pages/DashboardOrWelcome';
 import OwnerDetails from './pages/OwnerDetails';
 import RepositoryDetails from './pages/RepositoryDetails';
 import RepositoryBuildList from './pages/RepositoryBuildList';
+import RepositoryChangeRequestList from './pages/RepositoryChangeRequestList';
 import RepositoryFileCoverage from './pages/RepositoryFileCoverage';
 import RepositoryHooks from './pages/RepositoryHooks';
 import RepositoryHookCreate from './pages/RepositoryHookCreate';
 import RepositoryHookDetails from './pages/RepositoryHookDetails';
+import RepositoryOverview from './pages/RepositoryOverview';
 import RepositoryRevisionList from './pages/RepositoryRevisionList';
 import RepositorySettingsLayout from './pages/RepositorySettingsLayout';
 import RepositorySettings from './pages/RepositorySettings';
 import RepositoryStats from './pages/RepositoryStats';
 import RepositoryTests from './pages/RepositoryTests';
+import RepositoryTestChart from './pages/RepositoryTestChart';
 import RepositoryTestList from './pages/RepositoryTestList';
 import RepositoryTestTree from './pages/RepositoryTestTree';
 import RevisionArtifacts from './pages/RevisionArtifacts';
@@ -33,14 +36,13 @@ import RevisionDiff from './pages/RevisionDiff';
 import RevisionOverview from './pages/RevisionOverview';
 import RevisionStyleViolationList from './pages/RevisionStyleViolationList';
 import RevisionTestList from './pages/RevisionTestList';
+import TestDetails from './pages/TestDetails';
 import UserBuildList from './pages/UserBuildList';
 import Welcome from './pages/Welcome';
 
 import Login from './components/Login';
 import NotFoundError from './components/NotFoundError';
 import PageLoading from './components/PageLoading';
-
-import requireAuth from './utils/requireAuth';
 
 const AsyncSettings = Loadable({
   loader: () => import('./pages/Settings'),
@@ -66,21 +68,20 @@ export default (
   <Route path="/" component={App}>
     <IndexRoute component={DashboardOrWelcome} />
     <Route path="/welcome" component={Welcome} />
-    <Route path="/dashboard" component={requireAuth(Dashboard)} />
-    <Route path="/settings" component={requireAuth(AsyncSettings)}>
+    <Route path="/dashboard" component={Dashboard} />
+    <Route path="/settings" component={AsyncSettings}>
       <IndexRedirect to="/settings/account" />
       <Route path="account" component={AsyncAccountSettings} />
       <Route path="github/repos" component={AsyncGitHubRepositoryList} />
       <Route path="token" component={AsyncTokenSettings} />
     </Route>
-    <Route path="/builds" component={requireAuth(UserBuildList)} />
+    <Route path="/builds" component={UserBuildList} />
     <Route path="/login" component={Login} />
-    <Route path="/:provider/:ownerName" component={requireAuth(OwnerDetails)} />
-    <Route
-      path="/:provider/:ownerName/:repoName"
-      component={requireAuth(RepositoryDetails)}>
-      <IndexRoute component={requireAuth(RepositoryRevisionList)} />
+    <Route path="/:provider/:ownerName" component={OwnerDetails} />
+    <Route path="/:provider/:ownerName/:repoName" component={RepositoryDetails}>
+      <IndexRoute component={RepositoryOverview} />
       <Route path="builds" component={RepositoryBuildList} />
+      <Route path="change-requests" component={RepositoryChangeRequestList} />
       <Route path="coverage" component={RepositoryFileCoverage} />
       <Route path="stats" component={RepositoryStats} />
       <Route path="settings" component={RepositorySettingsLayout}>
@@ -92,6 +93,7 @@ export default (
       <Route path="tests" component={RepositoryTests}>
         <IndexRoute component={RepositoryTestTree} />
         <Route path="all" component={RepositoryTestList} />
+        <Route path="time" component={RepositoryTestChart} />
       </Route>
       <Route path="builds/:buildNumber" component={BuildDetails}>
         <IndexRoute component={BuildOverview} />
@@ -101,6 +103,7 @@ export default (
         <Route path="tests" component={BuildTestList} />
         <Route path="artifacts" component={BuildArtifacts} />
       </Route>
+      <Route path="revisions" component={RepositoryRevisionList} />
       <Route path="revisions/:sha" component={RevisionDetails}>
         <IndexRoute component={RevisionOverview} />
         <Route path="coverage" component={RevisionCoverage} />
@@ -109,6 +112,7 @@ export default (
         <Route path="tests" component={RevisionTestList} />
         <Route path="artifacts" component={RevisionArtifacts} />
       </Route>
+      <Route path="tests/:testHash" component={TestDetails} />
     </Route>
     <Route path="*" component={NotFoundError} />
   </Route>

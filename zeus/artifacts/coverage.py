@@ -77,11 +77,11 @@ class CoverageHandler(ArtifactHandler):
     def process_diff(self):
         lines_by_file = defaultdict(set)
         try:
-            source = self.job.build.source
+            revision = self.job.build.revision
         except AttributeError:
             return lines_by_file
 
-        diff = source.generate_diff()
+        diff = revision.generate_diff()
 
         if not diff:
             return lines_by_file

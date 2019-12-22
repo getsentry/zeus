@@ -1,8 +1,7 @@
 import xhrmock from 'xhr-mock';
 import React from 'react';
-import {mount} from 'enzyme';
 
-import RepositoryDetails from '../RepositoryDetails';
+import {RepositoryDetails} from '../RepositoryDetails';
 
 describe('RepositoryDetails', () => {
   // replace the real XHR object with the mock XHR object before each test
@@ -17,7 +16,7 @@ describe('RepositoryDetails', () => {
     let context = TestStubs.standardContext();
     context.context.repoList = [repo];
 
-    const wrapper = mount(
+    const wrapper = TestStubs.mount(
       <RepositoryDetails
         params={{
           provider: repo.provider,
@@ -31,7 +30,7 @@ describe('RepositoryDetails', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('renders with fetching repo', done => {
+  it('renders with fetching repo', async () => {
     let repo = TestStubs.Repository();
 
     xhrmock.get(`/api/repos/${repo.full_name}`, {
@@ -43,7 +42,7 @@ describe('RepositoryDetails', () => {
     let context = TestStubs.standardContext();
     context.context.repoList = [];
 
-    const wrapper = mount(
+    const wrapper = TestStubs.mount(
       <RepositoryDetails
         params={{
           provider: repo.provider,
@@ -53,11 +52,9 @@ describe('RepositoryDetails', () => {
       />,
       context
     );
-    setTimeout(() => {
-      expect(wrapper.state('repo').full_name).toEqual(repo.full_name);
-      expect(wrapper).toMatchSnapshot();
-      done();
-    });
+    await tick();
+    expect(wrapper.state('repo').full_name).toEqual(repo.full_name);
+    expect(wrapper).toMatchSnapshot();
   });
 
   // TODO(dcramer): Cant figure out how to test for error boundaries

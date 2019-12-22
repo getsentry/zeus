@@ -1,6 +1,6 @@
-import {css} from 'styled-components';
+import {css} from '@emotion/core';
 
-//github.com/styled-components/styled-components/blob/master/docs/tips-and-tricks.md
+//github.com/import styled from '@emotion/styled';/import styled from '@emotion/styled';/blob/master/docs/tips-and-tricks.md
 const sizes = {
   lg: 1170,
   md: 992,

@@ -1,6 +1,7 @@
 import json
 
 from zeus.config import redis
+from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Repository
 
 from .base_repository import BaseRepositoryResource
@@ -18,13 +19,14 @@ class RepositoryBranchesResource(BaseRepositoryResource):
 
         result = redis.get(cache_key)
         if result is None:
-            vcs = repo.get_vcs()
-            if not vcs:
+            try:
+                vcs = repo.get_vcs()
+            except UnknownRepositoryBackend:
                 return self.respond([])
 
             vcs.ensure()
             result = vcs.get_known_branches()
-            redis.setex(cache_key, json.dumps(result), self.cache_expire)
+            redis.setex(cache_key, self.cache_expire, json.dumps(result))
         else:
             result = json.loads(result)
 

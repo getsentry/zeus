@@ -1,58 +1,69 @@
 {
-    "files.exclude": {
-        "**/*.pyc": true,
-        "**/*.min.js": true,
-        "**/*.js.map": true,
-        "node_modules": true,
-        "htmlcov": true,
-        "build": true,
-        "static": true,
-        "*.log": true,
-        "*.egg-info": true,
-        ".vscode/tags": true,
-        ".mypy_cache": true
-    },
-    "files.trimTrailingWhitespace": false,
-    "files.trimFinalNewlines": false,
-    "files.insertFinalNewline": true,
+  "files.exclude": {
+    "**/*.pyc": true,
+    "**/*.min.js": true,
+    "**/*.js.map": true,
+    "node_modules": true,
+    "htmlcov": true,
+    "build": true,
+    "static": true,
+    "*.log": true,
+    "*.egg-info": true,
+    ".artifacts": true,
+    ".cache": true,
+    ".vscode/tags": true,
+    ".mypy_cache": true,
+    ".venv": true,
+    "dist": true,
+    "kubernetes/zeus/dist/**": true,
+    "**/webpack-stats.json": true,
+    "**/__pycache__": true,
+  },
+  "files.trimTrailingWhitespace": false,
+  "files.trimFinalNewlines": false,
+  "files.insertFinalNewline": true,
 
-    "prettier.requireConfig": true,
+  "prettier.requireConfig": true,
 
-    "eslint.options": {
-        "configFile": ".eslintrc"
-    },
+  "eslint.options": {
+    "configFile": ".eslintrc"
+  },
 
-    "[css]": {
-        "editor.detectIndentation": false,
-        "editor.tabSize": 2,
-        "editor.formatOnSave": true
-    },
+  "[css]": {
+    "editor.detectIndentation": false,
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true
+  },
 
-    "[html]": {
-        "editor.detectIndentation": false,
-        "editor.tabSize": 2,
-        "editor.formatOnSave": true
-    },
+  "[html]": {
+    "editor.detectIndentation": false,
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true
+  },
 
-    "[javascript]": {
-        "editor.detectIndentation": false,
-        "editor.tabSize": 2,
-        "editor.formatOnSave": true
-    },
+  "[javascript]": {
+    "editor.detectIndentation": false,
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true
+  },
 
-    "[python]": {
-        "editor.detectIndentation": false,
-        "editor.tabSize": 4,
-        "editor.formatOnSave": true
-    },
+  "[python]": {
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "editor.formatOnSave": true
+  },
 
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.formatting.provider": "black",
-    // https://github.com/DonJayamanne/pythonVSCode/issues/992
-    "python.formatting.yapfArgs": ["--style", "${workspaceRoot}/setup.cfg"],
-    "python.pythonPath": "${env.WORKON_HOME}/zeus/bin/python",
-    "python.unitTest.pyTestEnabled": false,
-    "python.unitTest.unittestEnabled": false,
-    "python.unitTest.nosetestsEnabled": false
+  "[yaml]": {
+    "editor.formatOnSave": false
+  },
+
+  "python.linting.pylintEnabled": false,
+  "python.linting.flake8Enabled": true,
+  "python.formatting.provider": "black",
+  // https://github.com/DonJayamanne/pythonVSCode/issues/992
+  "python.formatting.yapfArgs": ["--style", "${workspaceRoot}/setup.cfg"],
+  "python.pythonPath": ".venv/bin/python",
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false
 }

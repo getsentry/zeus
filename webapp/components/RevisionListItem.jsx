@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import {Flex, Box} from 'grid-styled';
+import styled from '@emotion/styled';
+import {Flex, Box} from '@rebass/grid/emotion';
 
 import BuildListItem from './BuildListItem';
 import ListItemLink from './ListItemLink';
@@ -14,15 +14,17 @@ export default class RevisionListItem extends Component {
     repo: PropTypes.object,
     revision: PropTypes.object.isRequired,
     includeAuthor: PropTypes.bool,
-    includeRepo: PropTypes.bool
+    includeRepo: PropTypes.bool,
+    columns: PropTypes.array
   };
 
   static defaultProps = {
-    includeAuthor: true
+    includeAuthor: true,
+    columns: ['coverage', 'duration', 'date']
   };
 
   render() {
-    let {includeAuthor, includeRepo, revision} = this.props;
+    let {columns, includeAuthor, includeRepo, revision} = this.props;
     let repo = revision.repository || this.props.repo;
     if (revision.latest_build)
       return (
@@ -30,6 +32,7 @@ export default class RevisionListItem extends Component {
           build={revision.latest_build}
           repo={repo}
           date={revision.committed_at || revision.created_at}
+          columns={columns}
         />
       );
 
@@ -38,7 +41,7 @@ export default class RevisionListItem extends Component {
         <Row>
           <Column>
             <Flex>
-              <Box width={15} mr={8} />
+              <Box width={15} mr={2} />
               <Box flex="1" style={{minWidth: 0}}>
                 <Message>{revision.message.split('\n')[0]}</Message>
                 <Meta>
@@ -57,11 +60,17 @@ export default class RevisionListItem extends Component {
               </Box>
             </Flex>
           </Column>
-          <Column width={90} textAlign="center" hide="sm" />
-          <Column width={90} textAlign="center" hide="sm" />
-          <Column width={150} textAlign="right" hide="sm">
-            <TimeSince date={revision.committed_at || revision.created_at} />
-          </Column>
+          {columns.indexOf('coverage') !== -1 && (
+            <Column width={90} textAlign="center" hide="sm" />
+          )}
+          {columns.indexOf('duration') !== -1 && (
+            <Column width={90} textAlign="center" hide="sm" />
+          )}
+          {columns.indexOf('date') !== -1 && (
+            <Column width={150} textAlign="right" hide="sm">
+              <TimeSince date={revision.committed_at || revision.created_at} />
+            </Column>
+          )}
         </Row>
       </ListItemLink>
     );

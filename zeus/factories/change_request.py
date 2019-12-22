@@ -7,8 +7,10 @@ from random import randint
 from zeus import models
 from zeus.utils import timezone
 
+from .author import AuthorFactory
 from .base import ModelFactory
 from .types import GUIDFactory
+from .repository import RepositoryFactory
 
 faker = Factory.create()
 
@@ -16,14 +18,32 @@ faker = Factory.create()
 class ChangeRequestFactory(ModelFactory):
     id = GUIDFactory()
     message = factory.faker.Faker("sentence")
-    author = factory.SubFactory(
-        "zeus.factories.AuthorFactory", repository=factory.SelfAttribute("..repository")
+    repository = factory.LazyAttribute(
+        lambda o: o.parent_revision.repository
+        if getattr(o, "parent_revision", None)
+        else RepositoryFactory()
     )
-    author_id = factory.SelfAttribute("author.id")
-    parent_revision = factory.SubFactory("zeus.factories.RevisionFactory")
-    parent_revision_sha = factory.SelfAttribute("parent_revision.sha")
-    repository = factory.SelfAttribute("parent_revision.repository")
-    repository_id = factory.SelfAttribute("parent_revision.repository_id")
+    repository_id = factory.SelfAttribute("repository.id")
+    author = factory.LazyAttribute(
+        lambda o: o.parent_revision.author
+        if getattr(o, "parent_revision", None)
+        else AuthorFactory(repository=o.repository)
+    )
+    author_id = factory.LazyAttribute(lambda o: o.author.id if o.author else None)
+    parent_ref = factory.LazyAttribute(
+        lambda o: o.parent_revision.sha
+        if getattr(o, "parent_revision", None)
+        else faker.sha1()
+    )
+    parent_revision_sha = factory.LazyAttribute(
+        lambda o: o.parent_revision.sha if getattr(o, "parent_revision", None) else None
+    )
+    head_ref = factory.LazyAttribute(
+        lambda o: o.head_revision.sha if getattr(o, "head_revision", None) else None
+    )
+    head_revision_sha = factory.LazyAttribute(
+        lambda o: o.head_revision.sha if getattr(o, "head_revision", None) else None
+    )
     date_created = factory.LazyAttribute(
         lambda o: timezone.now() - timedelta(minutes=30)
     )
@@ -35,8 +55,8 @@ class ChangeRequestFactory(ModelFactory):
         github = factory.Trait(
             provider="github",
             external_id=factory.LazyAttribute(lambda o: str(randint(10000, 999999))),
-            head_revision_sha=factory.SelfAttribute("head_revision.sha"),
             head_revision=factory.SubFactory("zeus.factories.RevisionFactory"),
+            head_revision_sha=factory.SelfAttribute("head_revision.sha"),
             url=factory.LazyAttribute(
                 lambda o: "https://github.com/{}/{}/issues/{}".format(
                     o.repository.owner_name, o.repository.name, o.external_id

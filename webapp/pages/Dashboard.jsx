@@ -1,12 +1,13 @@
 import React from 'react';
+import {Flex, Box} from '@rebass/grid/emotion';
 import {Link} from 'react-router';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
-import ViewAllIcon from 'react-icons/lib/md/input';
+import {MdInput} from 'react-icons/md';
 
-import {loadBuildsForUser} from '../actions/builds';
+import {fetchBuilds} from '../actions/builds';
 import {subscribe} from '../decorators/stream';
 
 import AsyncPage from '../components/AsyncPage';
@@ -19,6 +20,7 @@ import ObjectDuration from '../components/ObjectDuration';
 import {Column, Header, ResultGrid, Row} from '../components/ResultGrid';
 import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
+import requireAuth from '../utils/requireAuth';
 
 const RepoLink = styled(Link)`
   display: block;
@@ -27,6 +29,15 @@ const RepoLink = styled(Link)`
   &:hover {
     background-color: #f0eff5;
   }
+`;
+
+const Name = styled.div`
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 class RepoListSection extends AsyncComponent {
@@ -38,6 +49,7 @@ class RepoListSection extends AsyncComponent {
     if (!this.props.repoList.length) {
       return (
         <Section>
+          <SectionHeading>Your Repositories</SectionHeading>
           <p>
             {"Looks like you haven't yet setup any repositories. "}
             <Link to="/settings/github/repos">Add a repository</Link> to get started.
@@ -48,33 +60,40 @@ class RepoListSection extends AsyncComponent {
 
     return (
       <Section>
+        <SectionHeading>
+          Your Repositories
+          <Link to="/settings/github/repos" style={{marginLeft: 10}}>
+            <MdInput size={18} style={{verticalAlign: 'text-bottom'}} />
+          </Link>
+        </SectionHeading>
         <ResultGrid>
           <Header>
             <Column>Repository</Column>
-            <Column textAlign="center" width={90} hide="sm">
+            <Column textAlign="center" width={90} hide="md">
               Coverage
             </Column>
             <Column textAlign="center" width={90} hide="sm">
               Duration
             </Column>
           </Header>
-          <Collapsable collapsable maxVisible={5}>
+          <Collapsable collapsable maxVisible={10}>
             {this.props.repoList.map(repo => {
+              let {latest_build} = repo;
               return (
                 <RepoLink to={repo.full_name} key={repo.id}>
                   <Row>
                     <Column>
-                      <strong>{`${repo.owner_name} / ${repo.name}`}</strong>
+                      <Name>{`${repo.owner_name} / ${repo.name}`}</Name>
                     </Column>
-                    <Column textAlign="center" width={90} hide="sm">
-                      {!!repo.latest_build &&
+                    <Column textAlign="center" width={90} hide="md">
+                      {!!latest_build &&
                         !!(
-                          repo.latest_build.stats.coverage.lines_covered +
-                          repo.latest_build.stats.coverage.lines_uncovered
-                        ) && <ObjectCoverage data={repo.latest_build} diff={false} />}
+                          latest_build.stats.coverage.lines_covered +
+                          latest_build.stats.coverage.lines_uncovered
+                        ) && <ObjectCoverage data={latest_build} diff={false} />}
                     </Column>
                     <Column textAlign="center" width={90} hide="sm">
-                      {!!repo.latest_build && <ObjectDuration data={repo.latest_build} />}
+                      {!!latest_build && <ObjectDuration data={latest_build} />}
                     </Column>
                   </Row>
                 </RepoLink>
@@ -93,53 +112,63 @@ const WrappedRepoList = connect(function(state) {
 
 class BuildListSection extends AsyncComponent {
   static propTypes = {
-    buildList: PropTypes.array
+    buildList: PropTypes.array,
+    fetchBuilds: PropTypes.func.isRequired
   };
 
-  fetchData() {
-    return new Promise((resolve, reject) => {
-      this.props.loadBuildsForUser('me', {per_page: 10});
+  loadData() {
+    return new Promise(resolve => {
+      this.props.fetchBuilds({user: 'me', per_page: 10});
       return resolve();
     });
   }
 
-  renderBody() {
-    if (!this.props.buildList.length) {
-      return null;
-    }
+  renderContent() {
     return (
       <Section>
         <SectionHeading>
           Your Builds
           <Link to="/builds" style={{marginLeft: 10}}>
-            <ViewAllIcon size={18} style={{verticalAlign: 'text-bottom'}} />
+            <MdInput size={18} style={{verticalAlign: 'text-bottom'}} />
           </Link>
         </SectionHeading>
-        <BuildList
-          params={this.props.params}
-          buildList={this.props.buildList}
-          includeAuthor={false}
-          includeRepo={true}
-        />
+        {super.renderContent()}
       </Section>
+    );
+  }
+
+  renderBody() {
+    if (!this.props.buildList.length) {
+      return <p>No builds yet</p>;
+    }
+    return (
+      <BuildList
+        columns={['date']}
+        params={this.props.params}
+        buildList={this.props.buildList}
+        includeAuthor={false}
+        includeRepo={true}
+      />
     );
   }
 }
 
 const WrappedBuildList = connect(
-  function(state) {
-    let emailSet = new Set((state.auth.emails || []).map(e => e.email));
+  ({auth, builds}) => {
+    let emailSet = new Set((auth.emails || []).map(e => e.email));
     return {
-      buildList: state.builds.items.filter(build =>
-        emailSet.has(build.source.author.email)
-      ),
-      loading: !state.builds.loaded
+      buildList: builds.items
+        .filter(
+          build => !!build.repository && build.author && emailSet.has(build.author.email)
+        )
+        .slice(0, 10),
+      loading: !builds.loaded
     };
   },
-  {loadBuildsForUser}
-)(subscribe((props, {repo}) => ['builds'])(BuildListSection));
+  {fetchBuilds}
+)(subscribe(() => ['builds'])(BuildListSection));
 
-export default class Dashboard extends AsyncPage {
+export class Dashboard extends AsyncPage {
   getTitle() {
     return 'Zeus Dashboard';
   }
@@ -147,9 +176,17 @@ export default class Dashboard extends AsyncPage {
   renderBody() {
     return (
       <Layout>
-        <WrappedRepoList {...this.props} />
-        <WrappedBuildList {...this.props} />
+        <Flex flex="1">
+          <Box width={7 / 12} mr={4}>
+            <WrappedBuildList {...this.props} />
+          </Box>
+          <Box width={5 / 12}>
+            <WrappedRepoList {...this.props} />
+          </Box>
+        </Flex>
       </Layout>
     );
   }
 }
+
+export default requireAuth(Dashboard);

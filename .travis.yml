@@ -1,10 +1,11 @@
 language: python
-sudo: false
+sudo: true
+dist: xenial
 services:
   - redis-server
   - postgresql
 python:
-  - "3.6"
+  - '3.7'
 cache:
   yarn: true
   directories:
@@ -15,26 +16,21 @@ env:
   global:
     - NODE_ENV=production
     - PIP_DISABLE_PIP_VERSION_CHECK=on
-    - TRAVIS_NODE_VERSION=8
+    - JEST_JUNIT_OUTPUT_DIR=.artifacts
+    - JEST_JUNIT_OUTPUT_NAME=jest.junit.xml
+    - JEST_JUNIT_INCLUDE_CONSOLE_OUTPUT=true
+    - JEST_JUNIT_ADD_FILE_ATTRIBUTE=true
 install:
-  - nvm install $TRAVIS_NODE_VERSION
-  - npm install -g yarn@0.27.5
-  - make
+  - curl -sSL https://raw.githubusercontent.com/sdispater/poetry/0.12.10/get-poetry.py | python
+  - curl -sSLf https://get.volta.sh | bash
+  - PATH=$HOME/.poetry/bin:$PATH NODE_ENV= make
 script:
   - git --version
-  - PATH=node_modules/.bin:$PATH pre-commit run -a -v
-  - py.test tests -v --cov . --cov-report="xml:coverage.xml" --junit-xml=".artifacts/pytest.junit.xml"
-  - node_modules/.bin/webpack --profile --json > .artifacts/webpack-stats.json
-  - JEST_JUNIT_OUTPUT=.artifacts/jest.junit.xml yarn test -- --ci --testResultsProcessor="jest-junit"
-after_success:
-  - npm install -g @zeus-ci/cli
-  - $(npm bin -g)/zeus upload -t "application/x-junit+xml" .artifacts/*.junit.xml
-  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" .artifacts/coverage.xml
-  - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" .artifacts/coverage/cobertura-coverage.xml
-  - $(npm bin -g)/zeus upload -t "application/x-checkstyle+xml" .artifacts/*.checkstyle.xml
-  - $(npm bin -g)/zeus upload -t "text/x-pycodestyle" .artifacts/flake8.log
-  - $(npm bin -g)/zeus upload -t "application/webpack-stats+json" .artifacts/webpack-stats.json
-after_failure:
+  - PATH=$HOME/.poetry/bin:$PATH PATH=node_modules/.bin:$PATH pre-commit run -a -v
+  - PATH=$HOME/.poetry/bin:$PATH poetry run py.test tests -v --cov . --cov-report="xml:.artifacts/coverage.xml" --junit-xml=".artifacts/pytest.junit.xml"
+  - node_modules/.bin/webpack --json > .artifacts/webpack-stats.json
+  - JEST_JUNIT_OUTPUT_DIR=.artifacts JEST_JUNIT_OUTPUT_NAME=jest.junit.xml yarn test --ci --reporters=default --reporters=jest-junit
+after_script:
   - npm install -g @zeus-ci/cli
   - $(npm bin -g)/zeus upload -t "application/x-junit+xml" .artifacts/*.junit.xml
   - $(npm bin -g)/zeus upload -t "application/x-cobertura+xml" .artifacts/coverage.xml

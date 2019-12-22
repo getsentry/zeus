@@ -8,8 +8,16 @@ import {Client} from '../api';
 
 export default class AsyncComponent extends Component {
   static propTypes = {
+    children: PropTypes.node,
     loading: PropTypes.bool,
-    error: PropTypes.bool
+    error: PropTypes.bool,
+    location: PropTypes.object,
+    params: PropTypes.object
+  };
+
+  static defaultProps = {
+    loading: true,
+    error: false
   };
 
   static contextTypes = {
@@ -19,58 +27,83 @@ export default class AsyncComponent extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.refreshData = this.refreshData.bind(this);
+    this.reloadData = this.reloadData.bind(this);
     this.render = this.render.bind(this);
 
-    this.state = this.getDefaultState(props, context);
+    this.state = {
+      __location: {
+        ...(props.location || context.router.location)
+      },
+      ...this.getDefaultState(props, context)
+    };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.api = new Client();
-    this.refreshData();
-    super.componentWillMount && super.componentWillMount();
+    this.reloadData();
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
-    if (
-      !isEqual(this.props.params, nextProps.params) ||
-      !isEqual((this.props.location || {}).query, (nextProps.location || {}).query)
-    ) {
-      this.remountComponent(nextProps, nextContext);
+  componentDidUpdate(prevProps) {
+    let isRouterInContext = !!this.context.router;
+    let isLocationInProps = this.props.location !== undefined;
+
+    let prevLocation = isLocationInProps ? prevProps.location : this.state.__location;
+    let currentLocation = isLocationInProps
+      ? this.props.location
+      : isRouterInContext
+      ? this.context.router.location
+      : null;
+
+    if (!(currentLocation && prevLocation)) {
+      return;
     }
-    super.componentWillReceiveProps &&
-      super.componentWillReceiveProps(nextProps, nextContext);
+
+    if (
+      currentLocation.pathname !== prevLocation.pathname ||
+      !isEqual(this.props.params, prevProps.params) ||
+      currentLocation.search !== prevLocation.search ||
+      currentLocation.state !== prevLocation.state
+    ) {
+      this.remountComponent(this.props, this.context);
+    }
   }
 
   componentWillUnmount() {
     this.api && this.api.clear();
-    super.componentWillUnmount && super.componentWillUnmount();
   }
 
-  refreshData(refresh = false) {
-    this.fetchData(refresh);
+  reloadData(refresh = false) {
+    this.loadData(refresh);
   }
 
   /**
-   * Method to asynchronously fetch data.
+   * Method to asynchronously load data.
    *
    * Must return a Promise.
    */
-  fetchData() {
-    return new Promise((resolve, reject) => {
+  loadData() {
+    return new Promise(resolve => {
       return resolve();
     });
   }
 
   // XXX: cant call this getInitialState as React whines
-  getDefaultState(props, context) {
+  getDefaultState() {
     return {};
   }
 
   remountComponent(props, context) {
     /// XXX(dcramer): why is this happening?
     if (props === undefined) return;
-    this.setState(this.getDefaultState(props, context), this.refreshData);
+    this.setState(
+      {
+        __location: {
+          ...(props.location || context.router.location)
+        },
+        ...this.getDefaultState(props, context)
+      },
+      this.reloadData
+    );
   }
 
   renderLoading() {
@@ -85,8 +118,8 @@ export default class AsyncComponent extends Component {
     return this.props.loading
       ? this.renderLoading()
       : this.props.error
-        ? this.renderError(new Error('Unable to load all required endpoints'))
-        : this.renderBody();
+      ? this.renderError(new Error('Unable to load all required endpoints'))
+      : this.renderBody();
   }
 
   renderBody() {

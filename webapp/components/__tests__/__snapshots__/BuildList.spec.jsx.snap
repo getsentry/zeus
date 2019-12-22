@@ -2,98 +2,98 @@
 
 exports[`BuildList renders 1`] = `
 <div
-  class="sc-bZQynM fHbQJ"
+  class="css-1mtyvxy-ResultGrid erefeu20"
 >
   <div
-    class="sc-htoDjs CJFOY ResultGrid-Header sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+    class="erefeu22 ResultGrid-Header css-1lhqp4g-Header"
   >
     <div
-      class="sc-gzVnrw jBvblj ResultGrid-Column sc-bdVaJa kYmYWE"
+      class="erefeu21 ResultGrid-Column css-1oad8ub-Column"
     >
       Build
     </div>
     <div
-      class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+      class="erefeu21 ResultGrid-Column css-ji4w07-Column"
       style="text-align:center"
       width="90"
     >
       Coverage
     </div>
     <div
-      class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+      class="erefeu21 ResultGrid-Column css-ji4w07-Column"
       style="text-align:center"
       width="90"
     >
       Duration
     </div>
     <div
-      class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa bNDigs"
+      class="erefeu21 ResultGrid-Column css-gtt9sl-Column"
       style="text-align:right"
-      width="150"
+      width="120"
     >
       When
     </div>
   </div>
   <div>
     <a
-      class="sc-bxivhb kZeKpR"
+      class="css-p1ybjw-ListItemLink e1s1r8150"
     >
       <div
-        class="sc-dnqmqq bLWiHU ResultGrid-Row sc-htpNat iSNGhk sc-bdVaJa iHZvIS"
+        class="erefeu23 ResultGrid-Row css-1d0bn69-Row"
       >
         <div
-          class="sc-gzVnrw jBvblj ResultGrid-Column sc-bdVaJa kYmYWE"
+          class="erefeu21 ResultGrid-Column css-1oad8ub-Column"
         >
           <div
-            class="sc-htpNat eLQHN sc-bdVaJa iHZvIS"
+            class="css-sncxrr"
           >
             <div
-              class="sc-bdVaJa hGSMoE"
+              class="css-15hxb6p"
               width="15"
             >
               <div
-                class="sc-EHOje hJNzZA"
+                class="css-odhetd-ResultIcon-ResultIcon e1ptbpi30"
                 result="passed"
               >
                 <svg
                   fill="currentColor"
                   height="16"
-                  preserveAspectRatio="xMidYMid meet"
-                  style="vertical-align:middle"
-                  viewBox="0 0 40 40"
+                  size="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
                   width="16"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <g>
-                    <path
-                      d="m16.6 28.4l15-15-2.3-2.5-12.7 12.7-5.9-5.9-2.3 2.3z m3.4-25c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
-                    />
-                  </g>
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  />
                 </svg>
               </div>
             </div>
             <div
-              class="sc-bdVaJa kYmYWE"
+              class="css-vti0ei"
               style="min-width:0"
             >
               <div
-                class="sc-iwsKbI hSUBot"
+                class="css-cs969u-Message e177ytzd0"
               >
                 fix: Remove break-word behavior on coverage
               </div>
               <div
-                class="sc-jTzLTM ihWNxQ"
+                class="css-ejf18k-Meta e177ytzd4"
               >
                 <div
-                  class="sc-gqjmRU fKhbCo sc-gZMcBi bDPlgE"
+                  class="css-1uukuqo-Author-Commit e177ytzd2"
                 >
                   eff634a
                 </div>
                 <div
-                  class="sc-gZMcBi bDPlgE"
+                  class="css-1e8kzli-Author e177ytzd1"
                 >
                   <span>
                     <span
-                      class="sc-ifAKCX gQVWpv"
+                      class="css-15pbbe0-Avatar e1cndffa0"
                     >
                       <img
                         alt="Gravatar for dcramer@gmail.com"
@@ -112,14 +112,14 @@ exports[`BuildList renders 1`] = `
           </div>
         </div>
         <div
-          class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+          class="erefeu21 ResultGrid-Column css-ji4w07-Column"
           style="text-align:center"
           width="90"
         >
           <span />
         </div>
         <div
-          class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa jfzzVE"
+          class="erefeu21 ResultGrid-Column css-ji4w07-Column"
           style="text-align:center"
           width="90"
         >
@@ -128,9 +128,115 @@ exports[`BuildList renders 1`] = `
           </span>
         </div>
         <div
-          class="sc-gzVnrw hVTCSJ ResultGrid-Column sc-bdVaJa bNDigs"
+          class="erefeu21 ResultGrid-Column css-gtt9sl-Column"
           style="text-align:right"
-          width="150"
+          width="120"
+        >
+          <time
+            datetime="2018-01-06T16:07:16.830Z"
+            title="January 6, 2018 11:07 AM "
+          >
+            in 3 months
+          </time>
+        </div>
+      </div>
+    </a>
+    <a
+      class="css-p1ybjw-ListItemLink e1s1r8150"
+    >
+      <div
+        class="erefeu23 ResultGrid-Row css-1d0bn69-Row"
+      >
+        <div
+          class="erefeu21 ResultGrid-Column css-1oad8ub-Column"
+        >
+          <div
+            class="css-sncxrr"
+          >
+            <div
+              class="css-15hxb6p"
+              width="15"
+            >
+              <div
+                class="css-odhetd-ResultIcon-ResultIcon e1ptbpi30"
+                result="passed"
+              >
+                <svg
+                  fill="currentColor"
+                  height="16"
+                  size="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div
+              class="css-vti0ei"
+              style="min-width:0"
+            >
+              <div
+                class="css-cs969u-Message e177ytzd0"
+              >
+                fix: Remove break-word behavior on coverage
+              </div>
+              <div
+                class="css-ejf18k-Meta e177ytzd4"
+              >
+                <div
+                  class="css-1uukuqo-Author-Commit e177ytzd2"
+                >
+                  master
+                </div>
+                <div
+                  class="css-1e8kzli-Author e177ytzd1"
+                >
+                  <span>
+                    <span
+                      class="css-15pbbe0-Avatar e1cndffa0"
+                    >
+                      <img
+                        alt="Gravatar for dcramer@gmail.com"
+                        class="react-gravatar"
+                        height="16"
+                        src="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=16"
+                        srcset="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=32 2x"
+                        width="16"
+                      />
+                    </span>
+                    David Cramer
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="erefeu21 ResultGrid-Column css-ji4w07-Column"
+          style="text-align:center"
+          width="90"
+        >
+          <span />
+        </div>
+        <div
+          class="erefeu21 ResultGrid-Column css-ji4w07-Column"
+          style="text-align:center"
+          width="90"
+        >
+          <span>
+            4m
+          </span>
+        </div>
+        <div
+          class="erefeu21 ResultGrid-Column css-gtt9sl-Column"
+          style="text-align:right"
+          width="120"
         >
           <time
             datetime="2018-01-06T16:07:16.830Z"

@@ -4,7 +4,7 @@ exports[`ObjectAuthor renders anonymous 1`] = `""`;
 
 exports[`ObjectAuthor renders author 1`] = `
 <span>
-  <styled.span>
+  <Avatar>
     <Gravatar
       default="retro"
       email="foo@example.com"
@@ -12,24 +12,11 @@ exports[`ObjectAuthor renders author 1`] = `
       rating="g"
       size={16}
     />
-  </styled.span>
+  </Avatar>
   Foo Bar
 </span>
 `;
 
 exports[`ObjectAuthor renders source anonymous 1`] = `""`;
 
-exports[`ObjectAuthor renders source author 1`] = `
-<span>
-  <styled.span>
-    <Gravatar
-      default="retro"
-      email="foo@example.com"
-      protocol="//"
-      rating="g"
-      size={16}
-    />
-  </styled.span>
-  Foo Bar
-</span>
-`;
+exports[`ObjectAuthor renders source author 1`] = `""`;

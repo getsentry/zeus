@@ -6,7 +6,7 @@ from zeus.models import Build, FileCoverage
 from .base_build import BaseBuildResource
 from ..schemas import FileCoverageSchema
 
-filecoverage_schema = FileCoverageSchema(many=True, strict=True)
+filecoverage_schema = FileCoverageSchema(many=True)
 
 
 class BuildFileCoverageResource(BaseBuildResource):

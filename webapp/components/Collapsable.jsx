@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 import {Column, Row} from './ResultGrid';
 
 export default class Collapsable extends Component {
   static propTypes = {
+    children: PropTypes.node.isRequired,
     collapsable: PropTypes.bool,
     maxVisible: PropTypes.number
   };
@@ -28,7 +29,7 @@ export default class Collapsable extends Component {
     if (totalChildren <= maxVisible) {
       collapsed = false;
     } else if (collapsed) {
-      visibleChildren = Math.min(5, maxVisible);
+      visibleChildren = maxVisible;
       children = children.slice(0, visibleChildren);
     }
 

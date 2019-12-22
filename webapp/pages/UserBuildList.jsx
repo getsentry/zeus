@@ -2,16 +2,51 @@ import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
-import {loadBuildsForUser} from '../actions/builds';
+import {fetchBuilds} from '../actions/builds';
 import {subscribe} from '../decorators/stream';
 
 import AsyncPage from '../components/AsyncPage';
 import AsyncComponent from '../components/AsyncComponent';
 import BuildList from '../components/BuildList';
 import Layout from '../components/Layout';
+import Paginator from '../components/Paginator';
 import Section from '../components/Section';
+import requireAuth from '../utils/requireAuth';
 
-class UserBuildList extends AsyncPage {
+class BuildListBody extends AsyncComponent {
+  static propTypes = {
+    buildList: PropTypes.array,
+    links: PropTypes.object
+  };
+
+  loadData() {
+    return new Promise(resolve => {
+      this.props.fetchBuilds({
+        user: 'me',
+        per_page: 25,
+        page: this.props.location.query.page || 1
+      });
+      return resolve();
+    });
+  }
+
+  renderBody() {
+    return (
+      <div>
+        <h2>Your Builds</h2>
+        <BuildList
+          params={this.props.params}
+          buildList={this.props.buildList}
+          includeAuthor={false}
+          includeRepo={true}
+        />
+        <Paginator links={this.props.links} {...this.props} />
+      </div>
+    );
+  }
+}
+
+export class UserBuildList extends AsyncPage {
   getTitle() {
     let {userID} = this.props.params;
     return userID ? 'Builds' : 'My Builds';
@@ -28,44 +63,21 @@ class UserBuildList extends AsyncPage {
   }
 }
 
-class BuildListBody extends AsyncComponent {
-  static propTypes = {
-    buildList: PropTypes.array,
-    links: PropTypes.array
-  };
-
-  fetchData() {
-    return new Promise((resolve, reject) => {
-      this.props.loadBuildsForUser('me', {
-        per_page: 25,
-        page: this.props.location.query.page || 1
-      });
-      return resolve();
-    });
-  }
-
-  renderBody() {
-    return (
-      <BuildList
-        params={this.props.params}
-        buildList={this.props.buildList}
-        includeAuthor={false}
-        includeRepo={true}
-      />
-    );
-  }
-}
-
-export default connect(
-  function(state) {
-    let emailSet = new Set((state.auth.emails || []).map(e => e.email));
-    return {
-      buildList: state.builds.items.filter(
-        build => build.repository && emailSet.has(build.source.author.email)
-      ),
-      links: state.builds.links,
-      loading: !state.builds.loaded
-    };
-  },
-  {loadBuildsForUser}
-)(subscribe((props, {repo}) => ['builds'])(UserBuildList));
+export default requireAuth(
+  connect(
+    ({auth, builds}) => {
+      let emailSet = new Set((auth.emails || []).map(e => e.email));
+      return {
+        buildList: builds.items
+          .filter(
+            build =>
+              !!build.repository && build.author && emailSet.has(build.author.email)
+          )
+          .slice(0, 25),
+        links: builds.links,
+        loading: !builds.loaded
+      };
+    },
+    {fetchBuilds}
+  )(subscribe(() => ['builds'])(UserBuildList))
+);

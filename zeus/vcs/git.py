@@ -109,8 +109,11 @@ class GitVcs(Vcs):
     def clone(self):
         self.run(["clone", "--mirror", self.remote_url, self.path])
 
-    def update(self):
-        self.run(["fetch", "--all", "-p"])
+    def update(self, allow_cleanup=False):
+        if allow_cleanup:
+            self.run(["fetch", "--all", "--force", "-p"])
+        else:
+            self.run(["fetch", "--all", "--force"])
 
     def log(
         self,
@@ -119,6 +122,7 @@ class GitVcs(Vcs):
         author=None,
         offset=0,
         limit=100,
+        timeout=None,
         update_if_exists=False,
     ):
         """ Gets the commit log for the repository.
@@ -153,7 +157,7 @@ class GitVcs(Vcs):
 
         try:
             self.ensure(update_if_exists=update_if_exists)
-            result = self.run(cmd)
+            result = self.run(cmd, timeout=timeout)
         except CommandError as cmd_error:
             err_msg = cmd_error.stderr
             if branch and branch in err_msg.decode("utf-8"):

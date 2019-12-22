@@ -21,6 +21,7 @@ export default class RepositoryTests extends AsyncPage {
             Tree View
           </TabbedNavItem>
           <TabbedNavItem to={`${basePath}/tests/all`}>All Tests</TabbedNavItem>
+          <TabbedNavItem to={`${basePath}/tests/time`}>Over Time</TabbedNavItem>
         </TabbedNav>
         {this.props.children}
       </div>

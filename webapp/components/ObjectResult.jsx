@@ -1,14 +1,19 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import styled, {css} from 'styled-components';
+import {css} from '@emotion/core';
+import styled from '@emotion/styled';
 
-import PassedIcon from 'react-icons/lib/md/check-circle';
-import InProgressIcon from 'react-icons/lib/md/av-timer';
-import QueuedIcon from 'react-icons/lib/md/history';
-import AbortedIcon from 'react-icons/lib/md/cancel';
-import ErroredIcon from 'react-icons/lib/md/error';
-import FailedIcon from 'react-icons/lib/md/remove-circle';
-import UnknownIcon from 'react-icons/lib/md/help';
+import Icon from './Icon';
+
+import {
+  MdCheckCircle,
+  MdAvTimer,
+  MdHistory,
+  MdCancel,
+  MdError,
+  MdRemoveCircle,
+  MdHelp
+} from 'react-icons/md';
 
 export default class ObjectResult extends Component {
   static propTypes = {
@@ -27,21 +32,20 @@ export default class ObjectResult extends Component {
     let {size} = this.props;
     switch (status) {
       case 'queued':
-        return <QueuedIcon size={size} />;
+        return <MdHistory size={size} />;
       case 'in_progress':
-        return <InProgressIcon size={size} />;
+        return <MdAvTimer size={size} />;
       default:
-        if (status === 'finished' && result === 'unknown')
-          return <UnknownIcon size={size} />;
+        if (status === 'finished' && result === 'unknown') return <MdHelp size={size} />;
         switch (result) {
           case 'passed':
-            return <PassedIcon size={size} />;
+            return <MdCheckCircle size={size} />;
           case 'aborted':
-            return <AbortedIcon size={size} />;
+            return <MdCancel size={size} />;
           case 'failed':
-            return <FailedIcon size={size} />;
+            return <MdRemoveCircle size={size} />;
           case 'errored':
-            return <ErroredIcon size={size} />;
+            return <MdError size={size} />;
           default:
             return null;
         }
@@ -54,17 +58,14 @@ export default class ObjectResult extends Component {
     }
     let {result, status} = this.props.data;
     return (
-      <ResultIcon status={status} result={result}>
+      <ResultIcon status={status} result={result} mr>
         {this.getIcon(result, status)}
       </ResultIcon>
     );
   }
 }
 
-export const ResultIcon = styled.div`
-  display: inline-block;
-  margin-right: 5px;
-
+export const ResultIcon = styled(Icon)`
   ${props => {
     switch (props.result) {
       case 'passed':

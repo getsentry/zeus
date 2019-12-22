@@ -13,10 +13,6 @@ export default class BuildDetails extends BuildDetailsBase {
     return `/${repo.full_name}/builds/${buildNumber}`;
   }
 
-  getBuildIdentifier() {
-    return this.props.params.buildNumber;
-  }
-
   getTitle() {
     let {repo} = this.context;
     let {buildNumber} = this.props.params;

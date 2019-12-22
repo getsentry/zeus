@@ -1,13 +1,14 @@
-from datetime import datetime, timezone
 from flask import current_app
 
 from zeus import auth
 from zeus.config import celery, db
 from zeus.constants import Permission
+from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Repository, RepositoryStatus
+from zeus.utils import timezone
 
 
-@celery.task(max_retries=None, autoretry_for=(Exception,))
+@celery.task(max_retries=5, autoretry_for=(Exception,), time_limit=60)
 def import_repo(repo_id, parent=None):
     auth.set_current_tenant(auth.Tenant(access={repo_id: Permission.admin}))
 
@@ -16,8 +17,9 @@ def import_repo(repo_id, parent=None):
         current_app.logger.error("Repository %s not found", repo_id)
         return
 
-    vcs = repo.get_vcs()
-    if vcs is None:
+    try:
+        vcs = repo.get_vcs()
+    except UnknownRepositoryBackend:
         current_app.logger.warning("Repository %s has no VCS backend set", repo.id)
         return
 
@@ -26,11 +28,11 @@ def import_repo(repo_id, parent=None):
         return
 
     Repository.query.filter(Repository.id == repo.id).update(
-        {"last_update_attempt": datetime.now(timezone.utc)}
+        {"last_update_attempt": timezone.now()}
     )
     db.session.commit()
 
-    if vcs.exists():
+    if vcs.ensure():
         vcs.update()
     else:
         vcs.clone()
@@ -45,8 +47,13 @@ def import_repo(repo_id, parent=None):
         parent = commit.sha
         has_more = True
 
+    now = timezone.now()
+
     Repository.query.filter(Repository.id == repo.id).update(
-        {"last_update": datetime.now(timezone.utc)}
+        {
+            "last_update": now,
+            "next_update": now + current_app.config["REPO_MIN_SYNC_INTERVAL"],
+        }
     )
     db.session.commit()
 

@@ -4,7 +4,7 @@ from zeus.models import Hook
 from .base_hook import BaseHookResource
 from ..schemas import HookSchema
 
-hook_schema = HookSchema(strict=True)
+hook_schema = HookSchema()
 
 
 class HookDetailsResource(BaseHookResource):
@@ -18,11 +18,8 @@ class HookDetailsResource(BaseHookResource):
         """
         Update a hook.
         """
-        hook_schema = HookSchema(strict=True, context={"hook": hook})
-        result = self.schema_from_request(hook_schema, partial=True)
-        if result.errors:
-            return self.respond(result.errors, 403)
-
+        hook_schema = HookSchema(context={"hook": hook})
+        self.schema_from_request(hook_schema, partial=True)
         if db.session.is_modified(hook):
             db.session.add(hook)
             db.session.commit()

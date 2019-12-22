@@ -108,7 +108,7 @@ def test_list_github_repos(client, default_login, default_user, default_identity
     data = resp.json()
     assert len(data) == 1
     assert data[0]["name"] == "getsentry/zeus"
-    assert not data[0]["active"]
+    assert not data[0]["status"]
     assert data[0]["permissions"]["admin"]
     assert data[0]["permissions"]["read"]
     assert data[0]["permissions"]["write"]
@@ -134,7 +134,7 @@ def test_list_github_active_repo_within_scope(
     data = resp.json()
     assert len(data) == 1
     assert data[0]["name"] == "getsentry/zeus"
-    assert data[0]["active"]
+    assert data[0]["status"] == "active"
 
 
 def test_list_github_active_repo_out_of_scope(
@@ -152,4 +152,4 @@ def test_list_github_active_repo_out_of_scope(
     data = resp.json()
     assert len(data) == 1
     assert data[0]["name"] == "getsentry/zeus"
-    assert not data[0]["active"]
+    assert not data[0]["status"]

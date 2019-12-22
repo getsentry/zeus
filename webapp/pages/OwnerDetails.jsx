@@ -6,8 +6,9 @@ import {ResourceNotFound} from '../errors';
 import AsyncPage from '../components/AsyncPage';
 import Layout from '../components/Layout';
 import ResultGrid from '../components/ResultGrid';
+import requireAuth from '../utils/requireAuth';
 
-export default class OwnerDetails extends AsyncPage {
+export class OwnerDetails extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
     repoList: PropTypes.arrayOf(PropTypes.object).isRequired
@@ -59,3 +60,5 @@ export default class OwnerDetails extends AsyncPage {
     );
   }
 }
+
+export default requireAuth(OwnerDetails);

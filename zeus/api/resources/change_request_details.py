@@ -10,18 +10,21 @@ class ChangeRequestDetailsResource(BaseChangeRequestResource):
         return False
 
     def get(self, cr: ChangeRequest):
-        schema = ChangeRequestSchema(strict=True)
+        schema = ChangeRequestSchema()
         return self.respond_with_schema(schema, cr)
 
     def put(self, cr: ChangeRequest):
         schema = ChangeRequestSchema(
             context={"repository": cr.repository, "change_request": cr}
         )
-        result = self.schema_from_request(schema, partial=True)
-        if result.errors:
-            return self.respond(result.errors, 403)
-
+        self.schema_from_request(schema, partial=True)
         if db.session.is_modified(cr):
             db.session.add(cr)
             db.session.commit()
+
+        if not cr.parent_revision_sha or (not cr.head_revision_sha and cr.head_ref):
+            from zeus.tasks import resolve_ref_for_change_request
+
+            resolve_ref_for_change_request.delay(change_request_id=cr.id)
+
         return self.respond_with_schema(schema, cr)

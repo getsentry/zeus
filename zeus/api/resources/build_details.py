@@ -1,13 +1,11 @@
-from sqlalchemy.orm import joinedload
-
 from zeus.config import db, nplusone
-from zeus.models import Build, ItemStat, Source
+from zeus.models import Build, ItemStat, Revision
 from zeus.pubsub.utils import publish
 
 from .base_build import BaseBuildResource
 from ..schemas import BuildSchema
 
-build_schema = BuildSchema(strict=True)
+build_schema = BuildSchema()
 
 
 class BuildDetailsResource(BaseBuildResource):
@@ -19,9 +17,10 @@ class BuildDetailsResource(BaseBuildResource):
         Return a build.
         """
         with nplusone.ignore("eager_load"):
-            build.source = Source.query.options(
-                joinedload("revision"), joinedload("patch")
-            ).get(build.source_id)
+            build.revision = Revision.query.filter(
+                Revision.sha == build.revision_sha,
+                Revision.repository_id == build.repository_id,
+            ).first()
         build.stats = list(ItemStat.query.filter(ItemStat.item_id == build.id))
         return self.respond_with_schema(build_schema, build)
 
@@ -30,10 +29,8 @@ class BuildDetailsResource(BaseBuildResource):
         Update a build.
         """
         result = self.schema_from_request(build_schema, partial=True)
-        if result.errors:
-            return self.respond(result.errors, 403)
 
-        for key, value in result.data.items():
+        for key, value in result.items():
             if getattr(build, key) != value:
                 setattr(build, key, value)
         if db.session.is_modified(build):
@@ -41,8 +38,5 @@ class BuildDetailsResource(BaseBuildResource):
             db.session.commit()
 
         result = build_schema.dump(build)
-        if result.errors:
-            return self.error("invalid schema supplied")
-
-        publish("builds", "build.update", result.data)
-        return self.respond(result.data, 200)
+        publish("builds", "build.update", result)
+        return self.respond(result, 200)

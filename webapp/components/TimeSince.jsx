@@ -6,6 +6,7 @@ const ONE_MINUTE_IN_MS = 60000;
 
 export default class TimeSince extends Component {
   static propTypes = {
+    className: PropTypes.string,
     date: PropTypes.any.isRequired,
     suffix: PropTypes.string,
     clock24Hours: PropTypes.bool
@@ -16,23 +17,26 @@ export default class TimeSince extends Component {
     clock24Hours: false
   };
 
+  static getDerivedStateFromProps(props, state) {
+    if (state.date !== props.date) {
+      return {
+        relative: this.getRelativeDate(props.date, props.suffix),
+        date: props.date
+      };
+    }
+    return null;
+  }
+
   constructor(props, context) {
     super(props, context);
     this.state = {
-      relative: this.getRelativeDate()
+      date: props.date,
+      relative: this.getRelativeDate(props.date, props.suffix)
     };
   }
 
   componentDidMount() {
     this.setRelativeDateTicker();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.date !== this.props.date) {
-      this.setState({
-        relative: this.getRelativeDate()
-      });
-    }
   }
 
   componentWillUnmount() {
@@ -45,19 +49,19 @@ export default class TimeSince extends Component {
   setRelativeDateTicker() {
     this.ticker = setTimeout(() => {
       this.setState({
-        relative: this.getRelativeDate()
+        relative: this.getRelativeDate(this.props.date, this.props.suffix)
       });
       this.setRelativeDateTicker();
     }, ONE_MINUTE_IN_MS);
   }
 
-  getRelativeDate() {
-    let mDate = moment(new Date(this.props.date));
-    if (!this.props.suffix) {
+  getRelativeDate(date, suffix) {
+    let mDate = moment(new Date(date));
+    if (!suffix) {
       return mDate.fromNow(true);
-    } else if (this.props.suffix === 'ago') {
+    } else if (suffix === 'ago') {
       return mDate.fromNow();
-    } else if (this.props.suffix == 'old') {
+    } else if (suffix == 'old') {
       return `${mDate.fromNow(true)} old`;
     } else {
       throw new Error('Unsupported time format suffix');

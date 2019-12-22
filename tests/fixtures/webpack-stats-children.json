@@ -1,0 +1,175 @@
+{
+  "errors": [],
+  "warnings": [],
+  "version": "3.6.0",
+  "hash": "5bdbbccf1f743757fe66",
+  "time": 5959,
+  "children": [{
+    "publicPath": "/static/",
+    "assetsByChunkName": {
+      "app": [
+        "js/app.5bdbbccf.js",
+        "js/app.5bdbbccf.js.map"
+      ],
+      "polyfills": [
+        "js/polyfills.5bdbbccf.js",
+        "js/polyfills.5bdbbccf.js.map"
+      ],
+      "vendor": [
+        "js/vendor.5bdbbccf.js",
+        "js/vendor.5bdbbccf.js.map"
+      ]
+    },
+    "assets": [
+      {
+        "name": "js/0.5bdbbccf.chunk.js.map",
+        "size": 23896,
+        "chunks": [
+          0
+        ],
+        "chunkNames": [],
+        "emitted": true
+      },
+      {
+        "name": "js/0.5bdbbccf.chunk.js",
+        "size": 31143,
+        "chunks": [
+          0
+        ],
+        "chunkNames": [],
+        "emitted": true
+      },
+      {
+        "name": "js/2.5bdbbccf.chunk.js",
+        "size": 6646,
+        "chunks": [
+          2
+        ],
+        "chunkNames": [],
+        "emitted": true
+      },
+      {
+        "name": "js/3.5bdbbccf.chunk.js",
+        "size": 5476,
+        "chunks": [
+          3
+        ],
+        "chunkNames": [],
+        "emitted": true
+      },
+      {
+        "name": "js/app.5bdbbccf.js",
+        "size": 1100428,
+        "chunks": [
+          4
+        ],
+        "chunkNames": [
+          "app"
+        ],
+        "emitted": true,
+        "isOverSizeLimit": true
+      },
+      {
+        "name": "js/polyfills.5bdbbccf.js",
+        "size": 35911,
+        "chunks": [
+          5
+        ],
+        "chunkNames": [
+          "polyfills"
+        ],
+        "emitted": true
+      },
+      {
+        "name": "js/vendor.5bdbbccf.js",
+        "size": 2827236,
+        "chunks": [
+          6
+        ],
+        "chunkNames": [
+          "vendor"
+        ],
+        "emitted": true,
+        "isOverSizeLimit": true
+      },
+      {
+        "name": "js/1.5bdbbccf.chunk.js",
+        "size": 10344,
+        "chunks": [
+          1
+        ],
+        "chunkNames": [],
+        "emitted": true
+      },
+      {
+        "name": "js/1.5bdbbccf.chunk.js.map",
+        "size": 4269,
+        "chunks": [
+          1
+        ],
+        "chunkNames": [],
+        "emitted": true
+      },
+      {
+        "name": "js/2.5bdbbccf.chunk.js.map",
+        "size": 2105,
+        "chunks": [
+          2
+        ],
+        "chunkNames": [],
+        "emitted": true
+      },
+      {
+        "name": "js/3.5bdbbccf.chunk.js.map",
+        "size": 1540,
+        "chunks": [
+          3
+        ],
+        "chunkNames": [],
+        "emitted": true
+      },
+      {
+        "name": "js/app.5bdbbccf.js.map",
+        "size": 791795,
+        "chunks": [
+          4
+        ],
+        "chunkNames": [
+          "app"
+        ],
+        "emitted": true
+      },
+      {
+        "name": "js/polyfills.5bdbbccf.js.map",
+        "size": 41709,
+        "chunks": [
+          5
+        ],
+        "chunkNames": [
+          "polyfills"
+        ],
+        "emitted": true
+      },
+      {
+        "name": "js/vendor.5bdbbccf.js.map",
+        "size": 3166838,
+        "chunks": [
+          6
+        ],
+        "chunkNames": [
+          "vendor"
+        ],
+        "emitted": true
+      },
+      {
+        "name": "asset-manifest.json",
+        "size": 730,
+        "chunks": [],
+        "chunkNames": [],
+        "emitted": true
+      }
+    ],
+    "filteredModules": 0,
+    "children": []
+  }]
+}

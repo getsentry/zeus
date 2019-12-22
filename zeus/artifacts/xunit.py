@@ -74,7 +74,7 @@ class XunitHandler(ArtifactHandler):
                     job=job,
                     name=attrs["name"],
                     package=attrs.get("fixture") or None,
-                    duration=float(attrs["duration"]) * 1000,
+                    duration=int(float(attrs["duration"]) * 1000),
                     result=result,
                     message=message,
                 )
@@ -114,7 +114,7 @@ class XunitHandler(ArtifactHandler):
                 result = Result.passed
 
             if attrs.get("time"):
-                duration = float(attrs["time"]) * 1000
+                duration = int(float(attrs["time"]) * 1000)
             else:
                 duration = None
 

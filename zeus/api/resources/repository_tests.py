@@ -2,12 +2,12 @@ from flask import current_app
 
 from zeus.config import db
 from zeus.constants import Result, Status
-from zeus.models import Build, Repository, TestCase, Job, Source
+from zeus.models import Build, Repository, TestCase, Job
 
 from .base_repository import BaseRepositoryResource
 from ..schemas import TestCaseSummarySchema
 
-testcases_schema = TestCaseSummarySchema(many=True, strict=True)
+testcases_schema = TestCaseSummarySchema(many=True)
 
 
 class RepositoryTestsResource(BaseRepositoryResource):
@@ -17,9 +17,7 @@ class RepositoryTestsResource(BaseRepositoryResource):
         """
         # use the most recent successful build to fetch test results
         latest_build = (
-            Build.query.join(Source, Source.id == Build.source_id)
-            .filter(
-                Source.patch_id == None,  # NOQA
+            Build.query.filter(
                 Build.repository_id == repo.id,
                 Build.result == Result.passed,
                 Build.status == Status.finished,

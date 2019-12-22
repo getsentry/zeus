@@ -21,7 +21,7 @@ export default class ObjectCoverage extends Component {
     let totalLines = linesCovered + linesUncovered;
     if (totalLines === 0) return '';
     if (linesCovered === 0) return '0%';
-    return `${parseInt(linesCovered / totalLines * 100, 10)}%`;
+    return `${parseInt((linesCovered / totalLines) * 100, 10)}%`;
   }
 
   render() {

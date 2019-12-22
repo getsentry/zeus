@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import idx from 'idx';
-// This is being pulled form the CDN currently
-// import Raven from 'raven-js';
+import {isEqual} from 'lodash';
+import {withRouter} from 'react-router';
+
+import * as Sentry from '@sentry/browser';
 
 import IdentityNeedsUpgradeError from './IdentityNeedsUpgradeError';
 import InternalError from './InternalError';
@@ -9,23 +12,33 @@ import NetworkError from './NetworkError';
 import NotFoundError from './NotFoundError';
 import * as errors from '../errors';
 
-export default class ErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {error: null};
+class ErrorBoundary extends Component {
+  static propTypes = {
+    router: PropTypes.object,
+    children: PropTypes.node,
+    location: PropTypes.object
+  };
+
+  constructor(...params) {
+    super(...params);
+    this.state = {error: null, lastLocation: null};
   }
 
-  unstable_handleError(...params) {
-    // This method is a fallback for react <= 16.0.0-alpha.13
-    this.componentDidError(...params);
+  static getDerivedStateFromProps(props, state) {
+    let {router} = props;
+    if (!isEqual(state.lastLocation, router.location)) {
+      return {error: null, lastLocation: null};
+    }
+    return null;
   }
 
   componentDidCatch(error, errorInfo) {
-    this.setState({error});
-    if (window.Raven) {
-      window.Raven.captureException(error, {extra: errorInfo});
-      window.Raven.lastEventId() && window.Raven.showReportDialog();
-    }
+    this.setState({
+      error,
+      lastLocation: {...(idx(this.props.router, _ => _.location) || {})}
+    });
+    Sentry.captureException(error, {extra: errorInfo});
+    Sentry.lastEventId() && Sentry.showReportDialog();
   }
 
   render() {
@@ -51,6 +64,8 @@ export default class ErrorBoundary extends Component {
               window.location.pathname
             )}`;
             return null;
+          } else if (error.code === 502) {
+            return <NetworkError error={error} url={error.data.url} />;
           }
           return <InternalError error={error} />;
         case errors.NetworkError:
@@ -63,3 +78,5 @@ export default class ErrorBoundary extends Component {
     }
   }
 }
+
+export default withRouter(ErrorBoundary);

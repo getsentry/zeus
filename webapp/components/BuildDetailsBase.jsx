@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, {css} from 'styled-components';
+import {css} from '@emotion/core';
+import styled from '@emotion/styled';
 
 import AsyncPage from '../components/AsyncPage';
 import Badge from '../components/Badge';
+import Icon from '../components/Icon';
 import ObjectAuthor from '../components/ObjectAuthor';
 import ObjectCoverage from '../components/ObjectCoverage';
 import ObjectDuration from '../components/ObjectDuration';
@@ -12,7 +14,7 @@ import TabbedNav from '../components/TabbedNav';
 import TabbedNavItem from '../components/TabbedNavItem';
 import TimeSince from '../components/TimeSince';
 
-import MdClock from 'react-icons/lib/md/access-time';
+import {MdAccessTime} from 'react-icons/md';
 
 export default class BuildDetailsBase extends AsyncPage {
   static contextTypes = {
@@ -47,9 +49,7 @@ export default class BuildDetailsBase extends AsyncPage {
       <div>
         <BuildSummary>
           <BuildHeader>
-            <Message>
-              {(build.label || build.source.revision.message || '').split('\n')[0]}
-            </Message>
+            <Message>{build.label}</Message>
           </BuildHeader>
           <Meta>
             {build.status === 'finished' && (
@@ -60,7 +60,9 @@ export default class BuildDetailsBase extends AsyncPage {
               </DurationWrapper>
             )}
             <Time>
-              <MdClock size="16" style={{marginRight: 5}} />
+              <Icon mr>
+                <MdAccessTime />
+              </Icon>
               {build.status === 'queued' || build.status === 'unknown' ? (
                 <span>
                   created <TimeSince date={build.created_at} />
@@ -74,7 +76,9 @@ export default class BuildDetailsBase extends AsyncPage {
             <Author>
               <ObjectAuthor data={build} />
             </Author>
-            <Commit>{build.source.revision.sha.substr(0, 7)}</Commit>
+            <Commit>
+              {build.revision ? build.revision.sha.substr(0, 7) : build.ref}
+            </Commit>
           </Meta>
           <TabbedNav>
             <TabbedNavItem to={this.getBaseRoute()} onlyActiveOnIndex={true}>
@@ -141,6 +145,7 @@ const Branch = styled.div`
 const Meta = styled.div`
   display: flex;
   align-items: center;
+  flex-direction: row;
   margin-top: 5px;
   margin-bottom: 15px;
   color: #7f7d8f;
@@ -157,7 +162,6 @@ const Meta = styled.div`
   svg {
     color: #bfbfcb;
     position: relative;
-    top: -1px;
   }
 `;
 

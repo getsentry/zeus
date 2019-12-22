@@ -1,3 +1,5 @@
+
+from flask import current_app
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.sql import func
 
@@ -5,14 +7,17 @@ from zeus.config import db
 from zeus.db.mixins import RepositoryBoundMixin
 from zeus.db.types import GUID
 from zeus.db.utils import model_repr
+from zeus.exceptions import UnknownRepositoryBackend
 from zeus.utils import timezone
 
 
 class Revision(RepositoryBoundMixin, db.Model):
     sha = db.Column(db.String(40), primary_key=True)
-    author_id = db.Column(GUID, db.ForeignKey("author.id"), index=True, nullable=True)
+    author_id = db.Column(
+        GUID, db.ForeignKey("author.id", ondelete="SET NULL"), index=True, nullable=True
+    )
     committer_id = db.Column(
-        GUID, db.ForeignKey("author.id"), index=True, nullable=True
+        GUID, db.ForeignKey("author.id", ondelete="SET NULL"), index=True, nullable=True
     )
     message = db.Column(db.Text, nullable=True)
     parents = db.Column(ARRAY(db.String(40)), nullable=True)
@@ -40,3 +45,20 @@ class Revision(RepositoryBoundMixin, db.Model):
     @property
     def subject(self):
         return self.message.splitlines()[0]
+
+    def generate_diff(self):
+        from zeus.vcs.base import UnknownRevision
+
+        try:
+            vcs = self.repository.get_vcs()
+        except UnknownRepositoryBackend:
+            return None
+
+        try:
+            try:
+                return vcs.export(self.sha)
+            except UnknownRevision:
+                vcs.update()
+                return vcs.export(self.sha)
+        except Exception:
+            current_app.logger.exception("generate_diff failure")

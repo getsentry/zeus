@@ -8,7 +8,9 @@ from zeus import models
 from zeus.constants import Result, Status
 from zeus.utils import timezone
 
+from .author import AuthorFactory
 from .base import ModelFactory
+from .repository import RepositoryFactory
 from .types import GUIDFactory
 
 faker = Factory.create()
@@ -21,12 +23,26 @@ faker = Factory.create()
 class BuildFactory(ModelFactory):
     id = GUIDFactory()
     label = factory.faker.Faker("sentence")
-    source = factory.SubFactory("zeus.factories.SourceFactory")
-    source_id = factory.SelfAttribute("source.id")
-    repository = factory.SelfAttribute("source.repository")
+    repository = factory.LazyAttribute(
+        lambda o: o.revision.repository
+        if getattr(o, "revision", None)
+        else RepositoryFactory()
+    )
     repository_id = factory.SelfAttribute("repository.id")
+    author = factory.LazyAttribute(
+        lambda o: o.revision.author
+        if getattr(o, "revision", None)
+        else AuthorFactory(repository=o.repository)
+    )
+    author_id = factory.LazyAttribute(lambda o: o.author.id if o.author else None)
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
+    ref = factory.LazyAttribute(
+        lambda o: o.revision.sha if getattr(o, "revision", None) else faker.sha1()
+    )
+    revision_sha = factory.LazyAttribute(
+        lambda o: o.revision.sha if getattr(o, "revision", None) else None
+    )
     date_created = factory.LazyAttribute(
         lambda o: timezone.now() - timedelta(minutes=30)
     )
@@ -66,7 +82,7 @@ class BuildFactory(ModelFactory):
         aborted = factory.Trait(result=Result.aborted, status=Status.finished)
         anonymous = factory.Trait(author=None, author_id=None)
         travis = factory.Trait(
-            provider="travis-ci",
+            provider="travis",
             external_id=factory.LazyAttribute(lambda o: str(randint(10000, 999999))),
             url=factory.LazyAttribute(
                 lambda o: "https://travis-ci.org/{}/{}/builds/{}".format(

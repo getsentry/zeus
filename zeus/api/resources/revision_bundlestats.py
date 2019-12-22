@@ -7,7 +7,7 @@ from zeus.utils.builds import fetch_build_for_revision
 from .base_revision import BaseRevisionResource
 from ..schemas import BundleSchema
 
-bundle_schema = BundleSchema(many=True, strict=True)
+bundle_schema = BundleSchema(many=True)
 
 
 class RevisionBundleStatsResource(BaseRevisionResource):
@@ -15,7 +15,7 @@ class RevisionBundleStatsResource(BaseRevisionResource):
         """
         Return bundle stats for a given revision.
         """
-        build = fetch_build_for_revision(revision.repository, revision)
+        build = fetch_build_for_revision(revision)
         if not build:
             return self.respond(status=404)
 

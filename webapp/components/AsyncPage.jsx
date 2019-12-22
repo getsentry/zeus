@@ -1,51 +1,19 @@
 import DocumentTitle from 'react-document-title';
-import React, {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import {isEqual} from 'lodash';
 
-import PageLoadingIndicator from './PageLoadingIndicator';
+import AsyncComponent from './AsyncComponent';
 
-import {Client} from '../api';
-
-export default class AsyncPage extends Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired
+// TODO(dcramer): make this simply call AsyncComponent instead of extend
+export default class AsyncPage extends AsyncComponent {
+  static propTypes = {
+    params: PropTypes.object,
+    location: PropTypes.object
   };
-
-  constructor(props, context) {
-    super(props, context);
-
-    this.refreshData = this.refreshData.bind(this);
-    this.render = this.render.bind(this);
-
-    this.state = this.getDefaultState(props, context);
-  }
-
-  componentWillMount() {
-    this.api = new Client();
-    this.refreshData();
-    super.componentWillMount && super.componentWillMount();
-  }
-
-  componentWillReceiveProps(nextProps, nextContext) {
-    if (
-      !isEqual(this.props.params, nextProps.params) ||
-      !isEqual((this.props.location || {}).query, (nextProps.location || {}).query)
-    ) {
-      this.remountComponent(nextProps, nextContext);
-    }
-    super.componentWillReceiveProps &&
-      super.componentWillReceiveProps(nextProps, nextContext);
-  }
-
-  componentWillUnmount() {
-    this.api && this.api.clear();
-    super.componentWillUnmount && super.componentWillUnmount();
-  }
 
   // XXX: cant call this getInitialState as React whines
   getDefaultState(props, context) {
-    let endpoints = this.getEndpoints();
+    let endpoints = this.getEndpoints(props, context);
     let state = {
       // has all data finished requesting?
       loading: endpoints.length > 0,
@@ -53,18 +21,14 @@ export default class AsyncPage extends Component {
       error: false,
       errors: {}
     };
-    endpoints.forEach(([stateKey, endpoint]) => {
+    endpoints.forEach(([stateKey]) => {
       state[stateKey] = null;
     });
     return state;
   }
 
-  remountComponent(props, context) {
-    this.setState(this.getDefaultState(props, context), this.refreshData);
-  }
-
-  refreshData() {
-    let endpoints = this.getEndpoints();
+  reloadData() {
+    let endpoints = this.getEndpoints(this.props, this.context);
     if (!endpoints.length) {
       this.setState({
         loading: false,
@@ -79,11 +43,11 @@ export default class AsyncPage extends Component {
       remainingRequests: endpoints.length
     });
     endpoints.forEach(([stateKey, endpoint, params]) => {
-      this.fetchDataForEndpoint(stateKey, endpoint, params);
+      this.loadDataForEndpoint(stateKey, endpoint, params);
     });
   }
 
-  fetchDataForEndpoint(stateKey, endpoint, params) {
+  loadDataForEndpoint(stateKey, endpoint, params) {
     this.api
       .request(endpoint, params)
       .then(data => {
@@ -126,20 +90,16 @@ export default class AsyncPage extends Component {
     return null;
   }
 
-  renderLoading() {
-    return <PageLoadingIndicator />;
-  }
-
   renderError(error) {
-    throw this.state.errors[Object.keys(this.state.errors).find(_ => true)] || error;
+    throw this.state.errors[Object.keys(this.state.errors).find(() => true)] || error;
   }
 
   renderContent() {
     return this.state.loading
       ? this.renderLoading()
       : this.state.error
-        ? this.renderError(new Error('Unable to load all required endpoints'))
-        : this.renderBody();
+      ? this.renderError(new Error('Unable to load all required endpoints'))
+      : this.renderBody();
   }
 
   render() {

@@ -4,7 +4,7 @@ from zeus.models import Email
 from .base import Resource
 from ..schemas import EmailSchema
 
-emails_schema = EmailSchema(many=True, strict=True)
+emails_schema = EmailSchema(many=True)
 
 
 class UserEmailsResource(Resource):

@@ -3,9 +3,6 @@
 # dependencies
 /node_modules
 
-# local venv
-/venv
-
 # testing
 /coverage
 /htmlcov
@@ -22,6 +19,7 @@ coverage.xml
 *.junit.xml
 junit.xml
 .cache/
+__pycache__/
 .mypy_cache/
 .DS_Store
 .env.local
@@ -43,3 +41,4 @@ yarn-error.log*
 
 /.artifacts
 /.env
+/.venv

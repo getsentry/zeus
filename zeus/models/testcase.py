@@ -29,7 +29,10 @@ class TestCase(RepositoryBoundMixin, db.Model):
     job = db.relationship("Job")
 
     __tablename__ = "testcase"
-    __table_args__ = (db.UniqueConstraint("job_id", "hash", name="unq_testcase_hash"),)
+    __table_args__ = (
+        db.UniqueConstraint("job_id", "hash", name="unq_testcase_hash"),
+        db.Index("idx_testcase_repo_hash", "repository_id", "hash", "result"),
+    )
     __repr__ = model_repr("repository_id", "job_id", "name", "result")
 
     @classmethod

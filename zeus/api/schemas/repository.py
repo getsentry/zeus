@@ -4,7 +4,7 @@ from typing import List
 
 from zeus.config import db
 from zeus.constants import Permission, Result, Status
-from zeus.models import Build, Repository, RepositoryAccess, RepositoryBackend, Source
+from zeus.models import Build, Repository, RepositoryAccess, RepositoryBackend
 
 from .fields import EnumField
 
@@ -29,7 +29,7 @@ class RepositorySchema(Schema):
     permissions = fields.Nested(PermissionSchema, allow_none=True, dump_only=True)
 
     @pre_dump(pass_many=True)
-    def process_permission(self, data, many):
+    def process_permission(self, data, many, **kwargs):
         user = self.context.get("user")
         if not user:
             return data
@@ -57,18 +57,19 @@ class RepositorySchema(Schema):
         return data
 
     @pre_dump(pass_many=True)
-    def process_latest_build(self, data, many):
-        if many:
-            latest_builds = get_latest_builds(data, Result.passed)
-            for repo in data:
-                repo.latest_build = latest_builds.get(repo.id)
-        else:
-            latest_builds = get_latest_builds([data], Result.passed)
-            data.latest_build = latest_builds.get(data.id)
+    def process_latest_build(self, data, many, **kwargs):
+        if "latest_build" not in self.exclude:
+            if many:
+                latest_builds = get_latest_builds(data, Result.passed)
+                for repo in data:
+                    repo.latest_build = latest_builds.get(repo.id)
+            else:
+                latest_builds = get_latest_builds([data], Result.passed)
+                data.latest_build = latest_builds.get(data.id)
         return data
 
     @post_load
-    def make_instance(self, data):
+    def make_instance(self, data, **kwargs):
         if self.context.get("repository"):
             obj = self.context["repository"]
             for key, value in data.items():
@@ -89,12 +90,7 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
 
     build_query = (
         db.session.query(Build.id)
-        .join(Source, Build.source_id == Source.id)
-        .filter(
-            Source.patch_id == None,  # NOQA
-            Build.status == Status.finished,
-            Build.result == result,
-        )
+        .filter(Build.status == Status.finished, Build.result == result)
         .order_by(Build.date_created.desc())
     )
 
@@ -115,10 +111,8 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
         for b in Build.query.unrestricted_unsafe()
         .filter(Build.id.in_(build_map.values()))
         .options(
-            joinedload("source"),
-            joinedload("source").joinedload("author"),
-            joinedload("source").joinedload("revision"),
-            joinedload("source").joinedload("patch"),
+            joinedload("revision"),
+            joinedload("revision").joinedload("author"),
             subqueryload_all("stats"),
         )
     }

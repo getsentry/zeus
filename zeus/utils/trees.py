@@ -5,7 +5,7 @@ from typing import Dict, List, Set
 def build_flat_tree(
     tests: List[str], sep: str = ".", min_children: int = 1
 ) -> Dict[str, Set[str]]:
-    tree = defaultdict(set)
+    tree: Dict[str, Set[str]] = defaultdict(set)
 
     # Build a mapping of prefix => set(children)
     for test in tests:
@@ -19,8 +19,8 @@ def build_flat_tree(
 
 def build_tree(
     tests: List[str], sep: str = ".", min_children: int = 1, parent: str = ""
-) -> Dict[str, Set[str]]:
-    tree = defaultdict(set)
+) -> Set[str]:
+    tree: Dict[str, Set[str]] = defaultdict(set)
 
     # Build a mapping of prefix => set(children)
     for test in tests:

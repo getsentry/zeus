@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 import Collapsable from './Collapsable';
 import {ResultGrid, Column, Header, Row} from './ResultGrid';
@@ -33,7 +33,8 @@ export default class StyleViolationList extends Component {
   static propTypes = {
     violationList: PropTypes.arrayOf(PropTypes.object).isRequired,
     collapsable: PropTypes.bool,
-    maxVisible: PropTypes.number
+    maxVisible: PropTypes.number,
+    params: PropTypes.object
   };
 
   static defaultProps = {collapsable: false};

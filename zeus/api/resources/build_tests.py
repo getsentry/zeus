@@ -9,15 +9,18 @@ from zeus.models import Job, Build, TestCase
 from .base_build import BaseBuildResource
 from ..schemas import AggregateTestCaseSummarySchema
 
-testcases_schema = AggregateTestCaseSummarySchema(many=True, strict=True)
-
 
 class BuildTestsResource(BaseBuildResource):
     def get(self, build: Build):
         """
         Return a list of test cases for a given build.
         """
-        job_ids = db.session.query(Job.id).filter(Job.build_id == build.id).subquery()
+        job_query = db.session.query(Job.id).filter(Job.build_id == build.id)
+
+        result = request.args.get("allowed_failures")
+        if result == "false":
+            job_query = job_query.filter(Job.allow_failure == False)  # NOQA
+        job_ids = job_query.subquery()
 
         query = (
             db.session.query(
@@ -45,4 +48,7 @@ class BuildTestsResource(BaseBuildResource):
             TestCase.name.asc(),
         )
 
-        return self.paginate_with_schema(testcases_schema, query)
+        schema = AggregateTestCaseSummarySchema(
+            many=True, exclude=("build",), context={"build": build}
+        )
+        return self.paginate_with_schema(schema, query)

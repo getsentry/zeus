@@ -13,8 +13,8 @@ from zeus.tasks import process_artifact
 from .base_job import BaseJobResource
 from ..schemas import ArtifactSchema
 
-artifact_schema = ArtifactSchema(strict=True, exclude=("job",))
-artifacts_schema = ArtifactSchema(strict=True, many=True, exclude=("job",))
+artifact_schema = ArtifactSchema()
+artifacts_schema = ArtifactSchema(many=True)
 
 
 class JobArtifactsResource(BaseJobResource):
@@ -29,11 +29,7 @@ class JobArtifactsResource(BaseJobResource):
             Artifact.query.options(
                 joinedload("job"),
                 joinedload("job").joinedload("build"),
-                joinedload("job").joinedload("build").joinedload("source"),
-                joinedload("job")
-                .joinedload("build")
-                .joinedload("source")
-                .joinedload("repository"),
+                joinedload("job").joinedload("build").joinedload("repository"),
             )
             .filter(Artifact.job_id == job.id)
             .order_by(Artifact.name.asc())
@@ -71,8 +67,7 @@ class JobArtifactsResource(BaseJobResource):
                     {"file": "Missing data for required field."}, status=403
                 )
 
-        result = self.schema_from_request(artifact_schema)
-        artifact = result.data
+        artifact = self.schema_from_request(artifact_schema)
         artifact.job_id = job.id
         artifact.repository_id = job.repository_id
         artifact.status = Status.queued

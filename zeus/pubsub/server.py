@@ -10,8 +10,10 @@ from flask import current_app
 from urllib.parse import urlparse
 from uuid import uuid4
 
+import sentry_sdk
+
 from zeus import auth
-from zeus.config import sentry
+from zeus.utils.sentry import span
 
 Event = namedtuple("Event", ["id", "event", "data"])
 
@@ -44,6 +46,7 @@ def log_errors(func):
 # @log_errors
 
 
+@span("worker")
 async def worker(channel, queue, token, repo_ids=None, build_ids=None):
     allowed_repo_ids = frozenset(token["repo_ids"])
 
@@ -60,7 +63,10 @@ async def worker(channel, queue, token, repo_ids=None, build_ids=None):
             continue
 
         evt = Event(msg.get("id"), msg.get("event"), data)
-        await queue.put(evt)
+        with sentry_sdk.Hub.current.start_span(
+            op="pubsub.receive", description=msg.get("id")
+        ):
+            await queue.put(evt)
         current_app.logger.debug("pubsub.event.received qsize=%s", queue.qsize())
 
 
@@ -74,16 +80,19 @@ async def ping(loop, resp, client_guid):
     while True:
         await asyncio.sleep(15, loop=loop)
         current_app.logger.debug("pubsub.ping guid=%s", client_guid)
-        resp.write(b": ping\r\n\r\n")
+        with sentry_sdk.Hub.current.start_span(op="pubsub.ping"):
+            resp.write(b": ping\r\n\r\n")
 
 
 # @log_errors
 
 
+@span("stream")
 async def stream(request):
     client_guid = str(uuid4())
 
-    sentry.tags_context({"client_guid": client_guid})
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("client_guid", client_guid)
 
     if request.headers.get("accept") != "text/event-stream":
         return Response(status=406)
@@ -103,7 +112,8 @@ async def stream(request):
         return Response(status=401)
 
     if "uid" in token:
-        sentry.user_context({"id": token["uid"]})
+        with sentry_sdk.configure_scope() as scope:
+            scope.user = {"id": token["uid"]}
 
     current_app.logger.debug(
         "pubsub.client.connected guid=%s tenant=%s", client_guid, token
@@ -113,16 +123,23 @@ async def stream(request):
 
     parts = urlparse(current_app.config["REDIS_URL"])
 
-    conn = await aioredis.create_redis(
-        address=(parts.hostname or "localhost", parts.port or "6379"),
-        db=parts.path.split("1", 1)[:-1] or 0,
-        password=parts.password,
-        loop=loop,
-    )
+    with sentry_sdk.Hub.current.start_span(
+        op="aioredis.create_redis",
+        description=f'{parts.hostname or "localhost"}:{parts.port or "6379"}',
+    ):
+        conn = await aioredis.create_redis(
+            address=(parts.hostname or "localhost", parts.port or "6379"),
+            db=parts.path.split("1", 1)[:-1] or 0,
+            password=parts.password,
+            loop=loop,
+        )
     try:
         queue = asyncio.Queue(loop=loop)
 
-        res = await conn.subscribe("builds")
+        with sentry_sdk.Hub.current.start_span(
+            op="aioredis.subscribe", description="builds"
+        ):
+            res = await conn.subscribe("builds")
         asyncio.ensure_future(worker(res[0], queue, token, repo_ids, build_ids))
 
         resp = StreamResponse(status=200, reason="OK")
@@ -145,17 +162,22 @@ async def stream(request):
             if event is None:
                 break
 
-            buffer = io.BytesIO()
-            if event.id:
-                buffer.write(b"id: %s\r\n" % (event.id.encode("utf-8"),))
-            if event.event:
-                buffer.write(b"event: %s\r\n" % (event.event.encode("utf-8")))
-            if event.data:
-                buffer.write(b"data: %s\r\n" % (json.dumps(event.data).encode("utf-8")))
-            buffer.write(b"\r\n")
-            resp.write(buffer.getvalue())
-            queue.task_done()
-            current_app.logger.debug("pubsub.event.sent qsize=%s", queue.qsize())
+            with sentry_sdk.Hub.current.start_span(
+                op="pubsub.send", description=event.id
+            ):
+                buffer = io.BytesIO()
+                if event.id:
+                    buffer.write(b"id: %s\r\n" % (event.id.encode("utf-8"),))
+                if event.event:
+                    buffer.write(b"event: %s\r\n" % (event.event.encode("utf-8")))
+                if event.data:
+                    buffer.write(
+                        b"data: %s\r\n" % (json.dumps(event.data).encode("utf-8"))
+                    )
+                buffer.write(b"\r\n")
+                resp.write(buffer.getvalue())
+                queue.task_done()
+                current_app.logger.debug("pubsub.event.sent qsize=%s", queue.qsize())
             # Yield to the scheduler so other processes do stuff.
             await resp.drain()
 
@@ -170,8 +192,9 @@ async def stream(request):
         )
 
 
+@span("health_check")
 async def health_check(request):
-    return Response(text=json.dumps({"ok": True}))
+    return Response(text='{"ok": true}')
 
 
 async def build_server(loop, host, port):

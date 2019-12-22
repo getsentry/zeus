@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import idx from 'idx';
+import styled from '@emotion/styled';
 import Gravatar from 'react-gravatar';
-import MdPerson from 'react-icons/lib/md/person';
+import {MdPerson} from 'react-icons/md';
 
 const Avatar = styled.span`
   img {
     border-radius: 2px;
+    overflow: hidden;
   }
 
   img,
@@ -24,19 +24,13 @@ export default class ObjectAuthor extends Component {
       author: PropTypes.shape({
         name: PropTypes.string,
         email: PropTypes.email
-      }),
-      source: PropTypes.shape({
-        author: PropTypes.shape({
-          name: PropTypes.string,
-          email: PropTypes.email
-        })
       })
     }).isRequired
   };
 
   render() {
     let {data} = this.props;
-    let author = idx(data, _ => _.source.author) || data.author;
+    let author = data.author;
     if (!author || !(author.name || author.email)) return null;
     return (
       <span>

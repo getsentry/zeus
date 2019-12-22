@@ -17,8 +17,10 @@ export default class RepositoryHeader extends Component {
       <Header>
         <Nav>
           <NavItem to={basePath} onlyActiveOnIndex={true}>
-            Commits
+            Overview
           </NavItem>
+          <NavItem to={`${basePath}/revisions`}>Commits</NavItem>
+          <NavItem to={`${basePath}/change-requests`}>Change Requests</NavItem>
           <NavItem to={`${basePath}/builds`}>Builds</NavItem>
           <NavItem to={`${basePath}/coverage`}>Coverage</NavItem>
           <NavItem to={`${basePath}/tests`}>Tests</NavItem>

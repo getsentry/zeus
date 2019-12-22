@@ -11,12 +11,16 @@ from zeus.utils import timezone
 class ChangeRequest(RepositoryBoundMixin, StandardAttributes, db.Model):
     number = db.Column(db.Integer, nullable=False)
     # the parent revision is our base commit that this change request applies to
-    parent_revision_sha = db.Column(db.String(40), nullable=False)
+    parent_ref = db.Column(db.String, nullable=True)
+    parent_revision_sha = db.Column(db.String(40), nullable=True)
     # for branch-style change requests (e.g. GitHub Pull Requests) we capture
     # the 'current revision' in addition to the 'parent revision'
+    head_ref = db.Column(db.String, nullable=True)
     head_revision_sha = db.Column(db.String(40), nullable=True)
     message = db.Column(db.String, nullable=False)
-    author_id = db.Column(GUID, db.ForeignKey("author.id"), index=True, nullable=True)
+    author_id = db.Column(
+        GUID, db.ForeignKey("author.id", ondelete="SET NULL"), index=True, nullable=True
+    )
     provider = db.Column(db.String, nullable=True)
     external_id = db.Column(db.String(64), nullable=True)
     url = db.Column(db.String, nullable=True)

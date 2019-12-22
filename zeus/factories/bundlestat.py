@@ -25,12 +25,13 @@ class BundleFactory(ModelFactory):
 
 class BundleAssetFactory(ModelFactory):
     id = GUIDFactory()
+    bundle = factory.SubFactory("zeus.factories.BundleFactory")
     name = factory.LazyAttribute(
         lambda o: "{}/{}/{}.{}".format(
             faker.word(), faker.word(), faker.word(), faker.word()
         )
     )
-    job = factory.SubFactory("zeus.factories.JobFactory")
+    job = factory.SelfAttribute("bundle.job")
     job_id = factory.SelfAttribute("job.id")
     repository = factory.SelfAttribute("job.repository")
     repository_id = factory.SelfAttribute("repository.id")

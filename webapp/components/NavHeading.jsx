@@ -1,7 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
-export default styled(({label, ...props}) => {
+export default styled(({...props}) => {
   return <div {...props}>{props.children}</div>;
 })`
   font-size: 13px;
