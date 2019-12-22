@@ -2,6 +2,7 @@ from flask import request
 from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
+from zeus.api import client
 from zeus.config import db, redis
 from zeus.constants import Permission
 from zeus.exceptions import IdentityNeedsUpgrade
@@ -13,7 +14,7 @@ from zeus.models import (
     RepositoryProvider,
     RepositoryStatus,
 )
-from zeus.tasks import import_repo, delete_repo
+from zeus.tasks import import_repo
 from zeus.utils import ssh
 from zeus.vcs.providers.github import GitHubRepositoryProvider
 
@@ -77,35 +78,9 @@ class GitHubRepositoriesResource(Resource):
         repo_name = (request.get_json() or {}).get("name")
         if not repo_name:
             return self.error("missing repo_name parameter")
-
-        owner_name, repo_name = repo_name.split("/", 1)
-
-        user = auth.get_current_user()
-        repo = (
-            Repository.query.unrestricted_unsafe()
-            .filter(
-                Repository.owner_name == owner_name,
-                Repository.name == repo_name,
-                Repository.backend == RepositoryBackend.git,
-                Repository.provider == RepositoryProvider.github,
-            )
-            .first()
+        return client.delete(
+            "/repos/gh/{}".format(repo_name), request=request, raise_errors=False
         )
-
-        if not repo:
-            return self.error("repository not found")
-
-        repo_access = RepositoryAccess.query.filter_by(
-            repository_id=repo.id, user_id=user.id
-        ).first()
-
-        if repo_access.permission != Permission.admin:
-            return self.respond(
-                {"message": "Insufficient permissions to deactivate repository"}, 403
-            )
-
-        delete_repo.delay(repo_id=repo.id)
-        return self.respond(status=204)
 
     def post(self):
         """
@@ -138,7 +113,9 @@ class GitHubRepositoriesResource(Resource):
                 {"message": "Insufficient permissions to activate repository"}, 403
             )
 
-        lock_key = Repository.get_lock_key(owner_name, repo_name)
+        lock_key = Repository.get_lock_key(
+            RepositoryProvider.github, owner_name, repo_name
+        )
         with redis.lock(lock_key):
             try:
                 with db.session.begin_nested():
@@ -182,6 +159,8 @@ class GitHubRepositoriesResource(Resource):
                 )
 
                 # register key with github
+                # TODO(dcramer): we should store this key reference so we can delete it
+                # when the user deactivates the repo
                 provider.add_key(
                     user=user, repo_name=repo_name, owner_name=owner_name, key=key
                 )
