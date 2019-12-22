@@ -1,4 +1,4 @@
-from zeus.models import Repository
+from zeus.models import Repository, RepositoryStatus
 
 
 def test_repo_details(client, default_login, default_repo, default_repo_access):
@@ -45,3 +45,38 @@ def test_cannot_update_without_admin(
         "/api/repos/{}".format(default_repo.get_full_name()), json={"public": True}
     )
     assert resp.status_code == 400
+
+
+def test_delete_repository(
+    client, mocker, default_login, default_repo, default_repo_access
+):
+    mock_delete_repo = mocker.patch("zeus.tasks.delete_repo.delay")
+
+    resp = client.delete("/api/repos/{}".format(default_repo.get_full_name()))
+
+    assert resp.status_code == 202
+    mock_delete_repo.assert_called_once_with(repo_id=default_repo.id)
+
+    default_repo = Repository.query.get(default_repo.id)
+    assert default_repo.status == RepositoryStatus.inactive
+
+
+def test_delete_non_existing_repository(client, default_login):
+    resp = client.delete("/api/repos/gh/getsentry/does-not-exist")
+
+    assert resp.status_code == 404
+
+
+def test_delete_inactive_repository(
+    client, db_session, mocker, default_login, default_repo, default_repo_access
+):
+    default_repo.status = RepositoryStatus.inactive
+    db_session.add(default_repo)
+    db_session.flush()
+
+    mock_delete_repo = mocker.patch("zeus.tasks.delete_repo.delay")
+
+    resp = client.delete("/api/repos/{}".format(default_repo.get_full_name()))
+
+    assert resp.status_code == 202
+    assert not mock_delete_repo.mock_calls

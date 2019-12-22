@@ -2,6 +2,7 @@ from flask import request
 from sqlalchemy.exc import IntegrityError
 
 from zeus import auth
+from zeus.api import client
 from zeus.config import db, redis
 from zeus.constants import Permission
 from zeus.exceptions import IdentityNeedsUpgrade
@@ -77,8 +78,9 @@ class GitHubRepositoriesResource(Resource):
         repo_name = (request.get_json() or {}).get("name")
         if not repo_name:
             return self.error("missing repo_name parameter")
-
-        raise NotImplementedError
+        return client.delete(
+            "/repos/gh/{}".format(repo_name), request=request, raise_errors=False
+        )
 
     def post(self):
         """
@@ -111,8 +113,8 @@ class GitHubRepositoriesResource(Resource):
                 {"message": "Insufficient permissions to activate repository"}, 403
             )
 
-        lock_key = "repo:{provider}/{owner_name}/{repo_name}".format(
-            provider="github", owner_name=owner_name, repo_name=repo_name
+        lock_key = Repository.get_lock_key(
+            RepositoryProvider.github, owner_name, repo_name
         )
         with redis.lock(lock_key):
             try:
@@ -157,6 +159,8 @@ class GitHubRepositoriesResource(Resource):
                 )
 
                 # register key with github
+                # TODO(dcramer): we should store this key reference so we can delete it
+                # when the user deactivates the repo
                 provider.add_key(
                     user=user, repo_name=repo_name, owner_name=owner_name, key=key
                 )

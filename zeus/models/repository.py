@@ -147,6 +147,12 @@ class Repository(StandardAttributes, db.Model):
     def get_full_name(self):
         return "{}/{}/{}".format(self.provider, self.owner_name, self.name)
 
+    @staticmethod
+    def get_lock_key(provider: str, owner_name: str, repo_name: str) -> str:
+        return "repo:{provider}/{owner_name}/{repo_name}".format(
+            provider=provider, owner_name=owner_name, repo_name=repo_name
+        )
+
     @classmethod
     def from_full_name(cls, full_name):
         provider, owner_name, name = full_name.split("/", 2)

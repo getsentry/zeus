@@ -34,6 +34,7 @@ class APIClient(object):
         params: dict = None,
         request=None,
         tenant=True,
+        raise_errors=True,
     ) -> Response:
         if request:
             assert not json
@@ -78,12 +79,12 @@ class APIClient(object):
                 data=data,
                 environ_overrides={"zeus.tenant": tenant},
             )
-        if not (200 <= response.status_code < 300):
+        if raise_errors and not (200 <= response.status_code < 300):
             raise ApiError(
                 text=response.get_data(as_text=True), code=response.status_code
             )
 
-        if response.headers["Content-Type"] != "application/json":
+        if raise_errors and response.headers["Content-Type"] != "application/json":
             raise ApiError(
                 text="Request returned invalid content type: {}".format(
                     response.headers["Content-Type"]
