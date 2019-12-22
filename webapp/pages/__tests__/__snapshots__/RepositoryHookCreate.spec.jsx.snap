@@ -3,38 +3,36 @@
 exports[`RepositoryHookCreate renders 1`] = `
 <div>
   <div>
-    <div>
-      <div
-        class="css-1khh740 e1htp3kp0"
-      >
-        Create Hook
-      </div>
+    <div
+      class="css-1khh740 e1htp3kp0"
+    >
+      Create Hook
     </div>
-    <p>
-      Hooks lets you easily upsert build information into Zeus. They're a set of credentials that are bound to this repository. Once you've created the hook, it can be used to submit build and job information, as well as to upload artifacts (for example, via 
-      <a
-        href="https://github.com/getsentry/zeus-cli"
-      >
-        zeus-cli
-      </a>
-      ).
-    </p>
-    <p>
-      To create a new hook, select a provider:
-    </p>
-    <p>
-      <a
-        class="css-g27l2r-ButtonLink-ButtonLink-ButtonLink-ButtonLink e1nd0ztg2"
-      >
-        Travis CI
-      </a>
-       
-      <a
-        class="css-g27l2r-ButtonLink-ButtonLink-ButtonLink-ButtonLink e1nd0ztg2"
-      >
-        Custom
-      </a>
-    </p>
   </div>
+  <p>
+    Hooks lets you easily upsert build information into Zeus. They're a set of credentials that are bound to this repository. Once you've created the hook, it can be used to submit build and job information, as well as to upload artifacts (for example, via 
+    <a
+      href="https://github.com/getsentry/zeus-cli"
+    >
+      zeus-cli
+    </a>
+    ).
+  </p>
+  <p>
+    To create a new hook, select a provider:
+  </p>
+  <p>
+    <a
+      class="css-g27l2r-ButtonLink-ButtonLink-ButtonLink-ButtonLink e1nd0ztg2"
+    >
+      Travis CI
+    </a>
+     
+    <a
+      class="css-g27l2r-ButtonLink-ButtonLink-ButtonLink-ButtonLink e1nd0ztg2"
+    >
+      Custom
+    </a>
+  </p>
 </div>
 `;

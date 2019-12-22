@@ -104,7 +104,7 @@ export default class AsyncPage extends AsyncComponent {
 
   render() {
     let title = this.getTitle();
-    if (!title) return <div>{this.renderContent()}</div>;
+    if (!title) return <React.Fragment>{this.renderContent()}</React.Fragment>;
     return <DocumentTitle title={title}>{this.renderContent()}</DocumentTitle>;
   }
 }

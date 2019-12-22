@@ -2533,6 +2533,20 @@ exports[`UserBuildList fetches builds 1`] = `
                               <small>
                                 Build 
                                 unknown
+                                 — 
+                                <Link
+                                  onlyActiveOnIndex={false}
+                                  style={Object {}}
+                                  to="/install"
+                                >
+                                  <a
+                                    href="/install"
+                                    onClick={[Function]}
+                                    style={Object {}}
+                                  >
+                                    Install Overview
+                                  </a>
+                                </Link>
                               </small>
                             </div>
                             <div

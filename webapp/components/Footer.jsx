@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router';
 import styled from '@emotion/styled';
 
 class UnstyledFooter extends Component {
@@ -15,7 +16,9 @@ class UnstyledFooter extends Component {
           </a>{' '}
           is Open Source Software
           <br />
-          <small>Build {release}</small>
+          <small>
+            Build {release} &mdash; <Link to="/install">Install Overview</Link>
+          </small>
         </div>
         {props.children}
         <div style={{clear: 'both'}} />
