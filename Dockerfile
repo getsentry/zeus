@@ -73,7 +73,7 @@ RUN set -x \
   && npm install -g yarn@$YARN_VERSION \
   && rm -r "$NPM_CONFIG_CACHE"
 
-RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/1.0.0/get-poetry.py
+RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/1.0.0/get-poetry.py | python
 
 COPY pyproject.toml /usr/src/zeus/
 COPY poetry.lock /usr/src/zeus/
