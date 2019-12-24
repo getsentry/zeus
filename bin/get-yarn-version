@@ -5,4 +5,4 @@ import json
 with open("package.json") as fp:
     data = json.load(fp)
 
-print(data["toolchain"]["yarn"])
+print(data["volta"]["yarn"])
