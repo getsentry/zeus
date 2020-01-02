@@ -14,6 +14,9 @@ const StatPanel = styled(Section)`
   border: 3px solid #eee;
   font-size: 20px;
   padding: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 class InstallStatsTable extends AsyncPage {
