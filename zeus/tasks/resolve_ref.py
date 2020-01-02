@@ -3,9 +3,11 @@ from uuid import UUID
 from zeus import auth
 from zeus.api.schemas import BuildSchema
 from zeus.config import celery, db
+from zeus.constants import Result
 from zeus.models import Build, ChangeRequest
 from zeus.pubsub.utils import publish
 from zeus.utils import revisions
+from zeus.vcs.base import UnknownRevision
 
 build_schema = BuildSchema()
 
@@ -19,9 +21,12 @@ def resolve_ref_for_build(build_id: UUID):
     auth.set_current_tenant(auth.RepositoryTenant(repository_id=build.repository_id))
 
     if not build.revision_sha:
-        revision = revisions.identify_revision(
-            build.repository, build.ref, with_vcs=True
-        )
+        try:
+            revision = revisions.identify_revision(
+                build.repository, build.ref, with_vcs=True
+            )
+        except UnknownRevision:
+            build.result = Result.errored
         build.revision_sha = revision.sha
         if not build.author_id:
             build.author_id = revision.author_id

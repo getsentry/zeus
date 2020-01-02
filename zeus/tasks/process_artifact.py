@@ -43,6 +43,15 @@ def process_artifact(artifact_id, manager=None, force=False, **kwargs):
         return
 
     build = Build.query.get(job.build_id)
+    if build.result == Result.errored:
+        current_app.logger.info(
+            "Skipping artifact processing (%s) - Build errored", artifact_id
+        )
+        artifact.status = Status.finished
+        db.session.add(artifact)
+        db.session.commit()
+        return
+
     if not build.revision_sha:
         raise Exception("Cannot process artifact until revision is resolved")
 

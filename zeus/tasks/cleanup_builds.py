@@ -79,6 +79,7 @@ def cleanup_builds():
         .filter(
             Build.ref != None,  # NOQA
             Build.revision_sha == None,  # NOQA
+            Build.result != Result.errored,
             Build.date_created < timezone.now() - timedelta(minutes=15),
         )
         .limit(100)
