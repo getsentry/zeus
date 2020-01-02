@@ -20,6 +20,18 @@ def send_build_notifications(build_id: UUID, time_limit=30):
     if not build:
         raise ValueError("Unable to find build with id = {}".format(build_id))
 
+    if not build.date_started:
+        current_app.logger.warn(
+            "send_build_notifications: build %s missing date_started", build_id
+        )
+        return
+
+    if not build.date_finished:
+        current_app.logger.warn(
+            "send_build_notifications: build %s missing date_finished", build_id
+        )
+        return
+
     auth.set_current_tenant(auth.RepositoryTenant(repository_id=build.repository_id))
 
     # double check that the build is still finished and only send when
