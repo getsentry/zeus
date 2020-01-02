@@ -85,7 +85,10 @@ def cleanup_builds():
     )
     for build in queryset:
         current_app.logger.warning("cleanup: resolve_ref_for_build %s", build.id)
-        resolve_ref_for_build(build_id=build.id)
+        try:
+            resolve_ref_for_build(build_id=build.id)
+        except Exception:
+            current_app.logger.exception("cleanup: resolve_ref_for_build %s", build.id)
 
     # find any builds which should be marked as finished but aren't
     queryset = (
@@ -100,4 +103,7 @@ def cleanup_builds():
     )
     for build in queryset:
         current_app.logger.warning("cleanup: aggregate_build_stats %s", build.id)
-        aggregate_build_stats(build_id=build.id)
+        try:
+            aggregate_build_stats(build_id=build.id)
+        except Exception:
+            current_app.logger.exception("cleanup: resolve_ref_for_build %s", build.id)
