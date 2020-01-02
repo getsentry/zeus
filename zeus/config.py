@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import sentry_sdk
+import socket
 import sys
 import tempfile
 
@@ -10,6 +11,7 @@ from flask import Flask
 from flask_alembic import Alembic
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.pool import NullPool
 
 from zeus.utils.celery import Celery
 from zeus.utils.metrics import Metrics
@@ -73,6 +75,7 @@ def create_app(_read_config=True, **config):
             os.environ.get("DB_HOST") or "127.0.0.1",
             os.environ.get("DB_PORT") or "5432",
         )
+
         if "CELERY_BROKER_URL" in os.environ:
             app.config["CELERY_BROKER_URL"] = os.environ["CELERY_BROKER_URL"]
 
@@ -143,6 +146,14 @@ def create_app(_read_config=True, **config):
 
     app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_URI
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "poolclass": NullPool,
+        # TODO
+        # "isolation_level": "AUTOCOMMIT",
+        "connect_args": {
+            "application_name": "zeus:%s" % (socket.gethostname().split(".")[0],)
+        },
+    }
 
     app.config["MOCK_REVISIONS"] = bool(os.environ.get("MOCK_REVISIONS"))
 
@@ -308,6 +319,31 @@ def configure_db(app):
                     setattr(target, key, column.default.arg)
 
     event.listen(mapper, "init", instant_defaults_listener)
+
+    # https://gist.github.com/carljm/57bfb8616f11bceaf865
+    # from sqlalchemy.orm import Session
+    # Keep track of which DBAPI connection(s) had autocommit turned off for
+    # a particular transaction object.
+    # dconns_by_trans = {}
+
+    # @event.listens_for(Session, "after_begin")
+    # def receive_after_begin(session, transaction, connection):
+    #     """When a (non-nested) transaction begins, turn autocommit off."""
+    #     dbapi_connection = connection.connection.connection
+    #     if transaction.nested:
+    #         assert not dbapi_connection.autocommit
+    #         return
+    #     assert dbapi_connection.autocommit
+    #     dbapi_connection.autocommit = False
+
+    # @event.listens_for(Session, 'after_transaction_end')
+    # def receive_after_transaction_end(session, transaction):
+    #     """Restore autocommit where this transaction turned it off."""
+    #     if transaction in dconns_by_trans:
+    #         for dbapi_connection in dconns_by_trans[transaction]:
+    #             assert not dbapi_connection.autocommit
+    #             dbapi_connection.autocommit = True
+    #         del dconns_by_trans[transaction]
 
 
 def configure_api(app):

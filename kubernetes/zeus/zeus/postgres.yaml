@@ -63,6 +63,10 @@ spec:
                 secretKeyRef:
                   name: cloudsql-db-credentials
                   key: password
+            - name: MAX_CLIENT_CONN
+              value: "500"
+            - name: DEFAULT_POOL_SIZE
+              value: "20"
           livenessProbe:
             tcpSocket:
               port: 5432
@@ -76,6 +80,13 @@ spec:
             allowPrivilegeEscalation: false
             capabilities:
               drop: ['all']
+          resources:
+            requests:
+              cpu: 150m
+              memory: 200Mi
+            limits:
+              cpu: 1000m
+              memory: 800Mi
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.09
           command:
