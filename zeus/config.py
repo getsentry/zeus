@@ -67,8 +67,11 @@ def create_app(_read_config=True, **config):
         )
         # Cloud SQL
         # https://cloud.google.com/sql/docs/postgres/connect-container-engine
-        SQLALCHEMY_URI = "postgresql+psycopg2://{}:{}@127.0.0.1:5432/zeus".format(
-            os.environ["DB_USER"], os.environ["DB_PASSWORD"]
+        SQLALCHEMY_URI = "postgresql+psycopg2://{}:{}@{}:{}/zeus".format(
+            os.environ["DB_USER"],
+            os.environ["DB_PASSWORD"],
+            os.environ.get("DB_HOST") or "127.0.0.1",
+            os.environ.get("DB_PORT") or "5432",
         )
         if "CELERY_BROKER_URL" in os.environ:
             app.config["CELERY_BROKER_URL"] = os.environ["CELERY_BROKER_URL"]
