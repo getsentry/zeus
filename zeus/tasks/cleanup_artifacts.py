@@ -25,6 +25,7 @@ def cleanup_artifacts(task_limit=100):
         .limit(task_limit)
     )
     for result in queryset:
+        current_app.logger.warning("cleanup: process_artifact %s [expired]", result.id)
         Artifact.query.unrestricted_unsafe().filter(
             Artifact.status != Status.expired, Artifact.id == result.id
         ).update({"status": Status.expired})
@@ -49,7 +50,9 @@ def cleanup_artifacts(task_limit=100):
             Artifact.status != Status.finished, Artifact.id == result.id
         ).update({"date_updated": timezone.now()})
         db.session.flush()
-        current_app.logger.warning("cleanup: process_artifact %s", result.id)
+        current_app.logger.warning(
+            "cleanup: process_artifact %s [processed]", result.id
+        )
         process_artifact(artifact_id=result.id)
 
 
@@ -68,7 +71,7 @@ def cleanup_pending_artifacts(task_limit=100):
     )
 
     for result in queryset:
-        current_app.logger.warning("cleanup: process_pending_artifact  %s", result.id)
+        current_app.logger.warning("cleanup: process_pending_artifact %s", result.id)
         try:
             process_pending_artifact(pending_artifact_id=result.id)
         except UnknownJob:

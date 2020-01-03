@@ -14,30 +14,40 @@ from .resolve_ref import resolve_ref_for_build
 
 @celery.task(name="zeus.cleanup_builds", time_limit=300)
 def cleanup_builds(task_limit=100):
+    current_app.logger.info("cleanup: running cleanup_pending_artifacts")
     cleanup_pending_artifacts(task_limit=task_limit)
+    current_app.logger.info("cleanup: running cleanup_artifacts")
     cleanup_artifacts(task_limit=task_limit)
+    current_app.logger.info("cleanup: running cleanup_jobs")
     cleanup_jobs(task_limit=task_limit)
+    current_app.logger.info("cleanup: running cleanup_build_refs")
     cleanup_build_refs(task_limit=task_limit)
+    current_app.logger.info("cleanup: running cleanup_build_stats")
     cleanup_build_stats(task_limit=task_limit)
 
 
 @celery.task(name="zeus.cleanup_jobs", time_limit=300)
 def cleanup_jobs(task_limit=100):
     # timeout any jobs which have been sitting for far too long
-    Job.query.unrestricted_unsafe().filter(
-        Job.status != Status.finished,
-        or_(
-            Job.date_updated < timezone.now() - timedelta(hours=1),
-            Job.date_updated == None,  # NOQA
-        ),
-    ).update(
-        {
-            "status": Status.finished,
-            "result": Result.errored,
-            "date_updated": timezone.now(),
-            "date_finished": timezone.now(),
-        }
+    results = (
+        Job.query.unrestricted_unsafe()
+        .filter(
+            Job.status != Status.finished,
+            or_(
+                Job.date_updated < timezone.now() - timedelta(hours=1),
+                Job.date_updated == None,  # NOQA
+            ),
+        )
+        .update(
+            {
+                "status": Status.finished,
+                "result": Result.errored,
+                "date_updated": timezone.now(),
+                "date_finished": timezone.now(),
+            }
+        )
     )
+    current_app.logger.warning("cleanup: cleanup_jobs affected rows %s", results)
     db.session.commit()
 
 
