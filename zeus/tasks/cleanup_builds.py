@@ -4,13 +4,11 @@ from sqlalchemy import or_
 
 from zeus.config import celery, db
 from zeus.constants import Result, Status
-from zeus.exceptions import UnknownJob
-from zeus.models import Artifact, Build, Job, PendingArtifact
+from zeus.models import Build, Job
 from zeus.utils import timezone
 
 from .aggregate_job_stats import aggregate_build_stats
-from .process_artifact import process_artifact
-from .process_pending_artifact import process_pending_artifact
+from .cleanup_artifacts import cleanup_artifacts, cleanup_pending_artifacts
 from .resolve_ref import resolve_ref_for_build
 
 
@@ -21,52 +19,6 @@ def cleanup_builds(task_limit=100):
     cleanup_jobs(task_limit=task_limit)
     cleanup_build_refs(task_limit=task_limit)
     cleanup_build_stats(task_limit=task_limit)
-
-
-@celery.task(name="zeus.cleanup_pending_artifacts", time_limit=300)
-def cleanup_pending_artifacts(task_limit=100):
-    # find any pending artifacts which seemingly are stuck (not enqueued)
-    queryset = (
-        db.session.query(PendingArtifact.id)
-        .filter(
-            Build.external_id == PendingArtifact.external_build_id,
-            Build.provider == PendingArtifact.provider,
-            Build.repository_id == PendingArtifact.repository_id,
-            Build.status == Status.finished,
-        )
-        .limit(task_limit)
-    )
-
-    for result in queryset:
-        current_app.logger.warning("cleanup: process_pending_artifact  %s", result.id)
-        try:
-            process_pending_artifact(pending_artifact_id=result.id)
-        except UnknownJob:
-            # do we just axe it?
-            pass
-
-
-@celery.task(name="zeus.cleanup_artifacts", time_limit=300)
-def cleanup_artifacts(task_limit=100):
-    # find any artifacts which seemingly are stuck (not enqueued)
-    queryset = (
-        Artifact.query.unrestricted_unsafe()
-        .filter(
-            Artifact.status != Status.finished,
-            or_(
-                Artifact.date_updated < timezone.now() - timedelta(minutes=15),
-                Artifact.date_updated == None,  # NOQA
-            ),
-        )
-        .limit(task_limit)
-    )
-    for result in queryset:
-        Artifact.query.unrestricted_unsafe().filter(
-            Artifact.status != Status.finished, Artifact.id == result.id
-        ).update({"date_updated": timezone.now()})
-        db.session.flush()
-        current_app.logger.warning("cleanup: process_artifact %s", result.id)
-        process_artifact(artifact_id=result.id)
 
 
 @celery.task(name="zeus.cleanup_jobs", time_limit=300)
