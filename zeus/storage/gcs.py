@@ -1,4 +1,7 @@
+import google.api_core.exceptions
+
 from datetime import timedelta
+from flask import current_app
 from google.cloud import storage
 from io import BytesIO
 
@@ -31,7 +34,10 @@ class GoogleCloudStorage(object):
 
     def delete(self, filename):
         blob = self.bucket.blob(self.get_file_path(filename))
-        blob.delete()
+        try:
+            blob.delete()
+        except google.api_core.exceptions.NotFound:
+            current_app.logger.warn("Delete on non-existant file", exc_info=True)
 
     def save(self, filename, fp):
         blob = self.bucket.blob(self.get_file_path(filename))
