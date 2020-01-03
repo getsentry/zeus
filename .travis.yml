@@ -1,3 +1,7 @@
+branches:
+  only:
+    - staging
+    - trying
 language: python
 sudo: true
 dist: xenial
