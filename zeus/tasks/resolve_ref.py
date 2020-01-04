@@ -3,7 +3,7 @@ from uuid import UUID
 from zeus import auth
 from zeus.api.schemas import BuildSchema
 from zeus.config import celery, db
-from zeus.constants import Result
+from zeus.constants import Result, Status
 from zeus.models import Build, ChangeRequest
 from zeus.pubsub.utils import publish
 from zeus.utils import repos, revisions
@@ -27,6 +27,7 @@ def resolve_ref_for_build(build_id: UUID):
             )
         except UnknownRevision:
             build.result = Result.errored
+            build.status = Status.finished
             revision = None
         except InvalidPublicKey:
             repos.disable_repo(build.repository_id, build.repository)
