@@ -1,5 +1,6 @@
 from flask import current_app
 from fnmatch import fnmatch
+from zeus.utils.sentry import Span
 
 
 class Manager(object):
@@ -25,13 +26,14 @@ class Manager(object):
                     matches.append(cls)
 
         for cls in matches:
-            handler = cls(job)
-            fp = artifact.file.get_file()
-            try:
-                current_app.logger.info(
-                    "artifact.process",
-                    extra={"handler_cls": cls.__name__, "artifact_id": artifact.id},
-                )
-                handler.process(fp)
-            finally:
-                fp.close()
+            with Span("artifacts.process", description=cls.__name__):
+                handler = cls(job)
+                fp = artifact.file.get_file()
+                try:
+                    current_app.logger.info(
+                        "artifact.process",
+                        extra={"handler_cls": cls.__name__, "artifact_id": artifact.id},
+                    )
+                    handler.process(fp)
+                finally:
+                    fp.close()
