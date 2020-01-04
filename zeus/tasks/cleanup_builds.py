@@ -8,16 +8,11 @@ from zeus.models import Build, Job
 from zeus.utils import timezone
 
 from .aggregate_job_stats import aggregate_build_stats
-from .cleanup_artifacts import cleanup_artifacts, cleanup_pending_artifacts
 from .resolve_ref import resolve_ref_for_build
 
 
 @celery.task(name="zeus.cleanup_builds", time_limit=300)
 def cleanup_builds(task_limit=100):
-    current_app.logger.info("cleanup: running cleanup_pending_artifacts")
-    cleanup_pending_artifacts(task_limit=task_limit)
-    current_app.logger.info("cleanup: running cleanup_artifacts")
-    cleanup_artifacts(task_limit=task_limit)
     current_app.logger.info("cleanup: running cleanup_jobs")
     cleanup_jobs(task_limit=task_limit)
     current_app.logger.info("cleanup: running cleanup_build_refs")
