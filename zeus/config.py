@@ -203,13 +203,17 @@ def create_app(_read_config=True, **config):
             "task": "zeus.cleanup_builds",
             "schedule": timedelta(minutes=5),
         },
+        "cleanup-build-refs": {
+            "task": "zeus.cleanup_build_refs",
+            "schedule": timedelta(minutes=5),
+        },
         "cleanup-artifacts": {
             "task": "zeus.cleanup_artifacts",
-            "schedule": timedelta(minutes=60),
+            "schedule": timedelta(minutes=15),
         },
         "cleanup-pending-artifacts": {
             "task": "zeus.cleanup_pending_artifacts",
-            "schedule": timedelta(minutes=60),
+            "schedule": timedelta(minutes=15),
         },
     }
     app.config["REDBEAT_REDIS_URL"] = app.config["REDIS_URL"]
