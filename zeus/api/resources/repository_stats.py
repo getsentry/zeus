@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from sqlalchemy.sql import func
 from flask import current_app, request
 from typing import List
@@ -74,9 +74,7 @@ class RepositoryStatsResource(BaseRepositoryResource):
         since = request.args.get("since")
 
         if since:
-            date_end = datetime.utcfromtimestamp(float(since)).replace(
-                tzinfo=timezone.utc
-            )
+            date_end = timezone.fromtimestamp(float(since))
         else:
             date_end = timezone.now() + timedelta(days=1)
 

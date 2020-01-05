@@ -2,7 +2,6 @@ import re
 import sentry_sdk
 
 from cached_property import cached_property
-from datetime import datetime
 from flask import current_app, g, request, session
 from itsdangerous import BadSignature, JSONWebSignatureSerializer
 from sqlalchemy.orm import joinedload
@@ -206,7 +205,7 @@ def get_user_from_request() -> Optional[User]:
         return None
 
     try:
-        expire = datetime.utcfromtimestamp(expire).replace(tzinfo=timezone.utc)
+        expire = timezone.fromtimestamp(expire)
     except Exception:
         current_app.logger.exception("invalid session expirey")
         del session["expire"]

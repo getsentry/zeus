@@ -13,5 +13,5 @@ def disable_repo(repository_id: UUID, repository: Repository = None):
             ItemOption.item_id == repository_id, ItemOption.name == "auth.private-key"
         ).delete()
         db.session.add(repository)
-    current_app.logger.warn('Deactivated repository %s', repository_id)
+    current_app.logger.warn("Deactivated repository %s", repository_id)
     db.session.commit()

@@ -1,7 +1,7 @@
-from datetime import datetime
 from urllib.parse import urlparse
 
 from zeus.utils.functional import memoize
+from zeus.utils import timezone
 
 from .base import (
     Vcs,
@@ -188,8 +188,8 @@ class GitVcs(Vcs):
 
             parents = [p for p in parents.split(" ") if p]
 
-            author_date = datetime.utcfromtimestamp(float(author_date))
-            committer_date = datetime.utcfromtimestamp(float(committer_date))
+            author_date = timezone.fromtimestamp(float(author_date))
+            committer_date = timezone.fromtimestamp(float(committer_date))
 
             yield LazyGitRevisionResult(
                 vcs=self,

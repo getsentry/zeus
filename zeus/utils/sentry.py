@@ -6,6 +6,14 @@ from sentry_sdk import Hub
 
 
 # https://stackoverflow.com/questions/44169998/how-to-create-a-python-decorator-that-can-wrap-either-coroutine-or-function
+
+
+@contextmanager
+def Span(op, description=None):
+    with Hub.current.start_span(op=op, description=description):
+        yield
+
+
 def span(op, desc_or_func=None):
     def inner(func):
         @contextmanager
