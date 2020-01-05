@@ -2,6 +2,7 @@ import factory
 import factory.fuzzy
 
 from zeus import models
+from zeus.utils import timezone
 
 from .base import ModelFactory
 from .types import GUIDFactory
@@ -19,6 +20,7 @@ class RepositoryFactory(ModelFactory):
     provider = models.RepositoryProvider.github
     external_id = factory.LazyAttribute(lambda o: "{}/{}".format(o.owner_name, o.name))
     public = False
+    date_created = factory.LazyAttribute(lambda o: timezone.now())
 
     class Meta:
         model = models.Repository
