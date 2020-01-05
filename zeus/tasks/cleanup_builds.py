@@ -85,4 +85,14 @@ def cleanup_build_stats(task_limit=100):
         try:
             aggregate_build_stats(build_id=build.id)
         except Exception:
-            current_app.logger.exception("cleanup: resolve_ref_for_build %s", build.id)
+            current_app.logger.exception("cleanup: aggregate_build_stats %s", build.id)
+
+    results = (
+        Build.query.unrestricted_unsafe()
+        .filter(Build.status != Status.finished, Build.result != Result.errored)
+        .update({"status": Status.finished})
+    )
+    current_app.logger.warning(
+        "cleanup: cleanup_build_stats [unfinished; errored] affected rows %s", results
+    )
+    db.session.commit()
