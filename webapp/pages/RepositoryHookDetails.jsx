@@ -149,7 +149,11 @@ export default class RepositoryHookDetails extends AsyncPage {
                   clearable={false}
                   options={TRAVIS_DOMAIN_OPTIONS}
                   onChange={({value}) => this.onChangeConfig('domain', value)}
-                  value={hook.config.domain || TRAVIS_DOMAIN_OPTIONS[0]}
+                  value={
+                    (hook.config.domain &&
+                      TRAVIS_DOMAIN_OPTIONS.find(h => h.value === hook.config.domain)) ||
+                    TRAVIS_DOMAIN_OPTIONS[0]
+                  }
                 />
               </OverflowColumn>
             </Row>
