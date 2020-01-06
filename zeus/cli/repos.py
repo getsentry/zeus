@@ -49,7 +49,8 @@ def add(repository, url, backend, active):
 
 @repos.command()
 @click.argument("repository", required=True)
-def sync(repository):
+@click.option("--force/--no-force", default=True)
+def sync(repository, force):
     provider, owner_name, repo_name = repository.split("/", 2)
     repo = (
         Repository.query.unrestricted_unsafe()
@@ -60,7 +61,7 @@ def sync(repository):
         )
         .first()
     )
-    sync_repo(repo_id=repo.id, force=True)
+    sync_repo(repo_id=repo.id, force=force)
 
 
 @repos.group("access")
