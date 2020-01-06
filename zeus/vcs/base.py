@@ -7,8 +7,8 @@ from subprocess import Popen, PIPE
 from typing import List, Optional, Tuple
 from uuid import UUID
 
-from zeus.db.utils import create_or_update, get_or_create, try_create
-from zeus.models import Author, Repository, Revision, Source
+from zeus.db.utils import create_or_update, get_or_create
+from zeus.models import Author, Repository, Revision
 
 RevisionSaveResult = namedtuple("RevisionSaveResult", ["revision", "created"])
 
@@ -100,13 +100,6 @@ class RevisionResult(object):
                 "date_created": self.author_date,
                 "date_committed": self.committer_date,
             },
-        )
-
-        # we also want to create a source for this item as it's the canonical
-        # representation in the UI
-        try_create(
-            Source,
-            {"revision_sha": self.sha, "repository": repository, "author": author},
         )
 
         return RevisionSaveResult(revision, created)
