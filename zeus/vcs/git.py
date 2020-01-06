@@ -189,8 +189,7 @@ class GitVcs(Vcs):
                     msg = traceback.format_exception(CommandError, cmd_error, None)
                     logging.warning(msg)
                     raise default_error from cmd_error
-
-            raise
+                raise
 
         for chunk in BufferParser(result, "\x02"):
             (
