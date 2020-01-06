@@ -1,4 +1,3 @@
-from datetime import timedelta
 from flask import current_app
 
 from zeus import auth
@@ -85,8 +84,7 @@ def sync_repo(repo_id, max_log_passes=10, force=False, time_limit=300):
     if repo.last_update and not had_results:
         time_since_last_update = now - repo.last_update
         next_update += min(
-            time_since_last_update,
-            timedelta(current_app.config["REPO_MAX_SYNC_INTERVAL"]),
+            time_since_last_update, current_app.config["REPO_MAX_SYNC_INTERVAL"]
         )
 
     Repository.query.filter(Repository.id == repo.id).update(
