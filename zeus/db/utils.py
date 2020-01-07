@@ -1,27 +1,21 @@
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.sql.expression import literal_column
+
 from zeus.config import db
 
-from sqlalchemy.exc import IntegrityError
+
+def try_create(model, where: dict, defaults: dict = None) -> bool:
+    stmt = (
+        pg_insert(model)
+        .values(**where, **defaults or {})
+        .on_conflict_do_nothing(index_elements=list(where.keys()))
+    )
+    with db.session.begin_nested():
+        rv = db.session.execute(stmt)
+    return bool(rv.rowcount)
 
 
-def try_create(model, where: dict, defaults: dict = None):
-    if defaults is None:
-        defaults = {}
-
-    instance = model()
-    for key, value in defaults.items():
-        setattr(instance, key, value)
-    for key, value in where.items():
-        setattr(instance, key, value)
-    try:
-        with db.session.begin_nested():
-            db.session.add(instance)
-    except IntegrityError:
-        return
-
-    return instance
-
-
-def try_update(model, where: dict, values: dict):
+def try_update(model, where: dict, values: dict) -> bool:
     result = (
         db.session.query(type(model))
         .filter_by(**where)
@@ -31,21 +25,14 @@ def try_update(model, where: dict, values: dict):
 
 
 def get_or_create(model, where: dict, defaults: dict = None):
-    if defaults is None:
-        defaults = {}
-
     created = False
 
     instance = model.query.filter_by(**where).first()
     if instance is not None:
         return instance, created
 
-    instance = try_create(model, where, defaults)
-    if instance is None:
-        instance = model.query.filter_by(**where).first()
-    else:
-        created = True
-
+    created = try_create(model, where, defaults)
+    instance = model.query.filter_by(**where).first()
     if instance is None:
         # this should never happen unless everything is broken
         raise Exception("Unable to get or create instance")
@@ -54,26 +41,19 @@ def get_or_create(model, where: dict, defaults: dict = None):
 
 
 def create_or_update(model, where: dict, values: dict = None):
-    if values is None:
-        values = {}
-
-    created = False
-
-    instance = model.query.filter_by(**where).first()
-    if instance is None:
-        instance = try_create(model, where, values)
-        if instance is None:
-            instance = model.query.filter_by(**where).first()
-            if instance is None:
-                raise Exception("Unable to create or update instance")
-
-            update(instance, values)
-        else:
-            created = True
-    else:
-        update(instance, values)
-
-    return instance, created
+    stmt = (
+        pg_insert(model)
+        .values(**where, **values or {})
+        .on_conflict_do_update(index_elements=list(where.keys()), set_=values or where)
+        .returning(
+            literal_column(
+                "case when xmax::text::int > 0 then 'updated' else 'inserted' end"
+            )
+        )
+    )
+    with db.session.begin_nested():
+        rv = db.session.execute(stmt)
+    return rv.fetchone()[0] == "inserted"
 
 
 def create_or_get(model, where: dict, values: dict = None):
@@ -84,12 +64,8 @@ def create_or_get(model, where: dict, values: dict = None):
 
     instance = model.query.filter_by(**where).first()
     if instance is None:
-        instance = try_create(model, where, values)
-        if instance is None:
-            instance = model.query.filter_by(**where).first()
-        else:
-            created = True
-
+        created = try_create(model, where, values)
+        instance = model.query.filter_by(**where).first()
         if instance is None:
             raise Exception("Unable to get or create instance")
 
