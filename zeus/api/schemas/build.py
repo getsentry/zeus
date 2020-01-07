@@ -39,6 +39,7 @@ class BuildSchema(Schema):
 class BuildCreateSchema(Schema):
     ref = RevisionRefField(validate_ref=False, required=True, resolve_to="revision")
     author = fields.Nested(AuthorSchema(), required=False)
+    authors = fields.List(fields.Nested(AuthorSchema()), required=False)
     label = fields.Str(required=False)
     hook_id = fields.Str(required=False)
     provider = fields.Str(required=False)
@@ -62,6 +63,8 @@ class BuildCreateSchema(Schema):
             build.label = revision.message.split("\n")[0]
         if not build.author_id and revision:
             build.author_id = revision.author_id
+            for author in revision.authors:
+                build.authors.append(author)
         return build
 
     @post_dump(pass_many=True)

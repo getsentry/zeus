@@ -33,6 +33,4 @@ def identify_revision(
         vcs.update()
         commit = next(vcs.log(parent=ref, limit=1))
 
-    revision, _ = commit.save(repository)
-
-    return revision
+    return commit.save(repository)[0]

@@ -27,16 +27,16 @@ def find_linked_emails(build: Build) -> List[Tuple[UUID, str]]:
     """
     """
     return list(
-        db.session.query(User.id, Email.email).filter(
+        db.session.query(User.id, Email.email)
+        .filter(
             Email.user_id == User.id,
             Email.verified == True,  # NOQA
+            Email.email == Author.email,
             RepositoryAccess.user_id == User.id,
             RepositoryAccess.repository_id == build.repository_id,
-            Revision.sha == build.revision_sha,
-            Revision.repository_id == build.repository_id,
-            Revision.author_id == Author.id,
-            Email.email == Author.email,
+            Author.id.in_([build.author_id, *[a.id for a in build.authors]]),
         )
+        .distinct()
     )
 
 
