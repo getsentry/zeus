@@ -128,10 +128,10 @@ spec:
           resources:
             requests:
               cpu: 1200m
-              memory: 1000Mi
+              memory: 1500Mi
             limits:
               cpu: 2000m
-              memory: 1200Mi
+              memory: 3000Mi
       volumes:
         - name: service-account
           secret:
