@@ -5,9 +5,11 @@ from zeus.config import celery, db
 from zeus.constants import Permission
 from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Repository, RepositoryStatus
-from zeus.utils import repos, timezone
+from zeus.utils import timezone
 from zeus.vcs.base import InvalidPublicKey
 
+
+from .deactivate_repo import deactivate_repo, DeactivationReason
 
 # TODO(dcramer): a lot of this code is shared with import_repo
 
@@ -57,7 +59,7 @@ def sync_repo(repo_id, max_log_passes=10, force=False, time_limit=300):
         # at least prevent workers from endlessly querying repos which were revoked.
         # Ideally this would be implemented in a larger number of places (maybe via
         # a context manager?)
-        repos.disable_repo(repo.id, repo)
+        deactivate_repo(repo.id, DeactivationReason.invalid_pubkey)
         return
 
     # TODO(dcramer): this doesn't collect commits in non-default branches

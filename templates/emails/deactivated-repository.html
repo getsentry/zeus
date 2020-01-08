@@ -1,0 +1,8 @@
+{% extends "emails/base.html" %}
+
+{% block body %}
+    <p>Your repository ({{ repo.owner_name }}/{{ repo.name }}) was deactivated in Zeus.</p>
+    <p>The reason for the deactivation given:</p>
+    <p>{{ reason }}</p>
+    <p>To fix this problem, please <a href="{{ url }}">reconnect the repository</a>.</p>
+{% endblock %}
