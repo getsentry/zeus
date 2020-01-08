@@ -21,6 +21,7 @@ from zeus.models import (
     User,
 )
 from zeus.utils.email import inline_css
+from zeus.utils.http import absolute_url
 
 
 def find_linked_emails(build: Build) -> List[Tuple[UUID, str]]:
@@ -136,11 +137,10 @@ def build_message(build: Build, force=False) -> Message:
 
     context = {
         "title": subject,
-        "uri": "{proto}://{domain}/{repo}/builds/{build_no}".format(
-            proto="https" if current_app.config["SSL"] else "http",
-            domain=current_app.config["DOMAIN"],
-            repo=repo.get_full_name(),
-            build_no=build.number,
+        "url": absolute_url(
+            "/{repo}/builds/{build_no}".format(
+                repo=repo.get_full_name(), build_no=build.number
+            )
         ),
         "build": {
             "number": build.number,
@@ -185,7 +185,7 @@ def build_message(build: Build, force=False) -> Message:
         recipients=recipients,
         extra_headers={"Reply-To": ", ".join(sanitize_address(r) for r in recipients)},
     )
-    msg.body = render_template("notifications/email.txt", **context)
-    msg.html = inline_css(render_template("notifications/email.html", **context))
+    msg.body = render_template("emails/build-notification.txt", **context)
+    msg.html = inline_css(render_template("emails/build-notification.html", **context))
 
     return msg
