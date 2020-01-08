@@ -92,7 +92,7 @@ def load_revisions(repo: models.Repository, num_passes=100) -> models.Revision:
     while has_more and num < num_passes:
         has_more = False
         for commit in vcs.log(parent=parent):
-            revision, created = commit.save(repo)
+            revision = commit.save(repo)[0]
             if first_revision is None:
                 first_revision = revision
             db.session.commit()

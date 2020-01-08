@@ -8,6 +8,22 @@ from zeus.db.types import Enum, GUID, JSONEncodedDict
 from zeus.db.utils import model_repr
 from zeus.utils import timezone
 
+build_author_table = db.Table(
+    "build_author",
+    db.Column(
+        "build_id",
+        GUID,
+        db.ForeignKey("build.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    db.Column(
+        "author_id",
+        GUID,
+        db.ForeignKey("author.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+)
+
 
 class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     """
@@ -49,6 +65,7 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
     )
 
     author = db.relationship("Author")
+    authors = db.relationship("Author", secondary=build_author_table, backref="builds")
     revision = db.relationship(
         "Revision",
         foreign_keys="[Build.repository_id, Build.revision_sha]",

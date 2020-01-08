@@ -1,10 +1,11 @@
 from flask import request
+from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Email, Repository, Revision
+from zeus.models import Author, Build, Email, Repository, User
 from zeus.pubsub.utils import publish
 
 from .base_repository import BaseRepositoryResource
@@ -22,10 +23,9 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         """
         Return a list of builds for the given repository.
         """
-        user = auth.get_current_user()
-
         query = (
             Build.query.options(
+                joinedload("author"),
                 joinedload("revision"),
                 joinedload("revision").joinedload("author"),
                 subqueryload_all("stats"),
@@ -33,17 +33,34 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             .filter(Build.repository_id == repo.id)
             .order_by(Build.number.desc())
         )
-        show = request.args.get("show")
-        if show == "mine":
+        user = request.args.get("user")
+        if user:
+            if user == "me":
+                user = auth.get_current_user()
+            else:
+                user = User.query.get(user)
+            if not user:
+                return self.respond([])
+
             query = query.filter(
-                Revision.author_id.in_(
-                    db.session.query(Author.id).filter(
+                or_(
+                    Build.author_id.in_(
+                        db.session.query(Author.id).filter(
+                            Author.email.in_(
+                                db.session.query(Email.email).filter(
+                                    Email.user_id == user.id,
+                                    Email.verified == True,  # NOQA
+                                )
+                            )
+                        )
+                    ),
+                    Build.authors.any(
                         Author.email.in_(
                             db.session.query(Email.email).filter(
                                 Email.user_id == user.id, Email.verified == True  # NOQA
                             )
                         )
-                    )
+                    ),
                 )
             )
 

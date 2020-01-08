@@ -1,4 +1,5 @@
 from flask import request
+from sqlalchemy import or_
 from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
@@ -27,6 +28,7 @@ class BuildIndexResource(Resource):
 
         query = (
             Build.query.options(
+                joinedload("author"),
                 joinedload("repository"),
                 joinedload("revision"),
                 joinedload("revision").joinedload("author"),
@@ -45,14 +47,24 @@ class BuildIndexResource(Resource):
                 return self.respond([])
 
             query = query.filter(
-                Build.author_id.in_(
-                    db.session.query(Author.id).filter(
+                or_(
+                    Build.author_id.in_(
+                        db.session.query(Author.id).filter(
+                            Author.email.in_(
+                                db.session.query(Email.email).filter(
+                                    Email.user_id == user.id,
+                                    Email.verified == True,  # NOQA
+                                )
+                            )
+                        )
+                    ),
+                    Build.authors.any(
                         Author.email.in_(
                             db.session.query(Email.email).filter(
                                 Email.user_id == user.id, Email.verified == True  # NOQA
                             )
                         )
-                    )
+                    ),
                 )
             )
         repository = request.args.get("repository")
