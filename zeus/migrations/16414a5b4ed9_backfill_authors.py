@@ -50,7 +50,7 @@ RevisionAuthor = sa.Table(
 
 def upgrade():
     connection = op.get_bind()
-    for build in connection.execute(Build.select()):
+    for build in connection.execute(Build.select().where(Build.c.author_id != None)):
         connection.execute(
             BuildAuthor.insert().values(build_id=build.id, author_id=build.author_id)
         )
@@ -60,6 +60,7 @@ def upgrade():
             """
             INSERT INTO revision_author (repository_id, revision_sha, author_id)
             SELECT repository_id, sha, author_id FROM revision
+            WHERE author_id IS NOT NULL
             ON CONFLICT DO NOTHING
             """
         )
