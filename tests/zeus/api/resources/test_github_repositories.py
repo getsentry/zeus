@@ -42,8 +42,6 @@ KEY_RESPONSE = """{
 def test_new_repository_github(
     client, mocker, default_login, default_user, default_identity
 ):
-    mock_import_repo = mocker.patch("zeus.tasks.import_repo.delay")
-
     responses.add(
         "GET",
         "https://api.github.com/repos/getsentry/zeus",
@@ -73,8 +71,6 @@ def test_new_repository_github(
     assert len(access) == 1
     assert access[0].user_id == default_user.id
     assert access[0].permission == Permission.admin
-
-    mock_import_repo.assert_called_once_with(repo_id=repo.id)
 
 
 def test_deactivate_repository_github(

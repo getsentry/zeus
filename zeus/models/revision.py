@@ -7,7 +7,6 @@ from zeus.config import db
 from zeus.db.mixins import RepositoryBoundQuery
 from zeus.db.types import GUID
 from zeus.db.utils import model_repr
-from zeus.exceptions import UnknownRepositoryBackend
 from zeus.utils import timezone
 
 
@@ -84,18 +83,9 @@ class Revision(db.Model):
         return self.message.splitlines()[0]
 
     def generate_diff(self):
-        from zeus.vcs.base import UnknownRevision
+        from zeus.vcs import vcs_client
 
         try:
-            vcs = self.repository.get_vcs()
-        except UnknownRepositoryBackend:
-            return None
-
-        try:
-            try:
-                return vcs.export(self.sha)
-            except UnknownRevision:
-                vcs.update()
-                return vcs.export(self.sha)
+            return vcs_client.export(self.repository_id, self.sha)
         except Exception:
             current_app.logger.exception("generate_diff failure")

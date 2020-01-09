@@ -1,14 +1,11 @@
 import enum
-import os.path
 
-from flask import current_app
 from sqlalchemy import or_
 
 from zeus.config import db
 from zeus.db.mixins import StandardAttributes
 from zeus.db.types import Enum, StrEnum, JSONEncodedDict
 from zeus.db.utils import model_repr
-from zeus.exceptions import UnknownRepositoryBackend
 
 
 class RepositoryBackend(enum.IntEnum):
@@ -121,28 +118,6 @@ class Repository(StandardAttributes, db.Model):
         db.UniqueConstraint("provider", "owner_name", "name", name="unq_repo_name"),
     )
     __repr__ = model_repr("name", "url", "provider")
-
-    def get_vcs(self):
-        from zeus.models import ItemOption
-        from zeus.vcs.git import GitVcs
-
-        options = dict(
-            db.session.query(ItemOption.name, ItemOption.value).filter(
-                ItemOption.item_id == self.id, ItemOption.name.in_(["auth.username"])
-            )
-        )
-
-        kwargs = {
-            "path": os.path.join(current_app.config["REPO_ROOT"], self.id.hex),
-            "id": self.id.hex,
-            "url": self.url,
-            "username": options.get("auth.username"),
-        }
-
-        if self.backend == RepositoryBackend.git:
-            return GitVcs(**kwargs)
-
-        raise UnknownRepositoryBackend("Invalid backend: {}".format(self.backend))
 
     def get_full_name(self):
         return "{}/{}/{}".format(self.provider, self.owner_name, self.name)

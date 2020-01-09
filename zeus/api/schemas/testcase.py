@@ -6,10 +6,10 @@ from uuid import UUID
 
 from zeus.config import db
 from zeus.constants import Result, Status
-from zeus.exceptions import UnknownRepositoryBackend
+from zeus.exceptions import UnknownRevision
 from zeus.models import Build, Job, Revision, TestCase
 from zeus.utils.aggregation import aggregate_result
-from zeus.vcs.base import UnknownRevision
+from zeus.vcs import vcs_client
 
 from .build import BuildSchema
 from .fields import ResultField
@@ -27,16 +27,12 @@ def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str,
 
     repo = build.repository
     try:
-        vcs = repo.get_vcs()
-    except UnknownRepositoryBackend:
+        valid_revisions = [
+            c["sha"]
+            for c in vcs_client.log(repo.id, limit=100, parent=build.revision_sha)
+        ]
+    except UnknownRevision:
         valid_revisions = []
-    else:
-        try:
-            valid_revisions = [
-                c.sha for c in vcs.log(limit=100, parent=build.revision_sha)
-            ]
-        except UnknownRevision:
-            valid_revisions = []
 
     filters = [
         Build.repository_id == build.repository_id,

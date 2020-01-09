@@ -14,7 +14,6 @@ from zeus.models import (
     RepositoryProvider,
     RepositoryStatus,
 )
-from zeus.tasks import import_repo
 from zeus.utils import ssh
 from zeus.vcs.providers.github import GitHubRepositoryProvider
 
@@ -165,10 +164,7 @@ class GitHubRepositoriesResource(Resource):
                     user=user, repo_name=repo_name, owner_name=owner_name, key=key
                 )
 
-                # we need to commit before firing off the task
                 db.session.commit()
-
-                import_repo.delay(repo_id=repo.id)
 
         try:
             with db.session.begin_nested():

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from zeus.models import Repository, Revision
-from zeus.vcs.base import RevisionResult
+from zeus.vcs.backends.base import RevisionResult
 
 
 def test_revision_result(db_session, default_repo: Repository):

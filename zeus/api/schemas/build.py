@@ -62,7 +62,7 @@ class BuildCreateSchema(Schema):
         if not build.label and revision:
             build.label = revision.message.split("\n")[0]
         if not build.author_id and revision:
-            build.author_id = revision.author_id
+            build.author = revision.authors[0]
             for author in revision.authors:
                 build.authors.append(author)
         return build

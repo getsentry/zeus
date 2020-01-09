@@ -2,6 +2,7 @@ from flask import current_app, request
 
 from zeus.models import Build, FileCoverage
 from zeus.utils.trees import build_tree
+from zeus.vcs import vcs_client
 
 from .base_build import BaseBuildResource
 from ..schemas import FileCoverageSchema
@@ -13,17 +14,17 @@ filecoverage_schema = FileCoverageSchema(many=False)
 
 class BuildFileCoverageTreeResource(BaseBuildResource):
     def _get_leaf(self, build: Build, coverage: FileCoverage):
-        file_source = None
-        vcs = build.repository.get_vcs()
-        if vcs:
-            try:
-                file_source = vcs.show(build.revision_sha, coverage.filename)
-            except Exception:
-                current_app.logger.exception(
-                    "Could not load file source for {} - {}",
-                    build.revision_sha,
-                    coverage.filename,
-                )
+        try:
+            file_source = vcs_client.show(
+                build.repository_id, sha=build.revision_sha, filename=coverage.filename
+            )
+        except Exception:
+            file_source = None
+            current_app.logger.exception(
+                "Could not load file source for {} - {}",
+                build.revision_sha,
+                coverage.filename,
+            )
 
         return {
             "is_leaf": True,

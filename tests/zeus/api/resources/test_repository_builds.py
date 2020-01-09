@@ -1,6 +1,6 @@
 from zeus import factories
+from zeus.exceptions import UnknownRevision
 from zeus.models import Build
-from zeus.vcs.base import UnknownRevision
 
 
 def test_repo_build_list(

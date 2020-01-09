@@ -11,7 +11,6 @@ from zeus.models import (
     RepositoryStatus,
     User,
 )
-from zeus.tasks import import_repo, sync_repo
 from zeus.utils.text import slugify
 
 from .base import cli
@@ -41,27 +40,6 @@ def add(repository, url, backend, active):
     )
     db.session.add(repo)
     db.session.commit()
-
-    if active:
-        # do initial import in process
-        import_repo(repo_id=repo.id)
-
-
-@repos.command()
-@click.argument("repository", required=True)
-@click.option("--force/--no-force", default=True)
-def sync(repository, force):
-    provider, owner_name, repo_name = repository.split("/", 2)
-    repo = (
-        Repository.query.unrestricted_unsafe()
-        .filter(
-            Repository.provider == RepositoryProvider(provider),
-            Repository.owner_name == owner_name,
-            Repository.name == repo_name,
-        )
-        .first()
-    )
-    sync_repo(repo_id=repo.id, force=force)
 
 
 @repos.group("access")

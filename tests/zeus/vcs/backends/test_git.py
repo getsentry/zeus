@@ -3,7 +3,7 @@ import pytest
 from subprocess import check_call
 
 from zeus.vcs.asserts import assert_revision
-from zeus.vcs.git import GitVcs
+from zeus.vcs.backends.git import GitVcs
 
 
 def _get_last_two_revisions(marker, revisions):
@@ -30,9 +30,9 @@ def _set_author(remote_path, name, email):
 
 
 @pytest.fixture
-def vcs(git_repo_config, default_repo):
+async def vcs(git_repo_config, default_repo):
     return GitVcs(
-        url=git_repo_config.url, path=git_repo_config.path, id=default_repo.id.hex
+        url=git_repo_config.url, path=git_repo_config.path, id=default_repo["id"].hex
     )
 
 

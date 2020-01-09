@@ -4,6 +4,7 @@ from typing import List
 from zeus.models import FileCoverage, Revision
 from zeus.utils.builds import fetch_build_for_revision
 from zeus.utils.trees import build_tree
+from zeus.vcs import vcs_client
 
 from .base_revision import BaseRevisionResource
 from ..schemas import FileCoverageSchema
@@ -15,18 +16,18 @@ filecoverage_schema = FileCoverageSchema(many=False)
 
 class RevisionFileCoverageTreeResource(BaseRevisionResource):
     def _get_leaf(self, revision: Revision, coverage_list: List[FileCoverage]):
-        file_source = None
         coverage = coverage_list[0]
-        vcs = revision.repository.get_vcs()
-        if vcs:
-            try:
-                file_source = vcs.show(revision.sha, coverage.filename)
-            except Exception:
-                current_app.logger.exception(
-                    "Could not load file source for {} - {}",
-                    revision.sha,
-                    coverage.filename,
-                )
+        try:
+            file_source = vcs_client.show(
+                revision.repository_id, sha=revision.sha, filename=coverage.filename
+            )
+        except Exception:
+            file_source = None
+            current_app.logger.exception(
+                "Could not load file source for {} - {}",
+                revision.sha,
+                coverage.filename,
+            )
 
         # TODO(dcramer): this needs to merge coverage nodes
         return {
