@@ -8,8 +8,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: web
-  minReplicas: 6
-  maxReplicas: 10
+  minReplicas: 3
+  maxReplicas: 6
   targetCPUUtilizationPercentage: 80
 ---
 apiVersion: extensions/v1beta1
