@@ -75,6 +75,7 @@ def cleanup_build_stats(task_limit=100):
         Build.query.unrestricted_unsafe()
         .filter(
             Build.status != Status.finished,
+            Build.date_started < timezone.now() - timedelta(minutes=15),
             ~Job.query.filter(
                 Job.build_id == Build.id, Job.status != Status.finished
             ).exists(),
