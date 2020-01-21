@@ -275,7 +275,7 @@ def aggregate_build_stats(build_id: UUID):
     """
     # now we pull in the entirety of the build's data to aggregate state upward
     lock_key = "build:{build_id}".format(build_id=build_id)
-    with redis.lock(lock_key):
+    with redis.lock(lock_key, expire=60, nowait=True):
         build = (
             Build.query.unrestricted_unsafe().with_for_update(nowait=True).get(build_id)
         )
