@@ -62,8 +62,7 @@ def cleanup_build_refs(task_limit=100):
     for build in queryset:
         current_app.logger.warning("cleanup: resolve_ref_for_build %s", build.id)
         try:
-            with db.session.begin_nested():
-                resolve_ref_for_build(build_id=build.id)
+            resolve_ref_for_build(build_id=build.id)
         except Exception:
             current_app.logger.exception("cleanup: resolve_ref_for_build %s", build.id)
 
@@ -85,8 +84,7 @@ def cleanup_build_stats(task_limit=100):
     for build in queryset:
         current_app.logger.warning("cleanup: aggregate_build_stats %s", build.id)
         try:
-            with db.session.begin_nested():
-                aggregate_build_stats(build_id=build.id)
+            aggregate_build_stats(build_id=build.id)
         except Exception:
             current_app.logger.exception("cleanup: aggregate_build_stats %s", build.id)
 
