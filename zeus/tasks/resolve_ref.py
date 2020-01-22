@@ -3,9 +3,13 @@ from uuid import UUID
 from zeus import auth
 from zeus.api.schemas import BuildSchema
 from zeus.config import celery, db
+from zeus.constants import Result, Status
 from zeus.models import Build, ChangeRequest
 from zeus.pubsub.utils import publish
 from zeus.utils import revisions
+from zeus.vcs.base import InvalidPublicKey, UnknownRevision
+
+from .deactivate_repo import deactivate_repo, DeactivationReason
 
 build_schema = BuildSchema()
 
@@ -19,14 +23,24 @@ def resolve_ref_for_build(build_id: UUID):
     auth.set_current_tenant(auth.RepositoryTenant(repository_id=build.repository_id))
 
     if not build.revision_sha:
-        revision = revisions.identify_revision(
-            build.repository, build.ref, with_vcs=True
-        )
-        build.revision_sha = revision.sha
-        if not build.author_id:
-            build.author_id = revision.author_id
-        if not build.label:
-            build.label = revision.message.split("\n")[0]
+        try:
+            revision = revisions.identify_revision(
+                build.repository, build.ref, with_vcs=True
+            )
+        except UnknownRevision:
+            build.result = Result.errored
+            build.status = Status.finished
+            revision = None
+        except InvalidPublicKey:
+            deactivate_repo(build.repository_id, DeactivationReason.invalid_pubkey)
+            revision = None
+
+        if revision:
+            build.revision_sha = revision.sha
+            if not build.author_id:
+                build.author_id = revision.author_id
+            if not build.label:
+                build.label = revision.message.split("\n")[0]
         db.session.add(build)
         db.session.commit()
 
@@ -45,9 +59,13 @@ def resolve_ref_for_change_request(change_request_id: UUID):
     auth.set_current_tenant(auth.RepositoryTenant(repository_id=cr.repository_id))
 
     if not cr.parent_revision_sha:
-        revision = revisions.identify_revision(
-            cr.repository, cr.parent_ref, with_vcs=True
-        )
+        try:
+            revision = revisions.identify_revision(
+                cr.repository, cr.parent_ref, with_vcs=True
+            )
+        except InvalidPublicKey:
+            deactivate_repo(cr.repository_id, DeactivationReason.invalid_pubkey)
+            raise
         cr.parent_revision_sha = revision.sha
         if not cr.author_id:
             cr.author_id = revision.author_id

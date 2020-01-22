@@ -1,6 +1,7 @@
 import factory
 
 from zeus import models
+from zeus.utils import timezone
 
 from .base import ModelFactory
 from .types import GUIDFactory
@@ -12,6 +13,7 @@ class HookFactory(ModelFactory):
     repository_id = factory.SelfAttribute("repository.id")
     provider = "travis"
     config = factory.LazyAttribute(lambda x: {"domain": "api.travis-ci.com"})
+    date_created = factory.LazyAttribute(lambda o: timezone.now())
 
     class Meta:
         model = models.Hook

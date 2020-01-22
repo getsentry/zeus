@@ -1,4 +1,4 @@
-from flask import request
+from flask import current_app, request
 
 from zeus.constants import Result, Status
 from zeus.models import Build, FileCoverage, Repository
@@ -20,7 +20,11 @@ class RepositoryFileCoverageTreeResource(BaseRepositoryResource):
             try:
                 file_source = vcs.show(build.revision_sha, coverage.filename)
             except Exception:
-                pass
+                current_app.logger.exception(
+                    "Could not load file source for {} - {}",
+                    build.revision_sha,
+                    coverage.filename,
+                )
 
         return {
             "is_leaf": True,

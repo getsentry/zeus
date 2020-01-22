@@ -80,6 +80,7 @@ class BuildFactory(ModelFactory):
         failed = factory.Trait(result=Result.failed, status=Status.finished)
         passed = factory.Trait(result=Result.passed, status=Status.finished)
         aborted = factory.Trait(result=Result.aborted, status=Status.finished)
+        errored = factory.Trait(result=Result.errored, status=Status.finished)
         anonymous = factory.Trait(author=None, author_id=None)
         travis = factory.Trait(
             provider="travis",

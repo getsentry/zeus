@@ -13,1028 +13,1026 @@ exports[`BuildOverview renders with fully formed build 1`] = `
     }
   }
 >
-  <div>
-    <StyledPageLoadingIndicator>
-      <PageLoadingIndicator
-        className="css-jxhbcc-StyledPageLoadingIndicator e1p3ztue0"
+  <StyledPageLoadingIndicator>
+    <PageLoadingIndicator
+      className="css-jxhbcc-StyledPageLoadingIndicator e1p3ztue0"
+    >
+      <div
+        style={
+          Object {
+            "display": "block",
+            "height": 4,
+            "left": 0,
+            "position": "fixed",
+            "right": 0,
+            "top": 0,
+            "width": "100%",
+          }
+        }
       >
-        <div
+        <span
+          key="0"
           style={
             Object {
-              "display": "block",
+              "animationDelay": "0.02s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
               "height": 4,
-              "left": 0,
-              "position": "fixed",
-              "right": 0,
-              "top": 0,
-              "width": "100%",
+              "left": "0%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
           }
-        >
-          <span
-            key="0"
-            style={
-              Object {
-                "animationDelay": "0.02s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "0%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+        />
+        <span
+          key="1"
+          style={
+            Object {
+              "animationDelay": "0.04s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "2%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="1"
-            style={
-              Object {
-                "animationDelay": "0.04s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "2%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="2"
+          style={
+            Object {
+              "animationDelay": "0.06s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "4%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="2"
-            style={
-              Object {
-                "animationDelay": "0.06s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "4%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="3"
+          style={
+            Object {
+              "animationDelay": "0.08s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "6%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="3"
-            style={
-              Object {
-                "animationDelay": "0.08s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "6%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="4"
+          style={
+            Object {
+              "animationDelay": "0.1s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "8%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="4"
-            style={
-              Object {
-                "animationDelay": "0.1s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "8%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="5"
+          style={
+            Object {
+              "animationDelay": "0.12s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "10%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="5"
-            style={
-              Object {
-                "animationDelay": "0.12s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "10%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="6"
+          style={
+            Object {
+              "animationDelay": "0.14s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "12%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="6"
-            style={
-              Object {
-                "animationDelay": "0.14s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "12%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="7"
+          style={
+            Object {
+              "animationDelay": "0.16s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "14%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="7"
-            style={
-              Object {
-                "animationDelay": "0.16s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "14%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="8"
+          style={
+            Object {
+              "animationDelay": "0.18s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "16%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="8"
-            style={
-              Object {
-                "animationDelay": "0.18s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "16%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="9"
+          style={
+            Object {
+              "animationDelay": "0.2s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "18%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="9"
-            style={
-              Object {
-                "animationDelay": "0.2s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "18%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="10"
+          style={
+            Object {
+              "animationDelay": "0.22s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "20%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="10"
-            style={
-              Object {
-                "animationDelay": "0.22s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "20%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="11"
+          style={
+            Object {
+              "animationDelay": "0.24s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "22%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="11"
-            style={
-              Object {
-                "animationDelay": "0.24s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "22%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="12"
+          style={
+            Object {
+              "animationDelay": "0.26s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "24%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="12"
-            style={
-              Object {
-                "animationDelay": "0.26s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "24%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="13"
+          style={
+            Object {
+              "animationDelay": "0.28s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "26%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="13"
-            style={
-              Object {
-                "animationDelay": "0.28s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "26%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="14"
+          style={
+            Object {
+              "animationDelay": "0.3s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "28%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="14"
-            style={
-              Object {
-                "animationDelay": "0.3s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "28%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="15"
+          style={
+            Object {
+              "animationDelay": "0.32s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "30%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="15"
-            style={
-              Object {
-                "animationDelay": "0.32s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "30%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="16"
+          style={
+            Object {
+              "animationDelay": "0.34s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "32%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="16"
-            style={
-              Object {
-                "animationDelay": "0.34s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "32%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="17"
+          style={
+            Object {
+              "animationDelay": "0.36s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "34%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="17"
-            style={
-              Object {
-                "animationDelay": "0.36s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "34%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="18"
+          style={
+            Object {
+              "animationDelay": "0.38s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "36%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="18"
-            style={
-              Object {
-                "animationDelay": "0.38s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "36%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="19"
+          style={
+            Object {
+              "animationDelay": "0.4s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "38%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="19"
-            style={
-              Object {
-                "animationDelay": "0.4s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "38%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="20"
+          style={
+            Object {
+              "animationDelay": "0.42s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "40%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="20"
-            style={
-              Object {
-                "animationDelay": "0.42s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "40%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="21"
+          style={
+            Object {
+              "animationDelay": "0.44s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "42%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="21"
-            style={
-              Object {
-                "animationDelay": "0.44s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "42%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="22"
+          style={
+            Object {
+              "animationDelay": "0.46s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "44%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="22"
-            style={
-              Object {
-                "animationDelay": "0.46s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "44%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="23"
+          style={
+            Object {
+              "animationDelay": "0.48s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "46%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="23"
-            style={
-              Object {
-                "animationDelay": "0.48s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "46%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="24"
+          style={
+            Object {
+              "animationDelay": "0.5s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "48%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="24"
-            style={
-              Object {
-                "animationDelay": "0.5s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "48%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="25"
+          style={
+            Object {
+              "animationDelay": "0.52s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "50%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="25"
-            style={
-              Object {
-                "animationDelay": "0.52s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "50%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="26"
+          style={
+            Object {
+              "animationDelay": "0.54s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "52%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="26"
-            style={
-              Object {
-                "animationDelay": "0.54s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "52%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="27"
+          style={
+            Object {
+              "animationDelay": "0.56s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "54%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="27"
-            style={
-              Object {
-                "animationDelay": "0.56s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "54%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="28"
+          style={
+            Object {
+              "animationDelay": "0.58s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "56%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="28"
-            style={
-              Object {
-                "animationDelay": "0.58s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "56%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="29"
+          style={
+            Object {
+              "animationDelay": "0.6s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "58%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="29"
-            style={
-              Object {
-                "animationDelay": "0.6s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "58%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="30"
+          style={
+            Object {
+              "animationDelay": "0.62s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "60%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="30"
-            style={
-              Object {
-                "animationDelay": "0.62s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "60%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="31"
+          style={
+            Object {
+              "animationDelay": "0.64s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "62%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="31"
-            style={
-              Object {
-                "animationDelay": "0.64s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "62%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="32"
+          style={
+            Object {
+              "animationDelay": "0.66s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "64%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="32"
-            style={
-              Object {
-                "animationDelay": "0.66s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "64%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="33"
+          style={
+            Object {
+              "animationDelay": "0.68s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "66%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="33"
-            style={
-              Object {
-                "animationDelay": "0.68s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "66%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="34"
+          style={
+            Object {
+              "animationDelay": "0.7000000000000001s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "68%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="34"
-            style={
-              Object {
-                "animationDelay": "0.7000000000000001s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "68%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="35"
+          style={
+            Object {
+              "animationDelay": "0.72s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "70%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="35"
-            style={
-              Object {
-                "animationDelay": "0.72s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "70%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="36"
+          style={
+            Object {
+              "animationDelay": "0.74s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "72%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="36"
-            style={
-              Object {
-                "animationDelay": "0.74s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "72%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="37"
+          style={
+            Object {
+              "animationDelay": "0.76s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "74%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="37"
-            style={
-              Object {
-                "animationDelay": "0.76s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "74%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="38"
+          style={
+            Object {
+              "animationDelay": "0.78s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "76%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="38"
-            style={
-              Object {
-                "animationDelay": "0.78s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "76%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="39"
+          style={
+            Object {
+              "animationDelay": "0.8s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "78%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="39"
-            style={
-              Object {
-                "animationDelay": "0.8s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "78%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="40"
+          style={
+            Object {
+              "animationDelay": "0.8200000000000001s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "80%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="40"
-            style={
-              Object {
-                "animationDelay": "0.8200000000000001s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "80%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="41"
+          style={
+            Object {
+              "animationDelay": "0.84s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "82%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="41"
-            style={
-              Object {
-                "animationDelay": "0.84s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "82%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="42"
+          style={
+            Object {
+              "animationDelay": "0.86s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "84%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="42"
-            style={
-              Object {
-                "animationDelay": "0.86s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "84%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="43"
+          style={
+            Object {
+              "animationDelay": "0.88s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "86%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="43"
-            style={
-              Object {
-                "animationDelay": "0.88s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "86%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="44"
+          style={
+            Object {
+              "animationDelay": "0.9s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "88%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="44"
-            style={
-              Object {
-                "animationDelay": "0.9s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "88%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="45"
+          style={
+            Object {
+              "animationDelay": "0.92s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "90%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="45"
-            style={
-              Object {
-                "animationDelay": "0.92s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "90%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="46"
+          style={
+            Object {
+              "animationDelay": "0.9400000000000001s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "92%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="46"
-            style={
-              Object {
-                "animationDelay": "0.9400000000000001s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "92%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="47"
+          style={
+            Object {
+              "animationDelay": "0.96s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "94%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="47"
-            style={
-              Object {
-                "animationDelay": "0.96s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "94%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="48"
+          style={
+            Object {
+              "animationDelay": "0.98s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "96%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="48"
-            style={
-              Object {
-                "animationDelay": "0.98s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "96%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="49"
+          style={
+            Object {
+              "animationDelay": "1s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "98%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="49"
-            style={
-              Object {
-                "animationDelay": "1s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "98%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
-            }
-          />
-        </div>
-      </PageLoadingIndicator>
-    </StyledPageLoadingIndicator>
-  </div>
+          }
+        />
+      </div>
+    </PageLoadingIndicator>
+  </StyledPageLoadingIndicator>
 </BuildOverview>
 `;
 
@@ -1051,1027 +1049,1025 @@ exports[`BuildOverview renders with incomplete-build 1`] = `
     }
   }
 >
-  <div>
-    <StyledPageLoadingIndicator>
-      <PageLoadingIndicator
-        className="css-jxhbcc-StyledPageLoadingIndicator e1p3ztue0"
+  <StyledPageLoadingIndicator>
+    <PageLoadingIndicator
+      className="css-jxhbcc-StyledPageLoadingIndicator e1p3ztue0"
+    >
+      <div
+        style={
+          Object {
+            "display": "block",
+            "height": 4,
+            "left": 0,
+            "position": "fixed",
+            "right": 0,
+            "top": 0,
+            "width": "100%",
+          }
+        }
       >
-        <div
+        <span
+          key="0"
           style={
             Object {
-              "display": "block",
+              "animationDelay": "0.02s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
               "height": 4,
-              "left": 0,
-              "position": "fixed",
-              "right": 0,
-              "top": 0,
-              "width": "100%",
+              "left": "0%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
           }
-        >
-          <span
-            key="0"
-            style={
-              Object {
-                "animationDelay": "0.02s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "0%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+        />
+        <span
+          key="1"
+          style={
+            Object {
+              "animationDelay": "0.04s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "2%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="1"
-            style={
-              Object {
-                "animationDelay": "0.04s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "2%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="2"
+          style={
+            Object {
+              "animationDelay": "0.06s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "4%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="2"
-            style={
-              Object {
-                "animationDelay": "0.06s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "4%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="3"
+          style={
+            Object {
+              "animationDelay": "0.08s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "6%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="3"
-            style={
-              Object {
-                "animationDelay": "0.08s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "6%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="4"
+          style={
+            Object {
+              "animationDelay": "0.1s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "8%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="4"
-            style={
-              Object {
-                "animationDelay": "0.1s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "8%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="5"
+          style={
+            Object {
+              "animationDelay": "0.12s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "10%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="5"
-            style={
-              Object {
-                "animationDelay": "0.12s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "10%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="6"
+          style={
+            Object {
+              "animationDelay": "0.14s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "12%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="6"
-            style={
-              Object {
-                "animationDelay": "0.14s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "12%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="7"
+          style={
+            Object {
+              "animationDelay": "0.16s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "14%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="7"
-            style={
-              Object {
-                "animationDelay": "0.16s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "14%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="8"
+          style={
+            Object {
+              "animationDelay": "0.18s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "16%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="8"
-            style={
-              Object {
-                "animationDelay": "0.18s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "16%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="9"
+          style={
+            Object {
+              "animationDelay": "0.2s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "18%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="9"
-            style={
-              Object {
-                "animationDelay": "0.2s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "18%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="10"
+          style={
+            Object {
+              "animationDelay": "0.22s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "20%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="10"
-            style={
-              Object {
-                "animationDelay": "0.22s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "20%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="11"
+          style={
+            Object {
+              "animationDelay": "0.24s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "22%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="11"
-            style={
-              Object {
-                "animationDelay": "0.24s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "22%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="12"
+          style={
+            Object {
+              "animationDelay": "0.26s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "24%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="12"
-            style={
-              Object {
-                "animationDelay": "0.26s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "24%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="13"
+          style={
+            Object {
+              "animationDelay": "0.28s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "26%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="13"
-            style={
-              Object {
-                "animationDelay": "0.28s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "26%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="14"
+          style={
+            Object {
+              "animationDelay": "0.3s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "28%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="14"
-            style={
-              Object {
-                "animationDelay": "0.3s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "28%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="15"
+          style={
+            Object {
+              "animationDelay": "0.32s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "30%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="15"
-            style={
-              Object {
-                "animationDelay": "0.32s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "30%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="16"
+          style={
+            Object {
+              "animationDelay": "0.34s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "32%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="16"
-            style={
-              Object {
-                "animationDelay": "0.34s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "32%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="17"
+          style={
+            Object {
+              "animationDelay": "0.36s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "34%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="17"
-            style={
-              Object {
-                "animationDelay": "0.36s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "34%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="18"
+          style={
+            Object {
+              "animationDelay": "0.38s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "36%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="18"
-            style={
-              Object {
-                "animationDelay": "0.38s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "36%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="19"
+          style={
+            Object {
+              "animationDelay": "0.4s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "38%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="19"
-            style={
-              Object {
-                "animationDelay": "0.4s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "38%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="20"
+          style={
+            Object {
+              "animationDelay": "0.42s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "40%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="20"
-            style={
-              Object {
-                "animationDelay": "0.42s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "40%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="21"
+          style={
+            Object {
+              "animationDelay": "0.44s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "42%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="21"
-            style={
-              Object {
-                "animationDelay": "0.44s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "42%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="22"
+          style={
+            Object {
+              "animationDelay": "0.46s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "44%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="22"
-            style={
-              Object {
-                "animationDelay": "0.46s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "44%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="23"
+          style={
+            Object {
+              "animationDelay": "0.48s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "46%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="23"
-            style={
-              Object {
-                "animationDelay": "0.48s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "46%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="24"
+          style={
+            Object {
+              "animationDelay": "0.5s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "48%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="24"
-            style={
-              Object {
-                "animationDelay": "0.5s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "48%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="25"
+          style={
+            Object {
+              "animationDelay": "0.52s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "50%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="25"
-            style={
-              Object {
-                "animationDelay": "0.52s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "50%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="26"
+          style={
+            Object {
+              "animationDelay": "0.54s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "52%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="26"
-            style={
-              Object {
-                "animationDelay": "0.54s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "52%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="27"
+          style={
+            Object {
+              "animationDelay": "0.56s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "54%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="27"
-            style={
-              Object {
-                "animationDelay": "0.56s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "54%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="28"
+          style={
+            Object {
+              "animationDelay": "0.58s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "56%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="28"
-            style={
-              Object {
-                "animationDelay": "0.58s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "56%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="29"
+          style={
+            Object {
+              "animationDelay": "0.6s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "58%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="29"
-            style={
-              Object {
-                "animationDelay": "0.6s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "58%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="30"
+          style={
+            Object {
+              "animationDelay": "0.62s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "60%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="30"
-            style={
-              Object {
-                "animationDelay": "0.62s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "60%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="31"
+          style={
+            Object {
+              "animationDelay": "0.64s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "62%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="31"
-            style={
-              Object {
-                "animationDelay": "0.64s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "62%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="32"
+          style={
+            Object {
+              "animationDelay": "0.66s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "64%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="32"
-            style={
-              Object {
-                "animationDelay": "0.66s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "64%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="33"
+          style={
+            Object {
+              "animationDelay": "0.68s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "66%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="33"
-            style={
-              Object {
-                "animationDelay": "0.68s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "66%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="34"
+          style={
+            Object {
+              "animationDelay": "0.7000000000000001s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "68%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="34"
-            style={
-              Object {
-                "animationDelay": "0.7000000000000001s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "68%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="35"
+          style={
+            Object {
+              "animationDelay": "0.72s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "70%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="35"
-            style={
-              Object {
-                "animationDelay": "0.72s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "70%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="36"
+          style={
+            Object {
+              "animationDelay": "0.74s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "72%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="36"
-            style={
-              Object {
-                "animationDelay": "0.74s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "72%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="37"
+          style={
+            Object {
+              "animationDelay": "0.76s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "74%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="37"
-            style={
-              Object {
-                "animationDelay": "0.76s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "74%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="38"
+          style={
+            Object {
+              "animationDelay": "0.78s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "76%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="38"
-            style={
-              Object {
-                "animationDelay": "0.78s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "76%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="39"
+          style={
+            Object {
+              "animationDelay": "0.8s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "78%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="39"
-            style={
-              Object {
-                "animationDelay": "0.8s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "78%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="40"
+          style={
+            Object {
+              "animationDelay": "0.8200000000000001s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "80%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="40"
-            style={
-              Object {
-                "animationDelay": "0.8200000000000001s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "80%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="41"
+          style={
+            Object {
+              "animationDelay": "0.84s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "82%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="41"
-            style={
-              Object {
-                "animationDelay": "0.84s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "82%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="42"
+          style={
+            Object {
+              "animationDelay": "0.86s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "84%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="42"
-            style={
-              Object {
-                "animationDelay": "0.86s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "84%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="43"
+          style={
+            Object {
+              "animationDelay": "0.88s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "86%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="43"
-            style={
-              Object {
-                "animationDelay": "0.88s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "86%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="44"
+          style={
+            Object {
+              "animationDelay": "0.9s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "88%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="44"
-            style={
-              Object {
-                "animationDelay": "0.9s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "88%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="45"
+          style={
+            Object {
+              "animationDelay": "0.92s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "90%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="45"
-            style={
-              Object {
-                "animationDelay": "0.92s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "90%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="46"
+          style={
+            Object {
+              "animationDelay": "0.9400000000000001s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "92%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="46"
-            style={
-              Object {
-                "animationDelay": "0.9400000000000001s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "92%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="47"
+          style={
+            Object {
+              "animationDelay": "0.96s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "94%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="47"
-            style={
-              Object {
-                "animationDelay": "0.96s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "94%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="48"
+          style={
+            Object {
+              "animationDelay": "0.98s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "96%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="48"
-            style={
-              Object {
-                "animationDelay": "0.98s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "96%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
+          }
+        />
+        <span
+          key="49"
+          style={
+            Object {
+              "animationDelay": "1s",
+              "animationDuration": "1s",
+              "animationIterationCount": "infinite",
+              "animationName": "pageLoadingAnim",
+              "animationTimingFunction": "ease",
+              "background": "#fff",
+              "borderRadius": 0,
+              "display": "inline-block",
+              "height": 4,
+              "left": "98%",
+              "opacity": 0,
+              "position": "absolute",
+              "width": "2%",
             }
-          />
-          <span
-            key="49"
-            style={
-              Object {
-                "animationDelay": "1s",
-                "animationDuration": "1s",
-                "animationIterationCount": "infinite",
-                "animationName": "pageLoadingAnim",
-                "animationTimingFunction": "ease",
-                "background": "#fff",
-                "borderRadius": 0,
-                "display": "inline-block",
-                "height": 4,
-                "left": "98%",
-                "opacity": 0,
-                "position": "absolute",
-                "width": "2%",
-              }
-            }
-          />
-        </div>
-      </PageLoadingIndicator>
-    </StyledPageLoadingIndicator>
-  </div>
+          }
+        />
+      </div>
+    </PageLoadingIndicator>
+  </StyledPageLoadingIndicator>
 </BuildOverview>
 `;

@@ -1,9 +1,10 @@
+from sqlalchemy.exc import IntegrityError
+from typing import Any, Optional, Tuple
+
 from zeus.config import db
 
-from sqlalchemy.exc import IntegrityError
 
-
-def try_create(model, where: dict, defaults: dict = None):
+def try_create(model, where: dict, defaults: dict = None) -> Optional[Any]:
     if defaults is None:
         defaults = {}
 
@@ -15,13 +16,14 @@ def try_create(model, where: dict, defaults: dict = None):
     try:
         with db.session.begin_nested():
             db.session.add(instance)
-    except IntegrityError:
-        return
-
+    except IntegrityError as exc:
+        if "duplicate" not in str(exc):
+            return
+        raise
     return instance
 
 
-def try_update(model, where: dict, values: dict):
+def try_update(model, where: dict, values: dict) -> bool:
     result = (
         db.session.query(type(model))
         .filter_by(**where)
@@ -30,7 +32,7 @@ def try_update(model, where: dict, values: dict):
     return result.rowcount > 0
 
 
-def get_or_create(model, where: dict, defaults: dict = None):
+def get_or_create(model, where: dict, defaults: dict = None) -> Tuple[Any, bool]:
     if defaults is None:
         defaults = {}
 
@@ -53,7 +55,7 @@ def get_or_create(model, where: dict, defaults: dict = None):
     return instance, created
 
 
-def create_or_update(model, where: dict, values: dict = None):
+def create_or_update(model, where: dict, values: dict = None) -> Tuple[Any, bool]:
     if values is None:
         values = {}
 
@@ -76,7 +78,7 @@ def create_or_update(model, where: dict, values: dict = None):
     return instance, created
 
 
-def create_or_get(model, where: dict, values: dict = None):
+def create_or_get(model, where: dict, values: dict = None) -> Tuple[Any, bool]:
     if values is None:
         values = {}
 

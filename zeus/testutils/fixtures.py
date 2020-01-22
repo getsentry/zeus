@@ -2,7 +2,7 @@ import os
 import pytest
 
 from collections import namedtuple
-from datetime import datetime, timedelta
+from datetime import timedelta
 from subprocess import check_call, check_output
 
 from zeus import factories, models, auth
@@ -134,8 +134,8 @@ def default_change_request(default_author, default_revision, default_parent_revi
 def default_build(default_revision):
     return factories.BuildFactory(
         revision=default_revision,
-        date_started=datetime.now(timezone.utc) - timedelta(minutes=6),
-        date_finished=datetime.now(timezone.utc),
+        date_started=timezone.now() - timedelta(minutes=6),
+        date_finished=timezone.now(),
         passed=True,
     )
 
@@ -144,8 +144,8 @@ def default_build(default_revision):
 def default_job(default_build):
     return factories.JobFactory(
         build=default_build,
-        date_started=datetime.now(timezone.utc) - timedelta(minutes=6),
-        date_finished=datetime.now(timezone.utc),
+        date_started=timezone.now() - timedelta(minutes=6),
+        date_finished=timezone.now(),
         passed=True,
     )
 

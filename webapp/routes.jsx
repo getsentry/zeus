@@ -64,6 +64,11 @@ const AsyncTokenSettings = Loadable({
   loading: PageLoading
 });
 
+const AsyncInstall = Loadable({
+  loader: () => import('./pages/Install'),
+  loading: PageLoading
+});
+
 export default (
   <Route path="/" component={App}>
     <IndexRoute component={DashboardOrWelcome} />
@@ -114,6 +119,7 @@ export default (
       </Route>
       <Route path="tests/:testHash" component={TestDetails} />
     </Route>
+    <Route path="/install" component={AsyncInstall} />
     <Route path="*" component={NotFoundError} />
   </Route>
 );

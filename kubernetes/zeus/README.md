@@ -32,7 +32,7 @@ You'll need to create a new pool, and drain the old one:
 https://cloud.google.com/kubernetes-engine/docs/tutorials/migrating-node-pool
 
 ```bash
-gcloud container node-pools create pool-n1-highcpu-4 --cluster zeus --zone us-central1-b --scopes https://www.googleapis.com/auth/devstorage.read_write --machine-type=n1-highcpu-4 --num-nodes=1 --enable-autoupgrade --enable-autoscaling --max-nodes=20 --min-nodes=1
+gcloud container node-pools create pool-n1-standard-8 --cluster zeus --zone us-central1-b --scopes https://www.googleapis.com/auth/devstorage.read_write --machine-type=n1-standard-8 --num-nodes=1 --enable-autoupgrade --enable-autoscaling --max-nodes=40 --min-nodes=1
 ```
 
 ## Secrets

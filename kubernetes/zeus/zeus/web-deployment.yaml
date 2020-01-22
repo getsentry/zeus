@@ -8,8 +8,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: web
-  minReplicas: 6
-  maxReplicas: 10
+  minReplicas: 3
+  maxReplicas: 6
   targetCPUUtilizationPercentage: 80
 ---
 apiVersion: extensions/v1beta1
@@ -41,6 +41,8 @@ spec:
               value: zeus-176020
             - name: GCS_BUCKET
               value: 'artifacts.zeus-176020.appspot.com'
+            - name: DB_HOST
+              value: pgbouncer
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
@@ -139,32 +141,7 @@ spec:
             limits:
               cpu: 1000m
               memory: 800Mi
-        - name: cloudsql-proxy
-          image: gcr.io/cloudsql-docker/gce-proxy:1.09
-          command:
-            [
-              '/cloud_sql_proxy',
-              '--dir=/cloudsql',
-              '-instances=zeus-176020:us-central1:zeus-prod-06947e6=tcp:5432',
-              '-credential_file=/secrets/cloudsql/credentials.json',
-            ]
-          volumeMounts:
-            - name: cloudsql-instance-credentials
-              mountPath: /secrets/cloudsql
-              readOnly: true
-            - name: ssl-certs
-              mountPath: /etc/ssl/certs
-            - name: cloudsql
-              mountPath: /cloudsql
       volumes:
-        - name: cloudsql-instance-credentials
-          secret:
-            secretName: cloudsql-instance-credentials
-        - name: ssl-certs
-          hostPath:
-            path: /etc/ssl/certs
-        - name: cloudsql
-          ? emptyDir
         - name: service-account
           secret:
             secretName: 'zeus-service-account'

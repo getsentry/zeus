@@ -1,0 +1,13 @@
+------------------------------------------
+Repository Disabled
+------------------------------------------
+
+Your repository ({{ repo.owner_name }}/{{ repo.name }}) was deactivated in Zeus.
+
+The reason for the deactivation given:
+
+    {{ reason }}
+
+To fix this problem, please visit reconnect the repository:
+
+    {{ settings_url }}

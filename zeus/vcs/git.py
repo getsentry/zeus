@@ -1,7 +1,7 @@
-from datetime import datetime
 from urllib.parse import urlparse
 
 from zeus.utils.functional import memoize
+from zeus.utils import timezone
 
 from .base import (
     Vcs,
@@ -15,6 +15,8 @@ from .base import (
 LOG_FORMAT = "%H\x01%an <%ae>\x01%at\x01%cn <%ce>\x01%ct\x01%P\x01%B\x02"
 
 ORIGIN_PREFIX = "remotes/origin/"
+
+MAX_DEPTH = 1000
 
 
 class LazyGitRevisionResult(RevisionResult):
@@ -106,14 +108,14 @@ class GitVcs(Vcs):
 
             raise
 
-    def clone(self):
-        self.run(["clone", "--mirror", self.remote_url, self.path])
+    def clone(self, depth=MAX_DEPTH):
+        self.run(["clone", "--mirror", f"--depth={depth}", self.remote_url, self.path])
 
-    def update(self, allow_cleanup=False):
+    def update(self, allow_cleanup=False, depth=MAX_DEPTH):
         if allow_cleanup:
-            self.run(["fetch", "--all", "--force", "-p"])
+            self.run(["fetch", "--all", "--force", "-p", f"--depth={depth}"])
         else:
-            self.run(["fetch", "--all", "--force"])
+            self.run(["fetch", "--all", "--force", f"--depth={depth}"])
 
     def log(
         self,
@@ -155,22 +157,39 @@ class GitVcs(Vcs):
         if parent:
             cmd.append(parent)
 
-        try:
-            self.ensure(update_if_exists=update_if_exists)
-            result = self.run(cmd, timeout=timeout)
-        except CommandError as cmd_error:
-            err_msg = cmd_error.stderr
-            if branch and branch in err_msg.decode("utf-8"):
-                import traceback
-                import logging
+        for n in range(2):
+            try:
+                self.ensure(update_if_exists=update_if_exists)
+                result = self.run(cmd, timeout=timeout)
+                break
+            except CommandError as cmd_error:
+                err_msg = cmd_error.stderr
+                if branch and branch in err_msg.decode("utf-8"):
+                    # TODO: https://stackoverflow.com/questions/45096755/fatal-ambiguous-argument-origin-unknown-revision-or-path-not-in-the-working
+                    default_error = ValueError(
+                        'Unable to fetch commit log for branch "{0}".'.format(branch)
+                    )
+                    if not self.run(["remote"]):
+                        # assume we're in a broken state, and try to repair
+                        # XXX: theory is this might happen when OOMKiller axes clone?
+                        result = self.run(
+                            [
+                                "symbolic-ref",
+                                "refs/remotes/origin/HEAD",
+                                "refs/remotes/origin/{}".format(
+                                    self.get_default_branch()
+                                ),
+                            ]
+                        )
+                        continue
 
-                msg = traceback.format_exception(CommandError, cmd_error, None)
-                logging.warning(msg)
-                raise ValueError(
-                    'Unable to fetch commit log for branch "{0}".'.format(branch)
-                ) from cmd_error
+                    import traceback
+                    import logging
 
-            raise
+                    msg = traceback.format_exception(CommandError, cmd_error, None)
+                    logging.warning(msg)
+                    raise default_error from cmd_error
+                raise
 
         for chunk in BufferParser(result, "\x02"):
             (
@@ -188,8 +207,8 @@ class GitVcs(Vcs):
 
             parents = [p for p in parents.split(" ") if p]
 
-            author_date = datetime.utcfromtimestamp(float(author_date))
-            committer_date = datetime.utcfromtimestamp(float(committer_date))
+            author_date = timezone.fromtimestamp(float(author_date))
+            committer_date = timezone.fromtimestamp(float(committer_date))
 
             yield LazyGitRevisionResult(
                 vcs=self,

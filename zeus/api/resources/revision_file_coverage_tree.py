@@ -1,4 +1,4 @@
-from flask import request
+from flask import current_app, request
 from typing import List
 
 from zeus.models import FileCoverage, Revision
@@ -22,7 +22,11 @@ class RevisionFileCoverageTreeResource(BaseRevisionResource):
             try:
                 file_source = vcs.show(revision.sha, coverage.filename)
             except Exception:
-                pass
+                current_app.logger.exception(
+                    "Could not load file source for {} - {}",
+                    revision.sha,
+                    coverage.filename,
+                )
 
         # TODO(dcramer): this needs to merge coverage nodes
         return {

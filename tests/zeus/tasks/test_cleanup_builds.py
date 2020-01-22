@@ -16,6 +16,7 @@ def test_cleanup_builds(mocker, db_session, default_build, default_revision):
     # prevent resolve_ref
     default_build.revision_sha = default_revision.sha
     default_build.status = Status.in_progress
+    default_build.date_started = job.date_started
     db_session.add(default_build)
     db_session.flush()
 

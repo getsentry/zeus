@@ -75,3 +75,29 @@ def test_find_linked_emails(
 
     results = find_linked_emails(build)
     assert results == [(default_user.id, default_user.email)]
+
+
+def test_find_linked_emails_secondary_author(
+    db_session,
+    default_user,
+    default_repo,
+    default_repo_access,
+    default_revision,
+    default_tenant,
+    outbox,
+):
+    other_user = factories.UserFactory()
+    other_author = factories.AuthorFactory(
+        repository=default_repo, email=other_user.email
+    )
+    factories.EmailFactory(user=other_user, email=other_user.email)
+    access = RepositoryAccess(user_id=other_user.id, repository_id=default_repo.id)
+    db_session.add(access)
+
+    build = factories.BuildFactory(repository=default_repo)
+    build.authors.append(other_author)
+    db_session.add(build)
+    db_session.delete(default_user)
+
+    results = find_linked_emails(build)
+    assert results == [(other_user.id, other_user.email)]

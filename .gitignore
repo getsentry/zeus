@@ -32,6 +32,9 @@ celerybeat-schedule
 *.pyc
 *.egg-info
 
+# poetry generates a setup.py
+/setup.py
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -1,12 +1,13 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from zeus import factories
 from zeus.constants import Status, Result
+from zeus.utils import timezone
 from zeus.utils.builds import fetch_build_for_revision, merge_build_group
 
 
 def test_merge_build_group_different_providers(client, default_login, default_revision):
-    now = datetime.now()
+    now = timezone.now()
     later = now + timedelta(minutes=1)
     build1 = factories.BuildFactory.create(
         revision=default_revision,
@@ -35,7 +36,7 @@ def test_merge_build_group_different_providers(client, default_login, default_re
 
 
 def test_merge_build_group_empty_dates(client, default_login, default_revision):
-    now = datetime.now()
+    now = timezone.now()
     build1 = factories.BuildFactory.create(
         revision=default_revision,
         provider="provider1",

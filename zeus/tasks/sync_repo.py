@@ -1,14 +1,15 @@
-from datetime import timedelta
 from flask import current_app
 
 from zeus import auth
 from zeus.config import celery, db
 from zeus.constants import Permission
 from zeus.exceptions import UnknownRepositoryBackend
-from zeus.models import ItemOption, Repository, RepositoryStatus
+from zeus.models import Repository, RepositoryStatus
 from zeus.utils import timezone
 from zeus.vcs.base import InvalidPublicKey
 
+
+from .deactivate_repo import deactivate_repo, DeactivationReason
 
 # TODO(dcramer): a lot of this code is shared with import_repo
 
@@ -58,12 +59,7 @@ def sync_repo(repo_id, max_log_passes=10, force=False, time_limit=300):
         # at least prevent workers from endlessly querying repos which were revoked.
         # Ideally this would be implemented in a larger number of places (maybe via
         # a context manager?)
-        repo.status = RepositoryStatus.inactive
-        ItemOption.query.filter(
-            ItemOption.item_id == repo.id, ItemOption.name == "auth.private-key"
-        ).delete()
-        db.session.add(repo)
-        db.session.commit()
+        deactivate_repo(repo.id, DeactivationReason.invalid_pubkey)
         return
 
     # TODO(dcramer): this doesn't collect commits in non-default branches
@@ -90,8 +86,7 @@ def sync_repo(repo_id, max_log_passes=10, force=False, time_limit=300):
     if repo.last_update and not had_results:
         time_since_last_update = now - repo.last_update
         next_update += min(
-            time_since_last_update,
-            timedelta(current_app.config["REPO_MAX_SYNC_INTERVAL"]),
+            time_since_last_update, current_app.config["REPO_MAX_SYNC_INTERVAL"]
         )
 
     Repository.query.filter(Repository.id == repo.id).update(

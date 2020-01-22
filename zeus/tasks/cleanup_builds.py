@@ -4,100 +4,96 @@ from sqlalchemy import or_
 
 from zeus.config import celery, db
 from zeus.constants import Result, Status
-from zeus.exceptions import UnknownJob
-from zeus.models import Artifact, Build, Job, PendingArtifact
+from zeus.models import Build, Job
 from zeus.utils import timezone
 
 from .aggregate_job_stats import aggregate_build_stats
-from .process_artifact import process_artifact
-from .process_pending_artifact import process_pending_artifact
 from .resolve_ref import resolve_ref_for_build
 
 
 @celery.task(name="zeus.cleanup_builds", time_limit=300)
-def cleanup_builds():
-    # find any pending artifacts which seemingly are stuck (not enqueued)
-    queryset = (
-        db.session.query(PendingArtifact.id)
-        .filter(
-            Build.external_id == PendingArtifact.external_build_id,
-            Build.provider == PendingArtifact.provider,
-            Build.repository_id == PendingArtifact.repository_id,
-            Build.status == Status.finished,
-        )
-        .limit(100)
-    )
+def cleanup_builds(task_limit=100):
+    current_app.logger.info("cleanup: running cleanup_jobs")
+    cleanup_jobs(task_limit=task_limit)
+    current_app.logger.info("cleanup: running cleanup_build_refs")
+    cleanup_build_refs(task_limit=task_limit)
+    current_app.logger.info("cleanup: running cleanup_build_stats")
+    cleanup_build_stats(task_limit=task_limit)
 
-    for result in queryset:
-        current_app.logger.warning("cleanup: process_pending_artifact  %s", result.id)
-        try:
-            process_pending_artifact(pending_artifact_id=result.id)
-        except UnknownJob:
-            # do we just axe it?
-            pass
 
-    # find any artifacts which seemingly are stuck (not enqueued)
-    queryset = (
-        Artifact.query.unrestricted_unsafe()
+@celery.task(name="zeus.cleanup_jobs", time_limit=300)
+def cleanup_jobs(task_limit=100):
+    # timeout any jobs which have been sitting for far too long
+    results = (
+        Job.query.unrestricted_unsafe()
         .filter(
-            Artifact.status != Status.finished,
+            Job.status != Status.finished,
             or_(
-                Artifact.date_updated < timezone.now() - timedelta(minutes=15),
-                Artifact.date_updated == None,  # NOQA
+                Job.date_updated < timezone.now() - timedelta(hours=1),
+                Job.date_updated == None,  # NOQA
             ),
         )
-        .limit(100)
+        .update(
+            {
+                "status": Status.finished,
+                "result": Result.errored,
+                "date_updated": timezone.now(),
+                "date_finished": timezone.now(),
+            }
+        )
     )
-    for result in queryset:
-        Artifact.query.unrestricted_unsafe().filter(
-            Artifact.status != Status.finished, Artifact.id == result.id
-        ).update({"date_updated": timezone.now()})
-        db.session.flush()
-        current_app.logger.warning("cleanup: process_artifact %s", result.id)
-        process_artifact(artifact_id=result.id)
-
-    # timeout any jobs which have been sitting for far too long
-    Job.query.unrestricted_unsafe().filter(
-        Job.status != Status.finished,
-        or_(
-            Job.date_updated < timezone.now() - timedelta(hours=1),
-            Job.date_updated == None,  # NOQA
-        ),
-    ).update(
-        {
-            "status": Status.finished,
-            "result": Result.errored,
-            "date_updated": timezone.now(),
-            "date_finished": timezone.now(),
-        }
-    )
+    current_app.logger.warning("cleanup: cleanup_jobs affected rows %s", results)
     db.session.commit()
 
+
+@celery.task(name="zeus.cleanup_build_refs", time_limit=300)
+def cleanup_build_refs(task_limit=100):
     # attempt to resolve refs which never applied
     queryset = (
         Build.query.unrestricted_unsafe()
         .filter(
             Build.ref != None,  # NOQA
             Build.revision_sha == None,  # NOQA
+            Build.result != Result.errored,
             Build.date_created < timezone.now() - timedelta(minutes=15),
         )
-        .limit(100)
+        .limit(task_limit)
     )
     for build in queryset:
         current_app.logger.warning("cleanup: resolve_ref_for_build %s", build.id)
-        resolve_ref_for_build(build_id=build.id)
+        try:
+            resolve_ref_for_build(build_id=build.id)
+        except Exception:
+            current_app.logger.exception("cleanup: resolve_ref_for_build %s", build.id)
 
+
+@celery.task(name="zeus.cleanup_build_stats", time_limit=300)
+def cleanup_build_stats(task_limit=100):
     # find any builds which should be marked as finished but aren't
     queryset = (
         Build.query.unrestricted_unsafe()
         .filter(
             Build.status != Status.finished,
+            Build.date_started < timezone.now() - timedelta(minutes=15),
             ~Job.query.filter(
                 Job.build_id == Build.id, Job.status != Status.finished
             ).exists(),
         )
-        .limit(100)
+        .limit(task_limit)
     )
     for build in queryset:
         current_app.logger.warning("cleanup: aggregate_build_stats %s", build.id)
-        aggregate_build_stats(build_id=build.id)
+        try:
+            aggregate_build_stats(build_id=build.id)
+        except Exception:
+            current_app.logger.exception("cleanup: aggregate_build_stats %s", build.id)
+
+    results = (
+        Build.query.unrestricted_unsafe()
+        .filter(Build.status != Status.finished, Build.result != Result.errored)
+        .update({"status": Status.finished})
+    )
+    current_app.logger.warning(
+        "cleanup: cleanup_build_stats [unfinished; errored] affected rows %s", results
+    )
+    db.session.commit()

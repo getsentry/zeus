@@ -1,8 +1,9 @@
 import factory
 
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 
 from zeus import models
+from zeus.utils import timezone
 
 from .base import ModelFactory
 from .types import GUIDFactory
@@ -17,6 +18,6 @@ class ApiTokenFactory(ModelFactory):
     class Params:
         expired = factory.Trait(
             expires_at=factory.LazyAttribute(
-                lambda o: datetime.now(timezone.utc) - timedelta(days=1)
+                lambda o: timezone.now() - timedelta(days=1)
             )
         )

@@ -83,9 +83,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
             "config": {"full_name": repo_data["full_name"]},
         }
 
-    def add_key(
-        self, user: User, owner_name: str, repo_name: str, key: KeyPair
-    ) -> dict:
+    def add_key(self, user: User, owner_name: str, repo_name: str, key: KeyPair):
         github, _ = get_github_client(user)
         github.post(
             "/repos/{}/{}/keys".format(owner_name, repo_name),

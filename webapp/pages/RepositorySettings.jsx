@@ -47,7 +47,7 @@ class RepositorySettings extends AsyncPage {
         <Section>
           <Label>
             <input type="checkbox" checked={repo.public} onChange={this.togglePublic} />{' '}
-            {'Allow any authenticated user read-access to this repository in Zeus'}
+            {'Allow any authenticated user read-only access to this repository in Zeus'}
           </Label>
         </Section>
       </div>
