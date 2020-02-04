@@ -6,7 +6,7 @@ from zeus.utils import timezone
 
 
 def test_repo_revision_list(
-    client, db_session, default_login, default_user, git_repo_config
+    client, db_session, default_login, default_user, git_repo_config, mock_vcs_server
 ):
     repo = factories.RepositoryFactory.create(
         backend=RepositoryBackend.git,

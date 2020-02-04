@@ -184,5 +184,10 @@ def default_tenant(default_repo):
 @pytest.fixture
 def mock_vcs_server():
     with responses.RequestsMock(assert_all_requests_are_fired=False) as rsps:
-        rsps.add(responses.POST, "http://localhost:8070/stmt/log", json={"log": []})
+        rsps.add(responses.GET, "http://localhost:8070/stmt/log", json={"log": []})
+        rsps.add(
+            responses.GET,
+            "http://localhost:8070/stmt/branches",
+            json={"branches": ["master"]},
+        )
         yield

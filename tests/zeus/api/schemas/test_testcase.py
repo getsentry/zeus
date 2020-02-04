@@ -15,7 +15,7 @@ class AggregateTestCase:
     runs: List[Tuple[str, str, int, Result]]
 
 
-def test_failure_origin(default_repo):
+def test_failure_origin(default_repo, mock_vcs_server):
     auth.set_current_tenant(auth.Tenant(access={default_repo.id: Permission.read}))
 
     new_revision = factories.RevisionFactory(repository=default_repo)

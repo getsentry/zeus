@@ -1,5 +1,5 @@
 import json
-import urllib3
+import requests
 
 from flask import current_app
 from sentry_sdk import Hub
@@ -36,11 +36,10 @@ class VcsServerClient(object):
 
         hub = Hub.current
         with hub.start_span(op="vcs-server", description=f"{method} {path}"):
-            http = urllib3.PoolManager()
-            response = http.request(
+            response = requests.request(
                 method=method,
                 url=url,
-                fields={k: v for k, v in params.items() if v is not None}
+                params={k: v for k, v in params.items() if v is not None}
                 if params
                 else None,
                 headers={
@@ -49,8 +48,8 @@ class VcsServerClient(object):
                     )
                 },
             )
-        if raise_errors and not (200 <= response.status < 300):
-            text = response.data.decode("utf-8")
+        if raise_errors and not (200 <= response.status_code < 300):
+            text = response.text
             try:
                 data = json.loads(text)
             except ValueError:
@@ -65,7 +64,7 @@ class VcsServerClient(object):
                     params["repo_id"], DeactivationReason.invalid_pubkey
                 )
 
-            raise ApiError(text=text, code=response.status)
+            raise ApiError(text=text, code=response.status_code)
 
         if raise_errors and not response.headers["Content-Type"].startswith(
             "application/json"
@@ -74,10 +73,10 @@ class VcsServerClient(object):
                 text="Request returned invalid content type: {}".format(
                     response.headers["Content-Type"]
                 ),
-                code=response.status,
+                code=response.status_code,
             )
 
-        return json.loads(response.data.decode("utf-8"))
+        return response.json()
 
     def log(
         self, repo_id: UUID, parent: str = None, branch: str = None, offset=0, limit=100

@@ -90,7 +90,7 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
 
         if not parent:
             base_url = self.build_base_url(without=["page", "parent"])
-            if page == 1:
+            if page == 1 and revisions:
                 base_url += "&parent={}".format(revisions[0].sha)
             else:
                 base_url += "&parent=head"

@@ -2,7 +2,13 @@ from zeus import factories
 
 
 def test_build_tests_list(
-    client, db_session, default_login, default_repo, default_build, default_repo_access
+    client,
+    db_session,
+    default_login,
+    default_repo,
+    default_build,
+    default_repo_access,
+    mock_vcs_server,
 ):
     job1 = factories.JobFactory(build=default_build)
     job2 = factories.JobFactory(build=default_build)
