@@ -1,14 +1,16 @@
 import os.path
 
 from flask import current_app
-from uuid import uuid4
+
+from uuid import UUID, uuid4
 
 from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import RepositoryBackend
+from zeus.vcs.backends.base import Vcs, RevisionResult
 from zeus.vcs.backends.git import GitVcs
 
 
-async def get_author_id(db, repo_id: str, email: str, name: str):
+async def get_author_id(db, repo_id: UUID, email: str, name: str) -> UUID:
     rv = await db.fetch(
         """
         INSERT INTO author (id, repository_id, email, name)
@@ -22,7 +24,7 @@ async def get_author_id(db, repo_id: str, email: str, name: str):
         name,
     )
     if rv:
-        return rv[0]
+        return rv[0]["id"]
     return (
         await db.fetch(
             """
@@ -31,10 +33,10 @@ async def get_author_id(db, repo_id: str, email: str, name: str):
             repo_id,
             email,
         )
-    )[0]
+    )[0]["id"]
 
 
-async def save_revision(db, repo_id, revision):
+async def save_revision(db, repo_id: UUID, revision: RevisionResult):
     authors = revision.get_authors()
 
     tr = await db.transaction()
@@ -48,8 +50,8 @@ async def save_revision(db, repo_id, revision):
         """,
             repo_id,
             revision.sha,
-            (await get_author_id(db, repo_id, *authors[0]))["id"],
-            (await get_author_id(db, repo_id, *revision.get_committer()))["id"],
+            await get_author_id(db, repo_id, *authors[0]),
+            await get_author_id(db, repo_id, *revision.get_committer()),
             revision.message,
             revision.parents,
             revision.branches,
@@ -65,7 +67,7 @@ async def save_revision(db, repo_id, revision):
             """,
                 repo_id,
                 revision.sha,
-                (await get_author_id(db, repo_id, *author))["id"],
+                await get_author_id(db, repo_id, *author),
             )
     except Exception:
         await tr.rollback()
@@ -74,7 +76,7 @@ async def save_revision(db, repo_id, revision):
         await tr.commit()
 
 
-async def get_vcs(app, repo_id):
+async def get_vcs(app, repo_id: UUID) -> Vcs:
     db = app["db"]
     repo = (
         await db.fetch(

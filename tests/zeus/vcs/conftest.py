@@ -1,35 +1,28 @@
 import pytest
 
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from zeus.vcs.server import build_app
 
 
 @pytest.fixture(scope="function")
-async def vcs_app():
-    app = await build_app()
+async def vcs_app(loop):
+    app = await build_app(loop=loop)
     return app
 
 
 @pytest.fixture(scope="function", autouse=True)
-async def asyncdb_transaction(request, vcs_app):
-    has_marker = request.node.get_closest_marker("asyncio")
-    if has_marker:
-        tr = await vcs_app["db"].transaction()
-        await tr.start()
-        try:
-            yield
-        except Exception:
-            await tr.rollback()
-            raise
-        else:
-            await tr.commit()
-    else:
+async def asyncdb_transaction(loop, request, vcs_app):
+    tr = await vcs_app["db"].transaction()
+    await tr.start()
+    try:
         yield
+    finally:
+        await tr.rollback()
 
 
 @pytest.fixture(scope="function")
-async def default_repo(vcs_app):
+async def default_repo_id(vcs_app) -> UUID:
     rv = await vcs_app["db"].fetch(
         """
         INSERT INTO repository (id, owner_name, name, url, provider, backend, status, external_id)
@@ -45,4 +38,4 @@ async def default_repo(vcs_app):
         1,
         "1",
     )
-    return rv[0]
+    return rv[0]["id"]

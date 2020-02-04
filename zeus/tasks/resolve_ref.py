@@ -35,7 +35,7 @@ def resolve_ref_for_build(build_id: UUID):
 
         if revision:
             build.revision_sha = revision.sha
-            if not build.author_id:
+            if not build.author_id and revision.authors:
                 build.author = revision.authors[0]
                 for author in revision.authors:
                     build.authors.append(author)
@@ -66,7 +66,7 @@ def resolve_ref_for_change_request(change_request_id: UUID):
         except InvalidPublicKey:
             raise
         cr.parent_revision_sha = revision.sha
-        if not cr.author_id:
+        if not cr.author_id and revision.authors:
             cr.author = revision.authors[0]
         db.session.add(cr)
         db.session.commit()

@@ -10,5 +10,4 @@ def client(loop, vcs_app, aiohttp_client):
 async def test_health_check(client):
     resp = await client.get("/healthz")
     assert resp.status == 200
-    assert await resp.text() == {"ok": true}
-    # assert client.server.app["value"] == "foo"
+    assert await resp.text() == '{"ok": true}'

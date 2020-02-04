@@ -12,6 +12,6 @@ class RepositoryBranchesResource(BaseRepositoryResource):
         """
         Return a list of revisions for the given repository.
         """
-        result = vcs_client.get_known_branches(repo.id)
+        result = vcs_client.branches(repo.id)
 
         return self.respond([{"name": r} for r in result])
