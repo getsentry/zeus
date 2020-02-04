@@ -73,7 +73,9 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
         revisions_map = {r.sha: r for r in existing}
         results = []
         for item in vcs_log:
-            results.append(revisions_map[item["sha"]])
+            # XXX(dcramer): technically its possible for the vcs server to be out of sync with the database
+            if item["sha"] in revisions_map:
+                results.append(revisions_map[item["sha"]])
         return results, has_more
 
     def get(self, repo: Repository):

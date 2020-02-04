@@ -105,9 +105,9 @@ def test_repo_build_create_multiple_authors(
     other_author = factories.AuthorFactory(
         repository=default_repo, email="bizzy@example.com"
     )
-    default_revision.authors.append(default_author)
     default_revision.authors.append(other_author)
     db_session.add(default_revision)
+    db_session.flush()
 
     resp = client.post(
         "/api/repos/{}/builds".format(default_repo.get_full_name()),
