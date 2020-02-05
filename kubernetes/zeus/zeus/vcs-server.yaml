@@ -134,9 +134,11 @@ spec:
               mountPath: '/var/run/secret/cloud.google.com'
           resources:
             requests:
-              cpu: 0.25
+              cpu: 1200m
+              memory: 1500Mi
             limits:
-              cpu: 1
+              cpu: 2000m
+              memory: 2000Mi
       volumes:
         - name: service-account
           secret:
