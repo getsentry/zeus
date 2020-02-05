@@ -1,5 +1,3 @@
-import pytest
-
 from datetime import datetime
 from uuid import UUID
 
@@ -7,7 +5,6 @@ from zeus.vcs.backends.base import RevisionResult
 from zeus.vcs.utils import get_vcs, save_revision
 
 
-@pytest.mark.asyncio
 async def test_get_vcs(vcs_app, default_repo_id: UUID):
     vcs = await get_vcs(vcs_app, default_repo_id)
     assert vcs.url == "https://github.com/getsentry/zeus.git"
