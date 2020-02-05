@@ -146,6 +146,7 @@ async def stmt_log(request, repo_id):
                 "parents": revision.parents,
             }
         )
+        # XXX(dcramer): we could wait until the revisions are confirmed to exist in the db
         await queue.put(["revision", {"repo_id": repo_id, "revision": revision}])
 
     return json_response({"log": results})
