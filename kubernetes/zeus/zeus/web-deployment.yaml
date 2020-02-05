@@ -106,9 +106,11 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: '/var/run/secret/cloud.google.com/service-account.json'
             - name: ALLOWED_ORIGINS
-              value: 'updates.zeus.ci,zeus.ci'
+              value: 'updates.zeus.ci,zeus.ci,vcs-server.zeus.ci'
             - name: PUBSUB_ENDPOINT
               value: 'https://updates.zeus.ci'
+            - name: VCS_SERVER_ENDPOINT
+              value: 'https://vcs-server.zeus.ci'
             - name: ROLE
               value: web
             - name: CELERY_BROKER_URL

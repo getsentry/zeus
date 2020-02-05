@@ -1,31 +1,43 @@
-apiVersion: apps/v1
-kind: StatefulSet
+apiVersion: v1
+kind: Service
 metadata:
-  name: worker
+  name: vcs-server
+  namespace: default
+  labels:
+    app: vcs-server
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: vcs-server
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: vcs-server
   namespace: default
 spec:
-  selector:
-    matchLabels:
-      app: worker
-  serviceName: worker
-  replicas: 3
-  updateStrategy:
+  replicas: 1
+  strategy:
     type: RollingUpdate
-    # rollingUpdate:
-    #   maxSurge: 2
-    #   maxUnavailable: 1
-  # minReadySeconds: 5
-  # revisionHistoryLimit: 10
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  minReadySeconds: 5
+  revisionHistoryLimit: 10
   template:
     metadata:
       labels:
-        app: worker
+        app: vcs-server
     spec:
       containers:
         - name: zeus
           image: gcr.io/zeus-176020/zeus:latest
           imagePullPolicy: Always
-          args: ['zeus', 'worker', '--cron']
+          args: ['zeus', 'vcs-server', '--host=0.0.0.0', '--port=8080']
           env:
             - name: GC_PROJECT
               value: zeus-176020
@@ -48,6 +60,11 @@ spec:
                 secretKeyRef:
                   name: sentry
                   key: dsn
+            - name: SENTRY_DSN_FRONTEND
+              valueFrom:
+                secretKeyRef:
+                  name: sentry
+                  key: dsn-frontend
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -65,6 +82,8 @@ spec:
                   key: client-secret
             - name: DOMAIN
               value: zeus.ci
+            - name: SSL
+              value: 'true'
             - name: GET_HOSTS_FROM
               value: env
             - name: REPO_ROOT
@@ -95,26 +114,19 @@ spec:
             - name: VCS_SERVER_ENDPOINT
               value: 'https://vcs-server.zeus.ci'
             - name: ROLE
-              value: worker
+              value: vcs-server
             - name: CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
                   name: queue
                   key: broker_url
+          ports:
+            - containerPort: 8080
           readinessProbe:
-            exec:
-              command:
-                - test
-                - '`ps aux | grep "[z]eus worker"`'
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          livenessProbe:
-            exec:
-              command:
-                - test
-                - '`ps aux | grep "[z]eus worker"`'
-            initialDelaySeconds: 30
-            periodSeconds: 5
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 30
           volumeMounts:
             - name: repo-cache
               mountPath: '/tmp/repo-cache'
@@ -122,20 +134,13 @@ spec:
               mountPath: '/var/run/secret/cloud.google.com'
           resources:
             requests:
-              cpu: 1200m
-              memory: 1500Mi
+              cpu: 0.25
             limits:
-              cpu: 2000m
-              memory: 2000Mi
+              cpu: 1
       volumes:
         - name: service-account
           secret:
             secretName: 'zeus-service-account'
-  volumeClaimTemplates:
-    - metadata:
-        name: repo-cache
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1000Gi
+        - name: repo-cache
+          hostPath:
+            path: /tmp/repo-cache
