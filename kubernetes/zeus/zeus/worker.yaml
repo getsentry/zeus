@@ -1,30 +1,21 @@
-apiVersion: autoscaling/v1
-kind: HorizontalPodAutoscaler
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: worker
   namespace: default
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: worker
-  minReplicas: 4
-  maxReplicas: 14
-  targetCPUUtilizationPercentage: 60
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: worker
-  namespace: default
-spec:
-  strategy:
+  selector:
+    matchLabels:
+      app: worker
+  serviceName: worker
+  replicas: 3
+  updateStrategy:
     type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 2
-      maxUnavailable: 1
-  minReadySeconds: 5
-  revisionHistoryLimit: 10
+    # rollingUpdate:
+    #   maxSurge: 2
+    #   maxUnavailable: 1
+  # minReadySeconds: 5
+  # revisionHistoryLimit: 10
   template:
     metadata:
       labels:
@@ -136,6 +127,11 @@ spec:
         - name: service-account
           secret:
             secretName: 'zeus-service-account'
-        - name: repo-cache
-          hostPath:
-            path: /tmp/repo-cache
+  volumeClaimTemplates:
+    - metadata:
+        name: repo-cache
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1000Gi
