@@ -36,7 +36,7 @@ nplusone = "~0.8.1"
 psycopg2-binary = "~2.7.5"
 python-dateutil = "~2.6.1"
 redis = "~3.2.0"
-sentry-sdk = { version = "~0.13.5" }
+sentry-sdk = { version = "~0.14.1" }
 setuptools = "^44.0"
 SQLAlchemy = "~1.2.0"
 toronado = "~0.0.11"
