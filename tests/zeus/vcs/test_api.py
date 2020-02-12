@@ -13,7 +13,7 @@ class ApiHelper(object):
         if "tenant" not in params:
             tenant = auth.RepositoryTenant(repository_id=repo_id)
         else:
-            tenant = params["tenant"]
+            tenant = params.pop("tenant", None)
 
         headers = {}
         if tenant:
@@ -22,7 +22,7 @@ class ApiHelper(object):
             )
 
         return self.client.get(
-            f"/stmt/log?repo_id={repo_id}&{('{}={}'.format(k, v) for k, v in params.items())}",
+            f"{path}?repo_id={repo_id}&{'&'.join('{}={}'.format(k, v) for k, v in params.items())}",
             headers=headers,
         )
 
@@ -34,7 +34,7 @@ def client(loop, vcs_app, aiohttp_client):
 
 async def test_health_check(client):
     resp = await client.get("/healthz")
-    assert resp.status == 200
+    assert resp.status == 200, resp.content
     assert await resp.text() == '{"ok": true}'
 
 
@@ -42,11 +42,36 @@ async def test_log_unauthorized(client, default_repo_id):
     resp = await ApiHelper(client).get(
         "/stmt/log", repo_id=default_repo_id, tenant=None
     )
-    assert resp.status == 401
+    assert resp.status == 401, resp.content
 
 
 async def test_log_basic(client, default_repo_id):
     resp = await ApiHelper(client).get("/stmt/log", repo_id=default_repo_id)
-    assert resp.status == 200
+    assert resp.status == 200, resp.content
     data = await resp.json()
-    assert data["log"]
+    assert data["log"], data
+
+
+async def test_branches_basic(client, default_repo_id):
+    resp = await ApiHelper(client).get("/stmt/branches", repo_id=default_repo_id)
+    assert resp.status == 200, resp.content
+    data = await resp.json()
+    assert data["branches"], data
+
+
+async def test_branches_show(client, default_repo_id):
+    resp = await ApiHelper(client).get(
+        "/stmt/show", repo_id=default_repo_id, sha="HEAD", filename="README.md"
+    )
+    assert resp.status == 200, resp.content
+    data = await resp.json()
+    assert data["show"], data
+
+
+async def test_branches_export(client, default_repo_id):
+    resp = await ApiHelper(client).get(
+        "/stmt/export", repo_id=default_repo_id, sha="HEAD", filename="README.md"
+    )
+    assert resp.status == 200, resp.content
+    data = await resp.json()
+    assert data["export"], data
