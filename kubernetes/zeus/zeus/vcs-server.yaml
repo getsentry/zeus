@@ -14,20 +14,24 @@ spec:
   selector:
     app: vcs-server
 ---
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: vcs-server
   namespace: default
 spec:
-  replicas: 1
-  strategy:
+  selector:
+    matchLabels:
+      app: vcs-server
+  serviceName: vcs-server
+  replicas: 3
+  updateStrategy:
     type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 2
-      maxUnavailable: 1
-  minReadySeconds: 5
-  revisionHistoryLimit: 10
+    # rollingUpdate:
+    #   maxSurge: 2
+    #   maxUnavailable: 1
+  # minReadySeconds: 5
+  # revisionHistoryLimit: 10
   template:
     metadata:
       labels:
@@ -60,11 +64,6 @@ spec:
                 secretKeyRef:
                   name: sentry
                   key: dsn
-            - name: SENTRY_DSN_FRONTEND
-              valueFrom:
-                secretKeyRef:
-                  name: sentry
-                  key: dsn-frontend
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -82,8 +81,6 @@ spec:
                   key: client-secret
             - name: DOMAIN
               value: zeus.ci
-            - name: SSL
-              value: 'true'
             - name: GET_HOSTS_FROM
               value: env
             - name: REPO_ROOT
@@ -127,6 +124,12 @@ spec:
               path: /healthz
               port: 8080
             periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
           volumeMounts:
             - name: repo-cache
               mountPath: '/tmp/repo-cache'
@@ -143,6 +146,11 @@ spec:
         - name: service-account
           secret:
             secretName: 'zeus-service-account'
-        - name: repo-cache
-          hostPath:
-            path: /tmp/repo-cache
+  volumeClaimTemplates:
+    - metadata:
+        name: repo-cache
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1000Gi
