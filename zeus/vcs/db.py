@@ -18,6 +18,9 @@ class Database:
             user=self.user,
             password=self.password,
             database=self.database,
+            # https://github.com/MagicStack/asyncpg/issues/76
+            # we want to rely on pgbouncer
+            max_cached_statement_lifetime=0,
         )
         return self._conn
 
