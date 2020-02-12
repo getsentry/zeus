@@ -12,6 +12,8 @@ class ApiHelper(object):
     def get(self, path: str, repo_id: UUID, **params):
         if "tenant" not in params:
             tenant = auth.RepositoryTenant(repository_id=repo_id)
+        else:
+            tenant = params["tenant"]
 
         headers = {}
         if tenant:
@@ -37,7 +39,9 @@ async def test_health_check(client):
 
 
 async def test_log_unauthorized(client, default_repo_id):
-    resp = await ApiHelper(client).get("/stmt/log", repo_id=default_repo_id)
+    resp = await ApiHelper(client).get(
+        "/stmt/log", repo_id=default_repo_id, tenant=None
+    )
     assert resp.status == 401
 
 
