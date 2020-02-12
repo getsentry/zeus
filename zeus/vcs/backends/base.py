@@ -106,7 +106,12 @@ class BufferParser(object):
 class Vcs(object):
     ssh_connect_path = os.path.realpath(
         os.path.join(
-            os.path.dirname(__file__), os.pardir, os.pardir, "bin", "ssh-connect"
+            os.path.dirname(__file__),
+            os.pardir,
+            os.pardir,
+            os.pardir,
+            "bin",
+            "ssh-connect",
         )
     )
 
