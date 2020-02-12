@@ -29,7 +29,7 @@ async def worker(queue: asyncio.Queue):
     while True:
         event, payload = await queue.get()
         if event == "revision":
-            key = (payload["repo_id"], payload["revision"])
+            key = (payload["repo_id"], payload["revision"].sha)
             if key in _revision_cache:
                 continue
             await save_revision(db, payload["repo_id"], payload["revision"])
