@@ -17,3 +17,9 @@ steps:
   containers:
   - image: gcr.io/zeus-176020/zeus:{sha}
     name: zeus
+- kind: KubernetesStatefulSet
+  selector:
+    label_selector: app in (vcs-server)
+  containers:
+  - image: gcr.io/zeus-176020/zeus:{sha}
+    name: zeus
