@@ -1,7 +1,5 @@
 import asyncpg
 
-from asyncpg import InterfaceError
-
 
 class Database:
     def __init__(self, host: str, port: int, user: str, password: str, database: str):
@@ -35,36 +33,18 @@ class Database:
             conn = await self.connect()
         else:
             conn = self._conn
-        try:
-            return await conn.fetch(*args, **kwargs)
-        except InterfaceError as exc:
-            if "connection is closed" in str(exc):
-                conn = await self.connect()
-                return await conn.fetch(*args, **kwargs)
-            raise
+        return await conn.fetch(*args, **kwargs)
 
     async def execute(self, *args, **kwargs):
         if not self._conn:
             conn = await self.connect()
         else:
             conn = self._conn
-        try:
-            return await conn.execute(*args, **kwargs)
-        except InterfaceError as exc:
-            if "connection is closed" in str(exc):
-                conn = await self.connect()
-                return await conn.execute(*args, **kwargs)
-            raise
+        return await conn.execute(*args, **kwargs)
 
     async def transaction(self, *args, **kwargs):
         if not self._conn:
             conn = await self.connect()
         else:
             conn = self._conn
-        try:
-            return conn.transaction(*args, **kwargs)
-        except InterfaceError as exc:
-            if "connection is closed" in str(exc):
-                conn = await self.connect()
-                return conn.transaction(*args, **kwargs)
-            raise
+        return conn.transaction(*args, **kwargs)

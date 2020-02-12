@@ -67,8 +67,6 @@ spec:
               value: "500"
             - name: DEFAULT_POOL_SIZE
               value: "50"
-            - name: POOL_MODE
-              value: "session"
           livenessProbe:
             tcpSocket:
               port: 5432
