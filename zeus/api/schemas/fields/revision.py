@@ -2,8 +2,8 @@ from flask import current_app
 from marshmallow import fields
 from marshmallow.exceptions import ValidationError
 
+from zeus.exceptions import UnknownRevision
 from zeus.utils import revisions
-from zeus.vcs.base import UnknownRevision
 
 
 class RevisionRefField(fields.Str):

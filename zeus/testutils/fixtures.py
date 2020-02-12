@@ -104,6 +104,7 @@ def default_revision(default_repo, default_author):
     return factories.RevisionFactory(
         repository=default_repo,
         author=default_author,
+        authors=[default_author],
         sha="884ea9e17b53933febafd7e02d8bd28f3c9d479d",
         message="ref: Remove outdated comment\n\nThis removes an outdated comment.",
     )
@@ -113,6 +114,7 @@ def default_revision(default_repo, default_author):
 def default_parent_revision(default_author, default_repo, default_revision):
     return factories.RevisionFactory(
         author=default_author,
+        authors=[default_author],
         repository=default_repo,
         parents=[default_revision.sha],
         sha="adba8d362c656c7f97f5da9fa4e644be1b72a449",

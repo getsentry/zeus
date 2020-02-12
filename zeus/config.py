@@ -12,6 +12,7 @@ from flask_alembic import Alembic
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.pool import NullPool
+from urllib.parse import urlparse
 
 from zeus.utils.celery import Celery
 from zeus.utils.metrics import Metrics
@@ -69,7 +70,9 @@ def create_app(_read_config=True, **config):
         )
         # Cloud SQL
         # https://cloud.google.com/sql/docs/postgres/connect-container-engine
-        SQLALCHEMY_URI = "postgresql+psycopg2://{}:{}@{}:{}/zeus".format(
+        SQLALCHEMY_DATABASE_URI = os.environ.get(
+            "SQLALCHEMY_DATABASE_URI"
+        ) or "postgresql+psycopg2://{}:{}@{}:{}/zeus".format(
             os.environ["DB_USER"],
             os.environ["DB_PASSWORD"],
             os.environ.get("DB_HOST") or "127.0.0.1",
@@ -110,8 +113,9 @@ def create_app(_read_config=True, **config):
         )
     else:
         REDIS_URL = os.environ.get("REDIS_URL", "redis://127.0.0.1/0")
-        SQLALCHEMY_URI = os.environ.get(
-            "SQLALCHEMY_DATABASE_URI", "postgresql+psycopg2://postgres@127.0.0.1/zeus"
+        SQLALCHEMY_DATABASE_URI = (
+            os.environ.get("SQLALCHEMY_DATABASE_URI")
+            or "postgresql+psycopg2://postgres@127.0.0.1/zeus"
         )
         app.config["FILE_STORAGE"] = {
             "backend": "zeus.storage.base.FileStorage",
@@ -135,6 +139,10 @@ def create_app(_read_config=True, **config):
         "PUBSUB_ENDPOINT", "http://localhost:8090"
     )
 
+    app.config["VCS_SERVER_ENDPOINT"] = os.environ.get(
+        "VCS_SERVER_ENDPOINT", "http://localhost:8070"
+    )
+
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
     app.config["LOG_LEVEL"] = os.environ.get("LOG_LEVEL") or "INFO"
@@ -144,7 +152,7 @@ def create_app(_read_config=True, **config):
     # limit sessions to one day so permissions are revalidated automatically
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=1)
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_URI
+    app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
         "poolclass": NullPool,
@@ -241,6 +249,17 @@ def create_app(_read_config=True, **config):
 
     app.config.update(config)
 
+    db_url = urlparse(app.config["SQLALCHEMY_DATABASE_URI"])
+    app.config.update(
+        {
+            "DB_USER": db_url.username or None,
+            "DB_PASSWORD": db_url.password or None,
+            "DB_HOST": db_url.hostname or "127.0.0.1",
+            "DB_PORT": db_url.port or "5432",
+            "DB_NAME": db_url.path.lstrip("/") or "zeus",
+        }
+    )
+
     app.config.setdefault("MAIL_SUPPRESS_SEND", app.debug or app.testing)
 
     # HACK(dcramer): the CLI causes validation to happen on init, which it shouldn't
@@ -250,7 +269,6 @@ def create_app(_read_config=True, **config):
             "GITHUB_CLIENT_SECRET",
             "REDIS_URL",
             "SECRET_KEY",
-            "SQLALCHEMY_DATABASE_URI",
         )
         for varname in req_vars:
             if not app.config.get(varname):

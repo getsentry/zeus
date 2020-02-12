@@ -26,27 +26,24 @@ def is_valid_origin(request):
     return request.url.host in allowed_origins
 
 
-# TODO(dcramer): this still isnt working. is_valid_origin had an error
-# and it was never bubbled up
-
-
 def log_errors(func):
     @wraps(func)
-    async def wrapped(*a, **k):
-        try:
-            return await func(*a, **k)
+    def wrapper(*args, **kwargs):
+        async def tmp():
+            try:
+                return await func(*args, **kwargs)
 
-        except Exception as e:
-            current_app.logger.exception(str(e))
-            raise
+            except Exception as e:
+                current_app.logger.exception(str(e))
+                raise
 
-    return wrapped
+        return tmp()
 
-
-# @log_errors
+    return wrapper
 
 
 @span("worker")
+@log_errors
 async def worker(channel, queue, token, repo_ids=None, build_ids=None):
     allowed_repo_ids = frozenset(token["repo_ids"])
 
@@ -70,9 +67,8 @@ async def worker(channel, queue, token, repo_ids=None, build_ids=None):
         current_app.logger.debug("pubsub.event.received qsize=%s", queue.qsize())
 
 
-# @log_errors
-
-
+@span("ping")
+@log_errors
 async def ping(loop, resp, client_guid):
     # periodically send ping to the browser. Any message that
     # starts with ":" colon ignored by a browser and could be used
@@ -84,10 +80,8 @@ async def ping(loop, resp, client_guid):
             resp.write(b": ping\r\n\r\n")
 
 
-# @log_errors
-
-
 @span("stream")
+@log_errors
 async def stream(request):
     client_guid = str(uuid4())
 

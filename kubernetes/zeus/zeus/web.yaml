@@ -1,27 +1,57 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: web
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: web
+  minReplicas: 3
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: default
+  labels:
+    app: web
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: web
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: pubsub
+  name: web
   namespace: default
 spec:
-  replicas: 1
+  replicas: 6
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 2
-      maxUnavailable: 1
+      maxSurge: 4
+      maxUnavailable: 2
   minReadySeconds: 5
   revisionHistoryLimit: 10
   template:
     metadata:
       labels:
-        app: pubsub
+        app: web
     spec:
       containers:
         - name: zeus
           image: gcr.io/zeus-176020/zeus:latest
           imagePullPolicy: Always
-          args: ['zeus', 'pubsub', '--host=0.0.0.0', '--port=8080']
+          args: ['zeus', 'web', '--host=0.0.0.0', '--port=8080']
           env:
             - name: GC_PROJECT
               value: zeus-176020
@@ -92,9 +122,13 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: '/var/run/secret/cloud.google.com/service-account.json'
             - name: ALLOWED_ORIGINS
-              value: 'updates.zeus.ci,zeus.ci'
+              value: 'updates.zeus.ci,zeus.ci,vcs-server.zeus.ci'
+            - name: PUBSUB_ENDPOINT
+              value: 'https://updates.zeus.ci'
+            - name: VCS_SERVER_ENDPOINT
+              value: 'https://vcs-server.zeus.ci'
             - name: ROLE
-              value: pubsub
+              value: web
             - name: CELERY_BROKER_URL
               valueFrom:
                 secretKeyRef:
@@ -107,16 +141,24 @@ spec:
               path: /healthz
               port: 8080
             periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
           volumeMounts:
-            - name: repo-cache
-              mountPath: '/tmp/repo-cache'
             - name: 'service-account'
               mountPath: '/var/run/secret/cloud.google.com'
+            - name: repo-cache
+              mountPath: /tmp/repo-cache
           resources:
             requests:
-              cpu: 0.25
+              cpu: 900m
+              memory: 600Mi
             limits:
-              cpu: 1
+              cpu: 1000m
+              memory: 800Mi
       volumes:
         - name: service-account
           secret:

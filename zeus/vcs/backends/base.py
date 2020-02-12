@@ -2,17 +2,11 @@ import os
 import os.path
 import re
 
-from collections import namedtuple
 from subprocess import Popen, PIPE
-from sqlalchemy.exc import IntegrityError
 from typing import List, Optional, Tuple
 from uuid import UUID
 
-from zeus.config import db
-from zeus.db.utils import create_or_update, get_or_create
-from zeus.models import Author, Repository, Revision
-
-RevisionSaveResult = namedtuple("RevisionSaveResult", ["revision", "created"])
+from zeus.exceptions import CommandError
 
 _author_re = re.compile(r"^(.+) <([^>]+)>$")
 
@@ -51,7 +45,6 @@ class RevisionResult(object):
             self.branches = branches
         if repository_id is not None:
             self.repository_id = repository_id
-        self._author_cache = _author_cache or {}
 
     def __repr__(self) -> str:
         return "<%s: sha=%r author=%r subject=%r>" % (
@@ -69,110 +62,19 @@ class RevisionResult(object):
             return value, "{0}@localhost".format(value)
         return match.group(1), match.group(2)
 
-    def _get_author_instance(self, repository: Repository, email: str, name: str):
-        key = (email, repository.id)
-        result = self._author_cache.get(key)
-        if result is not None:
-            return result
-        result = get_or_create(
-            Author,
-            where={"email": email, "repository_id": repository.id},
-            defaults={"name": name},
-        )[0]
-        self._author_cache[key] = result
-        return result
-
-    def _get_authors(self, repository: Repository) -> List[Author]:
+    def get_authors(self) -> List[Tuple[str, str]]:
         name, email = self._parse_author_value(self.author)
 
-        authors = [self._get_author_instance(repository, email, name)]
+        authors = [(name, email)]
 
         for value in _co_authored_by_re.findall(self.message):
             name, email = self._parse_author_value(value)
-            authors.append(self._get_author_instance(repository, email, name))
+            authors.append((name, email))
 
         return authors
 
-    def _get_committer(self, repository: Repository) -> Author:
-        name, email = self._parse_author_value(self.committer)
-        return self._get_author_instance(repository, email, name)
-
-    @property
-    def date_created(self) -> str:
-        return self.author_date
-
-    @property
-    def date_committed(self) -> Optional[str]:
-        return self.committer_date
-
-    @property
-    def subject(self) -> str:
-        return self.message.splitlines()[0]
-
-    def save(self, repository: Repository) -> Tuple[Revision, bool]:
-        authors = self._get_authors(repository)
-        if self.author == self.committer:
-            committer = authors[0]
-        else:
-            committer = self._get_committer(repository)
-
-        with db.session.begin_nested():
-            revision, created = create_or_update(
-                Revision,
-                where={"repository_id": repository.id, "sha": self.sha},
-                values={
-                    "author_id": authors[0].id,
-                    "committer_id": committer.id,
-                    "message": self.message,
-                    "parents": self.parents,
-                    "branches": self.branches,
-                    "date_created": self.author_date,
-                    "date_committed": self.committer_date,
-                },
-            )
-
-            for author in authors:
-                try:
-                    with db.session.begin_nested():
-                        revision.authors.append(author)
-                except IntegrityError as exc:
-                    if "duplicate" in str(exc):
-                        continue
-                    raise
-
-        return RevisionSaveResult(revision, created)
-
-
-class CommandError(Exception):
-    def __init__(
-        self,
-        cmd: str = None,
-        retcode: int = None,
-        stdout: bytes = None,
-        stderr: bytes = None,
-    ):
-        self.cmd = cmd
-        self.retcode = retcode
-        self.stdout = stdout
-        self.stderr = stderr
-
-    def __str__(self):
-        if self.cmd:
-            return "%s returned %d:\nSTDOUT: %r\nSTDERR: %r" % (
-                self.cmd,
-                self.retcode,
-                self.stdout.decode("utf-8"),
-                self.stderr.decode("utf-8"),
-            )
-        return ""
-
-
-class UnknownRevision(CommandError):
-    pass
-
-
-class InvalidPublicKey(CommandError):
-    pass
+    def get_committer(self) -> Tuple[str, str]:
+        return self._parse_author_value(self.committer or self.author)
 
 
 class BufferParser(object):

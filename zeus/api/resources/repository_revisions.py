@@ -3,9 +3,9 @@ from marshmallow import fields, pre_dump
 from sqlalchemy.orm import joinedload
 from typing import Tuple
 
-from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Repository, Revision
 from zeus.utils.builds import fetch_builds_for_revisions
+from zeus.vcs import vcs_client
 
 from .base_repository import BaseRepositoryResource
 from ..schemas import BuildSchema, RevisionSchema
@@ -45,22 +45,17 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
             has_more = len(results) > per_page
             return results[:per_page], has_more
 
-        try:
-            vcs = repo.get_vcs()
-        except UnknownRepositoryBackend:
-            return [], False
-
         branch = request.args.get("branch")
         if not parent and branch is None:
-            branch = vcs.get_default_branch()
+            branch = "!default"
 
         vcs_log = list(
-            vcs.log(
+            vcs_client.log(
+                repo.id,
                 limit=per_page + 1,
                 offset=(page - 1) * per_page,
                 parent=parent,
                 branch=branch,
-                timeout=10,
             )
         )
 
@@ -71,17 +66,16 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
         vcs_log = vcs_log[:per_page]
 
         existing = Revision.query.options(joinedload("author")).filter(
-            Revision.repository_id == repo.id, Revision.sha.in_(c.sha for c in vcs_log)
+            Revision.repository_id == repo.id,
+            Revision.sha.in_(c["sha"] for c in vcs_log),
         )
 
         revisions_map = {r.sha: r for r in existing}
         results = []
         for item in vcs_log:
-            try:
-                results.append(revisions_map[item.sha])
-            except KeyError:
-                item.repository_id = repo.id
-                results.append(item)
+            # XXX(dcramer): technically its possible for the vcs server to be out of sync with the database
+            if item["sha"] in revisions_map:
+                results.append(revisions_map[item["sha"]])
         return results, has_more
 
     def get(self, repo: Repository):
@@ -98,7 +92,7 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
 
         if not parent:
             base_url = self.build_base_url(without=["page", "parent"])
-            if page == 1:
+            if page == 1 and revisions:
                 base_url += "&parent={}".format(revisions[0].sha)
             else:
                 base_url += "&parent=head"

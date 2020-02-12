@@ -1,9 +1,10 @@
 import pytest
 
 from subprocess import check_call
+from uuid import UUID
 
 from zeus.vcs.asserts import assert_revision
-from zeus.vcs.git import GitVcs
+from zeus.vcs.backends.git import GitVcs
 
 
 def _get_last_two_revisions(marker, revisions):
@@ -30,9 +31,9 @@ def _set_author(remote_path, name, email):
 
 
 @pytest.fixture
-def vcs(git_repo_config, default_repo):
+async def vcs(git_repo_config, default_repo_id: UUID):
     return GitVcs(
-        url=git_repo_config.url, path=git_repo_config.path, id=default_repo.id.hex
+        url=git_repo_config.url, path=git_repo_config.path, id=default_repo_id.hex
     )
 
 
@@ -142,22 +143,15 @@ def test_simple(vcs):
     vcs.update()
     revision = next(vcs.log(parent="HEAD", limit=1))
     assert len(revision.sha) == 40
-    assert_revision(
-        revision,
-        author="Foo Bar <foo@example.com>",
-        message="biz\nbaz\n",
-        subject="biz",
-    )
+    assert_revision(revision, author="Foo Bar <foo@example.com>", message="biz\nbaz\n")
     revisions = list(vcs.log())
     assert len(revisions) == 2
-    assert revisions[0].subject == "biz"
     assert revisions[0].message == "biz\nbaz\n"
     assert revisions[0].author == "Foo Bar <foo@example.com>"
     assert revisions[0].committer == "Foo Bar <foo@example.com>"
     assert revisions[0].parents == [revisions[1].sha]
     assert revisions[0].author_date == revisions[0].committer_date is not None
     assert revisions[0].branches == ["master"]
-    assert revisions[1].subject == "test"
     assert revisions[1].message == "test\nlol\n"
     assert revisions[1].author == "Foo Bar <foo@example.com>"
     assert revisions[1].committer == "Foo Bar <foo@example.com>"
@@ -174,11 +168,11 @@ index 0000000..e69de29
     )
     revisions = list(vcs.log(offset=0, limit=1))
     assert len(revisions) == 1
-    assert revisions[0].subject == "biz"
+    assert revisions[0].message == "biz\nbaz\n"
 
     revisions = list(vcs.log(offset=1, limit=1))
     assert len(revisions) == 1
-    assert revisions[0].subject == "test"
+    assert revisions[0].message == "test\nlol\n"
 
 
 def test_is_child_parent(vcs):

@@ -1,16 +1,10 @@
 from urllib.parse import urlparse
 
+from zeus.exceptions import CommandError, InvalidPublicKey, UnknownRevision
 from zeus.utils.functional import memoize
 from zeus.utils import timezone
 
-from .base import (
-    Vcs,
-    RevisionResult,
-    BufferParser,
-    CommandError,
-    InvalidPublicKey,
-    UnknownRevision,
-)
+from .base import Vcs, RevisionResult, BufferParser
 
 LOG_FORMAT = "%H\x01%an <%ae>\x01%at\x01%cn <%ce>\x01%ct\x01%P\x01%B\x02"
 
@@ -148,6 +142,8 @@ class GitVcs(Vcs):
             raise ValueError("Both parent and branch cannot be set")
 
         if branch:
+            if branch == "!default":
+                branch = self.get_default_branch()
             cmd.append(branch)
 
         # TODO(dcramer): determine correct way to paginate results in git as

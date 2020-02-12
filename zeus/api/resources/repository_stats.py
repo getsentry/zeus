@@ -5,9 +5,9 @@ from typing import List
 
 from zeus.api.utils import stats
 from zeus.config import db
-from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import Build, Repository, Revision
 from zeus.utils import timezone
+from zeus.vcs import vcs_client
 
 from .base_repository import BaseRepositoryResource
 
@@ -43,15 +43,13 @@ def get_revisions(repo: Repository, branch: str = None, limit: int = 200) -> Lis
             .all()
         )
 
-    try:
-        vcs = repo.get_vcs()
-    except UnknownRepositoryBackend:
-        return []
-
     if branch is None:
-        branch = vcs.get_default_branch()
+        branch = "!default"
 
-    return [r.sha for r in vcs.log(limit=limit, branch=branch, timeout=10)]
+    return [
+        r["sha"]
+        for r in vcs_client.log(repo.id, limit=limit, branch=branch, timeout=10)
+    ]
 
 
 class RepositoryStatsResource(BaseRepositoryResource):

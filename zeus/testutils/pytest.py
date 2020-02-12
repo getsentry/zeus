@@ -1,5 +1,6 @@
 import os
 import pytest
+import responses
 
 from sqlalchemy import event
 from sqlalchemy.orm import Session
@@ -178,3 +179,15 @@ def public_key_bytes(public_key):
 @pytest.fixture
 def default_tenant(default_repo):
     auth.set_current_tenant(auth.RepositoryTenant(repository_id=default_repo.id))
+
+
+@pytest.fixture
+def mock_vcs_server():
+    with responses.RequestsMock(assert_all_requests_are_fired=False) as rsps:
+        rsps.add(rsps.GET, "http://localhost:8070/stmt/log", json={"log": []})
+        rsps.add(
+            rsps.GET,
+            "http://localhost:8070/stmt/branches",
+            json={"branches": ["master"]},
+        )
+        yield rsps

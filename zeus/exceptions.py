@@ -61,3 +61,35 @@ class UnknownBuild(Exception):
 
 class UnknownJob(Exception):
     pass
+
+
+class CommandError(Exception):
+    def __init__(
+        self,
+        cmd: str = None,
+        retcode: int = None,
+        stdout: bytes = None,
+        stderr: bytes = None,
+    ):
+        self.cmd = cmd
+        self.retcode = retcode
+        self.stdout = stdout
+        self.stderr = stderr
+
+    def __str__(self):
+        if self.cmd:
+            return "%s returned %d:\nSTDOUT: %r\nSTDERR: %r" % (
+                self.cmd,
+                self.retcode,
+                self.stdout.decode("utf-8"),
+                self.stderr.decode("utf-8"),
+            )
+        return ""
+
+
+class UnknownRevision(CommandError):
+    pass
+
+
+class InvalidPublicKey(CommandError):
+    pass
