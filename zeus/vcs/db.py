@@ -18,6 +18,8 @@ class Database:
             user=self.user,
             password=self.password,
             database=self.database,
+            # we want to rely on pgbouncer
+            statement_cache_size=0,
         )
         return self._conn
 
