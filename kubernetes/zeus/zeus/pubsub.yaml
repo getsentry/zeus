@@ -112,7 +112,7 @@ spec:
             - name: PUBSUB_ENDPOINT
               value: 'https://updates.zeus.ci'
             - name: VCS_SERVER_ENDPOINT
-              value: 'http://vcs-server.svc.default.cluster.local'
+              value: 'http://vcs-server'
             - name: ROLE
               value: pubsub
             - name: CELERY_BROKER_URL
