@@ -1,21 +1,17 @@
-apiVersion: apps/v1
-kind: StatefulSet
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: worker
   namespace: default
 spec:
-  selector:
-    matchLabels:
-      app: worker
-  serviceName: worker
   replicas: 3
-  updateStrategy:
+  strategy:
     type: RollingUpdate
-    # rollingUpdate:
-    #   maxSurge: 2
-    #   maxUnavailable: 1
-  # minReadySeconds: 5
-  # revisionHistoryLimit: 10
+    rollingUpdate:
+      maxSurge: 6
+      maxUnavailable: 2
+  minReadySeconds: 5
+  revisionHistoryLimit: 10
   template:
     metadata:
       labels:
@@ -116,8 +112,6 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 5
           volumeMounts:
-            - name: repo-cache
-              mountPath: '/tmp/repo-cache'
             - name: 'service-account'
               mountPath: '/var/run/secret/cloud.google.com'
           resources:
@@ -131,11 +125,3 @@ spec:
         - name: service-account
           secret:
             secretName: 'zeus-service-account'
-  volumeClaimTemplates:
-    - metadata:
-        name: repo-cache
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1000Gi
