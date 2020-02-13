@@ -1,7 +1,7 @@
 import pytest
 
 from contextlib import asynccontextmanager
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from zeus.vcs.server import build_app
 
@@ -50,7 +50,7 @@ async def default_repo_id(vcs_db) -> UUID:
         VALUES ($1::uuid, $2, $3, $4, $5, $6, $7, $8)
         RETURNING ID
     """,
-        str(uuid4()),
+        "3fcba264-4ea9-11ea-b8bf-acde48001122",
         "getsentry",
         "zeus",
         "https://github.com/getsentry/zeus.git",

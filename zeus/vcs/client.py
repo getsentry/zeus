@@ -7,7 +7,7 @@ from typing import List
 from uuid import UUID
 
 from zeus import auth
-from zeus.exceptions import ApiError
+from zeus.exceptions import ApiError, UnknownRevision
 
 
 class VcsServerClient(object):
@@ -63,6 +63,9 @@ class VcsServerClient(object):
                 deactivate_repo.delay(
                     params["repo_id"], DeactivationReason.invalid_pubkey
                 )
+
+            if data.get("error") == "invalid_ref":
+                raise UnknownRevision(ref=data.get("ref"))
 
             raise ApiError(text=text, code=response.status_code)
 

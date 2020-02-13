@@ -88,7 +88,14 @@ class CommandError(Exception):
 
 
 class UnknownRevision(CommandError):
-    pass
+    def __init__(self, ref=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ref = ref
+
+    def __str__(self):
+        if self.ref:
+            return self.ref
+        return super().__str__()
 
 
 class InvalidPublicKey(CommandError):

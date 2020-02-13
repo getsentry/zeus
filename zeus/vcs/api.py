@@ -92,6 +92,16 @@ def api_request(func):
                     "vcs-server.invalid-pubkey repo_id=%s", repo_id
                 )
                 return json_response({"error": "invalid_pubkey"}, status=400)
+            except UnknownRevision as exc:
+                current_app.logger.info(
+                    "vcs-server.invalid-revision repo_id=%s ref=%s",
+                    repo_id,
+                    exc.ref,
+                    exc_info=True,
+                )
+                return json_response(
+                    {"error": "invalid_ref", "ref": exc.ref}, status=400
+                )
             except Exception:
                 current_app.logger.exception(
                     "vcs-server.unhandled-error repo_id=%s", repo_id
