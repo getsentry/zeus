@@ -82,8 +82,11 @@ def api_request(func):
                 token,
             )
 
+            async with request.app["db_pool"].acquire() as conn:
+                vcs = await get_vcs(conn, repo_id)
+
             try:
-                return await func(request, repo_id, *args, **kwargs)
+                return await func(request, vcs, repo_id, *args, **kwargs)
             except InvalidPublicKey:
                 current_app.logger.exception(
                     "vcs-server.invalid-pubkey repo_id=%s", repo_id
@@ -109,9 +112,7 @@ async def health_check(request):
 @span("stmt.log")
 @api_request
 @log_errors
-async def stmt_log(request, repo_id):
-    vcs = await get_vcs(request.app, repo_id)
-
+async def stmt_log(request, vcs, repo_id):
     queue = request.app["queue"]
 
     parent = request.query.get("parent")
@@ -155,9 +156,7 @@ async def stmt_log(request, repo_id):
 @span("stmt.export")
 @api_request
 @log_errors
-async def stmt_export(request, repo_id):
-    vcs = await get_vcs(request.app, repo_id)
-
+async def stmt_export(request, vcs, repo_id):
     sha = request.query.get("sha")
     if not sha:
         return json_response({"error": "missing_arg"}, status=403)
@@ -168,9 +167,7 @@ async def stmt_export(request, repo_id):
 @span("stmt.show")
 @api_request
 @log_errors
-async def stmt_show(request, repo_id):
-    vcs = await get_vcs(request.app, repo_id)
-
+async def stmt_show(request, vcs, repo_id):
     sha = request.query.get("sha")
     if not sha:
         return json_response({"error": "missing_arg"}, status=403)
@@ -184,9 +181,7 @@ async def stmt_show(request, repo_id):
 @span("stmt.branches")
 @api_request
 @log_errors
-async def stmt_branches(request, repo_id):
-    vcs = await get_vcs(request.app, repo_id)
-
+async def stmt_branches(request, vcs, repo_id):
     return json_response({"branches": vcs.get_known_branches()})
 
 

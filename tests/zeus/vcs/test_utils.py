@@ -5,12 +5,12 @@ from zeus.vcs.backends.base import RevisionResult
 from zeus.vcs.utils import get_vcs, save_revision
 
 
-async def test_get_vcs(vcs_app, default_repo_id: UUID):
-    vcs = await get_vcs(vcs_app, default_repo_id)
+async def test_get_vcs(vcs_db, default_repo_id: UUID):
+    vcs = await get_vcs(vcs_db, default_repo_id)
     assert vcs.url == "https://github.com/getsentry/zeus.git"
 
 
-async def test_save_revision(vcs_app, default_repo_id: UUID):
+async def test_save_revision(vcs_db, default_repo_id: UUID):
     result = RevisionResult(
         sha="c" * 40,
         author="Foo Bar <foo@example.com>",
@@ -21,7 +21,7 @@ async def test_save_revision(vcs_app, default_repo_id: UUID):
         parents=["a" * 40, "b" * 40],
     )
 
-    await save_revision(vcs_app["db"], default_repo_id, result)
+    await save_revision(vcs_db, default_repo_id, result)
 
 
 #     assert type(revision) == Revision
