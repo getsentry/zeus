@@ -10,8 +10,8 @@ from zeus.vcs.backends.base import Vcs, RevisionResult
 from zeus.vcs.backends.git import GitVcs
 
 
-async def get_author_id(db, repo_id: UUID, email: str, name: str) -> UUID:
-    rv = await db.fetch(
+async def get_author_id(conn, repo_id: UUID, email: str, name: str) -> UUID:
+    rv = await conn.fetch(
         """
         INSERT INTO author (id, repository_id, email, name)
         VALUES ($1::uuid, $2, $3, $4)
@@ -26,7 +26,7 @@ async def get_author_id(db, repo_id: UUID, email: str, name: str) -> UUID:
     if rv:
         return rv[0]["id"]
     return (
-        await db.fetch(
+        await conn.fetch(
             """
         SELECT id FROM author WHERE repository_id = $1 AND email = $2 LIMIT 1
         """,
@@ -36,13 +36,11 @@ async def get_author_id(db, repo_id: UUID, email: str, name: str) -> UUID:
     )[0]["id"]
 
 
-async def save_revision(db, repo_id: UUID, revision: RevisionResult):
+async def save_revision(conn, repo_id: UUID, revision: RevisionResult):
     authors = revision.get_authors()
 
-    tr = await db.transaction()
-    await tr.start()
-    try:
-        await db.execute(
+    async with conn.transaction():
+        await conn.execute(
             """
             INSERT INTO revision (repository_id, sha, author_id, committer_id, message, parents, branches, date_created, date_committed)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -50,8 +48,8 @@ async def save_revision(db, repo_id: UUID, revision: RevisionResult):
         """,
             repo_id,
             revision.sha,
-            await get_author_id(db, repo_id, *authors[0]),
-            await get_author_id(db, repo_id, *revision.get_committer()),
+            await get_author_id(conn, repo_id, *authors[0]),
+            await get_author_id(conn, repo_id, *revision.get_committer()),
             revision.message,
             revision.parents,
             revision.branches,
@@ -59,7 +57,7 @@ async def save_revision(db, repo_id: UUID, revision: RevisionResult):
             revision.committer_date,
         )
         for author in authors:
-            await db.execute(
+            await conn.execute(
                 """
                 INSERT INTO revision_author (repository_id, revision_sha, author_id)
                 VALUES ($1, $2, $3)
@@ -67,19 +65,13 @@ async def save_revision(db, repo_id: UUID, revision: RevisionResult):
             """,
                 repo_id,
                 revision.sha,
-                await get_author_id(db, repo_id, *author),
+                await get_author_id(conn, repo_id, *author),
             )
-    except Exception:
-        await tr.rollback()
-        raise
-    else:
-        await tr.commit()
 
 
-async def get_vcs(app, repo_id: UUID) -> Vcs:
-    db = app["db"]
+async def get_vcs(conn, repo_id: UUID) -> Vcs:
     repo = (
-        await db.fetch(
+        await conn.fetch(
             """
         SELECT id, backend, url FROM repository WHERE id = $1
     """,
@@ -87,7 +79,7 @@ async def get_vcs(app, repo_id: UUID) -> Vcs:
         )
     )[0]
     options = dict(
-        await db.fetch(
+        await conn.fetch(
             """
         SELECT name, value FROM itemoption WHERE id = $1 AND name IN ('auth.username')
     """,
