@@ -35,7 +35,11 @@ def identify_revision(
     if not with_vcs:
         raise UnknownRevision
 
-    result = next(vcs_client.log(repository.id, parent=ref, limit=1))
+    try:
+        result = vcs_client.log(repository.id, parent=ref, limit=1)[0]
+    except IndexError:
+        raise UnknownRevision
+
     revision = Revision.query.filter(
         Revision.repository_id == repository.id, Revision.sha == result["sha"]
     ).first()
