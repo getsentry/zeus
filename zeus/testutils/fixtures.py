@@ -4,6 +4,7 @@ import pytest
 from collections import namedtuple
 from datetime import timedelta
 from subprocess import check_call, check_output
+from uuid import UUID
 
 from zeus import factories, models, auth
 from zeus.constants import Permission
@@ -45,6 +46,7 @@ def default_login(client, default_user):
 @pytest.fixture(scope="function")
 def default_repo():
     return factories.RepositoryFactory(
+        id=UUID("3fcba264-4ea9-11ea-b8bf-acde48001122"),
         owner_name="getsentry",
         name="zeus",
         url="https://github.com/getsentry/zeus.git",

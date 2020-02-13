@@ -90,9 +90,23 @@ class GitVcs(Vcs):
 
         except CommandError as e:
             stderr = e.stderr.decode("utf-8")
-            if "unknown revision or path" in stderr or "fatal: bad object" in stderr:
+            if "unknown revision or path" in stderr:
+                # fatal: ambiguous argument '82f750e7a3b692e049b95ed66bf9149f56218733^..82f750e7a3b692e049b95ed66bf9149f56218733': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n
                 raise UnknownRevision(
-                    cmd=e.cmd, retcode=e.retcode, stdout=e.stdout, stderr=e.stderr
+                    ref=stderr.split("fatal: ambiguous argument ")[-1].split("^", 1)[0],
+                    cmd=e.cmd,
+                    retcode=e.retcode,
+                    stdout=e.stdout,
+                    stderr=e.stderr,
+                ) from e
+            elif "fatal: bad object" in stderr:
+                # bad object 5d953e751835a52472ca2e1906023435a71cb5e4\n
+                raise UnknownRevision(
+                    ref=stderr.split("\n")[0].split("bad object ", 1)[-1],
+                    cmd=e.cmd,
+                    retcode=e.retcode,
+                    stdout=e.stdout,
+                    stderr=e.stderr,
                 ) from e
 
             if "Permission denied (publickey)" in stderr:
