@@ -13,13 +13,13 @@ kubernetes:
 steps:
 - kind: KubernetesDeployment
   selector:
-    label_selector: app in (web, pubsub)
+    label_selector: app in (web, pubsub, worker)
   containers:
   - image: gcr.io/zeus-176020/zeus:{sha}
     name: zeus
 - kind: KubernetesStatefulSet
   selector:
-    label_selector: app in (vcs-server, worker)
+    label_selector: app in (vcs-server)
   containers:
   - image: gcr.io/zeus-176020/zeus:{sha}
     name: zeus

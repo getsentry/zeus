@@ -150,8 +150,6 @@ spec:
           volumeMounts:
             - name: 'service-account'
               mountPath: '/var/run/secret/cloud.google.com'
-            - name: repo-cache
-              mountPath: /tmp/repo-cache
           resources:
             requests:
               cpu: 900m
@@ -163,6 +161,3 @@ spec:
         - name: service-account
           secret:
             secretName: 'zeus-service-account'
-        - name: repo-cache
-          hostPath:
-            path: /tmp/repo-cache
