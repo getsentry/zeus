@@ -53,7 +53,9 @@ def process_artifact(artifact_id, manager=None, force=False, **kwargs):
         return
 
     if not build.revision_sha:
-        raise Exception("Cannot process artifact until revision is resolved")
+        if manager:
+            raise Exception("Cannot process artifact until revision is resolved")
+        return process_artifact.delay(artifact_id, force=force, countdown=5, **kwargs)
 
     if artifact.file:
         if manager is None:
