@@ -43,7 +43,7 @@ class VcsServerClient(object):
                 if params
                 else None,
                 headers={
-                    "Authorization": "token {}".format(
+                    "Authorization": "Bearer zeus-t-{}".format(
                         auth.generate_token(tenant).decode("utf-8")
                     )
                 },

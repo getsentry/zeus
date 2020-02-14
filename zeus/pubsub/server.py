@@ -44,8 +44,8 @@ def log_errors(func):
 
 @span("worker")
 @log_errors
-async def worker(channel, queue, token, repo_ids=None, build_ids=None):
-    allowed_repo_ids = frozenset(token["repo_ids"])
+async def worker(channel, queue, tenant, repo_ids=None, build_ids=None):
+    allowed_repo_ids = frozenset(tenant.access.keys())
 
     while await channel.wait_message():
         msg = await channel.get_json()
@@ -98,16 +98,17 @@ async def stream(request):
     if not token:
         return Response(status=401)
 
-    build_ids = frozenset(request.query.get("build") or [])
-    repo_ids = frozenset(request.query.get("repo") or [])
-
-    token = auth.parse_token(token)
-    if not token:
+    tenant = auth.get_tenant_from_signed_token(token)
+    if not tenant:
         return Response(status=401)
 
-    if "uid" in token:
+    build_ids = frozenset(request.query.get("build") or [])
+    # TODO(dcramer): we could validate this here
+    repo_ids = frozenset(request.query.get("repo") or [])
+
+    if getattr(tenant, "user_id", None):
         with sentry_sdk.configure_scope() as scope:
-            scope.user = {"id": token["uid"]}
+            scope.user = {"id": tenant.user_id}
 
     current_app.logger.debug(
         "pubsub.client.connected guid=%s tenant=%s", client_guid, token
@@ -134,7 +135,7 @@ async def stream(request):
             op="aioredis.subscribe", description="builds"
         ):
             res = await conn.subscribe("builds")
-        asyncio.ensure_future(worker(res[0], queue, token, repo_ids, build_ids))
+        asyncio.ensure_future(worker(res[0], queue, tenant, repo_ids, build_ids))
 
         resp = StreamResponse(status=200, reason="OK")
         resp.headers["Content-Type"] = "text/event-stream"
