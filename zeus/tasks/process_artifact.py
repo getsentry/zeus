@@ -9,7 +9,7 @@ from zeus.utils import timezone
 
 
 @celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
-def process_artifact(artifact_id, manager=None, force=False, **kwargs):
+def process_artifact(artifact_id, manager=None, force=False, countdown=None, **kwargs):
     from zeus.tasks.aggregate_job_stats import aggregate_build_stats_for_job
 
     artifact = Artifact.query.unrestricted_unsafe().get(artifact_id)
