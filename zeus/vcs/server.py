@@ -43,7 +43,7 @@ async def build_app(loop=None) -> Application:
         password=current_app.config["DB_PASSWORD"],
         database=current_app.config["DB_NAME"],
         # we want to rely on pgbouncer
-        # statement_cache_size=0,
+        statement_cache_size=0,
     )
     app["queue"] = asyncio.Queue(loop=loop)
 
