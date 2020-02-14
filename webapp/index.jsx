@@ -30,14 +30,15 @@ import store from './store';
 // }
 
 import * as Sentry from '@sentry/browser';
-import {Tracing} from '@sentry/integrations';
+import {Integrations} from '@sentry/apm';
 
 // TODO(dcramer): bind user context
 Sentry.init({
   ...(window.SENTRY_CONFIG || {}),
   integrations: [
-    new Tracing({
-      tracingOrigins: ['localhost', 'zeus.ci', /^\//]
+    new Integrations.Tracing({
+      tracingOrigins: ['localhost', 'zeus.ci', /^\//],
+      tracesSampleRate: 1
     })
   ]
 });
