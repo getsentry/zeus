@@ -17,7 +17,7 @@ class ApiHelper(object):
 
         headers = {}
         if tenant:
-            headers["Authorization"] = "token {}".format(
+            headers["Authorization"] = "Bearer zeus-t-{}".format(
                 auth.generate_token(tenant).decode("utf-8")
             )
 

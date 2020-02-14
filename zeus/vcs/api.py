@@ -1,6 +1,7 @@
 from aiohttp.web import Response, json_response
 from functools import wraps
 from flask import current_app
+from uuid import UUID
 
 import sentry_sdk
 
@@ -27,44 +28,30 @@ def log_errors(func):
     return wrapper
 
 
-def get_token(request):
-    auth_header = request.headers.get("authorization")
-    if not auth_header:
-        return request.query.get("token")
-
-    bits = auth_header.split(" ")
-    if len(bits) != 2:
-        return None
-
-    if bits[0].lower() != "token":
-        return None
-
-    return bits[1]
-
-
 def api_request(func):
     @wraps(func)
     def wrapper(request, *args, **kwargs):
         @log_errors
         async def tmp():
-            token = get_token(request)
-            if not token:
-                return json_response({"error": "missing_auth"}, status=401)
-
             repo_id = request.query.get("repo_id")
             if not repo_id:
                 return json_response({"error": "missing_arg"}, status=403)
 
-            tenant = auth.get_tenant_from_token(token)
+            repo_id = UUID(repo_id)
+
+            tenant = auth.get_tenant_from_headers(request.headers)
+            if not tenant:
+                return json_response({"error": "access_denied"}, status=401)
+
             if getattr(tenant, "user_id", None):
                 with sentry_sdk.configure_scope() as scope:
                     scope.user = {"id": tenant.user_id}
 
-            if repo_id not in tenant.access:
+            if not tenant.has_permission(repo_id):
                 current_app.logger.debug(
                     "vcs-server.invalid-request command=%s tenant=%s reason=invalid-repo",
                     func.__name__,
-                    token,
+                    tenant,
                 )
                 return json_response({"error": "access_denied"}, status=401)
 
@@ -75,7 +62,7 @@ def api_request(func):
                 "vcs-server.request repo_id=%s command=%s tenant=%s",
                 repo_id,
                 func.__name__,
-                token,
+                tenant,
             )
 
             async with request.app["db_pool"].acquire() as conn:

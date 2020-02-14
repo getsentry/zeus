@@ -37,3 +37,10 @@ def test_valid_token(app, default_api_token):
     ):
         tenant = HeaderAuthentication().authenticate()
         assert tenant.token_id == default_api_token.id
+
+    with app.test_request_context(
+        "/",
+        headers={"Authorization": "Bearer {}".format(default_api_token.access_token)},
+    ):
+        tenant = HeaderAuthentication().authenticate()
+        assert tenant.token_id == default_api_token.id

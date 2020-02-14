@@ -23,10 +23,15 @@ from zeus.models import (
 )
 from zeus.utils import timezone
 
+_bearer_regexp = re.compile(r"^bearer(:|\s)\s*(.+)$", re.I)
+
 
 class Tenant(object):
+    access = {}
+
     def __init__(self, access: Optional[Mapping[UUID, Optional[Permission]]] = None):
-        self.access = access or {}
+        if access is not None:
+            self.access = access
 
     def __repr__(self):
         return "<{} repository_ids={}>".format(type(self).__name__, self.repository_ids)
@@ -76,8 +81,14 @@ class Tenant(object):
 
 
 class ApiTokenTenant(Tenant):
-    def __init__(self, token_id: str):
+    def __init__(
+        self,
+        token_id: str,
+        access: Optional[Mapping[UUID, Optional[Permission]]] = None,
+    ):
         self.token_id = token_id
+        if access is not None:
+            self.access = access
 
     def __repr__(self):
         return "<{} token_id={}>".format(type(self).__name__, self.token_id)
@@ -96,8 +107,12 @@ class ApiTokenTenant(Tenant):
 
 
 class UserTenant(Tenant):
-    def __init__(self, user_id: str):
+    def __init__(
+        self, user_id: str, access: Optional[Mapping[UUID, Optional[Permission]]] = None
+    ):
         self.user_id = user_id
+        if access is not None:
+            self.access = access
 
     def __repr__(self):
         return "<{} user_id={}>".format(type(self).__name__, self.user_id)
@@ -136,13 +151,9 @@ def get_tenant_from_headers(headers: Mapping) -> Optional[Tenant]:
     """
     """
 
-    header = headers.get("Authorization", "").lower()
+    header = headers.get("Authorization", "")
     if header:
-        return get_tenant_from_auth_header(header)
-
-    header = headers.get("X-Stream-Token", "").lower()
-    if header:
-        return get_tenant_from_token(header)
+        return get_tenant_from_bearer_header(header)
 
 
 def get_tenant_from_request() -> Tenant:
@@ -153,11 +164,12 @@ def get_tenant_from_request() -> Tenant:
     return Tenant.from_user(user)
 
 
-def get_tenant_from_auth_header(header: str) -> Optional[Tenant]:
-    if not header.startswith("bearer"):
+def get_tenant_from_bearer_header(header: str) -> Optional[Tenant]:
+    if not header.lower().startswith("bearer"):
         return None
 
-    token = re.sub(r"^bearer(:|\s)\s*", "", header).strip()
+    match = _bearer_regexp.match(header)
+    token = match.group(2)
     if not token.startswith("zeus-"):
         # Assuming this is a legacy token
         return get_tenant_from_legacy_token(token)
@@ -171,6 +183,9 @@ def get_tenant_from_auth_header(header: str) -> Optional[Tenant]:
 
     if parts[1] == "r":
         return get_tenant_from_repository_token(parts[2])
+
+    if parts[1] == "t":
+        return get_tenant_from_signed_token(parts[2])
 
     raise AuthenticationFailed
 
@@ -312,13 +327,14 @@ def parse_token(token: str) -> Optional[str]:
         return None
 
 
-def get_tenant_from_token(token: str) -> Tenant:
+def get_tenant_from_signed_token(token: str) -> Tenant:
     payload = parse_token(token)
     if not payload:
         return Tenant()
+    access = {UUID(k): v for k, v in payload["access"].items()}
     if "uid" in payload:
-        return UserTenant(user_id=payload["uid"], access=payload["access"])
-    return Tenant(access=payload["access"])
+        return UserTenant(user_id=UUID(payload["uid"]), access=access)
+    return Tenant(access=access)
 
 
 def is_safe_url(target: str) -> bool:
