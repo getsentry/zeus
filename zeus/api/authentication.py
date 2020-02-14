@@ -1,9 +1,11 @@
+from flask import request
+
 from zeus import auth
 
 
-class ApiTokenAuthentication(object):
+class HeaderAuthentication(object):
     def authenticate(self):
-        return auth.get_tenant_from_token()
+        return auth.get_tenant_from_headers(request.headers)
 
 
 class SessionAuthentication(object):

@@ -1,4 +1,5 @@
 from zeus import auth
+from zeus.constants import Permission
 
 
 def test_login_user(client, default_user):
@@ -13,7 +14,7 @@ def test_token_generation(default_user, default_repo, default_repo_access):
     token = auth.generate_token(tenant)
     assert isinstance(token, bytes)
     result = auth.parse_token(token)
-    assert result["repo_ids"] == [str(default_repo.id)]
+    assert result["access"] == {str(default_repo.id): Permission.admin}
     assert result["uid"] == str(default_user.id)
 
 

@@ -9,7 +9,7 @@ from zeus import auth
 from zeus.exceptions import ApiUnauthorized
 from zeus.utils.sentry import span
 
-from ..authentication import ApiTokenAuthentication, SessionAuthentication
+from ..authentication import HeaderAuthentication, SessionAuthentication
 
 LINK_HEADER = '<{uri}&page={page}>; rel="{name}" page="{page}" results="{results}"'
 
@@ -111,7 +111,7 @@ class ApiHelpers(object):
 class Resource(View, ApiHelpers):
     methods = ["GET", "POST", "PUT", "DELETE"]
 
-    authentication_classes = (ApiTokenAuthentication, SessionAuthentication)
+    authentication_classes = (HeaderAuthentication, SessionAuthentication)
 
     auth_required = True
 
