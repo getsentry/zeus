@@ -19,6 +19,8 @@ kind: StatefulSet
 metadata:
   name: vcs-server
   namespace: default
+  labels:
+    app: vcs-server
 spec:
   selector:
     matchLabels:
