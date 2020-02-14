@@ -47,33 +47,29 @@ def api_request(func):
     def wrapper(request, *args, **kwargs):
         @log_errors
         async def tmp():
-            repo_id = request.query.get("repo_id")
-            if not repo_id:
-                return json_response({"error": "missing_arg"}, status=403)
-
             token = get_token(request)
             if not token:
                 return json_response({"error": "missing_auth"}, status=401)
 
-            token = auth.parse_token(token)
-            if not token:
-                current_app.logger.debug(
-                    "vcs-server.invalid-request command=%s reason=invalid-token",
-                    func.__name__,
-                )
-                return json_response({"error": "invalid_auth"}, status=401)
+            repo_id = request.query.get("repo_id")
+            if not repo_id:
+                return json_response({"error": "missing_arg"}, status=403)
 
-            if "uid" in token:
+            tenant = auth.get_tenant_from_token(token)
+            if getattr(tenant, "user_id", None):
                 with sentry_sdk.configure_scope() as scope:
-                    scope.user = {"id": token["uid"]}
+                    scope.user = {"id": tenant.user_id}
 
-            if "repo_ids" not in token or repo_id not in token["repo_ids"]:
+            if repo_id not in tenant.access:
                 current_app.logger.debug(
                     "vcs-server.invalid-request command=%s tenant=%s reason=invalid-repo",
                     func.__name__,
                     token,
                 )
-                return json_response({"error": "access_denied"}, status=400)
+                return json_response({"error": "access_denied"}, status=401)
+
+            with sentry_sdk.configure_scope() as scope:
+                scope.set_tag("repository_id", repo_id)
 
             current_app.logger.debug(
                 "vcs-server.request repo_id=%s command=%s tenant=%s",

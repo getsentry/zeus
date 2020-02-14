@@ -85,7 +85,7 @@ class ApiTokenTenant(Tenant):
     @cached_property
     def access(self) -> Mapping[UUID, Permission]:
         if not self.token_id:
-            return None
+            return {}
 
         return dict(
             db.session.query(
@@ -105,7 +105,7 @@ class UserTenant(Tenant):
     @cached_property
     def access(self) -> Mapping[UUID, Permission]:
         if not self.user_id:
-            return None
+            return {}
 
         return dict(
             db.session.query(
@@ -127,16 +127,33 @@ class RepositoryTenant(Tenant):
     @cached_property
     def access(self) -> Mapping[UUID, Permission]:
         if not self.repository_id:
-            return None
+            return {}
 
         return {self.repository_id: self.permission}
 
 
-def get_tenant_from_token():
-    header = request.headers.get("Authorization", "").lower()
-    if not header:
-        return None
+def get_tenant_from_headers(headers: Mapping) -> Optional[Tenant]:
+    """
+    """
 
+    header = headers.get("Authorization", "").lower()
+    if header:
+        return get_tenant_from_auth_header(header)
+
+    header = headers.get("X-Stream-Token", "").lower()
+    if header:
+        return get_tenant_from_token(header)
+
+
+def get_tenant_from_request() -> Tenant:
+    tenant = get_tenant_from_headers(request.headers)
+    if tenant:
+        return tenant
+    user = get_current_user()
+    return Tenant.from_user(user)
+
+
+def get_tenant_from_auth_header(header: str) -> Optional[Tenant]:
     if not header.startswith("bearer"):
         return None
 
@@ -257,15 +274,6 @@ def get_current_user(fetch=True) -> Optional[User]:
     return rv
 
 
-def get_tenant_from_request():
-    tenant = get_tenant_from_token()
-    if tenant:
-        return tenant
-
-    user = get_current_user()
-    return Tenant.from_user(user)
-
-
 def set_current_tenant(tenant: Tenant):
     current_app.logger.info("Binding tenant as %r", tenant)
     g.current_tenant = tenant
@@ -289,19 +297,28 @@ def get_current_tenant() -> Tenant:
 
 def generate_token(tenant: Tenant) -> str:
     s = JSONWebSignatureSerializer(current_app.secret_key, salt="auth")
-    payload = {"repo_ids": [str(o) for o in tenant.repository_ids]}
+    payload = {"access": {str(k): v for k, v in tenant.access.items()}}
     if getattr(tenant, "user_id", None):
         payload["uid"] = str(tenant.user_id)
     return s.dumps(payload)
 
 
-def parse_token(token: str) -> str:
+def parse_token(token: str) -> Optional[str]:
     s = JSONWebSignatureSerializer(current_app.secret_key, salt="auth")
     try:
         return s.loads(token)
 
     except BadSignature:
         return None
+
+
+def get_tenant_from_token(token: str) -> Tenant:
+    payload = parse_token(token)
+    if not payload:
+        return Tenant()
+    if "uid" in payload:
+        return UserTenant(user_id=payload["uid"], access=payload["access"])
+    return Tenant(access=payload["access"])
 
 
 def is_safe_url(target: str) -> bool:
