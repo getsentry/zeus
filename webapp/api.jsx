@@ -53,7 +53,6 @@ export class Request {
       xhr.setRequestHeader(key, params.headers[key]);
     });
 
-
     xhr.onreadystatechange = () => {
       if (xhr.readyState === Request.DONE) {
         let responseData = this.processResponseText(xhr);
