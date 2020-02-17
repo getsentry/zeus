@@ -52,7 +52,6 @@ export class Request {
     Object.keys(params.headers || {}).forEach(key => {
       xhr.setRequestHeader(key, params.headers[key]);
     });
-    xhr.send(params.data ? JSON.stringify(params.data) : null);
 
     xhr.onreadystatechange = () => {
       if (xhr.readyState === Request.DONE) {
@@ -84,6 +83,8 @@ export class Request {
         }
       }
     };
+
+    xhr.send(params.data ? JSON.stringify(params.data) : null);
   }
 
   processResponseText(xhr) {
