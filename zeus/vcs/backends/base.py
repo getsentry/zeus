@@ -162,7 +162,7 @@ class Vcs(object):
         raise NotImplementedError
 
     def ensure(self, update_if_exists=True):
-        if self._updated:
+        if self._updated and not update_if_exists:
             return
 
         if not self.exists():
@@ -179,6 +179,7 @@ class Vcs(object):
         authors: List[str] = None,
         offset=0,
         limit=100,
+        update_if_exists=False,
     ) -> List[RevisionResult]:
         """ Gets the commit log for the repository.
 
