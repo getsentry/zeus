@@ -45,7 +45,7 @@ def api_request(func):
 
             if getattr(tenant, "user_id", None):
                 with sentry_sdk.configure_scope() as scope:
-                    scope.user = {"id": tenant.user_id}
+                    scope.user = {"id": str(tenant.user_id)}
 
             if not tenant.has_permission(repo_id):
                 current_app.logger.debug(
@@ -56,7 +56,7 @@ def api_request(func):
                 return json_response({"error": "access_denied"}, status=401)
 
             with sentry_sdk.configure_scope() as scope:
-                scope.set_tag("repository_id", repo_id)
+                scope.set_tag("repository_id", str(repo_id))
 
             current_app.logger.debug(
                 "vcs-server.request repo_id=%s command=%s tenant=%s",
