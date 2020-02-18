@@ -10,8 +10,6 @@ LOG_FORMAT = "%H\x01%an <%ae>\x01%at\x01%cn <%ce>\x01%ct\x01%P\x01%B\x02"
 
 ORIGIN_PREFIX = "remotes/origin/"
 
-MAX_DEPTH = 1000
-
 
 class LazyGitRevisionResult(RevisionResult):
     def __init__(self, vcs, *args, **kwargs):
@@ -116,14 +114,14 @@ class GitVcs(Vcs):
 
             raise
 
-    def clone(self, depth=MAX_DEPTH):
-        self.run(["clone", "--mirror", f"--depth={depth}", self.remote_url, self.path])
+    def clone(self):
+        self.run(["clone", "--mirror", self.remote_url, self.path])
 
-    def update(self, allow_cleanup=False, depth=MAX_DEPTH):
+    def update(self, allow_cleanup=False):
         if allow_cleanup:
-            self.run(["fetch", "--all", "--force", "-p", f"--depth={depth}"])
+            self.run(["fetch", "--all", "--force", "-p"])
         else:
-            self.run(["fetch", "--all", "--force", f"--depth={depth}"])
+            self.run(["fetch", "--all", "--force"])
 
     def log(
         self,
