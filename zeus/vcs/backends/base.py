@@ -122,7 +122,6 @@ class Vcs(object):
         self.username = username
 
         self._path_exists = None
-        self._updated = False
 
     def get_default_env(self) -> dict:
         return {}
@@ -162,14 +161,10 @@ class Vcs(object):
         raise NotImplementedError
 
     def ensure(self, update_if_exists=True):
-        if self._updated and not update_if_exists:
-            return
-
         if not self.exists():
             self.clone()
         elif update_if_exists:
             self.update()
-        self._updated = True
 
     def log(
         self,
