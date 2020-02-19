@@ -3,7 +3,7 @@ import os.path
 import re
 
 from subprocess import Popen, PIPE
-from typing import List, Optional, Tuple
+from typing import Iterator, List, Optional, Tuple
 from uuid import UUID
 
 from zeus.exceptions import CommandError
@@ -51,7 +51,7 @@ class RevisionResult(object):
             type(self).__name__,
             self.sha,
             self.author,
-            self.subject,
+            self.message.splitlines()[0],
         )
 
     def _parse_author_value(self, value: str) -> Tuple[str, str]:
@@ -78,11 +78,11 @@ class RevisionResult(object):
 
 
 class BufferParser(object):
-    def __init__(self, fp, delim):
+    def __init__(self, fp, delim: str):
         self.fp = fp
         self.delim = delim
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         chunk_buffer = []
         for chunk in self.fp:
             while chunk.find(self.delim) != -1:
@@ -175,7 +175,7 @@ class Vcs(object):
         offset=0,
         limit=100,
         update_if_exists=False,
-    ) -> List[RevisionResult]:
+    ) -> Iterator[RevisionResult]:
         """ Gets the commit log for the repository.
 
         Only one of parent or branch can be specified for restricting searches.
@@ -193,7 +193,7 @@ class Vcs(object):
         :param author: The author name or email to filter results.
         :param offset: An offset into the results at which to begin.
         :param limit: The maximum number of results to return.
-        :return: A list of revisions matching the given criteria.
+        :return: An iterator of revisions matching the given criteria.
         """
         raise NotImplementedError
 
