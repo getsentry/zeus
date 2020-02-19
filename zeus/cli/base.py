@@ -1,3 +1,3 @@
-from flask.cli import FlaskGroup
+from flask.cli import AppGroup
 
-cli = FlaskGroup(help="zeus")
+cli = AppGroup(help="zeus")
