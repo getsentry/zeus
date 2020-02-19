@@ -1,5 +1,6 @@
 import click
 
+from zeus import auth
 from zeus.config import db
 from zeus.db.utils import create_or_update
 from zeus.models import (
@@ -11,7 +12,10 @@ from zeus.models import (
     RepositoryStatus,
     User,
 )
+from zeus.utils.asyncio import coroutine, create_db_pool
 from zeus.utils.text import slugify
+from zeus.vcs.client import vcs_client
+from zeus.vcs.utils import get_vcs
 
 from .base import cli
 
@@ -118,3 +122,41 @@ def config_set(repository, option):
             ItemOption, where={"item_id": repo.id, "name": key}, values={"value": value}
         )
     db.session.commit()
+
+
+@repos.command()
+@click.argument("repository", required=True)
+@click.argument("parent", default="master", required=False)
+@click.option("--local", default=False, is_flag=True, required=False)
+@click.option("--limit", default=100, required=False)
+@coroutine
+async def log(repository, parent, local, limit):
+    provider, owner_name, repo_name = repository.split("/", 2)
+    repo = (
+        Repository.query.unrestricted_unsafe()
+        .filter(
+            Repository.provider == RepositoryProvider(provider),
+            Repository.owner_name == owner_name,
+            Repository.name == repo_name,
+        )
+        .first()
+    )
+
+    if local:
+        db_pool = await create_db_pool()
+
+        async with db_pool.acquire() as conn:
+            vcs = await get_vcs(conn, repo.id)
+
+        results = vcs.log(parent=parent, limit=limit)
+
+        for entry in results:
+            click.echo(f"{entry.sha}\n  {entry.author}")
+    else:
+        tenant = auth.RepositoryTenant(repo.id)
+        results = vcs_client.log(repo.id, parent=parent, limit=limit, tenant=tenant)
+
+        for entry in results:
+            click.echo(
+                f"{entry['sha']}\n  {entry['authors'][0][0]} <{entry['authors'][0][1]}>"
+            )
