@@ -1,10 +1,10 @@
 import asyncio
-import asyncpg
 
 from aiohttp.web import Application
 from flask import current_app
 from lru import LRU
 
+from zeus.utils.asyncio import create_db_pool
 from zeus.utils.sentry import span
 
 from .api import register_api_routes
@@ -36,15 +36,7 @@ async def build_app(loop=None) -> Application:
 
     register_api_routes(app)
 
-    app["db_pool"] = await asyncpg.create_pool(
-        host=current_app.config["DB_HOST"],
-        port=current_app.config["DB_PORT"],
-        user=current_app.config["DB_USER"],
-        password=current_app.config["DB_PASSWORD"],
-        database=current_app.config["DB_NAME"],
-        # we want to rely on pgbouncer
-        statement_cache_size=0,
-    )
+    app["db_pool"] = await create_db_pool()
     app["queue"] = asyncio.Queue(loop=loop)
 
     return app

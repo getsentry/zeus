@@ -2,6 +2,8 @@ import click
 
 from random import choice, randint, randrange
 from sqlalchemy.exc import IntegrityError
+from typing import Iterable, List
+from uuid import UUID
 
 from zeus import auth, factories, models
 from zeus.api.schemas import BuildSchema
@@ -10,6 +12,9 @@ from zeus.constants import Result, Status
 from zeus.db.utils import try_create
 from zeus.pubsub.utils import publish
 from zeus.tasks import aggregate_build_stats_for_job
+from zeus.utils.asyncio import coroutine, create_db_pool
+from zeus.vcs.backends.base import Vcs
+from zeus.vcs.utils import get_vcs, save_revision
 
 from .base import cli
 
@@ -18,8 +23,7 @@ build_schema = BuildSchema()
 repo_names = ("sentry", "zeus")
 
 
-def find_files_in_repo(repo):
-    vcs = repo.get_vcs()
+def find_files_in_repo(vcs: Vcs) -> List[str]:
     vcs.ensure()
     result = [
         b
@@ -30,7 +34,7 @@ def find_files_in_repo(repo):
     return result
 
 
-def mock_single_repository(user_ids=()):
+async def mock_single_repository(user_ids: Iterable[UUID] = ()):
     repo = factories.RepositoryFactory.build(
         status=models.RepositoryStatus.active,
         github=True,
@@ -63,7 +67,7 @@ def mock_single_repository(user_ids=()):
     return repo
 
 
-def mock_author(repo: models.Repository, user_id) -> models.Author:
+async def mock_author(repo: models.Repository, user_id: UUID) -> models.Author:
     author = (
         models.Author.query.unrestricted_unsafe()
         .filter(
@@ -82,8 +86,12 @@ def mock_author(repo: models.Repository, user_id) -> models.Author:
     return factories.AuthorFactory(repository=repo, email=user.email)
 
 
-def load_revisions(repo: models.Repository, num_passes=100) -> models.Revision:
-    vcs = repo.get_vcs()
+async def load_revisions(
+    vcs: Vcs, repo: models.Repository, num_passes=100, db_pool=None
+) -> models.Revision:
+    if db_pool is None:
+        db_pool = await create_db_pool()
+
     vcs.ensure()
     num = 0
     has_more = True
@@ -92,10 +100,11 @@ def load_revisions(repo: models.Repository, num_passes=100) -> models.Revision:
     while has_more and num < num_passes:
         has_more = False
         for commit in vcs.log(parent=parent):
-            revision = commit.save(repo)[0]
+            async with db_pool.acquire() as conn:
+                await save_revision(conn, repo.id, commit)
+
             if first_revision is None:
-                first_revision = revision
-            db.session.commit()
+                first_revision = commit
             if parent == commit.sha:
                 break
 
@@ -105,7 +114,7 @@ def load_revisions(repo: models.Repository, num_passes=100) -> models.Revision:
     return first_revision
 
 
-def mock_revision(
+async def mock_revision(
     repo: models.Repository,
     parent_revision: models.Revision = None,
     author: models.Author = None,
@@ -118,7 +127,7 @@ def mock_revision(
     return revision
 
 
-def mock_build(
+async def mock_build(
     repo: models.Repository,
     revision: models.Revision = None,
     parent_revision: models.Revision = None,
@@ -128,12 +137,12 @@ def mock_build(
 ) -> models.Build:
     if user_ids and randint(0, 1) == 0:
         chosen_user_id = choice(user_ids)
-        author = mock_author(repo, chosen_user_id)
+        author = await mock_author(repo, chosen_user_id)
     else:
         author = None
 
     if not revision:
-        revision = mock_revision(repo, parent_revision, author)
+        revision = await mock_revision(repo, parent_revision, author)
 
     if with_change_request and parent_revision is None:
         parent_revision = factories.RevisionFactory.create(repository=repo)
@@ -219,14 +228,21 @@ def mocks():
 
 
 @mocks.command("load-all")
-def load_all(repos=3, commits_per_repo=10):
+@coroutine
+async def load_all(repos=3, commits_per_repo=10):
+    db_pool = await create_db_pool()
+
     user_ids = [u for u, in db.session.query(models.User.id)]
 
     for n in range(repos):
-        repo = mock_single_repository(user_ids=user_ids)
+        repo = await mock_single_repository(user_ids=user_ids)
+
+        async with db_pool.acquire() as conn:
+            vcs = await get_vcs(conn, repo.id)
+
         auth.set_current_tenant(auth.RepositoryTenant(repository_id=repo.id))
-        file_list = find_files_in_repo(repo)
-        load_revisions(repo)
+        file_list = find_files_in_repo(vcs)
+        await load_revisions(vcs, repo)
         revision_iter = iter(
             list(
                 models.Revision.query.unrestricted_unsafe()
@@ -238,7 +254,7 @@ def load_all(repos=3, commits_per_repo=10):
         parent_revision = None
         for n in range(commits_per_repo):
             revision = next(revision_iter)
-            build = mock_build(
+            build = await mock_build(
                 repo,
                 parent_revision=parent_revision,
                 revision=revision,
@@ -249,13 +265,19 @@ def load_all(repos=3, commits_per_repo=10):
 
 
 @mocks.command()
-def stream():
+@coroutine
+async def stream():
     user_ids = [u for u, in db.session.query(models.User.id)]
     repo = mock_single_repository(user_ids=user_ids)
-    file_list = find_files_in_repo(repo)
+
+    db_pool = await create_db_pool()
+    async with db_pool.acquire() as conn:
+        vcs = await get_vcs(conn, repo.id)
+
+    file_list = find_files_in_repo(vcs)
     parent_revision = None
     while True:
-        build = mock_build(
+        build = await mock_build(
             repo, parent_revision, user_ids=user_ids, file_list=file_list
         )
         parent_revision = build.revision

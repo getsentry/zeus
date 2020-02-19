@@ -82,7 +82,13 @@ class VcsServerClient(object):
         return response.json()
 
     def log(
-        self, repo_id: UUID, parent: str = None, branch: str = None, offset=0, limit=100
+        self,
+        repo_id: UUID,
+        parent: str = None,
+        branch: str = None,
+        offset=0,
+        limit=100,
+        **kwargs,
     ) -> List[dict]:
         return self.request(
             method="GET",
@@ -94,25 +100,31 @@ class VcsServerClient(object):
                 "offset": offset,
                 "limit": limit,
             },
+            **kwargs,
         )["log"]
 
-    def export(self, repo_id: UUID, sha: str) -> str:
+    def export(self, repo_id: UUID, sha: str, **kwargs) -> str:
         return self.request(
             method="GET",
             path="/stmt/export",
             params={"repo_id": str(repo_id), "sha": sha},
+            **kwargs,
         )["export"]
 
-    def show(self, repo_id: UUID, sha: str, filename: str) -> str:
+    def show(self, repo_id: UUID, sha: str, filename: str, **kwargs) -> str:
         return self.request(
             method="GET",
             path="/stmt/export",
             params={"repo_id": str(repo_id), "sha": sha, "filename": filename},
+            **kwargs,
         )["show"]
 
-    def branches(self, repo_id: UUID) -> str:
+    def branches(self, repo_id: UUID, **kwargs) -> str:
         return self.request(
-            method="GET", path="/stmt/branches", params={"repo_id": str(repo_id)}
+            method="GET",
+            path="/stmt/branches",
+            params={"repo_id": str(repo_id)},
+            **kwargs,
         )["branches"]
 
 
