@@ -1,3 +1,4 @@
+from typing import Iterator
 from urllib.parse import urlparse
 
 from zeus.exceptions import CommandError, InvalidPublicKey, UnknownRevision
@@ -12,7 +13,7 @@ ORIGIN_PREFIX = "remotes/origin/"
 
 
 class LazyGitRevisionResult(RevisionResult):
-    def __init__(self, vcs, *args, **kwargs):
+    def __init__(self, vcs: Vcs, *args, **kwargs):
         self.vcs = vcs
         super(LazyGitRevisionResult, self).__init__(*args, **kwargs)
 
@@ -132,7 +133,7 @@ class GitVcs(Vcs):
         limit=100,
         timeout=None,
         update_if_exists=False,
-    ):
+    ) -> Iterator[LazyGitRevisionResult]:
         """ Gets the commit log for the repository.
 
         Each revision returned includes all the branches with which this commit
