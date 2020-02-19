@@ -1,8 +1,11 @@
 import pytest
 
+from datetime import datetime
 from uuid import UUID
 
 from zeus import auth
+from zeus.exceptions import UnknownRevision
+from zeus.vcs.backends.git import LazyGitRevisionResult
 
 
 class ApiHelper(object):
@@ -50,6 +53,41 @@ async def test_log_basic(client, default_repo_id):
     assert resp.status == 200, resp.content
     data = await resp.json()
     assert data["log"], data
+
+
+async def test_log_fetches_on_retry(client, mocker, default_repo_id):
+    vcs_log = mocker.patch("zeus.vcs.backends.git.GitVcs.log")
+    vcs_log.side_effect = [
+        UnknownRevision("master"),
+        iter(
+            [
+                LazyGitRevisionResult(
+                    vcs=mocker.Mock(),
+                    sha="c" * 40,
+                    author="Foo Bar <foo@example.com>",
+                    committer="Biz Baz <baz@example.com>",
+                    author_date=datetime(2013, 9, 19, 22, 15, 22),
+                    committer_date=datetime(2013, 9, 19, 22, 15, 23),
+                    message="Hello world!",
+                )
+            ]
+        ),
+    ]
+
+    resp = await ApiHelper(client).get("/stmt/log", repo_id=default_repo_id)
+    assert resp.status == 200, resp.content
+    data = await resp.json()
+    assert len(data["log"]) == 1
+    assert data["log"][0]["sha"] == "c" * 40
+
+    vcs_log.assert_has_calls(
+        [
+            mocker.call(branch=None, limit=100, offset=0, parent=None),
+            mocker.call(
+                branch=None, limit=100, offset=0, parent=None, update_if_exists=True
+            ),
+        ]
+    )
 
 
 async def test_branches_basic(client, default_repo_id):
