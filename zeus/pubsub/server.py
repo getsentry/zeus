@@ -33,6 +33,8 @@ def log_errors(func):
             try:
                 return await func(*args, **kwargs)
 
+            except asyncio.CancelledError:
+                raise
             except Exception as e:
                 current_app.logger.exception(str(e))
                 raise
