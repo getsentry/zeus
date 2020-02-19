@@ -2626,6 +2626,57 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
             />
           </Styled(div)>
         </_default>
+        <Styled(UnstyledFooter)>
+          <UnstyledFooter
+            className="css-1qyrmuz e19nzz780"
+          >
+            <div
+              className="css-1qyrmuz e19nzz780"
+            >
+              <div>
+                <a
+                  href="https://github.com/getsentry/zeus"
+                  style={
+                    Object {
+                      "color": "inherit",
+                      "fontWeight": 500,
+                    }
+                  }
+                >
+                  Zeus
+                </a>
+                 
+                is Open Source Software
+                <br />
+                <small>
+                  Build 
+                  unknown
+                   — 
+                  <Link
+                    onlyActiveOnIndex={false}
+                    style={Object {}}
+                    to="/install"
+                  >
+                    <a
+                      href="/install"
+                      onClick={[Function]}
+                      style={Object {}}
+                    >
+                      Install Overview
+                    </a>
+                  </Link>
+                </small>
+              </div>
+              <div
+                style={
+                  Object {
+                    "clear": "both",
+                  }
+                }
+              />
+            </div>
+          </UnstyledFooter>
+        </Styled(UnstyledFooter)>
       </div>
     </DocumentTitle>
   </SideEffect(DocumentTitle)>

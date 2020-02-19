@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import AsyncPage from '../components/AsyncPage';
+import Footer from '../components/Footer';
 import RepositoryContent from '../components/RepositoryContent';
 import RepositoryHeader from '../components/RepositoryHeader';
 import requireAuth from '../utils/requireAuth';
@@ -54,6 +55,7 @@ export class RepositoryDetails extends AsyncPage {
       <div>
         <RepositoryHeader />
         <RepositoryContent>{this.props.children}</RepositoryContent>
+        <Footer />
       </div>
     );
   }
