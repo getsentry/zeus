@@ -458,11 +458,11 @@ blinker = "*"
 
 [[package]]
 category = "main"
-description = "Adds SQLAlchemy support to your Flask application"
+description = "Adds SQLAlchemy support to your Flask application."
 name = "flask-sqlalchemy"
 optional = false
-python-versions = "*"
-version = "2.2"
+python-versions = ">= 2.7, != 3.0.*, != 3.1.*, != 3.2.*, != 3.3.*"
+version = "2.4.1"
 
 [package.dependencies]
 Flask = ">=0.10"
@@ -1516,7 +1516,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 test = ["pytest", "pytest-aiohttp", "pytest-cov", "pytest-mock", "pytest-responses", "pytest-xdist", "responses"]
 
 [metadata]
-content-hash = "da013f7dace4b1ac58d940792f8768f8b72901ad08f101b076632981713d6df4"
+content-hash = "da7d3c297b480ed915922e5f07eb2d0ac17b34f47a5b07fcce5c9ecc86aee09a"
 python-versions = "~3.7"
 
 [metadata.files]
@@ -1801,8 +1801,8 @@ flask-mail = [
     {file = "Flask-Mail-0.9.1.tar.gz", hash = "sha256:22e5eb9a940bf407bcf30410ecc3708f3c56cc44b29c34e1726fe85006935f41"},
 ]
 flask-sqlalchemy = [
-    {file = "Flask-SQLAlchemy-2.2.tar.gz", hash = "sha256:f0d8241efba723d7b878f73550f5d3c0fbb042416123b52b36640b7491fa208b"},
-    {file = "Flask_SQLAlchemy-2.2-py2.py3-none-any.whl", hash = "sha256:fa3bd6343de231b2b3376a276df6d331c63c766449b660fc04d375a1c21312ac"},
+    {file = "Flask-SQLAlchemy-2.4.1.tar.gz", hash = "sha256:6974785d913666587949f7c2946f7001e4fa2cb2d19f4e69ead02e4b8f50b33d"},
+    {file = "Flask_SQLAlchemy-2.4.1-py2.py3-none-any.whl", hash = "sha256:0078d8663330dc05a74bc72b3b6ddc441b9a744e2f56fe60af1a5bfc81334327"},
 ]
 google-api-core = [
     {file = "google-api-core-1.16.0.tar.gz", hash = "sha256:92e962a087f1c4b8d1c5c88ade1c1dfd550047dcffb320c57ef6a534a20403e2"},
