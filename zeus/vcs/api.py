@@ -114,7 +114,9 @@ async def stmt_log(request, vcs, repo_id):
     limit = int(request.query.get("limit") or 100)
 
     try:
-        log_results = vcs.log(parent=parent, branch=branch, offset=offset, limit=limit)
+        log_results = list(
+            vcs.log(parent=parent, branch=branch, offset=offset, limit=limit)
+        )
     except UnknownRevision:
         # we're running a lazy update here if it didnt already exist
         log_results = vcs.log(
