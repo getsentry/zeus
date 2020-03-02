@@ -5,7 +5,7 @@ from zeus.api.schemas import BuildSchema
 from zeus.config import celery, db
 from zeus.constants import Result, Status
 from zeus.exceptions import InvalidPublicKey, UnknownRevision
-from zeus.models import Build, ChangeRequest
+from zeus.models import Build, ChangeRequest, FailureReason
 from zeus.pubsub.utils import publish
 from zeus.utils import revisions
 
@@ -29,6 +29,13 @@ def resolve_ref_for_build(build_id: UUID):
         except UnknownRevision:
             build.result = Result.errored
             build.status = Status.finished
+            db.session.add(
+                FailureReason(
+                    repository_id=build.repository_id,
+                    build_id=build.id,
+                    reason=FailureReason.Reason.unresolvable_ref,
+                )
+            )
             revision = None
         except InvalidPublicKey:
             revision = None

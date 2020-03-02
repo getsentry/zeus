@@ -1,4 +1,5 @@
 from zeus import factories
+from zeus.models import FailureReason
 from zeus.tasks import resolve_ref_for_build, resolve_ref_for_change_request
 
 
@@ -107,3 +108,31 @@ def test_resolve_ref_for_change_request_parent_and_head(
     assert cr.parent_revision_sha == default_revision.sha
     assert cr.head_revision_sha == default_revision.sha
     assert cr.author_id == default_revision.author_id
+
+
+def test_resolve_ref_unresolvable(default_repo, mock_vcs_server):
+    mock_vcs_server.replace(
+        mock_vcs_server.GET,
+        "http://localhost:8070/stmt/log",
+        status=400,
+        json={"error": "invalid_ref", "ref": "abcdef"},
+    )
+
+    build = factories.BuildFactory.create(
+        repository=default_repo, ref="abcdef", author=None, label=None
+    )
+
+    assert build.revision_sha is None
+    assert build.author_id is None
+    assert build.label is None
+
+    resolve_ref_for_build(build.id)
+
+    assert build.revision_sha is None
+    assert build.author_id is None
+    assert build.label is None
+
+    reasons = list(FailureReason.query.filter(FailureReason.build_id == build.id))
+    assert len(reasons) == 1
+    assert reasons[0].reason == FailureReason.Reason.unresolvable_ref
+    assert reasons[0].job_id is None

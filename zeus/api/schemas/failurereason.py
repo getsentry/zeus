@@ -26,5 +26,10 @@ class AggregateFailureReasonSchema(Schema):
     def process_aggregates(self, data, **kwargs):
         return {
             "reason": data.reason,
-            "runs": [{"id": UUID(e[0]), "job_id": UUID(e[1])} for e in data.runs],
+            "runs": [
+                {"id": UUID(e[0]), "job_id": UUID(e[1]) if e[1] else None}
+                for e in sorted(
+                    data.runs, key=lambda e: UUID(e[1]) if e[1] else None, reverse=True
+                )
+            ],
         }
