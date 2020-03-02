@@ -1,4 +1,5 @@
 from flask import request
+from sqlalchemy import or_
 
 from zeus.config import db
 from zeus.db.func import array_agg_row
@@ -27,7 +28,12 @@ class BuildFailuresResource(BaseBuildResource):
                 FailureReason.reason,
                 array_agg_row(FailureReason.id, FailureReason.job_id).label("runs"),
             )
-            .filter(FailureReason.job_id.in_(job_ids))
+            .filter(
+                or_(
+                    FailureReason.job_id.in_(job_ids),
+                    FailureReason.build_id == build.id,
+                )
+            )
             .group_by(FailureReason.reason)
         )
 

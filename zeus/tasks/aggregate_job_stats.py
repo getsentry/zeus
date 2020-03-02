@@ -144,13 +144,15 @@ def record_failure_reasons(job: Job):
             with db.session.begin_nested():
                 db.session.add(
                     FailureReason(
+                        build_id=job.build_id,
                         job_id=job.id,
                         repository_id=job.repository_id,
                         reason=FailureReason.Reason.failing_tests,
                     )
                 )
-        except IntegrityError:
-            pass
+        except IntegrityError as exc:
+            if "duplicate" not in str(exc):
+                raise
 
     if any_failures and job.result == Result.passed:
         job.result = Result.failed
@@ -288,7 +290,7 @@ def aggregate_build_stats(build_id: UUID):
 
         record_coverage_stats(build.id)
 
-        job_list = Job.query.filter(Job.build_id == build.id)
+        job_list = list(Job.query.filter(Job.build_id == build.id))
 
         was_finished = build.status == Status.finished
         is_finished = all(p.status == Status.finished for p in job_list)
@@ -324,6 +326,13 @@ def aggregate_build_stats(build_id: UUID):
         elif is_finished:
             if not job_list:
                 build.result = Result.errored
+                db.session.add(
+                    FailureReason(
+                        repository_id=build.repository_id,
+                        build_id=build.id,
+                        reason=FailureReason.Reason.no_jobs,
+                    )
+                )
             elif not any(j for j in job_list if not j.allow_failure):
                 build.result = Result.passed
             else:

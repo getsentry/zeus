@@ -56,3 +56,21 @@ def test_build_failures_list_empty(
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 0
+
+
+def test_build_failures_no_jobs(
+    client, default_login, default_repo, default_build, default_repo_access
+):
+    failure = factories.FailureReasonFactory(build=default_build, no_jobs=True)
+
+    resp = client.get(
+        "/api/repos/{}/builds/{}/failures".format(
+            default_repo.get_full_name(), default_build.number
+        )
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 1
+
+    assert data[0]["reason"] == "no_jobs"
+    assert data[0]["runs"] == [{"id": str(failure.id), "job_id": None}]

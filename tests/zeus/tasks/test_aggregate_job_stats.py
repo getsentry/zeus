@@ -40,6 +40,22 @@ def test_finished_job(mocker, db_session, default_revision, default_tenant):
     mock_send_build_notifications.assert_called_once_with(build_id=build.id)
 
 
+def test_no_jobs(mocker, db_session, default_revision, default_tenant):
+    build = factories.BuildFactory(revision=default_revision, finished=True)
+    db_session.add(build)
+
+    aggregate_build_stats(build.id)
+
+    db_session.refresh(build)
+
+    assert build.result == Result.errored
+
+    reasons = list(FailureReason.query.filter(FailureReason.build_id == build.id))
+    assert len(reasons) == 1
+    assert reasons[0].reason == FailureReason.Reason.no_jobs
+    assert reasons[0].job_id is None
+
+
 def test_failing_tests(mocker, db_session, default_revision, default_tenant):
     build = factories.BuildFactory(revision=default_revision, in_progress=True)
     db_session.add(build)
@@ -73,6 +89,7 @@ def test_failing_tests_duplicate_reason(
 
     db_session.add(
         FailureReason(
+            build_id=build.id,
             reason=FailureReason.Reason.failing_tests,
             job_id=job.id,
             repository_id=job.repository_id,
