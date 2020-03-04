@@ -42,8 +42,9 @@ def cleanup_jobs(task_limit=100):
             }
         )
     )
-    current_app.logger.warning("cleanup: cleanup_jobs affected rows %s", results)
-    db.session.commit()
+    if results:
+        current_app.logger.warning("cleanup: cleanup_jobs affected rows %s", results)
+        db.session.commit()
 
 
 @celery.task(name="zeus.cleanup_build_refs", time_limit=300)
@@ -93,7 +94,9 @@ def cleanup_build_stats(task_limit=100):
         .filter(Build.status != Status.finished, Build.result != Result.errored)
         .update({"status": Status.finished})
     )
-    current_app.logger.warning(
-        "cleanup: cleanup_build_stats [unfinished; errored] affected rows %s", results
-    )
+    if results:
+        current_app.logger.warning(
+            "cleanup: cleanup_build_stats [unfinished; errored] affected rows %s",
+            results,
+        )
     db.session.commit()
