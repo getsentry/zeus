@@ -71,7 +71,7 @@ const FileWithCoverageTable = styled.table`
     font-size: 14px !important;
   }
 
-  tr > td:first-child {
+  tr > td:first-of-type {
     width: 30px;
     text-align: right;
   }

@@ -46,9 +46,7 @@ class ChangeRequestIndexResource(Resource):
         query = (
             ChangeRequest.query.options(
                 joinedload("head_revision"),
-                joinedload("head_revision").joinedload("author"),
                 joinedload("parent_revision"),
-                joinedload("parent_revision").joinedload("author"),
                 joinedload("author"),
             )
             .filter(ChangeRequest.repository_id.in_(tenant.repository_ids))

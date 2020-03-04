@@ -14,19 +14,23 @@ exports[`RepositoryOverview hides empty stats 1`] = `
   revisionList={
     Array [
       Object {
-        "author": Object {
-          "email": "dcramer@gmail.com",
-          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-          "name": "David Cramer",
-        },
-        "committed_at": "2018-06-08T16:45:55+00:00",
-        "created_at": "2018-06-08T16:45:55+00:00",
-        "latest_build": Object {
-          "author": Object {
+        "author": Array [
+          Object {
             "email": "dcramer@gmail.com",
             "id": "659dc21c-81db-11e7-988a-0a580a28047a",
             "name": "David Cramer",
           },
+        ],
+        "committed_at": "2018-06-08T16:45:55+00:00",
+        "created_at": "2018-06-08T16:45:55+00:00",
+        "latest_build": Object {
+          "authors": Array [
+            Object {
+              "email": "dcramer@gmail.com",
+              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+              "name": "David Cramer",
+            },
+          ],
           "created_at": "2018-01-06T16:07:16.830829+00:00",
           "external_id": "325812408",
           "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -38,11 +42,13 @@ exports[`RepositoryOverview hides empty stats 1`] = `
           "repository": undefined,
           "result": "passed",
           "revision": Object {
-            "author": Object {
-              "email": "dcramer@gmail.com",
-              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-              "name": "David Cramer",
-            },
+            "authors": Array [
+              Object {
+                "email": "dcramer@gmail.com",
+                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                "name": "David Cramer",
+              },
+            ],
             "committed_at": "2018-01-06T16:06:52+00:00",
             "created_at": "2018-01-06T16:06:52+00:00",
             "message": "fix: Remove break-word behavior on coverage
@@ -186,19 +192,23 @@ exports[`RepositoryOverview hides empty stats 1`] = `
                 revisionList={
                   Array [
                     Object {
-                      "author": Object {
-                        "email": "dcramer@gmail.com",
-                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                        "name": "David Cramer",
-                      },
-                      "committed_at": "2018-06-08T16:45:55+00:00",
-                      "created_at": "2018-06-08T16:45:55+00:00",
-                      "latest_build": Object {
-                        "author": Object {
+                      "author": Array [
+                        Object {
                           "email": "dcramer@gmail.com",
                           "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                           "name": "David Cramer",
                         },
+                      ],
+                      "committed_at": "2018-06-08T16:45:55+00:00",
+                      "created_at": "2018-06-08T16:45:55+00:00",
+                      "latest_build": Object {
+                        "authors": Array [
+                          Object {
+                            "email": "dcramer@gmail.com",
+                            "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                            "name": "David Cramer",
+                          },
+                        ],
                         "created_at": "2018-01-06T16:07:16.830829+00:00",
                         "external_id": "325812408",
                         "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -210,11 +220,13 @@ exports[`RepositoryOverview hides empty stats 1`] = `
                         "repository": undefined,
                         "result": "passed",
                         "revision": Object {
-                          "author": Object {
-                            "email": "dcramer@gmail.com",
-                            "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                            "name": "David Cramer",
-                          },
+                          "authors": Array [
+                            Object {
+                              "email": "dcramer@gmail.com",
+                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                              "name": "David Cramer",
+                            },
+                          ],
                           "committed_at": "2018-01-06T16:06:52+00:00",
                           "created_at": "2018-01-06T16:06:52+00:00",
                           "message": "fix: Remove break-word behavior on coverage
@@ -1317,19 +1329,23 @@ exports[`RepositoryOverview hides empty stats 1`] = `
             revisionList={
               Array [
                 Object {
-                  "author": Object {
-                    "email": "dcramer@gmail.com",
-                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                    "name": "David Cramer",
-                  },
-                  "committed_at": "2018-06-08T16:45:55+00:00",
-                  "created_at": "2018-06-08T16:45:55+00:00",
-                  "latest_build": Object {
-                    "author": Object {
+                  "author": Array [
+                    Object {
                       "email": "dcramer@gmail.com",
                       "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                       "name": "David Cramer",
                     },
+                  ],
+                  "committed_at": "2018-06-08T16:45:55+00:00",
+                  "created_at": "2018-06-08T16:45:55+00:00",
+                  "latest_build": Object {
+                    "authors": Array [
+                      Object {
+                        "email": "dcramer@gmail.com",
+                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                        "name": "David Cramer",
+                      },
+                    ],
                     "created_at": "2018-01-06T16:07:16.830829+00:00",
                     "external_id": "325812408",
                     "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -1341,11 +1357,13 @@ exports[`RepositoryOverview hides empty stats 1`] = `
                     "repository": undefined,
                     "result": "passed",
                     "revision": Object {
-                      "author": Object {
-                        "email": "dcramer@gmail.com",
-                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                        "name": "David Cramer",
-                      },
+                      "authors": Array [
+                        Object {
+                          "email": "dcramer@gmail.com",
+                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                          "name": "David Cramer",
+                        },
+                      ],
                       "committed_at": "2018-01-06T16:06:52+00:00",
                       "created_at": "2018-01-06T16:06:52+00:00",
                       "message": "fix: Remove break-word behavior on coverage
@@ -2438,19 +2456,23 @@ exports[`RepositoryOverview hides empty stats 1`] = `
             revisionList={
               Array [
                 Object {
-                  "author": Object {
-                    "email": "dcramer@gmail.com",
-                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                    "name": "David Cramer",
-                  },
-                  "committed_at": "2018-06-08T16:45:55+00:00",
-                  "created_at": "2018-06-08T16:45:55+00:00",
-                  "latest_build": Object {
-                    "author": Object {
+                  "author": Array [
+                    Object {
                       "email": "dcramer@gmail.com",
                       "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                       "name": "David Cramer",
                     },
+                  ],
+                  "committed_at": "2018-06-08T16:45:55+00:00",
+                  "created_at": "2018-06-08T16:45:55+00:00",
+                  "latest_build": Object {
+                    "authors": Array [
+                      Object {
+                        "email": "dcramer@gmail.com",
+                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                        "name": "David Cramer",
+                      },
+                    ],
                     "created_at": "2018-01-06T16:07:16.830829+00:00",
                     "external_id": "325812408",
                     "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -2462,11 +2484,13 @@ exports[`RepositoryOverview hides empty stats 1`] = `
                     "repository": undefined,
                     "result": "passed",
                     "revision": Object {
-                      "author": Object {
-                        "email": "dcramer@gmail.com",
-                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                        "name": "David Cramer",
-                      },
+                      "authors": Array [
+                        Object {
+                          "email": "dcramer@gmail.com",
+                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                          "name": "David Cramer",
+                        },
+                      ],
                       "committed_at": "2018-01-06T16:06:52+00:00",
                       "created_at": "2018-01-06T16:06:52+00:00",
                       "message": "fix: Remove break-word behavior on coverage
@@ -3559,19 +3583,23 @@ exports[`RepositoryOverview hides empty stats 1`] = `
             revisionList={
               Array [
                 Object {
-                  "author": Object {
-                    "email": "dcramer@gmail.com",
-                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                    "name": "David Cramer",
-                  },
-                  "committed_at": "2018-06-08T16:45:55+00:00",
-                  "created_at": "2018-06-08T16:45:55+00:00",
-                  "latest_build": Object {
-                    "author": Object {
+                  "author": Array [
+                    Object {
                       "email": "dcramer@gmail.com",
                       "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                       "name": "David Cramer",
                     },
+                  ],
+                  "committed_at": "2018-06-08T16:45:55+00:00",
+                  "created_at": "2018-06-08T16:45:55+00:00",
+                  "latest_build": Object {
+                    "authors": Array [
+                      Object {
+                        "email": "dcramer@gmail.com",
+                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                        "name": "David Cramer",
+                      },
+                    ],
                     "created_at": "2018-01-06T16:07:16.830829+00:00",
                     "external_id": "325812408",
                     "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -3583,11 +3611,13 @@ exports[`RepositoryOverview hides empty stats 1`] = `
                     "repository": undefined,
                     "result": "passed",
                     "revision": Object {
-                      "author": Object {
-                        "email": "dcramer@gmail.com",
-                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                        "name": "David Cramer",
-                      },
+                      "authors": Array [
+                        Object {
+                          "email": "dcramer@gmail.com",
+                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                          "name": "David Cramer",
+                        },
+                      ],
                       "committed_at": "2018-01-06T16:06:52+00:00",
                       "created_at": "2018-01-06T16:06:52+00:00",
                       "message": "fix: Remove break-word behavior on coverage
@@ -4670,19 +4700,23 @@ exports[`RepositoryOverview renders with all stats 1`] = `
   revisionList={
     Array [
       Object {
-        "author": Object {
-          "email": "dcramer@gmail.com",
-          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-          "name": "David Cramer",
-        },
-        "committed_at": "2018-06-08T16:45:55+00:00",
-        "created_at": "2018-06-08T16:45:55+00:00",
-        "latest_build": Object {
-          "author": Object {
+        "author": Array [
+          Object {
             "email": "dcramer@gmail.com",
             "id": "659dc21c-81db-11e7-988a-0a580a28047a",
             "name": "David Cramer",
           },
+        ],
+        "committed_at": "2018-06-08T16:45:55+00:00",
+        "created_at": "2018-06-08T16:45:55+00:00",
+        "latest_build": Object {
+          "authors": Array [
+            Object {
+              "email": "dcramer@gmail.com",
+              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+              "name": "David Cramer",
+            },
+          ],
           "created_at": "2018-01-06T16:07:16.830829+00:00",
           "external_id": "325812408",
           "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -4694,11 +4728,13 @@ exports[`RepositoryOverview renders with all stats 1`] = `
           "repository": undefined,
           "result": "passed",
           "revision": Object {
-            "author": Object {
-              "email": "dcramer@gmail.com",
-              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-              "name": "David Cramer",
-            },
+            "authors": Array [
+              Object {
+                "email": "dcramer@gmail.com",
+                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                "name": "David Cramer",
+              },
+            ],
             "committed_at": "2018-01-06T16:06:52+00:00",
             "created_at": "2018-01-06T16:06:52+00:00",
             "message": "fix: Remove break-word behavior on coverage
@@ -4842,19 +4878,23 @@ exports[`RepositoryOverview renders with all stats 1`] = `
                 revisionList={
                   Array [
                     Object {
-                      "author": Object {
-                        "email": "dcramer@gmail.com",
-                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                        "name": "David Cramer",
-                      },
-                      "committed_at": "2018-06-08T16:45:55+00:00",
-                      "created_at": "2018-06-08T16:45:55+00:00",
-                      "latest_build": Object {
-                        "author": Object {
+                      "author": Array [
+                        Object {
                           "email": "dcramer@gmail.com",
                           "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                           "name": "David Cramer",
                         },
+                      ],
+                      "committed_at": "2018-06-08T16:45:55+00:00",
+                      "created_at": "2018-06-08T16:45:55+00:00",
+                      "latest_build": Object {
+                        "authors": Array [
+                          Object {
+                            "email": "dcramer@gmail.com",
+                            "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                            "name": "David Cramer",
+                          },
+                        ],
                         "created_at": "2018-01-06T16:07:16.830829+00:00",
                         "external_id": "325812408",
                         "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -4866,11 +4906,13 @@ exports[`RepositoryOverview renders with all stats 1`] = `
                         "repository": undefined,
                         "result": "passed",
                         "revision": Object {
-                          "author": Object {
-                            "email": "dcramer@gmail.com",
-                            "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                            "name": "David Cramer",
-                          },
+                          "authors": Array [
+                            Object {
+                              "email": "dcramer@gmail.com",
+                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                              "name": "David Cramer",
+                            },
+                          ],
                           "committed_at": "2018-01-06T16:06:52+00:00",
                           "created_at": "2018-01-06T16:06:52+00:00",
                           "message": "fix: Remove break-word behavior on coverage
@@ -5973,19 +6015,23 @@ exports[`RepositoryOverview renders with all stats 1`] = `
             revisionList={
               Array [
                 Object {
-                  "author": Object {
-                    "email": "dcramer@gmail.com",
-                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                    "name": "David Cramer",
-                  },
-                  "committed_at": "2018-06-08T16:45:55+00:00",
-                  "created_at": "2018-06-08T16:45:55+00:00",
-                  "latest_build": Object {
-                    "author": Object {
+                  "author": Array [
+                    Object {
                       "email": "dcramer@gmail.com",
                       "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                       "name": "David Cramer",
                     },
+                  ],
+                  "committed_at": "2018-06-08T16:45:55+00:00",
+                  "created_at": "2018-06-08T16:45:55+00:00",
+                  "latest_build": Object {
+                    "authors": Array [
+                      Object {
+                        "email": "dcramer@gmail.com",
+                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                        "name": "David Cramer",
+                      },
+                    ],
                     "created_at": "2018-01-06T16:07:16.830829+00:00",
                     "external_id": "325812408",
                     "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -5997,11 +6043,13 @@ exports[`RepositoryOverview renders with all stats 1`] = `
                     "repository": undefined,
                     "result": "passed",
                     "revision": Object {
-                      "author": Object {
-                        "email": "dcramer@gmail.com",
-                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                        "name": "David Cramer",
-                      },
+                      "authors": Array [
+                        Object {
+                          "email": "dcramer@gmail.com",
+                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                          "name": "David Cramer",
+                        },
+                      ],
                       "committed_at": "2018-01-06T16:06:52+00:00",
                       "created_at": "2018-01-06T16:06:52+00:00",
                       "message": "fix: Remove break-word behavior on coverage
@@ -7094,19 +7142,23 @@ exports[`RepositoryOverview renders with all stats 1`] = `
             revisionList={
               Array [
                 Object {
-                  "author": Object {
-                    "email": "dcramer@gmail.com",
-                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                    "name": "David Cramer",
-                  },
-                  "committed_at": "2018-06-08T16:45:55+00:00",
-                  "created_at": "2018-06-08T16:45:55+00:00",
-                  "latest_build": Object {
-                    "author": Object {
+                  "author": Array [
+                    Object {
                       "email": "dcramer@gmail.com",
                       "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                       "name": "David Cramer",
                     },
+                  ],
+                  "committed_at": "2018-06-08T16:45:55+00:00",
+                  "created_at": "2018-06-08T16:45:55+00:00",
+                  "latest_build": Object {
+                    "authors": Array [
+                      Object {
+                        "email": "dcramer@gmail.com",
+                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                        "name": "David Cramer",
+                      },
+                    ],
                     "created_at": "2018-01-06T16:07:16.830829+00:00",
                     "external_id": "325812408",
                     "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -7118,11 +7170,13 @@ exports[`RepositoryOverview renders with all stats 1`] = `
                     "repository": undefined,
                     "result": "passed",
                     "revision": Object {
-                      "author": Object {
-                        "email": "dcramer@gmail.com",
-                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                        "name": "David Cramer",
-                      },
+                      "authors": Array [
+                        Object {
+                          "email": "dcramer@gmail.com",
+                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                          "name": "David Cramer",
+                        },
+                      ],
                       "committed_at": "2018-01-06T16:06:52+00:00",
                       "created_at": "2018-01-06T16:06:52+00:00",
                       "message": "fix: Remove break-word behavior on coverage
@@ -8215,19 +8269,23 @@ exports[`RepositoryOverview renders with all stats 1`] = `
             revisionList={
               Array [
                 Object {
-                  "author": Object {
-                    "email": "dcramer@gmail.com",
-                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                    "name": "David Cramer",
-                  },
-                  "committed_at": "2018-06-08T16:45:55+00:00",
-                  "created_at": "2018-06-08T16:45:55+00:00",
-                  "latest_build": Object {
-                    "author": Object {
+                  "author": Array [
+                    Object {
                       "email": "dcramer@gmail.com",
                       "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                       "name": "David Cramer",
                     },
+                  ],
+                  "committed_at": "2018-06-08T16:45:55+00:00",
+                  "created_at": "2018-06-08T16:45:55+00:00",
+                  "latest_build": Object {
+                    "authors": Array [
+                      Object {
+                        "email": "dcramer@gmail.com",
+                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                        "name": "David Cramer",
+                      },
+                    ],
                     "created_at": "2018-01-06T16:07:16.830829+00:00",
                     "external_id": "325812408",
                     "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -8239,11 +8297,13 @@ exports[`RepositoryOverview renders with all stats 1`] = `
                     "repository": undefined,
                     "result": "passed",
                     "revision": Object {
-                      "author": Object {
-                        "email": "dcramer@gmail.com",
-                        "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                        "name": "David Cramer",
-                      },
+                      "authors": Array [
+                        Object {
+                          "email": "dcramer@gmail.com",
+                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                          "name": "David Cramer",
+                        },
+                      ],
                       "committed_at": "2018-01-06T16:06:52+00:00",
                       "created_at": "2018-01-06T16:06:52+00:00",
                       "message": "fix: Remove break-word behavior on coverage

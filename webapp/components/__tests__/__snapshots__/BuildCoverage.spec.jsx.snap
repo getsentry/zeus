@@ -31,7 +31,7 @@ exports[`BuildCoverage renders with build 1`] = `
     </div>
   </div>
   <div
-    class="css-1bl47uf-ResultGrid-StyledResultGrid ec3zpek0"
+    class="css-1tkanbs-ResultGrid-StyledResultGrid ec3zpek0"
   >
     <div
       class="ec3zpek1 ResultGrid-Header css-1dcku6g-Header-StyledHeader"
@@ -278,7 +278,7 @@ exports[`BuildCoverage renders without build 1`] = `
     </div>
   </div>
   <div
-    class="css-1bl47uf-ResultGrid-StyledResultGrid ec3zpek0"
+    class="css-1tkanbs-ResultGrid-StyledResultGrid ec3zpek0"
   >
     <div
       class="ec3zpek1 ResultGrid-Header css-1dcku6g-Header-StyledHeader"

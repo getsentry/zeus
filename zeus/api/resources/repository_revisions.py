@@ -1,8 +1,9 @@
 from flask import request, current_app
 from marshmallow import fields, pre_dump
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import subqueryload_all
 from typing import Tuple
 
+from zeus.config import nplusone
 from zeus.models import Repository, Revision
 from zeus.utils.builds import fetch_builds_for_revisions
 from zeus.vcs import vcs_client
@@ -19,7 +20,8 @@ class RevisionWithBuildSchema(RevisionSchema):
     @pre_dump(pass_many=True)
     def get_latest_build(self, results, many, **kwargs):
         if results:
-            builds = dict(fetch_builds_for_revisions(results))
+            with nplusone.ignore("eager_load"):
+                builds = dict(fetch_builds_for_revisions(results))
             for item in results:
                 item.latest_build = builds.get((item.repository_id, item.sha))
         return results
@@ -65,7 +67,7 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
         has_more = len(vcs_log) > per_page
         vcs_log = vcs_log[:per_page]
 
-        existing = Revision.query.options(joinedload("author")).filter(
+        existing = Revision.query.options(subqueryload_all("authors")).filter(
             Revision.repository_id == repo.id,
             Revision.sha.in_(c["sha"] for c in vcs_log),
         )

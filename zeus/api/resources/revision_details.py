@@ -1,3 +1,4 @@
+from zeus.config import nplusone
 from zeus.models import Revision
 from zeus.utils.builds import fetch_build_for_revision
 
@@ -17,7 +18,8 @@ class RevisionDetailsResource(BaseRevisionResource):
         """
         Return the joined build status of a revision.
         """
-        build = fetch_build_for_revision(revision)
+        with nplusone.ignore("eager_load"):
+            build = fetch_build_for_revision(revision)
         if not build:
             return self.respond(status=404)
 

@@ -17,7 +17,7 @@ export const ResultGrid = styled.div`
     text-align: right;
   }
 
-  .ResultGrid-Column:first-child {
+  .ResultGrid-Column:first-of-type {
     text-align: left;
   }
 

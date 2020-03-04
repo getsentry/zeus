@@ -25,7 +25,7 @@ class BuildSchema(Schema):
     repository = fields.Nested(
         RepositorySchema(exclude=("latest_build",)), dump_only=True
     )
-    author = fields.Nested(AuthorSchema())
+    authors = fields.List(fields.Nested(AuthorSchema()), dump_only=True)
     revision = fields.Nested(RevisionSchema())
     ref = RevisionRefField(dump_only=True)
 

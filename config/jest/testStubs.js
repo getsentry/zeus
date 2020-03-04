@@ -119,10 +119,10 @@ window.TestStubs = {
       provider: 'api.travis-ci.org',
       result: 'passed',
       started_at: '2018-01-06T16:07:16.957093+00:00',
-      author: author,
+      authors: [author],
       ref: 'master',
       revision: {
-        author: author,
+        authors: [author],
         committed_at: '2018-01-06T16:06:52+00:00',
         created_at: '2018-01-06T16:06:52+00:00',
         message: 'fix: Remove break-word behavior on coverage\n',
@@ -223,7 +223,7 @@ window.TestStubs = {
   }),
 
   Revision: params => ({
-    author: TestStubs.Author(),
+    author: [TestStubs.Author()],
     committed_at: '2018-06-08T16:45:55+00:00',
     created_at: '2018-06-08T16:45:55+00:00',
     latest_build: TestStubs.Build({repository: undefined}),

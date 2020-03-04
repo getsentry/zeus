@@ -159,7 +159,7 @@ const WrappedBuildList = connect(
     return {
       buildList: builds.items
         .filter(
-          build => !!build.repository && build.author && emailSet.has(build.author.email)
+          build => !!build.repository && build.authors.find(a => emailSet.has(a.email))
         )
         .slice(0, 10),
       loading: !builds.loaded

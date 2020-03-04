@@ -43,19 +43,23 @@ exports[`RevisionList renders 1`] = `
   revisionList={
     Array [
       Object {
-        "author": Object {
-          "email": "dcramer@gmail.com",
-          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-          "name": "David Cramer",
-        },
-        "committed_at": "2018-06-08T16:45:55+00:00",
-        "created_at": "2018-06-08T16:45:55+00:00",
-        "latest_build": Object {
-          "author": Object {
+        "author": Array [
+          Object {
             "email": "dcramer@gmail.com",
             "id": "659dc21c-81db-11e7-988a-0a580a28047a",
             "name": "David Cramer",
           },
+        ],
+        "committed_at": "2018-06-08T16:45:55+00:00",
+        "created_at": "2018-06-08T16:45:55+00:00",
+        "latest_build": Object {
+          "authors": Array [
+            Object {
+              "email": "dcramer@gmail.com",
+              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+              "name": "David Cramer",
+            },
+          ],
           "created_at": "2018-01-06T16:07:16.830829+00:00",
           "external_id": "325812408",
           "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -67,11 +71,13 @@ exports[`RevisionList renders 1`] = `
           "repository": undefined,
           "result": "passed",
           "revision": Object {
-            "author": Object {
-              "email": "dcramer@gmail.com",
-              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-              "name": "David Cramer",
-            },
+            "authors": Array [
+              Object {
+                "email": "dcramer@gmail.com",
+                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                "name": "David Cramer",
+              },
+            ],
             "committed_at": "2018-01-06T16:06:52+00:00",
             "created_at": "2018-01-06T16:06:52+00:00",
             "message": "fix: Remove break-word behavior on coverage
@@ -112,7 +118,7 @@ exports[`RevisionList renders 1`] = `
 >
   <ResultGrid>
     <div
-      className="css-1mtyvxy-ResultGrid erefeu20"
+      className="css-a5lkbr-ResultGrid erefeu20"
     >
       <Header>
         <Component
@@ -147,13 +153,13 @@ exports[`RevisionList renders 1`] = `
                 width={90}
               >
                 <Component
-                  className="css-1xtos9c-Column erefeu21"
+                  className="css-1breawb-Column erefeu21"
                   hide="sm"
                   textAlign="center"
                   width={90}
                 >
                   <Box
-                    className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
+                    className="css-1breawb-Column erefeu21 ResultGrid-Column"
                     hide="sm"
                     style={
                       Object {
@@ -183,13 +189,13 @@ exports[`RevisionList renders 1`] = `
                 width={90}
               >
                 <Component
-                  className="css-1xtos9c-Column erefeu21"
+                  className="css-1breawb-Column erefeu21"
                   hide="sm"
                   textAlign="center"
                   width={90}
                 >
                   <Box
-                    className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
+                    className="css-1breawb-Column erefeu21 ResultGrid-Column"
                     hide="sm"
                     style={
                       Object {
@@ -219,13 +225,13 @@ exports[`RevisionList renders 1`] = `
                 width={150}
               >
                 <Component
-                  className="css-1xtos9c-Column erefeu21"
+                  className="css-1breawb-Column erefeu21"
                   hide="sm"
                   textAlign="right"
                   width={150}
                 >
                   <Box
-                    className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
+                    className="css-1breawb-Column erefeu21 ResultGrid-Column"
                     hide="sm"
                     style={
                       Object {
@@ -291,19 +297,23 @@ exports[`RevisionList renders 1`] = `
           }
           revision={
             Object {
-              "author": Object {
-                "email": "dcramer@gmail.com",
-                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                "name": "David Cramer",
-              },
-              "committed_at": "2018-06-08T16:45:55+00:00",
-              "created_at": "2018-06-08T16:45:55+00:00",
-              "latest_build": Object {
-                "author": Object {
+              "author": Array [
+                Object {
                   "email": "dcramer@gmail.com",
                   "id": "659dc21c-81db-11e7-988a-0a580a28047a",
                   "name": "David Cramer",
                 },
+              ],
+              "committed_at": "2018-06-08T16:45:55+00:00",
+              "created_at": "2018-06-08T16:45:55+00:00",
+              "latest_build": Object {
+                "authors": Array [
+                  Object {
+                    "email": "dcramer@gmail.com",
+                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                    "name": "David Cramer",
+                  },
+                ],
                 "created_at": "2018-01-06T16:07:16.830829+00:00",
                 "external_id": "325812408",
                 "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -315,11 +325,13 @@ exports[`RevisionList renders 1`] = `
                 "repository": undefined,
                 "result": "passed",
                 "revision": Object {
-                  "author": Object {
-                    "email": "dcramer@gmail.com",
-                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                    "name": "David Cramer",
-                  },
+                  "authors": Array [
+                    Object {
+                      "email": "dcramer@gmail.com",
+                      "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                      "name": "David Cramer",
+                    },
+                  ],
                   "committed_at": "2018-01-06T16:06:52+00:00",
                   "created_at": "2018-01-06T16:06:52+00:00",
                   "message": "fix: Remove break-word behavior on coverage
@@ -360,11 +372,13 @@ exports[`RevisionList renders 1`] = `
           <BuildListItem
             build={
               Object {
-                "author": Object {
-                  "email": "dcramer@gmail.com",
-                  "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                  "name": "David Cramer",
-                },
+                "authors": Array [
+                  Object {
+                    "email": "dcramer@gmail.com",
+                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                    "name": "David Cramer",
+                  },
+                ],
                 "created_at": "2018-01-06T16:07:16.830829+00:00",
                 "external_id": "325812408",
                 "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -376,11 +390,13 @@ exports[`RevisionList renders 1`] = `
                 "repository": undefined,
                 "result": "passed",
                 "revision": Object {
-                  "author": Object {
-                    "email": "dcramer@gmail.com",
-                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                    "name": "David Cramer",
-                  },
+                  "authors": Array [
+                    Object {
+                      "email": "dcramer@gmail.com",
+                      "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                      "name": "David Cramer",
+                    },
+                  ],
                   "committed_at": "2018-01-06T16:06:52+00:00",
                   "created_at": "2018-01-06T16:06:52+00:00",
                   "message": "fix: Remove break-word behavior on coverage
@@ -494,11 +510,13 @@ exports[`RevisionList renders 1`] = `
                                           <ObjectResult
                                             data={
                                               Object {
-                                                "author": Object {
-                                                  "email": "dcramer@gmail.com",
-                                                  "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                                  "name": "David Cramer",
-                                                },
+                                                "authors": Array [
+                                                  Object {
+                                                    "email": "dcramer@gmail.com",
+                                                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                    "name": "David Cramer",
+                                                  },
+                                                ],
                                                 "created_at": "2018-01-06T16:07:16.830829+00:00",
                                                 "external_id": "325812408",
                                                 "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -510,11 +528,13 @@ exports[`RevisionList renders 1`] = `
                                                 "repository": undefined,
                                                 "result": "passed",
                                                 "revision": Object {
-                                                  "author": Object {
-                                                    "email": "dcramer@gmail.com",
-                                                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                                    "name": "David Cramer",
-                                                  },
+                                                  "authors": Array [
+                                                    Object {
+                                                      "email": "dcramer@gmail.com",
+                                                      "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                      "name": "David Cramer",
+                                                    },
+                                                  ],
                                                   "committed_at": "2018-01-06T16:06:52+00:00",
                                                   "created_at": "2018-01-06T16:06:52+00:00",
                                                   "message": "fix: Remove break-word behavior on coverage
@@ -625,7 +645,7 @@ exports[`RevisionList renders 1`] = `
                                             >
                                               <Commit>
                                                 <div
-                                                  className="css-1uukuqo-Author-Commit e177ytzd2"
+                                                  className="css-dsqgl-Author-Commit e177ytzd2"
                                                 >
                                                   eff634a
                                                 </div>
@@ -637,11 +657,13 @@ exports[`RevisionList renders 1`] = `
                                                   <ObjectAuthor
                                                     data={
                                                       Object {
-                                                        "author": Object {
-                                                          "email": "dcramer@gmail.com",
-                                                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                                          "name": "David Cramer",
-                                                        },
+                                                        "authors": Array [
+                                                          Object {
+                                                            "email": "dcramer@gmail.com",
+                                                            "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                            "name": "David Cramer",
+                                                          },
+                                                        ],
                                                         "created_at": "2018-01-06T16:07:16.830829+00:00",
                                                         "external_id": "325812408",
                                                         "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -653,11 +675,13 @@ exports[`RevisionList renders 1`] = `
                                                         "repository": undefined,
                                                         "result": "passed",
                                                         "revision": Object {
-                                                          "author": Object {
-                                                            "email": "dcramer@gmail.com",
-                                                            "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                                            "name": "David Cramer",
-                                                          },
+                                                          "authors": Array [
+                                                            Object {
+                                                              "email": "dcramer@gmail.com",
+                                                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                              "name": "David Cramer",
+                                                            },
+                                                          ],
                                                           "committed_at": "2018-01-06T16:06:52+00:00",
                                                           "created_at": "2018-01-06T16:06:52+00:00",
                                                           "message": "fix: Remove break-word behavior on coverage
@@ -692,29 +716,38 @@ exports[`RevisionList renders 1`] = `
                                                     }
                                                   >
                                                     <span>
-                                                      <Avatar>
-                                                        <span
-                                                          className="css-15pbbe0-Avatar e1cndffa0"
-                                                        >
-                                                          <Gravatar
-                                                            default="retro"
-                                                            email="dcramer@gmail.com"
-                                                            protocol="//"
-                                                            rating="g"
-                                                            size={16}
+                                                      <span
+                                                        key="dcramer@gmail.com"
+                                                        style={
+                                                          Object {
+                                                            "marginRight": 10,
+                                                          }
+                                                        }
+                                                      >
+                                                        <Avatar>
+                                                          <span
+                                                            className="css-15pbbe0-Avatar e1cndffa0"
                                                           >
-                                                            <img
-                                                              alt="Gravatar for dcramer@gmail.com"
-                                                              className="react-gravatar"
-                                                              height={16}
-                                                              src="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=16"
-                                                              srcSet="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=32 2x"
-                                                              width={16}
-                                                            />
-                                                          </Gravatar>
-                                                        </span>
-                                                      </Avatar>
-                                                      David Cramer
+                                                            <Gravatar
+                                                              default="retro"
+                                                              email="dcramer@gmail.com"
+                                                              protocol="//"
+                                                              rating="g"
+                                                              size={16}
+                                                            >
+                                                              <img
+                                                                alt="Gravatar for dcramer@gmail.com"
+                                                                className="react-gravatar"
+                                                                height={16}
+                                                                src="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=16"
+                                                                srcSet="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=32 2x"
+                                                                width={16}
+                                                              />
+                                                            </Gravatar>
+                                                          </span>
+                                                        </Avatar>
+                                                        David Cramer
+                                                      </span>
                                                     </span>
                                                   </ObjectAuthor>
                                                 </div>
@@ -735,13 +768,13 @@ exports[`RevisionList renders 1`] = `
                             width={90}
                           >
                             <Component
-                              className="css-1xtos9c-Column erefeu21"
+                              className="css-1breawb-Column erefeu21"
                               hide="sm"
                               textAlign="center"
                               width={90}
                             >
                               <Box
-                                className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
+                                className="css-1breawb-Column erefeu21 ResultGrid-Column"
                                 hide="sm"
                                 style={
                                   Object {
@@ -763,11 +796,13 @@ exports[`RevisionList renders 1`] = `
                                   <ObjectCoverage
                                     data={
                                       Object {
-                                        "author": Object {
-                                          "email": "dcramer@gmail.com",
-                                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                          "name": "David Cramer",
-                                        },
+                                        "authors": Array [
+                                          Object {
+                                            "email": "dcramer@gmail.com",
+                                            "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                            "name": "David Cramer",
+                                          },
+                                        ],
                                         "created_at": "2018-01-06T16:07:16.830829+00:00",
                                         "external_id": "325812408",
                                         "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -779,11 +814,13 @@ exports[`RevisionList renders 1`] = `
                                         "repository": undefined,
                                         "result": "passed",
                                         "revision": Object {
-                                          "author": Object {
-                                            "email": "dcramer@gmail.com",
-                                            "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                            "name": "David Cramer",
-                                          },
+                                          "authors": Array [
+                                            Object {
+                                              "email": "dcramer@gmail.com",
+                                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                              "name": "David Cramer",
+                                            },
+                                          ],
                                           "committed_at": "2018-01-06T16:06:52+00:00",
                                           "created_at": "2018-01-06T16:06:52+00:00",
                                           "message": "fix: Remove break-word behavior on coverage
@@ -830,13 +867,13 @@ exports[`RevisionList renders 1`] = `
                             width={90}
                           >
                             <Component
-                              className="css-1xtos9c-Column erefeu21"
+                              className="css-1breawb-Column erefeu21"
                               hide="sm"
                               textAlign="center"
                               width={90}
                             >
                               <Box
-                                className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
+                                className="css-1breawb-Column erefeu21 ResultGrid-Column"
                                 hide="sm"
                                 style={
                                   Object {
@@ -858,11 +895,13 @@ exports[`RevisionList renders 1`] = `
                                   <ObjectDuration
                                     data={
                                       Object {
-                                        "author": Object {
-                                          "email": "dcramer@gmail.com",
-                                          "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                          "name": "David Cramer",
-                                        },
+                                        "authors": Array [
+                                          Object {
+                                            "email": "dcramer@gmail.com",
+                                            "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                            "name": "David Cramer",
+                                          },
+                                        ],
                                         "created_at": "2018-01-06T16:07:16.830829+00:00",
                                         "external_id": "325812408",
                                         "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -874,11 +913,13 @@ exports[`RevisionList renders 1`] = `
                                         "repository": undefined,
                                         "result": "passed",
                                         "revision": Object {
-                                          "author": Object {
-                                            "email": "dcramer@gmail.com",
-                                            "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                            "name": "David Cramer",
-                                          },
+                                          "authors": Array [
+                                            Object {
+                                              "email": "dcramer@gmail.com",
+                                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                              "name": "David Cramer",
+                                            },
+                                          ],
                                           "committed_at": "2018-01-06T16:06:52+00:00",
                                           "created_at": "2018-01-06T16:06:52+00:00",
                                           "message": "fix: Remove break-word behavior on coverage
@@ -917,11 +958,13 @@ exports[`RevisionList renders 1`] = `
                                       data={
                                         Array [
                                           Object {
-                                            "author": Object {
-                                              "email": "dcramer@gmail.com",
-                                              "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                              "name": "David Cramer",
-                                            },
+                                            "authors": Array [
+                                              Object {
+                                                "email": "dcramer@gmail.com",
+                                                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                "name": "David Cramer",
+                                              },
+                                            ],
                                             "created_at": "2018-01-06T16:07:16.830829+00:00",
                                             "external_id": "325812408",
                                             "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -933,11 +976,13 @@ exports[`RevisionList renders 1`] = `
                                             "repository": undefined,
                                             "result": "passed",
                                             "revision": Object {
-                                              "author": Object {
-                                                "email": "dcramer@gmail.com",
-                                                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                                "name": "David Cramer",
-                                              },
+                                              "authors": Array [
+                                                Object {
+                                                  "email": "dcramer@gmail.com",
+                                                  "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                  "name": "David Cramer",
+                                                },
+                                              ],
                                               "committed_at": "2018-01-06T16:06:52+00:00",
                                               "created_at": "2018-01-06T16:06:52+00:00",
                                               "message": "fix: Remove break-word behavior on coverage
@@ -976,11 +1021,13 @@ exports[`RevisionList renders 1`] = `
                                         data={
                                           Array [
                                             Object {
-                                              "author": Object {
-                                                "email": "dcramer@gmail.com",
-                                                "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                                "name": "David Cramer",
-                                              },
+                                              "authors": Array [
+                                                Object {
+                                                  "email": "dcramer@gmail.com",
+                                                  "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                  "name": "David Cramer",
+                                                },
+                                              ],
                                               "created_at": "2018-01-06T16:07:16.830829+00:00",
                                               "external_id": "325812408",
                                               "finished_at": "2018-01-06T16:11:04.393590+00:00",
@@ -992,11 +1039,13 @@ exports[`RevisionList renders 1`] = `
                                               "repository": undefined,
                                               "result": "passed",
                                               "revision": Object {
-                                                "author": Object {
-                                                  "email": "dcramer@gmail.com",
-                                                  "id": "659dc21c-81db-11e7-988a-0a580a28047a",
-                                                  "name": "David Cramer",
-                                                },
+                                                "authors": Array [
+                                                  Object {
+                                                    "email": "dcramer@gmail.com",
+                                                    "id": "659dc21c-81db-11e7-988a-0a580a28047a",
+                                                    "name": "David Cramer",
+                                                  },
+                                                ],
                                                 "committed_at": "2018-01-06T16:06:52+00:00",
                                                 "created_at": "2018-01-06T16:06:52+00:00",
                                                 "message": "fix: Remove break-word behavior on coverage
@@ -1049,13 +1098,13 @@ exports[`RevisionList renders 1`] = `
                             width={120}
                           >
                             <Component
-                              className="css-1xtos9c-Column erefeu21"
+                              className="css-1breawb-Column erefeu21"
                               hide="sm"
                               textAlign="right"
                               width={120}
                             >
                               <Box
-                                className="css-1xtos9c-Column erefeu21 ResultGrid-Column"
+                                className="css-1breawb-Column erefeu21 ResultGrid-Column"
                                 hide="sm"
                                 style={
                                   Object {
