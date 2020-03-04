@@ -65,6 +65,8 @@ class BuildCreateSchema(Schema):
             build.author = revision.authors[0]
             for author in revision.authors:
                 build.authors.append(author)
+        elif build.author_id and not build.authors:
+            build.authors.append(build.author)
         return build
 
     @post_dump(pass_many=True)

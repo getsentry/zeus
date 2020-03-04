@@ -125,8 +125,8 @@ def test_repo_build_create_multiple_authors(
     assert build.ref == default_revision.sha
     assert build.revision_sha == default_revision.sha
     assert build.label == "test build"
+    assert build.author == default_author
 
-    print(build.authors)
     assert len(build.authors) == 2
     assert other_author in build.authors
     assert default_author in build.authors
@@ -154,6 +154,8 @@ def test_repo_build_create_missing_revision(
     assert build.ref == "master"
     assert build.revision_sha is None
     assert build.label == "test build"
+    assert build.author_id is None
+    assert not len(build.authors)
 
 
 def test_repo_build_existing_entityt(
