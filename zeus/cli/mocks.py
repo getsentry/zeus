@@ -202,6 +202,8 @@ async def mock_build(
             for n in range(randint(0, 4)):
                 factories.BundleAssetFactory.create(bundle=bundle, job=job)
 
+        factories.FailureReasonFactory.create(build=build, job=job, failing_tests=True)
+
         artifact_count = (
             randrange(3)
             if job.status == Status.finished and job.result == Result.passed

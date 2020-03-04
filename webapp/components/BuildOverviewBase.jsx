@@ -4,6 +4,8 @@ import styled from '@emotion/styled';
 import marked from 'marked';
 import {sanitize} from 'dompurify';
 
+import AggregateFailureList from '../components/AggregateFailureList';
+import AggregateTestList from '../components/AggregateTestList';
 import ArtifactsList from '../components/ArtifactsList';
 import AsyncPage from '../components/AsyncPage';
 import BundleList from '../components/BundleList';
@@ -15,7 +17,6 @@ import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
 import SectionSubheading from '../components/SectionSubheading';
 import StyleViolationList from '../components/StyleViolationList';
-import AggregateTestList from '../components/AggregateTestList';
 import TimeSince from '../components/TimeSince';
 
 const RevisionSection = styled(Section)`
@@ -126,6 +127,7 @@ export default class BuildOverviewBase extends AsyncPage {
       ['artifacts', `${endpoint}/artifacts`],
       ['jobList', `${endpoint}/jobs`],
       ['violationList', `${endpoint}/style-violations?allowed_failures=false`],
+      ['failureList', `${endpoint}/failures?allowed_failures=false`],
       ['testFailures', `${endpoint}/tests?result=failed&allowed_failures=false`],
       ['bundleStats', `${endpoint}/bundle-stats`],
       ['diffCoverage', `${endpoint}/file-coverage?diff_only=true`]
@@ -146,6 +148,16 @@ export default class BuildOverviewBase extends AsyncPage {
     return (
       <div>
         <RevisionSummary repo={repo} build={build} />
+        {!!this.state.failureList.length && (
+          <Section>
+            <SectionHeading>Failure Reasons</SectionHeading>
+            <AggregateFailureList
+              build={build}
+              repo={repo}
+              failureList={this.state.failureList}
+            />
+          </Section>
+        )}
         {!!this.state.testFailures.length && (
           <Section>
             <SectionHeading>Failing Tests</SectionHeading>

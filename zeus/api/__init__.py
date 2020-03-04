@@ -71,6 +71,10 @@ app.add_resource(
     r.RevisionArtifactsResource,
 )
 app.add_resource(
+    "/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/failures",
+    r.RevisionFailuresResource,
+)
+app.add_resource(
     "/repos/<provider>/<owner_name>/<repo_name>/revisions/<revision_sha>/jobs",
     r.RevisionJobsResource,
 )
