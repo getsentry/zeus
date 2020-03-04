@@ -5,6 +5,7 @@ from faker import Factory
 from random import randint
 
 from zeus import models
+from zeus.config import db
 from zeus.constants import Result, Status
 from zeus.utils import timezone
 
@@ -62,6 +63,19 @@ class BuildFactory(ModelFactory):
         if o.status == Status.finished
         else None
     )
+
+    @factory.post_generation
+    def authors(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for author in extracted:
+                self.authors.append(author)
+
+        elif self.author:
+            self.authors.append(self.author)
+        db.session.flush()
 
     class Meta:
         model = models.Build

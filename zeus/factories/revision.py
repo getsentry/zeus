@@ -7,6 +7,7 @@ from faker import Factory
 faker = Factory.create()
 
 from zeus import models
+from zeus.config import db
 from zeus.utils import timezone
 
 from .base import ModelFactory
@@ -26,6 +27,20 @@ class RevisionFactory(ModelFactory):
     date_created = factory.LazyAttribute(
         lambda o: timezone.now() - timedelta(minutes=30)
     )
+
+    @factory.post_generation
+    def authors(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for author in extracted:
+                self.authors.append(author)
+
+        elif self.author:
+            self.authors.append(self.author)
+
+        db.session.flush()
 
     class Meta:
         model = models.Revision

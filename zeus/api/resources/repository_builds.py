@@ -1,5 +1,4 @@
 from flask import request
-from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload, subqueryload_all
 
@@ -25,9 +24,9 @@ class RepositoryBuildsResource(BaseRepositoryResource):
         """
         query = (
             Build.query.options(
-                joinedload("author"),
                 joinedload("revision"),
-                joinedload("revision").joinedload("author"),
+                subqueryload_all("authors"),
+                subqueryload_all("revision.authors"),
                 subqueryload_all("stats"),
             )
             .filter(Build.repository_id == repo.id)
@@ -43,24 +42,12 @@ class RepositoryBuildsResource(BaseRepositoryResource):
                 return self.respond([])
 
             query = query.filter(
-                or_(
-                    Build.author_id.in_(
-                        db.session.query(Author.id).filter(
-                            Author.email.in_(
-                                db.session.query(Email.email).filter(
-                                    Email.user_id == user.id,
-                                    Email.verified == True,  # NOQA
-                                )
-                            )
+                Build.authors.any(
+                    Author.email.in_(
+                        db.session.query(Email.email).filter(
+                            Email.user_id == user.id, Email.verified == True  # NOQA
                         )
-                    ),
-                    Build.authors.any(
-                        Author.email.in_(
-                            db.session.query(Email.email).filter(
-                                Email.user_id == user.id, Email.verified == True  # NOQA
-                            )
-                        )
-                    ),
+                    )
                 )
             )
 

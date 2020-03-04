@@ -88,7 +88,7 @@ class GenericLineChart extends Component {
             ]
           }
         }}
-        height="100"
+        height={100}
       />
     );
   }

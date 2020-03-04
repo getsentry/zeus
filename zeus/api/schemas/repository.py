@@ -112,7 +112,8 @@ def get_latest_builds(repo_list: List[Repository], result: Result):
         .filter(Build.id.in_(build_map.values()))
         .options(
             joinedload("revision"),
-            joinedload("revision").joinedload("author"),
+            subqueryload_all("authors"),
+            subqueryload_all("revision.authors"),
             subqueryload_all("stats"),
         )
     }

@@ -19,9 +19,10 @@ def merge_builds(target: Build, build: Build, with_relations=True) -> Build:
     # These properties should theoretically always be the same within a build
     # group, so merging is not necessary.  We assign here so the initial build
     # gets populated.
+    # XXX(dcramer): this is unsafe
     if with_relations:
         target.revision = build.revision
-        target.author = build.author
+    #     target.authors = list(set(target.authors + build.authors))
     if build.revision_sha:
         target.revision_sha = build.revision_sha
     if not target.ref:
@@ -121,8 +122,8 @@ def fetch_builds_for_revisions(
     if with_relations:
         base_qs = base_qs.options(
             joinedload("revision"),
-            joinedload("revision").joinedload("author"),
-            joinedload("author"),
+            subqueryload_all("authors"),
+            subqueryload_all("revision.authors"),
             subqueryload_all("stats"),
         )
 

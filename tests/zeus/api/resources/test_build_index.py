@@ -9,9 +9,11 @@ def test_build_list(
     # - Savepoint???
     # - Tenant
     # - Builds
+    # - Build.authors
+    # - Revision.authors
     # - Item Stats
     # - Build Count (paginator)
-    with sqla_assertions.assert_statement_count(5):
+    with sqla_assertions.assert_statement_count(7):
         resp = client.get("/api/builds")
         assert resp.status_code == 200
         data = resp.json()
@@ -63,9 +65,11 @@ def test_build_list_user(
     # Queries:
     # - Tenant
     # - Builds
+    # - Build.authors
+    # - Revision.authors
     # - Item Stats
     # - Build Count (paginator)
-    with sqla_assertions.assert_statement_count(4):
+    with sqla_assertions.assert_statement_count(6):
         resp = client.get("/api/builds?user=me")
         assert resp.status_code == 200
         data = resp.json()
@@ -98,9 +102,11 @@ def test_build_list_repository(
     # - Tenant
     # - Repo
     # - Builds
+    # - Build.authors
+    # - Revision.authors
     # - Item Stats
     # - Build Count (paginator)
-    with sqla_assertions.assert_statement_count(5):
+    with sqla_assertions.assert_statement_count(7):
         resp = client.get(
             "/api/builds?repository={}".format(default_repo.get_full_name())
         )

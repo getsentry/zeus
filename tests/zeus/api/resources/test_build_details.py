@@ -15,3 +15,4 @@ def test_build_details(
     data = resp.json()
     assert data["id"] == str(default_build.id)
     assert data["stats"]["tests"]["count"] == 1
+    assert data["authors"]

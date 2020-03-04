@@ -2,7 +2,7 @@
 
 exports[`BuildList renders 1`] = `
 <div
-  class="css-1mtyvxy-ResultGrid erefeu20"
+  class="css-a5lkbr-ResultGrid erefeu20"
 >
   <div
     class="erefeu22 ResultGrid-Header css-1lhqp4g-Header"
@@ -84,7 +84,7 @@ exports[`BuildList renders 1`] = `
                 class="css-ejf18k-Meta e177ytzd4"
               >
                 <div
-                  class="css-1uukuqo-Author-Commit e177ytzd2"
+                  class="css-dsqgl-Author-Commit e177ytzd2"
                 >
                   eff634a
                 </div>
@@ -93,18 +93,22 @@ exports[`BuildList renders 1`] = `
                 >
                   <span>
                     <span
-                      class="css-15pbbe0-Avatar e1cndffa0"
+                      style="margin-right:10px"
                     >
-                      <img
-                        alt="Gravatar for dcramer@gmail.com"
-                        class="react-gravatar"
-                        height="16"
-                        src="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=16"
-                        srcset="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=32 2x"
-                        width="16"
-                      />
+                      <span
+                        class="css-15pbbe0-Avatar e1cndffa0"
+                      >
+                        <img
+                          alt="Gravatar for dcramer@gmail.com"
+                          class="react-gravatar"
+                          height="16"
+                          src="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=16"
+                          srcset="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=32 2x"
+                          width="16"
+                        />
+                      </span>
+                      David Cramer
                     </span>
-                    David Cramer
                   </span>
                 </div>
               </div>
@@ -190,7 +194,7 @@ exports[`BuildList renders 1`] = `
                 class="css-ejf18k-Meta e177ytzd4"
               >
                 <div
-                  class="css-1uukuqo-Author-Commit e177ytzd2"
+                  class="css-dsqgl-Author-Commit e177ytzd2"
                 >
                   master
                 </div>
@@ -199,18 +203,22 @@ exports[`BuildList renders 1`] = `
                 >
                   <span>
                     <span
-                      class="css-15pbbe0-Avatar e1cndffa0"
+                      style="margin-right:10px"
                     >
-                      <img
-                        alt="Gravatar for dcramer@gmail.com"
-                        class="react-gravatar"
-                        height="16"
-                        src="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=16"
-                        srcset="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=32 2x"
-                        width="16"
-                      />
+                      <span
+                        class="css-15pbbe0-Avatar e1cndffa0"
+                      >
+                        <img
+                          alt="Gravatar for dcramer@gmail.com"
+                          class="react-gravatar"
+                          height="16"
+                          src="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=16"
+                          srcset="//www.gravatar.com/avatar/51567a4f786cd8a2c41c513b592de9f9?d=retro&r=g&s=32 2x"
+                          width="16"
+                        />
+                      </span>
+                      David Cramer
                     </span>
-                    David Cramer
                   </span>
                 </div>
               </div>
