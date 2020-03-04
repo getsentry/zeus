@@ -79,6 +79,13 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
         viewonly=True,
         uselist=True,
     )
+    failures = db.relationship(
+        "FailureReason",
+        foreign_keys="[FailureReason.build_id]",
+        primaryjoin="FailureReason.build_id == Build.id",
+        viewonly=True,
+        uselist=True,
+    )
 
     __tablename__ = "build"
     __table_args__ = (

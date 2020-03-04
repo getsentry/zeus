@@ -5,7 +5,9 @@ from zeus.utils.builds import fetch_build_for_revision
 from .base_revision import BaseRevisionResource
 from ..schemas import BuildSchema
 
-build_schema = BuildSchema(exclude=["id"])
+build_schema = BuildSchema(
+    exclude=["id", "number", "external_id", "provider", "url", "repository"]
+)
 
 
 class RevisionDetailsResource(BaseRevisionResource):
