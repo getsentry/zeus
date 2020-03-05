@@ -11,7 +11,7 @@ class ChangeRequestSchema(Schema):
     id = fields.UUID(dump_only=True)
     number = fields.Integer(dump_only=True)
     message = fields.Str()
-    author = fields.Nested(AuthorSchema(), dump_only=True)
+    authors = fields.List(fields.Nested(AuthorSchema()), required=False)
     parent_ref = RevisionRefField(
         validate_ref=False, required=True, resolve_to="parent_revision"
     )
@@ -30,12 +30,12 @@ class ChangeRequestSchema(Schema):
     @post_load(pass_many=False)
     def make_hook(self, data, **kwargs):
         parent_revision = self.context.get("resolved_parent_revision")
+        head_revision = self.context.get("resolved_head_revision")
         if self.context.get("change_request"):
             cr = self.context["change_request"]
             for key, value in data.items():
                 if getattr(cr, key) != value:
                     if key == "head_ref":
-                        head_revision = self.context.get("resolved_head_revision")
                         cr.head_revision_sha = (
                             head_revision.sha if head_revision else None
                         )
@@ -43,25 +43,25 @@ class ChangeRequestSchema(Schema):
                         cr.parent_revision_sha = (
                             parent_revision.sha if parent_revision else None
                         )
-                        cr.author_id = None
                     setattr(cr, key, value)
         else:
             cr = ChangeRequest(
                 repository=self.context.get("repository"),
-                head_revision_sha=self.context["resolved_head_revision"].sha
-                if self.context.get("resolved_head_revision")
-                else None,
+                head_revision_sha=head_revision.sha if head_revision else None,
                 parent_revision_sha=parent_revision.sha if parent_revision else None,
                 **data
             )
-        if not cr.author_id and parent_revision:
-            cr.author_id = parent_revision.author_id
-
+        if not cr.authors and head_revision and head_revision.authors:
+            for author in head_revision.authors:
+                cr.authors.append(author)
         return cr
 
 
 class ChangeRequestCreateSchema(Schema):
-    author = fields.Nested(AuthorSchema(), allow_none=True)
+    author = fields.Nested(AuthorSchema(), required=False, allow_none=True)
+    authors = fields.List(
+        fields.Nested(AuthorSchema()), required=False, allow_none=True
+    )
     parent_ref = RevisionRefField(
         validate_ref=False, required=True, resolve_to="parent_revision"
     )
@@ -75,14 +75,16 @@ class ChangeRequestCreateSchema(Schema):
     created_at = fields.DateTime(attribute="date_created")
 
     @post_load(pass_many=False)
-    def make_hook(self, data, **kwargs):
-        return ChangeRequest(
+    def build_instance(self, data, **kwargs):
+        parent_revision = self.context.get("resolved_parent_revision")
+        head_revision = self.context.get("resolved_head_revision")
+        cr = ChangeRequest(
             repository=self.context.get("repository"),
-            head_revision_sha=self.context["resolved_head_revision"].sha
-            if self.context.get("resolved_head_revision")
-            else None,
-            parent_revision_sha=self.context["resolved_parent_revision"].sha
-            if self.context.get("resolved_parent_revision")
-            else None,
+            head_revision_sha=head_revision.sha if head_revision else None,
+            parent_revision_sha=parent_revision.sha if parent_revision else None,
             **data
         )
+        if not cr.authors and head_revision and head_revision.authors:
+            for author in head_revision.authors:
+                cr.authors.append(author)
+        return cr

@@ -1,108 +1,125 @@
-{% extends "emails/base.html" %}
-
-{% block header %}
-  <a href="{{ url }}" class="details">View Build</a>
-  <h1>
-    {% if build.result.id == 'failed' %}
-    <svg viewBox="0 0 40 40" class="result-icon result-{{ build.result.id }}">
-      <g fill="currentColor">
-        <path d="m28.4 21.6v-3.2h-16.8v3.2h16.8z m-8.4-18.2c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
-        />
-      </g>
-    </svg>
-    {% endif %} {{ build.label }}</h1>
-  <div class="source">
-    <code>{{ revision.short_sha }}</code> by
-    <strong>{{ author.email }}</strong> on
-    <strong>{{ date_created.strftime('%Y-%m-%d') }}</strong>
-  </div>
-{% endblock %}
-
-{% block body %}
-  <pre class="commit-message">{{ revision.message }}</pre> {% if failing_tests_count %}
-  <h2>Failing Tests
-    <small> &mdash; {{ failing_tests_count }} total</small>
-  </h2>
-  <table class="table">
-    <tr>
-      <th colspan="2">Test</th>
-    </tr>
-    {% for test in failing_tests %}
-    <tr>
-      <td style="width: 18px" class="result-icon-cell result-failed">
-        <svg viewBox="0 0 40 40" class="result-icon">
-          <g fill="currentColor">
-            <path d="m28.4 21.6v-3.2h-16.8v3.2h16.8z m-8.4-18.2c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
-            />
-          </g>
-        </svg>
-      </td>
-      <td>{{ test.name }} {% if test.message %}
-        <pre class="output">{{ test.message }}</pre> {% endif %}
-      </td>
-    </tr>
-    {% endfor %} {% if failing_tests_count > failing_tests|length %}
-    <tr>
-      <td colspan="2"> ... </td>
-    </tr>
-    {% endif %}
-  </table>
-  {% endif %} {% if style_violations_count %}
-  <h2>Style Violations
-    <small> &mdash; {{ style_violations_count }} total</small>
-  </h2>
-  <table class="table">
-    <tr>
-      <th>Violation</th>
-    </tr>
-    {% for violation in style_violations %}
-    <tr>
-      <td>{{ violation.filename }}
-        <pre class="output">{{ violation.message }}</pre>
-      </td>
-    </tr>
-    {% endfor %} {% if style_violations_count > style_violations|length %}
-    <tr>
-      <td> ... </td>
-    </tr>
-    {% endif %}
-  </table>
-  {% endif %} {% if job_list %}
-  <h2>Jobs{% if job_failure_count %}
-    <small> &mdash; {{ job_failure_count }} failed</small>{% endif %}</h2>
-  <table class="table">
-    <tr>
-      <th colspan="2">Job</th>
-    </tr>
-    {% for job in job_list %}
-    <tr>
-      <td style="width: 18px" class="result-icon-cell result-{{ job.result.id }}">
-        {% if job.result.id == 'failed' %}
-        <svg viewBox="0 0 40 40" class="result-icon">
-          <g fill="currentColor">
-            <path d="m28.4 21.6v-3.2h-16.8v3.2h16.8z m-8.4-18.2c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
-            />
-          </g>
-        </svg>
-        {% elif job.result.id == 'passed' %}
-        <svg viewBox="0 0 40 40" class="result-icon">
-          <g fill="currentColor">
-            <path d="m16.6 28.4l15-15-2.3-2.5-12.7 12.7-5.9-5.9-2.3 2.3z m3.4-25c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6
-            7.4-16.6 16.6-16.6z" />
-          </g>
-        </svg>
-        {% endif %}
-      </td>
-      <td>
-        <div>#{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif %}</div>
-        {% if job.url %}
-        <small>
-          <a href="{{ job.url }}">{{ job.url }}</a>
-        </small>
-        {% endif %}
-      </td>
-      {% endfor %}
-    </tr>
-  </table>
+{% extends "emails/base.html" %} {% block header %}
+<a href="{{ url }}" class="details">View Build</a>
+<h1>
+  {% if build.result.id == 'failed' %}
+  <svg viewBox="0 0 40 40" class="result-icon result-{{ build.result.id }}">
+    <g fill="currentColor">
+      <path
+        d="m28.4 21.6v-3.2h-16.8v3.2h16.8z m-8.4-18.2c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
+      />
+    </g>
+  </svg>
+  {% endif %} {{ build.label }}
+</h1>
+<div class="source">
+  <code>{{ revision.short_sha }}</code> by {% for author in authors %}<strong
+    >{{ authors.email }}</strong
+  >
+  {% endfor %}on
+  <strong>{{ date_created.strftime('%Y-%m-%d') }}</strong>
+</div>
+{% endblock %} {% block body %}
+<pre class="commit-message">{{ revision.message }}</pre>
+{% if failing_tests_count %}
+<h2>
+  Failing Tests
+  <small> &mdash; {{ failing_tests_count }} total</small>
+</h2>
+<table class="table">
+  <tr>
+    <th colspan="2">Test</th>
+  </tr>
+  {% for test in failing_tests %}
+  <tr>
+    <td style="width: 18px" class="result-icon-cell result-failed">
+      <svg viewBox="0 0 40 40" class="result-icon">
+        <g fill="currentColor">
+          <path
+            d="m28.4 21.6v-3.2h-16.8v3.2h16.8z m-8.4-18.2c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
+          />
+        </g>
+      </svg>
+    </td>
+    <td>
+      {{ test.name }} {% if test.message %}
+      <pre class="output">{{ test.message }}</pre>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %} {% if failing_tests_count > failing_tests|length %}
+  <tr>
+    <td colspan="2">...</td>
+  </tr>
   {% endif %}
-{% endblock %}
+</table>
+
+{% endif %} {% if style_violations_count %}
+<h2>
+  Style Violations
+  <small> &mdash; {{ style_violations_count }} total</small>
+</h2>
+<table class="table">
+  <tr>
+    <th>Violation</th>
+  </tr>
+  {% for violation in style_violations %}
+  <tr>
+    <td>
+      {{ violation.filename }}
+      <pre class="output">{{ violation.message }}</pre>
+    </td>
+  </tr>
+  {% endfor %} {% if style_violations_count > style_violations|length %}
+  <tr>
+    <td>...</td>
+  </tr>
+  {% endif %}
+</table>
+
+{% endif %} {% if job_list %}
+<h2>
+  Jobs{% if job_failure_count %} <small> &mdash; {{ job_failure_count }} failed</small>{%
+  endif %}
+</h2>
+<table class="table">
+  <tr>
+    <th colspan="2">Job</th>
+  </tr>
+  {% for job in job_list %}
+  <tr>
+    <td style="width: 18px" class="result-icon-cell result-{{ job.result.id }}">
+      {% if job.result.id == 'failed' %}
+      <svg viewBox="0 0 40 40" class="result-icon">
+        <g fill="currentColor">
+          <path
+            d="m28.4 21.6v-3.2h-16.8v3.2h16.8z m-8.4-18.2c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6 7.4-16.6 16.6-16.6z"
+          />
+        </g>
+      </svg>
+      {% elif job.result.id == 'passed' %}
+      <svg viewBox="0 0 40 40" class="result-icon">
+        <g fill="currentColor">
+          <path
+            d="m16.6 28.4l15-15-2.3-2.5-12.7 12.7-5.9-5.9-2.3 2.3z m3.4-25c9.2 0 16.6 7.4 16.6 16.6s-7.4 16.6-16.6 16.6-16.6-7.4-16.6-16.6
+            7.4-16.6 16.6-16.6z"
+          />
+        </g>
+      </svg>
+      {% endif %}
+    </td>
+    <td>
+      <div>
+        #{{ build.number }}.{{ job.number }}{% if job.label %} - {{ job.label }}{% endif
+        %}
+      </div>
+      {% if job.url %}
+      <small>
+        <a href="{{ job.url }}">{{ job.url }}</a>
+      </small>
+      {% endif %}
+    </td>
+    {% endfor %}
+  </tr>
+</table>
+
+{% endif %} {% endblock %}

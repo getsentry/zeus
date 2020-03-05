@@ -13,7 +13,10 @@ def test_resolve_ref_for_build(default_revision, mock_vcs_server):
                     "sha": default_revision.sha,
                     "message": default_revision.message,
                     "authors": [
-                        (default_revision.author.name, default_revision.author.email)
+                        (
+                            default_revision.authors[0].name,
+                            default_revision.authors[0].email,
+                        )
                     ],
                 }
             ]
@@ -23,19 +26,19 @@ def test_resolve_ref_for_build(default_revision, mock_vcs_server):
     build = factories.BuildFactory.create(
         repository=default_revision.repository,
         ref=default_revision.sha,
-        author=None,
         label=None,
+        authors=[],
     )
 
     assert build.revision_sha is None
-    assert build.author_id is None
     assert build.label is None
+    assert not build.authors
 
     resolve_ref_for_build(build.id)
 
     assert build.revision_sha == default_revision.sha
-    assert build.author_id == default_revision.author_id
     assert build.label == "ref: Remove outdated comment"
+    assert build.authors == default_revision.authors
 
 
 def test_resolve_ref_for_change_request_parent_only(default_revision, mock_vcs_server):
@@ -48,7 +51,10 @@ def test_resolve_ref_for_change_request_parent_only(default_revision, mock_vcs_s
                     "sha": default_revision.sha,
                     "message": default_revision.message,
                     "authors": [
-                        (default_revision.author.name, default_revision.author.email)
+                        (
+                            default_revision.authors[0].name,
+                            default_revision.authors[0].email,
+                        )
                     ],
                 }
             ]
@@ -59,18 +65,56 @@ def test_resolve_ref_for_change_request_parent_only(default_revision, mock_vcs_s
         repository=default_revision.repository,
         parent_ref=default_revision.sha,
         head_ref=None,
-        author=None,
+        authors=[],
     )
 
     assert cr.parent_revision_sha is None
     assert cr.head_revision_sha is None
-    assert cr.author_id is None
+    assert not cr.authors
 
     resolve_ref_for_change_request(cr.id)
 
     assert cr.parent_revision_sha == default_revision.sha
     assert cr.head_revision_sha is None
-    assert cr.author_id == default_revision.author_id
+    assert not cr.authors
+
+
+def test_resolve_ref_for_change_request_head_only(default_revision, mock_vcs_server):
+    mock_vcs_server.replace(
+        mock_vcs_server.GET,
+        "http://localhost:8070/stmt/log",
+        json={
+            "log": [
+                {
+                    "sha": default_revision.sha,
+                    "message": default_revision.message,
+                    "authors": [
+                        (
+                            default_revision.authors[0].name,
+                            default_revision.authors[0].email,
+                        )
+                    ],
+                }
+            ]
+        },
+    )
+
+    cr = factories.ChangeRequestFactory.create(
+        repository=default_revision.repository,
+        head_ref=default_revision.sha,
+        parent_ref=None,
+        authors=[],
+    )
+
+    assert cr.parent_revision_sha is None
+    assert cr.head_revision_sha is None
+    assert not cr.authors
+
+    resolve_ref_for_change_request(cr.id)
+
+    assert cr.parent_revision_sha is None
+    assert cr.head_revision_sha == default_revision.sha
+    assert cr.authors == default_revision.authors
 
 
 def test_resolve_ref_for_change_request_parent_and_head(
@@ -85,7 +129,10 @@ def test_resolve_ref_for_change_request_parent_and_head(
                     "sha": default_revision.sha,
                     "message": default_revision.message,
                     "authors": [
-                        (default_revision.author.name, default_revision.author.email)
+                        (
+                            default_revision.authors[0].name,
+                            default_revision.authors[0].email,
+                        )
                     ],
                 }
             ]
@@ -96,18 +143,17 @@ def test_resolve_ref_for_change_request_parent_and_head(
         repository=default_revision.repository,
         parent_ref=default_revision.sha,
         head_ref=default_revision.sha,
-        author=None,
+        authors=[],
     )
 
     assert cr.parent_revision_sha is None
     assert cr.head_revision_sha is None
-    assert cr.author_id is None
 
     resolve_ref_for_change_request(cr.id)
 
     assert cr.parent_revision_sha == default_revision.sha
     assert cr.head_revision_sha == default_revision.sha
-    assert cr.author_id == default_revision.author_id
+    assert cr.authors == default_revision.authors
 
 
 def test_resolve_ref_unresolvable(default_repo, mock_vcs_server):
@@ -119,18 +165,18 @@ def test_resolve_ref_unresolvable(default_repo, mock_vcs_server):
     )
 
     build = factories.BuildFactory.create(
-        repository=default_repo, ref="abcdef", author=None, label=None
+        repository=default_repo, ref="abcdef", authors=[], label=None
     )
 
     assert build.revision_sha is None
-    assert build.author_id is None
     assert build.label is None
+    assert not build.authors
 
     resolve_ref_for_build(build.id)
 
     assert build.revision_sha is None
-    assert build.author_id is None
     assert build.label is None
+    assert not build.authors
 
     reasons = list(FailureReason.query.filter(FailureReason.build_id == build.id))
     assert len(reasons) == 1

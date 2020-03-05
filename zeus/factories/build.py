@@ -9,7 +9,6 @@ from zeus.config import db
 from zeus.constants import Result, Status
 from zeus.utils import timezone
 
-from .author import AuthorFactory
 from .base import ModelFactory
 from .repository import RepositoryFactory
 from .types import GUIDFactory
@@ -30,12 +29,6 @@ class BuildFactory(ModelFactory):
         else RepositoryFactory()
     )
     repository_id = factory.SelfAttribute("repository.id")
-    author = factory.LazyAttribute(
-        lambda o: o.revision.author
-        if getattr(o, "revision", None)
-        else AuthorFactory(repository=o.repository)
-    )
-    author_id = factory.LazyAttribute(lambda o: o.author.id if o.author else None)
     result = factory.Iterator([Result.failed, Result.passed])
     status = factory.Iterator([Status.queued, Status.in_progress, Status.finished])
     ref = factory.LazyAttribute(
@@ -73,8 +66,6 @@ class BuildFactory(ModelFactory):
             for author in extracted:
                 self.authors.append(author)
 
-        elif self.author:
-            self.authors.append(self.author)
         db.session.flush()
 
     class Meta:
@@ -95,7 +86,7 @@ class BuildFactory(ModelFactory):
         passed = factory.Trait(result=Result.passed, status=Status.finished)
         aborted = factory.Trait(result=Result.aborted, status=Status.finished)
         errored = factory.Trait(result=Result.errored, status=Status.finished)
-        anonymous = factory.Trait(author=None, author_id=None)
+        anonymous = factory.Trait(authors=[])
         travis = factory.Trait(
             provider="travis",
             external_id=factory.LazyAttribute(lambda o: str(randint(10000, 999999))),

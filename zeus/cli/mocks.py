@@ -122,7 +122,7 @@ async def mock_revision(
     revision = factories.RevisionFactory.create(
         repository=repo,
         parents=[parent_revision.sha] if parent_revision else None,
-        **{"author": author} if author else {}
+        **{"authors": [author]} if author else {}
     )
     return revision
 
@@ -154,7 +154,7 @@ async def mock_build(
             head_revision_sha=revision.sha,
             parent_revision=parent_revision,
             github=True,
-            **{"author": author} if author else {}
+            **{"authors": [author]} if author else {}
         )
 
     parent_revision = revision

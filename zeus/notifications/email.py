@@ -8,7 +8,6 @@ from zeus import auth
 from zeus.config import db, mail
 from zeus.constants import Result, Severity
 from zeus.models import (
-    Author,
     Build,
     Email,
     ItemOption,
@@ -32,10 +31,9 @@ def find_linked_emails(build: Build) -> List[Tuple[UUID, str]]:
         .filter(
             Email.user_id == User.id,
             Email.verified == True,  # NOQA
-            Email.email == Author.email,
+            Email.email.in_([a.email for a in build.authors]),
             RepositoryAccess.user_id == User.id,
             RepositoryAccess.repository_id == build.repository_id,
-            Author.id.in_([build.author_id, *[a.id for a in build.authors]]),
         )
         .distinct()
     )
@@ -62,8 +60,8 @@ def send_email_notification(build: Build):
 
 
 def build_message(build: Build, force=False) -> Message:
-    author = build.author
-    if not author:
+    authors = build.authors
+    if not authors:
         current_app.logger.info("mail.missing-author", extra={"build_id": build.id})
         return
 
@@ -152,7 +150,7 @@ def build_message(build: Build, force=False) -> Message:
             "name": repo.name,
             "full_name": repo.get_full_name,
         },
-        "author": {"name": author.name, "email": author.email},
+        "authors": [{"name": a.name, "email": a.email} for a in authors],
         "revision": {
             "sha": revision.sha,
             "short_sha": revision.sha[:7],

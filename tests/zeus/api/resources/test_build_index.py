@@ -46,6 +46,7 @@ def test_build_list_excludes_public(
 def test_build_list_user(
     client,
     sqla_assertions,
+    default_author,
     default_login,
     default_repo,
     default_repo_access,
@@ -55,11 +56,14 @@ def test_build_list_user(
     factories.BuildFactory(repository=default_repo)
 
     # "my" builds
-    build2 = factories.BuildFactory(repository=default_repo, revision=default_revision)
+    build2 = factories.BuildFactory(
+        repository=default_repo, revision=default_revision, authors=[default_author]
+    )
     build1 = factories.BuildFactory(
         repository=default_repo,
         revision=default_revision,
         date_created=build2.date_created - timedelta(minutes=1),
+        authors=[default_author],
     )
 
     # Queries:

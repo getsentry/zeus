@@ -63,7 +63,6 @@ class Revision(db.Model):
         nullable=False,
     )
 
-    author = db.relationship("Author", foreign_keys=[author_id])
     authors = db.relationship(
         "Author", secondary=revision_author_table, backref="revisions"
     )

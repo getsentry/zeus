@@ -12,7 +12,9 @@ def test_success(
     default_tenant,
     outbox,
 ):
-    build = factories.BuildFactory(revision=default_revision, failed=True)
+    build = factories.BuildFactory(
+        revision=default_revision, failed=True, authors=default_revision.authors
+    )
     db_session.add(build)
 
     send_email_notification(build)
@@ -26,7 +28,9 @@ def test_success(
 def test_no_repo_access(
     db_session, default_tenant, default_user, default_repo, default_revision, outbox
 ):
-    build = factories.BuildFactory(revision=default_revision, failed=True)
+    build = factories.BuildFactory(
+        revision=default_revision, failed=True, authors=default_revision.authors
+    )
     db_session.add(build)
 
     send_email_notification(build)
@@ -43,7 +47,9 @@ def test_disabled(
     default_tenant,
     outbox,
 ):
-    build = factories.BuildFactory(revision=default_revision, failed=True)
+    build = factories.BuildFactory(
+        revision=default_revision, failed=True, authors=default_revision.authors
+    )
     db_session.add(build)
     db_session.add(
         ItemOption(item_id=default_user.id, name="mail.notify_author", value="0")
@@ -70,7 +76,9 @@ def test_find_linked_emails(
     access = RepositoryAccess(user_id=other_user.id, repository_id=default_repo.id)
     db_session.add(access)
 
-    build = factories.BuildFactory(revision=default_revision)
+    build = factories.BuildFactory(
+        revision=default_revision, authors=default_revision.authors
+    )
     db_session.add(build)
 
     results = find_linked_emails(build)
@@ -79,6 +87,7 @@ def test_find_linked_emails(
 
 def test_find_linked_emails_secondary_author(
     db_session,
+    default_author,
     default_user,
     default_repo,
     default_repo_access,
@@ -94,8 +103,7 @@ def test_find_linked_emails_secondary_author(
     access = RepositoryAccess(user_id=other_user.id, repository_id=default_repo.id)
     db_session.add(access)
 
-    build = factories.BuildFactory(repository=default_repo)
-    build.authors.append(other_author)
+    build = factories.BuildFactory(repository=default_repo, authors=[other_author])
     db_session.add(build)
     db_session.delete(default_user)
 
