@@ -8,7 +8,7 @@ Build {{ build.result.name }}
 ==========================================
 Commit
 ==========================================
-{{ revision.short_sha }} by {{ author.email }} on {{ date_created.strftime('%Y-%m-%d') }}
+{{ revision.short_sha }} by {% for author in authors %}{{ author.email }} {% endfor %}on {{ date_created.strftime('%Y-%m-%d') }}
 {{ revision.message }}
 {% if failing_tests_count -%}
 ==========================================

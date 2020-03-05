@@ -55,8 +55,6 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
         GUID, db.ForeignKey("hook.id", ondelete="CASCADE"), nullable=True, index=True
     )
     url = db.Column(db.String, nullable=True)
-    # author_id is inherited from Source.author_id, and is denormalized to speed up
-    # "my builds" type of queries
     author_id = db.Column(
         GUID,
         db.ForeignKey("author.id", ondelete="SET NULL"),
@@ -64,7 +62,6 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
         nullable=True,
     )
 
-    author = db.relationship("Author")
     authors = db.relationship("Author", secondary=build_author_table, backref="builds")
     revision = db.relationship(
         "Revision",

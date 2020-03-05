@@ -5,9 +5,9 @@ from faker import Factory
 from random import randint
 
 from zeus import models
+from zeus.config import db
 from zeus.utils import timezone
 
-from .author import AuthorFactory
 from .base import ModelFactory
 from .types import GUIDFactory
 from .repository import RepositoryFactory
@@ -24,12 +24,6 @@ class ChangeRequestFactory(ModelFactory):
         else RepositoryFactory()
     )
     repository_id = factory.SelfAttribute("repository.id")
-    author = factory.LazyAttribute(
-        lambda o: o.parent_revision.author
-        if getattr(o, "parent_revision", None)
-        else AuthorFactory(repository=o.repository)
-    )
-    author_id = factory.LazyAttribute(lambda o: o.author.id if o.author else None)
     parent_ref = factory.LazyAttribute(
         lambda o: o.parent_revision.sha
         if getattr(o, "parent_revision", None)
@@ -47,6 +41,17 @@ class ChangeRequestFactory(ModelFactory):
     date_created = factory.LazyAttribute(
         lambda o: timezone.now() - timedelta(minutes=30)
     )
+
+    @factory.post_generation
+    def authors(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for author in extracted:
+                self.authors.append(author)
+
+        db.session.flush()
 
     class Meta:
         model = models.ChangeRequest

@@ -38,15 +38,18 @@ def test_repo_build_list_mine_with_match(
     factories.BuildFactory(repository=default_repo)
 
     # "my" builds
-    build1 = factories.BuildFactory(revision=default_revision)
-    build2 = factories.BuildFactory(revision=default_revision)
+    build1 = factories.BuildFactory(
+        revision=default_revision, authors=default_revision.authors
+    )
+    build2 = factories.BuildFactory(
+        revision=default_revision, authors=default_revision.authors
+    )
 
     resp = client.get(
         "/api/repos/{}/builds?user=me".format(default_repo.get_full_name())
     )
     assert resp.status_code == 200
     data = resp.json()
-    print(data)
     assert len(data) == 2
     assert data[0]["id"] == str(build2.id)
     assert data[1]["id"] == str(build1.id)
@@ -56,7 +59,7 @@ def test_repo_build_list_mine_without_match(
     client, default_login, default_repo, default_repo_access
 ):
     revision = factories.RevisionFactory(repository=default_repo)
-    factories.BuildFactory(revision=revision)
+    factories.BuildFactory(revision=revision, authors=revision.authors)
     resp = client.get(
         "/api/repos/{}/builds?user=me".format(default_repo.get_full_name())
     )
@@ -125,11 +128,7 @@ def test_repo_build_create_multiple_authors(
     assert build.ref == default_revision.sha
     assert build.revision_sha == default_revision.sha
     assert build.label == "test build"
-    assert build.author == default_author
-
-    assert len(build.authors) == 2
-    assert other_author in build.authors
-    assert default_author in build.authors
+    assert build.authors == [default_author, other_author]
 
 
 def test_repo_build_create_missing_revision(
@@ -154,8 +153,7 @@ def test_repo_build_create_missing_revision(
     assert build.ref == "master"
     assert build.revision_sha is None
     assert build.label == "test build"
-    assert build.author_id is None
-    assert not len(build.authors)
+    assert not build.authors
 
 
 def test_repo_build_existing_entityt(

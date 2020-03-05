@@ -1,6 +1,6 @@
 from flask import request
 from marshmallow import fields, pre_dump
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
@@ -47,7 +47,7 @@ class ChangeRequestIndexResource(Resource):
             ChangeRequest.query.options(
                 joinedload("head_revision"),
                 joinedload("parent_revision"),
-                joinedload("author"),
+                subqueryload_all("authors"),
             )
             .filter(ChangeRequest.repository_id.in_(tenant.repository_ids))
             .order_by(ChangeRequest.date_created.desc())

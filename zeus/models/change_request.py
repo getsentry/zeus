@@ -8,6 +8,23 @@ from zeus.db.utils import model_repr
 from zeus.utils import timezone
 
 
+change_request_author_table = db.Table(
+    "change_request_author",
+    db.Column(
+        "change_request_id",
+        GUID,
+        db.ForeignKey("change_request.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    db.Column(
+        "author_id",
+        GUID,
+        db.ForeignKey("author.id", ondelete="CASCADE"),
+        primary_key=True,
+    ),
+)
+
+
 class ChangeRequest(RepositoryBoundMixin, StandardAttributes, db.Model):
     number = db.Column(db.Integer, nullable=False)
     # the parent revision is our base commit that this change request applies to
@@ -39,7 +56,9 @@ class ChangeRequest(RepositoryBoundMixin, StandardAttributes, db.Model):
         foreign_keys="[ChangeRequest.repository_id, ChangeRequest.parent_revision_sha]",
         viewonly=True,
     )
-    author = db.relationship("Author")
+    authors = db.relationship(
+        "Author", secondary=change_request_author_table, backref="change_requests"
+    )
 
     __tablename__ = "change_request"
     __table_args__ = (

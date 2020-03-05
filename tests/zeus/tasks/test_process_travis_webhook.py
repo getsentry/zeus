@@ -82,7 +82,7 @@ def test_pull_request(default_repo, default_hook, sample_travis_build_pr):
     assert cr.parent_revision_sha is None
     assert cr.head_ref == "d79e3a6ff0cada29d731ed93de203f76a81d02c0"
     assert cr.head_revision_sha is None
-    assert cr.author is None
+    assert not cr.authors
 
     build = (
         Build.query.unrestricted_unsafe()

@@ -105,7 +105,6 @@ def default_author(default_repo, default_user):
 def default_revision(default_repo, default_author):
     return factories.RevisionFactory(
         repository=default_repo,
-        author=default_author,
         authors=[default_author],
         sha="884ea9e17b53933febafd7e02d8bd28f3c9d479d",
         message="ref: Remove outdated comment\n\nThis removes an outdated comment.",
@@ -115,7 +114,6 @@ def default_revision(default_repo, default_author):
 @pytest.fixture(scope="function")
 def default_parent_revision(default_author, default_repo, default_revision):
     return factories.RevisionFactory(
-        author=default_author,
         authors=[default_author],
         repository=default_repo,
         parents=[default_revision.sha],
@@ -128,7 +126,7 @@ def default_change_request(default_author, default_revision, default_parent_revi
     return factories.ChangeRequestFactory(
         github=True,
         external_id="1",
-        author=default_author,
+        authors=[default_author],
         parent_revision=default_parent_revision,
         head_revision=default_revision,
     )
@@ -138,6 +136,7 @@ def default_change_request(default_author, default_revision, default_parent_revi
 def default_build(default_revision):
     return factories.BuildFactory(
         revision=default_revision,
+        authors=default_revision.authors,
         date_started=timezone.now() - timedelta(minutes=6),
         date_finished=timezone.now(),
         passed=True,

@@ -9,9 +9,10 @@ def test_change_request_list(
     # - Savepoint???
     # - Tenant
     # - Change Requests
+    # - ChangeRequest.authors
     # - Builds
     # - Build Count (paginator)
-    with sqla_assertions.assert_statement_count(5):
+    with sqla_assertions.assert_statement_count(6):
         resp = client.get("/api/change-requests")
         assert resp.status_code == 200
         data = resp.json()
@@ -32,6 +33,7 @@ def test_change_request_list_with_latest_build(
     # - Savepoint???
     # - Tenant
     # - Change Requests
+    # - ChangeRequest.authors
     # - fetch_builds_for_revisions
     #   - Builds
     #   - Build.authors
@@ -44,7 +46,7 @@ def test_change_request_list_with_latest_build(
         == default_change_request.head_revision.repository_id
     )
     assert default_build.revision_sha == default_change_request.head_revision.sha
-    with sqla_assertions.assert_statement_count(8):
+    with sqla_assertions.assert_statement_count(9):
         resp = client.get("/api/change-requests")
         assert resp.status_code == 200
         data = resp.json()
