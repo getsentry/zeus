@@ -32,7 +32,6 @@ def test_merge_build_group_different_providers(client, default_login, default_re
     assert merged_build.result == Result(max(build1.result.value, build2.result.value))
     assert merged_build.date_started == now
     assert merged_build.date_finished == later
-    assert merged_build.provider == "provider1, provider2"
 
 
 def test_merge_build_group_empty_dates(client, default_login, default_revision):

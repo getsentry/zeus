@@ -1,21 +1,6 @@
-from dataclasses import dataclass
-from typing import List, Tuple
-
 from zeus.exceptions import UnknownRevision
 from zeus.models import Repository, Revision
 from zeus.vcs import vcs_client
-
-
-@dataclass
-class RevisionResult:
-    sha: str
-    message: str
-    author: str
-    author_date: str
-    committer: str
-    committer_date: str
-    parents: List[str]
-    authors: List[Tuple[str, str]]
 
 
 def identify_revision(

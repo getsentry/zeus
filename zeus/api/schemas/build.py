@@ -9,6 +9,28 @@ from .revision import RevisionSchema
 from .stats import StatsSchema
 
 
+class MetaBuildSchema(Schema):
+    label = fields.Str()
+    created_at = fields.DateTime(attribute="date_created", dump_only=True)
+    started_at = fields.DateTime(attribute="date_started", dump_only=True)
+    finished_at = fields.DateTime(attribute="date_finished", dump_only=True)
+    status = StatusField(dump_only=True)
+    result = ResultField(dump_only=True)
+    stats = fields.Nested(StatsSchema(), dump_only=True)
+    repository = fields.Nested(
+        RepositorySchema(exclude=("latest_build",)), dump_only=True
+    )
+    authors = fields.List(fields.Nested(AuthorSchema()), dump_only=True)
+    revision = fields.Nested(RevisionSchema(), dump_only=True)
+    ref = RevisionRefField(dump_only=True)
+
+    @post_dump(pass_many=False)
+    def build_output(self, data, many, **kwargs):
+        if not data.get("label"):
+            data["label"] = "unknown build"
+        return data
+
+
 class BuildSchema(Schema):
     id = fields.UUID(dump_only=True)
     number = fields.Integer(dump_only=True)
@@ -26,7 +48,7 @@ class BuildSchema(Schema):
         RepositorySchema(exclude=("latest_build",)), dump_only=True
     )
     authors = fields.List(fields.Nested(AuthorSchema()), dump_only=True)
-    revision = fields.Nested(RevisionSchema())
+    revision = fields.Nested(RevisionSchema(), dump_only=True)
     ref = RevisionRefField(dump_only=True)
 
     @post_dump(pass_many=False)
@@ -59,11 +81,12 @@ class BuildCreateSchema(Schema):
         build.data["required_hook_ids"] = Hook.get_required_hook_ids(
             build.repository.id
         )
-        if not build.label and revision:
-            build.label = revision.message.split("\n")[0]
-        if not build.authors and revision and revision.authors:
-            for author in revision.authors:
-                build.authors.append(author)
+        if revision:
+            if not build.label:
+                build.label = revision.message.split("\n")[0]
+            if not build.authors and revision.authors:
+                for author in revision.authors:
+                    build.authors.append(author)
         return build
 
     @post_dump(pass_many=True)
