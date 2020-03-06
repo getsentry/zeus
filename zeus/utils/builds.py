@@ -1,3 +1,6 @@
+import dataclasses
+
+from datetime import datetime
 from functools import reduce
 from itertools import groupby
 from operator import and_, or_
@@ -5,13 +8,27 @@ from typing import Any, List, Mapping, Tuple
 from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus.constants import Status, Result
-from zeus.models import Build, Revision
+from zeus.models import Author, Build, Revision
 
 
-def merge_builds(target: Build, build: Build, with_relations=True) -> Build:
-    # explicitly unset the default id as target should begin as an empty instance
-    target.id = None
+@dataclasses.dataclass
+class MetaBuild:
+    original: List[Build] = dataclasses.field(default_factory=list)
+    ref: str = ""
+    revision_sha: str = None
+    label: str = ""
+    stats: dict = dataclasses.field(default_factory=dict)
+    result: Result = Result.unknown
+    status: Status = Status.unknown
+    authors: List[Author] = dataclasses.field(default_factory=list)
+    date_created: datetime = None
+    date_started: datetime = None
+    date_finished: datetime = None
 
+    revision: Revision = None
+
+
+def merge_builds(target: MetaBuild, build: Build, with_relations=True) -> Build:
     # Store the original build so we can retrieve its ID or number later, or
     # show a list of all builds in the UI
     target.original.append(build)
@@ -22,7 +39,7 @@ def merge_builds(target: Build, build: Build, with_relations=True) -> Build:
     # XXX(dcramer): this is unsafe
     if with_relations:
         target.revision = build.revision
-    #     target.authors = list(set(target.authors + build.authors))
+        target.authors = list(set(target.authors + build.authors))
     if build.revision_sha:
         target.revision_sha = build.revision_sha
     if not target.ref:
@@ -46,6 +63,11 @@ def merge_builds(target: Build, build: Build, with_relations=True) -> Build:
         if target.result
         else build.result
     )
+    target.date_created = (
+        min(target.date_created, build.date_created)
+        if target.date_created and build.date_created
+        else target.date_created or build.date_created
+    )
     target.date_started = (
         min(target.date_started, build.date_started)
         if target.date_started and build.date_started
@@ -56,11 +78,11 @@ def merge_builds(target: Build, build: Build, with_relations=True) -> Build:
         if target.date_finished and build.date_finished
         else target.date_finished or build.date_finished
     )
-    target.provider = (
-        "%s, %s" % (target.provider, build.provider)
-        if target.provider
-        else build.provider
-    )
+    # target.provider = (
+    #     "%s, %s" % (target.provider, build.provider)
+    #     if target.provider
+    #     else build.provider
+    # )
 
     # NOTE: The build number is not merged, as it would not convey any meaning
     # in the context of a build group.  In that fashion, build numbers should
@@ -86,7 +108,7 @@ def merge_build_group(
         max(build, key=lambda build: build.number) for _, build in grouped_builds
     ]
 
-    build = Build()
+    build = MetaBuild()
     build.original = []
     if set(required_hook_ids or ()).difference(
         set(str(b.hook_id) for b in build_group)

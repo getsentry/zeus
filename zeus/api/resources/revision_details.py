@@ -3,11 +3,9 @@ from zeus.models import Revision
 from zeus.utils.builds import fetch_build_for_revision
 
 from .base_revision import BaseRevisionResource
-from ..schemas import BuildSchema
+from ..schemas import MetaBuildSchema
 
-build_schema = BuildSchema(
-    exclude=["id", "number", "external_id", "provider", "url", "repository"]
-)
+build_schema = MetaBuildSchema(exclude=["repository"])
 
 
 class RevisionDetailsResource(BaseRevisionResource):

@@ -108,7 +108,8 @@ const RevisionSummary = ({repo, build}) => {
         />
       )}
       <RevisionAuthor>
-        <ObjectAuthor data={build} /> committed <TimeSince date={revision.committed_at} />
+        <ObjectAuthor data={build.revision} /> committed{' '}
+        <TimeSince date={revision.committed_at} />
       </RevisionAuthor>
     </RevisionSection>
   );
