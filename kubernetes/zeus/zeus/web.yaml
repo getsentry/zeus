@@ -8,8 +8,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: web
-  minReplicas: 3
-  maxReplicas: 6
+  minReplicas: 6
+  maxReplicas: 10
   targetCPUUtilizationPercentage: 80
 ---
 apiVersion: v1
@@ -152,11 +152,11 @@ spec:
               mountPath: '/var/run/secret/cloud.google.com'
           resources:
             requests:
-              cpu: 900m
-              memory: 600Mi
+              cpu: 200m
+              memory: 400Mi
             limits:
               cpu: 1000m
-              memory: 800Mi
+              memory: 600Mi
       volumes:
         - name: service-account
           secret:
