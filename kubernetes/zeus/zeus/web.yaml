@@ -1,3 +1,29 @@
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: zeus-ci
+  namespace: default
+  labels:
+    app: web
+spec:
+  domains:
+    - zeus.ci
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web-gce
+  namespace: default
+  labels:
+    app: web
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: zeus-ci
+    networking.gke.io/managed-certificates: zeus-ci
+spec:
+  backend:
+    serviceName: web
+    servicePort: 80
+---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
