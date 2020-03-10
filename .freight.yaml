@@ -11,6 +11,92 @@ kubernetes:
     zone: us-central1-b
 
 steps:
+- kind: KubernetesJob
+  image: gcr.io/zeus-176020/zeus:{sha}
+  name: db-upgrade
+  args: ["zeus", "db", "upgrade"]
+  env:
+    - name: GC_PROJECT
+      value: zeus-176020
+    - name: GCS_BUCKET
+      value: 'artifacts.zeus-176020.appspot.com'
+    - name: DB_HOST
+      value: pgbouncer
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: cloudsql-db-credentials
+          key: username
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: cloudsql-db-credentials
+          key: password
+    - name: SENTRY_DSN
+      valueFrom:
+        secretKeyRef:
+          name: sentry
+          key: dsn
+    - name: SENTRY_DSN_FRONTEND
+      valueFrom:
+        secretKeyRef:
+          name: sentry
+          key: dsn-frontend
+    - name: SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: zeus
+          key: secret-key
+    - name: GITHUB_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: github
+          key: client-id
+    - name: GITHUB_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: github
+          key: client-secret
+    - name: DOMAIN
+      value: zeus.ci
+    - name: SSL
+      value: 'true'
+    - name: GET_HOSTS_FROM
+      value: env
+    - name: REPO_ROOT
+      value: '/tmp/repo-cache'
+    - name: MAIL_SERVER
+      value: 'smtp.mailgun.org'
+    - name: MAIL_PORT
+      value: '2525'
+    - name: MAIL_USE_TLS
+      value: '1'
+    - name: MAIL_USE_SSL
+      value: '0'
+    - name: MAIL_USERNAME
+      value: 'postmaster@mg.zeus.ci'
+    - name: MAIL_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: mail
+          key: password
+    - name: MAIL_DEFAULT_SENDER
+      value: 'Zeus <noreply@mg.zeus.ci>'
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: '/var/run/secret/cloud.google.com/service-account.json'
+    - name: ALLOWED_ORIGINS
+      value: 'updates.zeus.ci,zeus.ci'
+    - name: PUBSUB_ENDPOINT
+      value: 'https://updates.zeus.ci'
+    - name: VCS_SERVER_ENDPOINT
+      value: 'http://vcs-server'
+    - name: ROLE
+      value: upgrade-job
+    - name: CELERY_BROKER_URL
+      valueFrom:
+        secretKeyRef:
+          name: queue
+          key: broker_url
 - kind: KubernetesDeployment
   selector:
     label_selector: app in (web, pubsub, worker)
