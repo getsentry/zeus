@@ -57,33 +57,39 @@ def upgrade():
                 )
             connection.execute(
                 """
-                UPDATE revision_author
+                UPDATE revision_author as t1
                 SET author_id = %s
                 WHERE author_id = %s
                 AND NOT EXISTS (
                     SELECT 1 FROM revision_author WHERE author_id = %s
+                    AND revision_sha = t1.revision_sha
+                    AND repository_id = t1.repository_id
                 )
                 """,
                 [new_id, old_id, new_id],
             )
             connection.execute(
                 """
-                UPDATE build_author
+                UPDATE build_author as t1
                 SET author_id = %s
                 WHERE author_id = %s
                 AND NOT EXISTS (
                     SELECT 1 FROM build_author WHERE author_id = %s
+                    AND build_id = t1.build_id
+                    AND repository_id = t1.repository_id
                 )
                 """,
                 [new_id, old_id, new_id],
             )
             connection.execute(
                 """
-                UPDATE change_request_author
+                UPDATE change_request_author as t1
                 SET author_id = %s
                 WHERE author_id = %s
                 AND NOT EXISTS (
                     SELECT 1 FROM change_request_author WHERE author_id = %s
+                    AND change_request_id = t1.change_request_id
+                    AND repository_id = t1.repository_id
                 )
                 """,
                 [new_id, old_id, new_id],
