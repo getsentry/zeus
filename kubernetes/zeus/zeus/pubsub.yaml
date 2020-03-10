@@ -1,3 +1,29 @@
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: pubsub-zeus-ci
+  namespace: default
+  labels:
+    app: pubsub
+spec:
+  domains:
+    - updates.zeus.ci
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: pubsub-gce
+  namespace: default
+  labels:
+    app: pubsub
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: pubsub-zeus-ci
+    networking.gke.io/managed-certificates: pubsub-zeus-ci
+spec:
+  backend:
+    serviceName: pubsub
+    servicePort: 80
+---
 apiVersion: v1
 kind: Service
 metadata:

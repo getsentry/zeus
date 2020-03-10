@@ -6,18 +6,7 @@ Also, we are not kubernetes experts, so assume everything here is bad/wrong.
 
 ## Bootstrap
 
-In order, apply:
-
-- kube-lego/namespace.yaml
-- kube-lego/configmap.yaml
-- kube-lego/deployment.yaml
-
-Lastly, configure services:
-
-- zeus/\*-service.yaml
-- zeus/\*-rc.yaml
-- zeus/\*-deployment.yaml
-- zeus/\*-ingress.yaml
+Apply zeus/\*.yaml
 
 Create a cluster:
 
