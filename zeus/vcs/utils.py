@@ -10,7 +10,7 @@ from zeus.vcs.backends.base import Vcs, RevisionResult
 from zeus.vcs.backends.git import GitVcs
 
 
-async def get_author_id(conn, repo_id: UUID, email: str, name: str) -> UUID:
+async def get_author_id(conn, repo_id: UUID, name: str, email: str) -> UUID:
     rv = await conn.fetch(
         """
         INSERT INTO author (id, repository_id, email, name)
