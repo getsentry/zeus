@@ -43,8 +43,7 @@ def resolve_ref_for_build(build_id: UUID):
         if revision:
             build.revision_sha = revision.sha
             if not build.authors and revision.authors:
-                for author in revision.authors:
-                    build.authors.append(author)
+                build.authors = revision.authors
             if not build.label:
                 build.label = revision.message.split("\n")[0]
         db.session.add(build)
@@ -81,7 +80,6 @@ def resolve_ref_for_change_request(change_request_id: UUID):
         )
         cr.head_revision_sha = revision.sha
         if not cr.authors and revision.authors:
-            for author in revision.authors:
-                cr.authors.append(author)
+            cr.authors = revision.authors
         db.session.add(cr)
         db.session.commit()

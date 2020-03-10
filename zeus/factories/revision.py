@@ -30,8 +30,7 @@ class RevisionFactory(ModelFactory):
             return
 
         if extracted:
-            for author in extracted:
-                self.authors.append(author)
+            self.authors = extracted
 
         db.session.flush()
 

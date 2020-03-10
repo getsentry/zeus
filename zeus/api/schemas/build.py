@@ -85,8 +85,7 @@ class BuildCreateSchema(Schema):
             if not build.label:
                 build.label = revision.message.split("\n")[0]
             if not build.authors and revision.authors:
-                for author in revision.authors:
-                    build.authors.append(author)
+                build.authors = revision.authors
         return build
 
     @post_dump(pass_many=True)
