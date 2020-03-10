@@ -52,8 +52,7 @@ class ChangeRequestSchema(Schema):
                 **data
             )
         if not cr.authors and head_revision and head_revision.authors:
-            for author in head_revision.authors:
-                cr.authors.append(author)
+            cr.authors = head_revision.authors
         return cr
 
 
@@ -85,6 +84,5 @@ class ChangeRequestCreateSchema(Schema):
             **data
         )
         if not cr.authors and head_revision and head_revision.authors:
-            for author in head_revision.authors:
-                cr.authors.append(author)
+            cr.authors = head_revision.authors
         return cr
