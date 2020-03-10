@@ -60,24 +60,33 @@ def upgrade():
                 UPDATE revision_author
                 SET author_id = %s
                 WHERE author_id = %s
+                AND NOT EXISTS (
+                    SELECT 1 FROM revision_author WHERE author_id = %s
+                )
                 """,
-                [new_id, old_id],
+                [new_id, old_id, new_id],
             )
             connection.execute(
                 """
                 UPDATE build_author
                 SET author_id = %s
                 WHERE author_id = %s
+                AND NOT EXISTS (
+                    SELECT 1 FROM build_author WHERE author_id = %s
+                )
                 """,
-                [new_id, old_id],
+                [new_id, old_id, new_id],
             )
             connection.execute(
                 """
                 UPDATE change_request_author
                 SET author_id = %s
                 WHERE author_id = %s
+                AND NOT EXISTS (
+                    SELECT 1 FROM change_request_author WHERE author_id = %s
+                )
                 """,
-                [new_id, old_id],
+                [new_id, old_id, new_id],
             )
             connection.execute(
                 """
