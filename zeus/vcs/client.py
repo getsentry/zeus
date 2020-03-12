@@ -3,7 +3,7 @@ import requests
 
 from flask import current_app
 from sentry_sdk import Hub
-from typing import List
+from typing import List, Optional, Union
 from uuid import UUID
 
 from zeus import auth
@@ -23,12 +23,14 @@ class VcsServerClient(object):
         self,
         path: str,
         method: str,
-        params: dict = None,
-        tenant=True,
-        raise_errors=True,
+        params: Optional[dict] = None,
+        tenant: Optional[Union[bool, auth.Tenant]] = True,
+        raise_errors: Optional[bool] = True,
     ):
         if tenant is True:
             tenant = auth.get_current_tenant()
+        elif tenant is False:
+            tenant = None
 
         url = "{}/{}".format(
             current_app.config["VCS_SERVER_ENDPOINT"], path.lstrip("/")
@@ -39,9 +41,11 @@ class VcsServerClient(object):
             response = requests.request(
                 method=method,
                 url=url,
-                params={k: v for k, v in params.items() if v is not None}
-                if params
-                else None,
+                params=(
+                    {k: v for k, v in params.items() if v is not None}
+                    if params
+                    else None
+                ),
                 headers={
                     "Authorization": "Bearer zeus-t-{}".format(
                         auth.generate_token(tenant).decode("utf-8")
@@ -50,14 +54,15 @@ class VcsServerClient(object):
             )
         if raise_errors and not (200 <= response.status_code < 300):
             text = response.text
+            data = {}
             try:
                 data = json.loads(text)
             except ValueError:
-                data = {}
+                pass
 
             # XXX(dcramer): this feels a bit hacky, and ideally would be handled
             # in the vcs implementation
-            if data.get("error") == "invalid_pubkey":
+            if data.get("error") == "invalid_pubkey" and params:
                 from zeus.tasks import deactivate_repo, DeactivationReason
 
                 deactivate_repo.delay(

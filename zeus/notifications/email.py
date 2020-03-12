@@ -65,14 +65,17 @@ def build_message(build: Build, force=False) -> Message:
         current_app.logger.info("mail.missing-author", extra={"build_id": build.id})
         return
 
-    emails = find_linked_emails(build)
+    emails: List[Tuple[UUID, str]] = find_linked_emails(build)
     if not emails and not force:
         current_app.logger.info("mail.no-linked-accounts", extra={"build_id": build.id})
         return
 
     elif not emails:
         current_user = auth.get_current_user()
-        emails = [[current_user.id, current_user.email]]
+        if current_user:
+            emails = [(current_user.id, current_user.email)]
+        elif not force:
+            return
 
     # filter it down to the users that have notifications enabled
     user_options = dict(

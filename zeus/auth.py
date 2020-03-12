@@ -5,7 +5,7 @@ from cached_property import cached_property
 from flask import current_app, g, request, session
 from itsdangerous import BadSignature, JSONWebSignatureSerializer
 from sqlalchemy.orm import joinedload
-from typing import Mapping, Optional
+from typing import Any, Dict, Mapping, Optional
 from urllib.parse import urlparse, urljoin
 from uuid import UUID
 
@@ -27,9 +27,9 @@ _bearer_regexp = re.compile(r"^bearer(:|\s)\s*(.+)$", re.I)
 
 
 class Tenant(object):
-    access = {}
+    access: Dict[UUID, Optional[Permission]] = {}
 
-    def __init__(self, access: Optional[Mapping[UUID, Optional[Permission]]] = None):
+    def __init__(self, access: Optional[Dict[UUID, Optional[Permission]]] = None):
         if access is not None:
             self.access = access
 
@@ -54,7 +54,7 @@ class Tenant(object):
         return permission in access
 
     @classmethod
-    def from_user(cls, user: User):
+    def from_user(cls, user: Optional[User]):
         if not user:
             return cls()
 
@@ -70,7 +70,7 @@ class Tenant(object):
         if not repository:
             return cls()
 
-        return RepositoryTenant(access={repository.id: permission})
+        return RepositoryTenant(repository.id, permission)
 
     @classmethod
     def from_api_token(cls, token: ApiToken):
@@ -82,9 +82,7 @@ class Tenant(object):
 
 class ApiTokenTenant(Tenant):
     def __init__(
-        self,
-        token_id: str,
-        access: Optional[Mapping[UUID, Optional[Permission]]] = None,
+        self, token_id: str, access: Optional[Dict[UUID, Optional[Permission]]] = None
     ):
         self.token_id = token_id
         if access is not None:
@@ -94,7 +92,7 @@ class ApiTokenTenant(Tenant):
         return "<{} token_id={}>".format(type(self).__name__, self.token_id)
 
     @cached_property
-    def access(self) -> Mapping[UUID, Permission]:
+    def access(self) -> Dict[UUID, Permission]:
         if not self.token_id:
             return {}
 
@@ -108,9 +106,7 @@ class ApiTokenTenant(Tenant):
 
 class UserTenant(Tenant):
     def __init__(
-        self,
-        user_id: UUID,
-        access: Optional[Mapping[UUID, Optional[Permission]]] = None,
+        self, user_id: UUID, access: Optional[Dict[UUID, Optional[Permission]]] = None
     ):
         self.user_id = user_id
         if access is not None:
@@ -120,7 +116,7 @@ class UserTenant(Tenant):
         return "<{} user_id={}>".format(type(self).__name__, self.user_id)
 
     @cached_property
-    def access(self) -> Mapping[UUID, Permission]:
+    def access(self) -> Dict[UUID, Permission]:
         if not self.user_id:
             return {}
 
@@ -142,7 +138,7 @@ class RepositoryTenant(Tenant):
         )
 
     @cached_property
-    def access(self) -> Mapping[UUID, Permission]:
+    def access(self) -> Dict[UUID, Optional[Permission]]:
         if not self.repository_id:
             return {}
 
@@ -156,6 +152,7 @@ def get_tenant_from_headers(headers: Mapping) -> Optional[Tenant]:
     header = headers.get("Authorization", "")
     if header:
         return get_tenant_from_bearer_header(header)
+    return None
 
 
 def get_tenant_from_request() -> Tenant:
@@ -171,6 +168,8 @@ def get_tenant_from_bearer_header(header: str) -> Optional[Tenant]:
         return None
 
     match = _bearer_regexp.match(header)
+    if not match:
+        return None
     token = match.group(2)
     if not token.startswith("zeus-"):
         # Assuming this is a legacy token
@@ -314,13 +313,15 @@ def get_current_tenant() -> Tenant:
 
 def generate_token(tenant: Tenant) -> bytes:
     s = JSONWebSignatureSerializer(current_app.secret_key, salt="auth")
-    payload = {"access": {str(k): v for k, v in tenant.access.items()}}
+    payload: Dict[str, Any] = {
+        "access": {str(k): int(v) if v else None for k, v in tenant.access.items()}
+    }
     if getattr(tenant, "user_id", None):
         payload["uid"] = str(tenant.user_id)
     return s.dumps(payload)
 
 
-def parse_token(token: str) -> Optional[str]:
+def parse_token(token: str) -> Optional[Any]:
     s = JSONWebSignatureSerializer(current_app.secret_key, salt="auth")
     try:
         return s.loads(token)
@@ -330,10 +331,12 @@ def parse_token(token: str) -> Optional[str]:
 
 
 def get_tenant_from_signed_token(token: str) -> Tenant:
-    payload = parse_token(token)
+    payload: Optional[Dict[str, Any]] = parse_token(token)
     if not payload:
         return Tenant()
-    access = {UUID(k): v for k, v in payload["access"].items()}
+    access = {
+        UUID(k): Permission(v) if v else None for k, v in payload["access"].items()
+    }
     if "uid" in payload:
         return UserTenant(user_id=UUID(payload["uid"]), access=access)
     return Tenant(access=access)
@@ -354,7 +357,7 @@ def is_safe_url(target: str) -> bool:
     )
 
 
-def get_redirect_target(clear=True, session=session) -> str:
+def get_redirect_target(clear=True, session=session) -> Optional[str]:
     if clear:
         session_target = session.pop("next", None)
     else:
@@ -366,6 +369,7 @@ def get_redirect_target(clear=True, session=session) -> str:
 
         if is_safe_url(target):
             return target
+    return None
 
 
 def bind_redirect_target(target: str = None, session=session):

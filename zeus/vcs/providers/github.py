@@ -1,7 +1,7 @@
 import json
 
 from hashlib import md5
-from typing import List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from zeus.config import redis
 from zeus.constants import Permission
@@ -90,7 +90,7 @@ class GitHubRepositoryProvider(RepositoryProvider):
             json={"title": "zeus", "key": key.public_key, "read_only": True},
         )
 
-    def get_permission(self, user: User, repo: Repository) -> bool:
+    def get_permission(self, user: User, repo: Repository) -> Optional[bool]:
         try:
             repo = self.get_repo(user, *repo.data["full_name"].split("/", 1))
         except ApiError as exc:
@@ -120,11 +120,11 @@ class GitHubCache(object):
         self.user = user
         self.scopes = scopes
         if client is None:
-            self.client = get_github_client(user)
+            self.client, _ = get_github_client(user)
         else:
             self.client = client
 
-    def get_repos(self, owner, no_cache=False):
+    def get_repos(self, owner: str, no_cache=False) -> List[Dict]:
         cache_key = "gh:{}:repos:{}:{}:{}".format(
             self.version,
             md5(self.client.token.encode("utf")).hexdigest(),
