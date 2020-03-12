@@ -1,6 +1,7 @@
 import time
 from contextlib import contextmanager
 from random import random
+from typing import Generator, Optional
 
 import redis
 
@@ -29,9 +30,9 @@ class Redis(object):
         self,
         lock_key: str,
         timeout: float = 3.0,
-        expire: int = None,
+        expire: Optional[float] = None,
         nowait: bool = False,
-    ):
+    ) -> Generator[None, None, None]:
         """
         Context manager for using a redis lock with the given key
 

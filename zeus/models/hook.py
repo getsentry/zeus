@@ -33,12 +33,12 @@ class Hook(RepositoryBoundMixin, StandardAttributes, db.Model):
     def generate_token(cls) -> bytes:
         return token_bytes(64)
 
-    def get_signature(self) -> bytes:
+    def get_signature(self) -> str:
         return hmac.new(
             key=self.token, msg=self.repository_id.bytes, digestmod=sha256
         ).hexdigest()
 
-    def is_valid_signature(self, signature: bytes) -> bool:
+    def is_valid_signature(self, signature: str) -> bool:
         return compare_digest(self.get_signature(), signature)
 
     def get_provider(self):

@@ -4,7 +4,7 @@ from datetime import datetime
 from functools import reduce
 from itertools import groupby
 from operator import and_, or_
-from typing import Any, List, Mapping, Set, Tuple
+from typing import List, Optional, Set, Tuple
 from sqlalchemy.orm import joinedload, subqueryload_all
 from uuid import UUID
 
@@ -16,20 +16,20 @@ from zeus.models import Author, Build, Revision
 class MetaBuild:
     original: List[Build] = dataclasses.field(default_factory=list)
     ref: str = ""
-    revision_sha: str = None
+    revision_sha: Optional[str] = None
     label: str = ""
     stats: dict = dataclasses.field(default_factory=dict)
     result: Result = Result.unknown
     status: Status = Status.unknown
     authors: List[Author] = dataclasses.field(default_factory=list)
-    date_created: datetime = None
-    date_started: datetime = None
-    date_finished: datetime = None
+    date_created: Optional[datetime] = None
+    date_started: Optional[datetime] = None
+    date_finished: Optional[datetime] = None
 
-    revision: Revision = None
+    revision: Optional[Revision] = None
 
 
-def merge_builds(target: MetaBuild, build: Build, with_relations=True) -> Build:
+def merge_builds(target: MetaBuild, build: Build, with_relations=True) -> MetaBuild:
     # Store the original build so we can retrieve its ID or number later, or
     # show a list of all builds in the UI
     target.original.append(build)
@@ -96,10 +96,8 @@ def merge_builds(target: MetaBuild, build: Build, with_relations=True) -> Build:
 
 
 def merge_build_group(
-    build_group: Tuple[Any, List[Build]],
-    required_hook_ids: List[UUID] = None,
-    with_relations=True,
-) -> Build:
+    build_group: List[Build], required_hook_ids: Set[str] = None, with_relations=True
+) -> MetaBuild:
     # XXX(dcramer): required_hook_ids is still dirty here, but its our simplest way
     # to get it into place
     grouped_builds = groupby(
@@ -111,8 +109,8 @@ def merge_build_group(
 
     build = MetaBuild()
     build.original = []
-    if set(required_hook_ids or ()).difference(
-        set(str(b.hook_id) for b in build_group)
+    if frozenset(required_hook_ids or ()).difference(
+        frozenset(str(b.hook_id) for b in build_group)
     ):
         build.result = Result.failed
 
@@ -125,12 +123,12 @@ def merge_build_group(
 
 def fetch_builds_for_revisions(
     revisions: List[Revision], with_relations=True
-) -> Mapping[str, Build]:
+) -> List[Tuple[Tuple[UUID, str], MetaBuild]]:
     # we query extra builds here, but its a lot easier than trying to get
     # sqlalchemy to do a ``select (subquery)`` clause and maintain tenant
     # constraints
     if not revisions:
-        return {}
+        return []
 
     lookups = []
     for revision in revisions:
@@ -156,21 +154,23 @@ def fetch_builds_for_revisions(
     build_groups = groupby(
         builds, lambda build: (build.repository_id, build.revision_sha)
     )
-    required_hook_ids: Set[UUID] = set()
+    required_hook_ids: Set[str] = set()
     for build in builds:
         required_hook_ids.update(build.data.get("required_hook_ids") or ())
     return [
         (
             ident,
             merge_build_group(
-                list(group), required_hook_ids, with_relations=with_relations
+                list(build_group), required_hook_ids, with_relations=with_relations
             ),
         )
-        for ident, group in build_groups
+        for ident, build_group in build_groups
     ]
 
 
-def fetch_build_for_revision(revision: Revision, with_relations=True) -> Build:
+def fetch_build_for_revision(
+    revision: Revision, with_relations=True
+) -> Optional[MetaBuild]:
     builds = fetch_builds_for_revisions([revision], with_relations=with_relations)
     if len(builds) < 1:
         return None

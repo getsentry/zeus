@@ -3,7 +3,7 @@ __all__ = ("AggregateTestCaseSummarySchema", "TestCaseSummarySchema", "TestCaseS
 from collections import defaultdict
 from marshmallow import Schema, fields, pre_dump
 from sqlalchemy import and_
-from typing import List, Mapping
+from typing import Dict, List, Optional
 from uuid import UUID
 
 from zeus.config import db
@@ -18,7 +18,9 @@ from .fields import ResultField
 from .job import JobSchema
 
 
-def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str, UUID]:
+def find_failure_origins(
+    build: Build, test_failures: List[str]
+) -> Dict[str, Optional[UUID]]:
     """
     Attempt to find originating causes of failures.
 
@@ -127,7 +129,7 @@ def find_failure_origins(build: Build, test_failures: List[str]) -> Mapping[str,
     for test_hash, build_id in queryset:
         previous_test_failures[build_id].add(test_hash)
 
-    failures_at_build = dict()
+    failures_at_build: Dict[str, Optional[UUID]] = {}
     searching = set(t for t in test_failures)
     # last_checked_run = build.id
     last_checked_run = None

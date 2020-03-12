@@ -40,11 +40,6 @@ ssl = SSL()
 metrics = Metrics()
 
 
-from flask_sqlalchemy.model import DefaultMeta
-
-db.Model: DefaultMeta = db.Model
-
-
 def with_health_check(app):
     def middleware(environ, start_response):
         path_info = environ.get("PATH_INFO", "")

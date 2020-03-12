@@ -18,7 +18,7 @@ def try_create(model, where: dict, defaults: dict = None) -> Optional[Any]:
             db.session.add(instance)
     except IntegrityError as exc:
         if "duplicate" not in str(exc):
-            return
+            return None
         raise
     return instance
 

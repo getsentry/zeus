@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterator, List, Optional
 from urllib.parse import urlparse
 
 from zeus.exceptions import CommandError, InvalidPublicKey, UnknownRevision
@@ -36,16 +36,17 @@ class GitVcs(Vcs):
 
     @memoize
     def remote_url(self) -> str:
+        username: Optional[str] = self.username
         if self.url.startswith("ssh:") and not self.username:
             username = "git"
-        else:
-            username = self.username
         if username and self.url.startswith(("ssh:", "http:", "https:")):
             parsed = urlparse(self.url)
             url = "%s://%s@%s/%s" % (
                 parsed.scheme,
                 parsed.username or username,
-                parsed.hostname + (":%s" % (parsed.port,) if parsed.port else ""),
+                "{}{}".format(
+                    parsed.hostname, ":%s" % (parsed.port,) if parsed.port else ""
+                ),
                 parsed.path.lstrip("/"),
             )
         else:
@@ -94,7 +95,7 @@ class GitVcs(Vcs):
                 return output
 
             except CommandError as e:
-                stderr = e.stderr.decode("utf-8")
+                stderr = e.stderr.decode("utf-8") if e.stderr else ""
                 if "unknown revision or path" in stderr:
                     # fatal: ambiguous argument '82f750e7a3b692e049b95ed66bf9149f56218733^..82f750e7a3b692e049b95ed66bf9149f56218733': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n
                     raise UnknownRevision(
@@ -191,7 +192,7 @@ class GitVcs(Vcs):
                     break
                 except CommandError as cmd_error:
                     err_msg = cmd_error.stderr
-                    if branch and branch in err_msg.decode("utf-8"):
+                    if err_msg and branch and branch in err_msg.decode("utf-8"):
                         # TODO: https://stackoverflow.com/questions/45096755/fatal-ambiguous-argument-origin-unknown-revision-or-path-not-in-the-working
                         default_error = ValueError(
                             'Unable to fetch commit log for branch "{0}".'.format(
@@ -234,7 +235,7 @@ class GitVcs(Vcs):
             # sha may have a trailing newline due to git log adding it
             sha = sha.lstrip("\n")
 
-            parents = [p for p in parents.split(" ") if p]
+            parents: List[str] = [p for p in parents.split(" ") if p]
 
             author_date = timezone.fromtimestamp(float(author_date))
             committer_date = timezone.fromtimestamp(float(committer_date))

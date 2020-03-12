@@ -1,12 +1,15 @@
 __all__ = ["Enum", "IntEnum", "StrEnum"]
 
+from enum import Enum as EnumType
+from typing import Optional, Type
+
 from sqlalchemy.types import TypeDecorator, INT, STRINGTYPE
 
 
 class Enum(TypeDecorator):
     impl = INT
 
-    def __init__(self, enum=None, *args, **kwargs):
+    def __init__(self, enum: Optional[Type[EnumType]] = None, *args, **kwargs):
         self.enum = enum
         super(Enum, self).__init__(*args, **kwargs)
 
