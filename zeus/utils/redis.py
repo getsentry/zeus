@@ -26,7 +26,11 @@ class Redis(object):
 
     @contextmanager
     def lock(
-        self, lock_key: str, timeout: int = 3, expire: int = None, nowait: bool = False
+        self,
+        lock_key: str,
+        timeout: float = 3.0,
+        expire: int = None,
+        nowait: bool = False,
     ):
         """
         Context manager for using a redis lock with the given key

@@ -1,3 +1,5 @@
+__all__ = ("BuildArtifactsResource",)
+
 from sqlalchemy.orm import joinedload
 from marshmallow import fields
 
@@ -7,13 +9,13 @@ from .base_build import BaseBuildResource
 from ..schemas import ArtifactSchema, JobSchema
 
 
-class ArtifactWithJobSchema(ArtifactSchema):
+class _ArtifactWithJobSchema(ArtifactSchema):
     job = fields.Nested(
         JobSchema(exclude=("stats", "failures")), dump_only=True, required=False
     )
 
 
-artifacts_schema = ArtifactWithJobSchema(many=True)
+artifacts_schema = _ArtifactWithJobSchema(many=True)
 
 
 class BuildArtifactsResource(BaseBuildResource):

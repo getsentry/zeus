@@ -1,5 +1,5 @@
 from flask import current_app, request
-from typing import List
+from typing import List, Optional
 
 from zeus.models import FileCoverage, Revision
 from zeus.utils.builds import fetch_build_for_revision
@@ -17,12 +17,12 @@ filecoverage_schema = FileCoverageSchema(many=False)
 class RevisionFileCoverageTreeResource(BaseRevisionResource):
     def _get_leaf(self, revision: Revision, coverage_list: List[FileCoverage]):
         coverage = coverage_list[0]
+        file_source: Optional[str] = None
         try:
             file_source = vcs_client.show(
                 revision.repository_id, sha=revision.sha, filename=coverage.filename
             )
         except Exception:
-            file_source = None
             current_app.logger.exception(
                 "Could not load file source for {} - {}",
                 revision.sha,

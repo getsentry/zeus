@@ -1,3 +1,5 @@
+__all__ = ("AggregateTestCaseSummarySchema", "TestCaseSummarySchema", "TestCaseSchema")
+
 from collections import defaultdict
 from marshmallow import Schema, fields, pre_dump
 from sqlalchemy import and_

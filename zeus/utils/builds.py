@@ -4,8 +4,9 @@ from datetime import datetime
 from functools import reduce
 from itertools import groupby
 from operator import and_, or_
-from typing import Any, List, Mapping, Tuple
+from typing import Any, List, Mapping, Set, Tuple
 from sqlalchemy.orm import joinedload, subqueryload_all
+from uuid import UUID
 
 from zeus.constants import Status, Result
 from zeus.models import Author, Build, Revision
@@ -96,7 +97,7 @@ def merge_builds(target: MetaBuild, build: Build, with_relations=True) -> Build:
 
 def merge_build_group(
     build_group: Tuple[Any, List[Build]],
-    required_hook_ids: List[str] = None,
+    required_hook_ids: List[UUID] = None,
     with_relations=True,
 ) -> Build:
     # XXX(dcramer): required_hook_ids is still dirty here, but its our simplest way
@@ -155,7 +156,7 @@ def fetch_builds_for_revisions(
     build_groups = groupby(
         builds, lambda build: (build.repository_id, build.revision_sha)
     )
-    required_hook_ids = set()
+    required_hook_ids: Set[UUID] = set()
     for build in builds:
         required_hook_ids.update(build.data.get("required_hook_ids") or ())
     return [

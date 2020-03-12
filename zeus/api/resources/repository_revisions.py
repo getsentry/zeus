@@ -1,7 +1,7 @@
 from flask import request, current_app
 from marshmallow import fields, pre_dump
 from sqlalchemy.orm import subqueryload_all
-from typing import Tuple
+from typing import Optional, Tuple
 
 from zeus.config import nplusone
 from zeus.models import Repository, Revision
@@ -92,14 +92,13 @@ class RepositoryRevisionsResource(BaseRepositoryResource):
 
         revisions, has_more = self.fetch_revisions(repo, page, parent=parent)
 
+        base_url: Optional[str] = None
         if not parent:
             base_url = self.build_base_url(without=["page", "parent"])
             if page == 1 and revisions:
                 base_url += "&parent={}".format(revisions[0].sha)
             else:
                 base_url += "&parent=head"
-        else:
-            base_url = None
 
         response = self.respond_with_schema(revisions_schema, revisions)
         return self.build_paged_response(

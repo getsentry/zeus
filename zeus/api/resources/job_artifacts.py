@@ -1,3 +1,5 @@
+__all__ = ("JobArtifactsResource",)
+
 from base64 import b64decode
 from io import BytesIO
 from flask import request

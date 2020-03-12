@@ -120,7 +120,7 @@ class GitHubCache(object):
         self.user = user
         self.scopes = scopes
         if client is None:
-            self.client = self.get_github_client(user)
+            self.client = get_github_client(user)
         else:
             self.client = client
 

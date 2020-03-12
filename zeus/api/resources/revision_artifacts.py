@@ -8,11 +8,11 @@ from .base_revision import BaseRevisionResource
 from ..schemas import ArtifactSchema, JobSchema
 
 
-class ArtifactWithJobSchema(ArtifactSchema):
+class _ArtifactWithJobSchema(ArtifactSchema):
     job = fields.Nested(JobSchema(), dump_only=True, required=False)
 
 
-artifacts_schema = ArtifactWithJobSchema(many=True)
+artifacts_schema = _ArtifactWithJobSchema(many=True)
 
 
 class RevisionArtifactsResource(BaseRevisionResource):

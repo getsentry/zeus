@@ -113,7 +113,7 @@ class ApiTokenMixin(object):
         )
 
     @classmethod
-    def generate_token(cls):
+    def generate_token(cls) -> str:
         return token_hex(32)
 
     def get_token_key(self):

@@ -25,9 +25,7 @@ def test_repository_tests_history_by_build(
     factories.TestCaseFactory(job=job4, name=default_testcase.name, passed=True)
 
     resp = client.get(
-        "/api/repos/{}/tests-by-build?results=3".format(
-            default_repo.get_full_name(), default_testcase.hash
-        )
+        "/api/repos/{}/tests-by-build?results=3".format(default_repo.get_full_name())
     )
     assert resp.status_code == 200
     data = resp.json()

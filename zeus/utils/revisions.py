@@ -30,3 +30,5 @@ def identify_revision(
     ).first()
     if not revision:
         raise UnknownRevision
+
+    return revision

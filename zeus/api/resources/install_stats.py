@@ -22,10 +22,10 @@ class InstallStatsResource(Resource):
         """
         stat = request.args.get("stat")
         if not stat:
-            return self.error({"stat": "invalid stat"})
+            return self.error("invalid stat")
 
         if stat not in STAT_CHOICES:
-            return self.error({"stat": "invalid stat"})
+            return self.error("invalid stat")
 
         since = request.args.get("since")
 
