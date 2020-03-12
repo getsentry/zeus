@@ -56,14 +56,14 @@ class RepositoryStatsResource(BaseRepositoryResource):
         """
         stat = request.args.get("stat")
         if not stat:
-            return self.error({"stat": "invalid stat"})
+            return self.error("invalid stat")
 
         if stat not in STAT_CHOICES:
-            return self.error({"stat": "invalid stat"})
+            return self.error("invalid stat")
 
         aggregate = request.args.get("aggregate", "time")
         if aggregate not in ("time", "build"):
-            return self.error({"aggregate": "invalid aggregate"})
+            return self.error("invalid aggregate")
 
         branch = request.args.get("branch")
         since = request.args.get("since")

@@ -108,7 +108,9 @@ class ApiTokenTenant(Tenant):
 
 class UserTenant(Tenant):
     def __init__(
-        self, user_id: str, access: Optional[Mapping[UUID, Optional[Permission]]] = None
+        self,
+        user_id: UUID,
+        access: Optional[Mapping[UUID, Optional[Permission]]] = None,
     ):
         self.user_id = user_id
         if access is not None:
@@ -130,7 +132,7 @@ class UserTenant(Tenant):
 
 
 class RepositoryTenant(Tenant):
-    def __init__(self, repository_id: str, permission: Optional[Permission] = None):
+    def __init__(self, repository_id: UUID, permission: Optional[Permission] = None):
         self.repository_id = repository_id
         self.permission = permission
 
@@ -310,7 +312,7 @@ def get_current_tenant() -> Tenant:
     return rv
 
 
-def generate_token(tenant: Tenant) -> str:
+def generate_token(tenant: Tenant) -> bytes:
     s = JSONWebSignatureSerializer(current_app.secret_key, salt="auth")
     payload = {"access": {str(k): v for k, v in tenant.access.items()}}
     if getattr(tenant, "user_id", None):

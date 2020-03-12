@@ -1,3 +1,2 @@
-from zeus.utils.imports import import_submodules
-
-import_submodules(locals(), __name__, __path__)
+from .auth_github import *  # NOQA
+from .index import *  # NOQA

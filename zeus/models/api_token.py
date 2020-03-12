@@ -36,10 +36,10 @@ class ApiToken(StandardAttributes, db.Model):
     __repr__ = model_repr("id")
 
     @classmethod
-    def generate_token(cls):
+    def generate_token(cls) -> str:
         return token_hex(32)
 
-    def is_expired(self):
+    def is_expired(self) -> bool:
         if not self.expires_at:
             return False
 

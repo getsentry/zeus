@@ -1,3 +1,12 @@
-from zeus.utils.imports import import_submodules
-
-import_submodules(locals(), __name__, __path__)
+from .aggregate_job_stats import *  # NOQA
+from .cleanup_artifacts import *  # NOQA
+from .cleanup_builds import *  # NOQA
+from .cleanup_pending_artifacts import *  # NOQA
+from .deactivate_repo import *  # NOQA
+from .delete_repo import *  # NOQA
+from .process_artifact import *  # NOQA
+from .process_pending_artifact import *  # NOQA
+from .process_travis_webhook import *  # NOQA
+from .resolve_ref import *  # NOQA
+from .send_build_notifications import *  # NOQA
+from .sync_github_access import *  # NOQA

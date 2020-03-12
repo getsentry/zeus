@@ -1,3 +1,4 @@
+from typing import Optional
 from uuid import UUID
 
 from zeus import auth
@@ -5,7 +6,7 @@ from zeus.api.schemas import BuildSchema
 from zeus.config import celery, db
 from zeus.constants import Result, Status
 from zeus.exceptions import InvalidPublicKey, UnknownRevision
-from zeus.models import Build, ChangeRequest, FailureReason
+from zeus.models import Build, ChangeRequest, FailureReason, Revision
 from zeus.pubsub.utils import publish
 from zeus.utils import revisions
 
@@ -22,6 +23,7 @@ def resolve_ref_for_build(build_id: UUID):
     auth.set_current_tenant(auth.RepositoryTenant(repository_id=build.repository_id))
 
     if not build.revision_sha:
+        revision: Optional[Revision] = None
         try:
             revision = revisions.identify_revision(
                 build.repository, build.ref, with_vcs=True
@@ -36,9 +38,8 @@ def resolve_ref_for_build(build_id: UUID):
                     reason=FailureReason.Reason.unresolvable_ref,
                 )
             )
-            revision = None
         except InvalidPublicKey:
-            revision = None
+            pass
 
         if revision:
             build.revision_sha = revision.sha

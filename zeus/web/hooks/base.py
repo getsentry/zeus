@@ -30,7 +30,7 @@ class BaseHook(View, ApiHelpers):
 
         if not self.public and not hook.is_valid_signature(signature):
             current_app.logger.warn("invalid webhook signature id=%s", hook_id)
-            return "", 403
+            return self.respond({"message": "hook not found"}, 404)
 
         try:
             method = getattr(self, request.method.lower())
@@ -49,7 +49,7 @@ class BaseHook(View, ApiHelpers):
         try:
             resp = method(hook, *args, **kwargs)
         except ApiError as exc:
-            return self.respond(exc.json, exc.code)
+            return self.respond(exc.json or {}, exc.code or 500)
 
         if isinstance(resp, Response):
             return resp

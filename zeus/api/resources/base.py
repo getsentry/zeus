@@ -3,6 +3,7 @@ from flask import current_app, jsonify, request, Response
 from flask.views import View
 from requests.exceptions import ConnectionError
 from time import sleep
+from typing import Any
 from urllib.parse import quote
 
 from zeus import auth
@@ -21,7 +22,7 @@ class ApiHelpers(object):
     def error(self, message: str = "resource not found", status: int = 403) -> Response:
         return self.respond({"message": message}, status)
 
-    def respond(self, context: dict = {}, status: int = 200) -> Response:
+    def respond(self, context: Any = {}, status: int = 200) -> Response:
         resp = jsonify(context)
         resp.status_code = status
         return resp
@@ -39,7 +40,7 @@ class ApiHelpers(object):
         result = schema.dump(value)
         return self.respond(result, status)
 
-    def build_base_url(self, without=["page"]):
+    def build_base_url(self, without=["page"]) -> str:
         querystring = u"&".join(
             u"{0}={1}".format(quote(k), quote(v))
             for k, v in request.args.items()

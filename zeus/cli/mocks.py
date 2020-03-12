@@ -2,7 +2,7 @@ import click
 
 from random import choice, randint, randrange
 from sqlalchemy.exc import IntegrityError
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 from uuid import UUID
 
 from zeus import auth, factories, models
@@ -13,7 +13,7 @@ from zeus.db.utils import try_create
 from zeus.pubsub.utils import publish
 from zeus.tasks import aggregate_build_stats_for_job
 from zeus.utils.asyncio import coroutine, create_db_pool
-from zeus.vcs.backends.base import Vcs
+from zeus.vcs.backends.base import RevisionResult, Vcs
 from zeus.vcs.utils import get_vcs, save_revision
 
 from .base import cli
@@ -88,7 +88,7 @@ async def mock_author(repo: models.Repository, user_id: UUID) -> models.Author:
 
 async def load_revisions(
     vcs: Vcs, repo: models.Repository, num_passes=100, db_pool=None
-) -> models.Revision:
+) -> Optional[RevisionResult]:
     if db_pool is None:
         db_pool = await create_db_pool()
 
@@ -135,11 +135,10 @@ async def mock_build(
     file_list=(),
     with_change_request=True,
 ) -> models.Build:
+    author: Optional[models.Author] = None
     if user_ids and randint(0, 1) == 0:
         chosen_user_id = choice(user_ids)
         author = await mock_author(repo, chosen_user_id)
-    else:
-        author = None
 
     if not revision:
         revision = await mock_revision(repo, parent_revision, author)
