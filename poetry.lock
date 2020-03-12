@@ -1014,7 +1014,6 @@ version = "2.3.1"
 [[package]]
 category = "main"
 description = "C parser in Python"
-marker = "platform_python_implementation != \"PyPy\""
 name = "pycparser"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"

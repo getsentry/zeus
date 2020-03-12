@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 from zeus.exceptions import CommandError, InvalidPublicKey, UnknownRevision
 from zeus.utils.functional import memoize
-from zeus.utils import timezone
+from zeus.utils import sentry, timezone
 
 from .base import Vcs, RevisionResult, BufferParser
 
@@ -34,7 +34,7 @@ class GitVcs(Vcs):
     def get_default_revision(self) -> str:
         return "master"
 
-    @property
+    @memoize
     def remote_url(self) -> str:
         if self.url.startswith("ssh:") and not self.username:
             username = "git"
@@ -83,46 +83,60 @@ class GitVcs(Vcs):
         return list(set(results))
 
     def run(self, cmd, **kwargs) -> str:
-        cmd = [self.binary_path] + cmd
-        try:
-            return super(GitVcs, self).run(cmd, **kwargs)
+        with sentry.Span("vcs.run-command", description=self.remote_url) as span:
+            span.set_data("command", " ".join(cmd))
+            span.set_data("backend", "git")
 
-        except CommandError as e:
-            stderr = e.stderr.decode("utf-8")
-            if "unknown revision or path" in stderr:
-                # fatal: ambiguous argument '82f750e7a3b692e049b95ed66bf9149f56218733^..82f750e7a3b692e049b95ed66bf9149f56218733': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n
-                raise UnknownRevision(
-                    ref=stderr.split("fatal: ambiguous argument ")[-1].split("^", 1)[0],
-                    cmd=e.cmd,
-                    retcode=e.retcode,
-                    stdout=e.stdout,
-                    stderr=e.stderr,
-                ) from e
-            elif "fatal: bad object" in stderr:
-                # bad object 5d953e751835a52472ca2e1906023435a71cb5e4\n
-                raise UnknownRevision(
-                    ref=stderr.split("\n")[0].split("bad object ", 1)[-1],
-                    cmd=e.cmd,
-                    retcode=e.retcode,
-                    stdout=e.stdout,
-                    stderr=e.stderr,
-                ) from e
+            cmd = [self.binary_path] + cmd
+            try:
+                output = super(GitVcs, self).run(cmd, **kwargs)
+                span.set_data("output_bytes", len(output))
+                return output
 
-            if "Permission denied (publickey)" in stderr:
-                raise InvalidPublicKey(
-                    cmd=e.cmd, retcode=e.retcode, stdout=e.stdout, stderr=e.stderr
-                ) from e
+            except CommandError as e:
+                stderr = e.stderr.decode("utf-8")
+                if "unknown revision or path" in stderr:
+                    # fatal: ambiguous argument '82f750e7a3b692e049b95ed66bf9149f56218733^..82f750e7a3b692e049b95ed66bf9149f56218733': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n
+                    raise UnknownRevision(
+                        ref=stderr.split("fatal: ambiguous argument ")[-1].split(
+                            "^", 1
+                        )[0],
+                        cmd=e.cmd,
+                        retcode=e.retcode,
+                        stdout=e.stdout,
+                        stderr=e.stderr,
+                    ) from e
+                elif "fatal: bad object" in stderr:
+                    # bad object 5d953e751835a52472ca2e1906023435a71cb5e4\n
+                    raise UnknownRevision(
+                        ref=stderr.split("\n")[0].split("bad object ", 1)[-1],
+                        cmd=e.cmd,
+                        retcode=e.retcode,
+                        stdout=e.stdout,
+                        stderr=e.stderr,
+                    ) from e
 
-            raise
+                if "Permission denied (publickey)" in stderr:
+                    raise InvalidPublicKey(
+                        cmd=e.cmd, retcode=e.retcode, stdout=e.stdout, stderr=e.stderr
+                    ) from e
+
+                raise
 
     def clone(self):
-        self.run(["clone", "--mirror", self.remote_url, self.path])
+        with sentry.Span("vcs.clone", description=self.remote_url) as par_span:
+            par_span.set_tag("backend", "git")
+            self.run(["clone", "--mirror", self.remote_url, self.path])
 
     def update(self, allow_cleanup=False):
-        if allow_cleanup:
-            self.run(["fetch", "--all", "--force", "-p"])
-        else:
-            self.run(["fetch", "--all", "--force"])
+        with sentry.Span("vcs.update", description=self.remote_url) as par_span:
+            par_span.set_tag("backend", "git")
+            par_span.set_tag("allow_cleanup", allow_cleanup)
+
+            if allow_cleanup:
+                self.run(["fetch", "--all", "--force", "-p"])
+            else:
+                self.run(["fetch", "--all", "--force"])
 
     def log(
         self,
@@ -166,39 +180,45 @@ class GitVcs(Vcs):
         if parent:
             cmd.append(parent)
 
-        for n in range(2):
-            try:
-                self.ensure(update_if_exists=update_if_exists)
-                result = self.run(cmd, timeout=timeout)
-                break
-            except CommandError as cmd_error:
-                err_msg = cmd_error.stderr
-                if branch and branch in err_msg.decode("utf-8"):
-                    # TODO: https://stackoverflow.com/questions/45096755/fatal-ambiguous-argument-origin-unknown-revision-or-path-not-in-the-working
-                    default_error = ValueError(
-                        'Unable to fetch commit log for branch "{0}".'.format(branch)
-                    )
-                    if not self.run(["remote"]):
-                        # assume we're in a broken state, and try to repair
-                        # XXX: theory is this might happen when OOMKiller axes clone?
-                        result = self.run(
-                            [
-                                "symbolic-ref",
-                                "refs/remotes/origin/HEAD",
-                                "refs/remotes/origin/{}".format(
-                                    self.get_default_branch()
-                                ),
-                            ]
+        with sentry.Span("vcs.log", description=self.remote_url) as par_span:
+            par_span.set_tag("branch", branch)
+            par_span.set_tag("parent", parent)
+            par_span.set_tag("backend", "git")
+            for n in range(2):
+                try:
+                    self.ensure(update_if_exists=update_if_exists)
+                    result = self.run(cmd, timeout=timeout)
+                    break
+                except CommandError as cmd_error:
+                    err_msg = cmd_error.stderr
+                    if branch and branch in err_msg.decode("utf-8"):
+                        # TODO: https://stackoverflow.com/questions/45096755/fatal-ambiguous-argument-origin-unknown-revision-or-path-not-in-the-working
+                        default_error = ValueError(
+                            'Unable to fetch commit log for branch "{0}".'.format(
+                                branch
+                            )
                         )
-                        continue
+                        if not self.run(["remote"]):
+                            # assume we're in a broken state, and try to repair
+                            # XXX: theory is this might happen when OOMKiller axes clone?
+                            result = self.run(
+                                [
+                                    "symbolic-ref",
+                                    "refs/remotes/origin/HEAD",
+                                    "refs/remotes/origin/{}".format(
+                                        self.get_default_branch()
+                                    ),
+                                ]
+                            )
+                            continue
 
-                    import traceback
-                    import logging
+                        import traceback
+                        import logging
 
-                    msg = traceback.format_exception(CommandError, cmd_error, None)
-                    logging.warning(msg)
-                    raise default_error from cmd_error
-                raise
+                        msg = traceback.format_exception(CommandError, cmd_error, None)
+                        logging.warning(msg)
+                        raise default_error from cmd_error
+                    raise
 
         for chunk in BufferParser(result, "\x02"):
             (
@@ -232,14 +252,21 @@ class GitVcs(Vcs):
 
     def export(self, sha, update_if_exists=False) -> str:
         cmd = ["diff", "%s^..%s" % (sha, sha)]
-        self.ensure(update_if_exists=update_if_exists)
-        result = self.run(cmd)
+        with sentry.Span("vcs.export", self.remote_url) as par_span:
+            par_span.set_tag("sha", sha)
+            par_span.set_tag("backend", "git")
+            self.ensure(update_if_exists=update_if_exists)
+            result = self.run(cmd)
         return result
 
     def show(self, sha, filename, update_if_exists=False) -> str:
         cmd = ["show", "{}:{}".format(sha, filename)]
-        self.ensure(update_if_exists=update_if_exists)
-        result = self.run(cmd)
+        with sentry.Span("vcs.show", self.remote_url) as par_span:
+            par_span.set_tag("sha", sha)
+            par_span.set_tag("filename", filename)
+            par_span.set_tag("backend", "git")
+            self.ensure(update_if_exists=update_if_exists)
+            result = self.run(cmd)
         return result
 
     def is_child_parent(self, child_in_question, parent_in_question) -> bool:
