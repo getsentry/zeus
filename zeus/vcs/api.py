@@ -103,8 +103,8 @@ async def health_check(request):
 
 
 @span("stmt.log")
-@api_request
 @log_errors
+@api_request
 async def stmt_log(request, vcs, repo_id):
     queue = request.app["queue"]
 
@@ -149,8 +149,8 @@ async def stmt_log(request, vcs, repo_id):
 
 
 @span("stmt.export")
-@api_request
 @log_errors
+@api_request
 async def stmt_export(request, vcs, repo_id):
     sha = request.query.get("sha")
     if not sha:
@@ -160,8 +160,8 @@ async def stmt_export(request, vcs, repo_id):
 
 
 @span("stmt.show")
-@api_request
 @log_errors
+@api_request
 async def stmt_show(request, vcs, repo_id):
     sha = request.query.get("sha")
     if not sha:
@@ -174,8 +174,8 @@ async def stmt_show(request, vcs, repo_id):
 
 
 @span("stmt.branches")
-@api_request
 @log_errors
+@api_request
 async def stmt_branches(request, vcs, repo_id):
     return json_response({"branches": vcs.get_known_branches()})
 
