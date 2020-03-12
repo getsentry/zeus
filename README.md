@@ -76,7 +76,7 @@ They should be submitted with the `application/x-webpack-stats+json` type.
 
 ### Requirements
 
-- Python 3.7
+- Python 3.8
 - Node (and [Volta](https://volta.sh/))
 - Postgres 9.4+
 

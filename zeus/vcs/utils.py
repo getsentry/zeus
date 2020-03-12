@@ -42,8 +42,8 @@ async def save_revision(conn, repo_id: UUID, revision: RevisionResult):
     async with conn.transaction():
         await conn.execute(
             """
-            INSERT INTO revision (repository_id, sha, committer_id, message, parents, branches, date_created, date_committed)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            INSERT INTO revision (repository_id, sha, committer_id, message, parents, date_created, date_committed)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
             ON CONFLICT DO NOTHING
         """,
             repo_id,
@@ -51,7 +51,6 @@ async def save_revision(conn, repo_id: UUID, revision: RevisionResult):
             await get_author_id(conn, repo_id, *revision.get_committer()),
             revision.message,
             revision.parents,
-            revision.branches,
             revision.author_date,
             revision.committer_date,
         )

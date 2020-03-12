@@ -114,12 +114,12 @@ async def stmt_log(request, vcs, repo_id):
     limit = int(request.query.get("limit") or 100)
 
     try:
-        log_results = list(
-            vcs.log(parent=parent, branch=branch, offset=offset, limit=limit)
+        log_results = await vcs.log(
+            parent=parent, branch=branch, offset=offset, limit=limit
         )
     except UnknownRevision:
         # we're running a lazy update here if it didnt already exist
-        log_results = vcs.log(
+        log_results = await vcs.log(
             parent=parent,
             branch=branch,
             offset=offset,
@@ -156,7 +156,7 @@ async def stmt_export(request, vcs, repo_id):
     if not sha:
         return json_response({"error": "missing_arg"}, status=403)
 
-    return json_response({"export": vcs.export(sha)})
+    return json_response({"export": await vcs.export(sha)})
 
 
 @span("stmt.show")
@@ -170,14 +170,14 @@ async def stmt_show(request, vcs, repo_id):
     if not filename:
         return json_response({"error": "missing_arg"}, status=403)
 
-    return json_response({"show": vcs.show(sha, filename)})
+    return json_response({"show": await vcs.show(sha, filename)})
 
 
 @span("stmt.branches")
 @api_request
 @log_errors
 async def stmt_branches(request, vcs, repo_id):
-    return json_response({"branches": vcs.get_known_branches()})
+    return json_response({"branches": await vcs.get_known_branches()})
 
 
 def register_api_routes(app):
