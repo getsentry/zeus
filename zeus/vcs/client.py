@@ -116,6 +116,14 @@ class VcsServerClient(object):
             **kwargs,
         )["export"]
 
+    def resolve(self, repo_id: UUID, ref: str, **kwargs) -> dict:
+        return self.request(
+            method="GET",
+            path="/stmt/resolve",
+            params={"repo_id": str(repo_id), "ref": ref},
+            **kwargs,
+        )["resolve"]
+
     def show(self, repo_id: UUID, sha: str, filename: str, **kwargs) -> str:
         return self.request(
             method="GET",

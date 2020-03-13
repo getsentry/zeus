@@ -21,13 +21,18 @@ async def worker(db_pool, queue: asyncio.Queue):
 
     while True:
         event, payload = await queue.get()
-        if event == "revision":
-            key = (payload["repo_id"], payload["revision"].sha)
-            if key in _revision_cache:
-                continue
-            async with db_pool.acquire() as conn:
-                await save_revision(conn, payload["repo_id"], payload["revision"])
-            _revision_cache[key] = 1
+        try:
+            if event == "revision":
+                key = (payload["repo_id"], payload["revision"].sha)
+                if key in _revision_cache:
+                    continue
+                async with db_pool.acquire() as conn:
+                    await save_revision(conn, payload["repo_id"], payload["revision"])
+                _revision_cache[key] = 1
+        except Exception:
+            current_app.logger.error(
+                "worker.event-error event=%s", event, exc_info=True
+            )
         current_app.logger.debug("worker.event event=%s qsize=%s", event, queue.qsize())
 
 
