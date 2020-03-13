@@ -8,4 +8,6 @@ class RevisionDiffResource(BaseRevisionResource):
         """
         Return a diff for the given revision.
         """
+        if not revision:
+            self.respond({"diff": None})
         return self.respond({"diff": revision.generate_diff()})
