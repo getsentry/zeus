@@ -1,3 +1,5 @@
+from flask import current_app
+
 from zeus.exceptions import UnknownRevision
 from zeus.models import Repository, Revision
 from zeus.vcs import vcs_client
@@ -29,6 +31,11 @@ def identify_revision(
         Revision.repository_id == repository.id, Revision.sha == result["sha"]
     ).first()
     if not revision:
+        current_app.logger.error(
+            "revision %s (repo_id=%s) found, but not present in database",
+            result["sha"],
+            repository.id,
+        )
         raise UnknownRevision
 
     return revision
