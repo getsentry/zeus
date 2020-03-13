@@ -1,3 +1,4 @@
+from sqlalchemy.exc import IntegrityError
 from typing import Optional
 from uuid import UUID
 
@@ -37,13 +38,20 @@ def resolve_ref_for_build(build_id: UUID):
         except UnknownRevision:
             build.result = Result.errored
             build.status = Status.finished
-            db.session.add(
-                FailureReason(
-                    repository_id=build.repository_id,
-                    build_id=build.id,
-                    reason=FailureReason.Reason.unresolvable_ref,
-                )
-            )
+            try:
+                with db.session.begin_nested():
+                    db.session.add(
+                        FailureReason(
+                            repository_id=build.repository_id,
+                            build_id=build.id,
+                            reason=FailureReason.Reason.unresolvable_ref,
+                        )
+                    )
+                    db.session.flush()
+            except IntegrityError as exc:
+                if "duplicate" not in str(exc):
+                    raise
+
         except InvalidPublicKey:
             pass
 
