@@ -9,7 +9,7 @@ from zeus import auth
 from zeus.exceptions import InvalidPublicKey, UnknownRevision
 from zeus.utils.sentry import span
 
-from .utils import get_vcs
+from .utils import get_vcs, save_revision
 
 
 def log_errors(func):
@@ -142,10 +142,40 @@ async def stmt_log(request, vcs, repo_id):
                 "parents": revision.parents,
             }
         )
-        # XXX(dcramer): we could wait until the revisions are confirmed to exist in the db
         await queue.put(["revision", {"repo_id": repo_id, "revision": revision}])
 
     return json_response({"log": results})
+
+
+@span("stmt.resolve")
+@log_errors
+@api_request
+async def stmt_resolve(request, vcs, repo_id):
+    ref = request.query.get("ref")
+    if not ref:
+        return json_response({"error": "missing_arg"}, status=403)
+
+    try:
+        log_results = await vcs.log(parent=ref, limit=1)
+    except UnknownRevision:
+        # we're running a lazy update here if it didnt already exist
+        log_results = await vcs.log(parent=ref, limit=1, update_if_exists=True)
+
+    revision = log_results[0]
+
+    async with request.app["db_pool"].acquire() as conn:
+        await save_revision(conn, repo_id, revision)
+
+    result = {
+        "sha": revision.sha,
+        "message": revision.message,
+        "authors": revision.get_authors(),
+        "author_date": revision.author_date.isoformat(),
+        "committer": revision.get_committer(),
+        "committer_date": (revision.committer_date or revision.author_date).isoformat(),
+        "parents": revision.parents,
+    }
+    return json_response({"resolve": result})
 
 
 @span("stmt.export")
@@ -184,5 +214,6 @@ def register_api_routes(app):
     app.router.add_route("GET", "/stmt/branches", stmt_branches)
     app.router.add_route("GET", "/stmt/export", stmt_export)
     app.router.add_route("GET", "/stmt/log", stmt_log)
+    app.router.add_route("GET", "/stmt/resolve", stmt_resolve)
     app.router.add_route("GET", "/stmt/show", stmt_show)
     app.router.add_route("GET", "/healthz", health_check)

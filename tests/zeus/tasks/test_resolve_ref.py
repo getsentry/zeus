@@ -6,20 +6,18 @@ from zeus.tasks import resolve_ref_for_build, resolve_ref_for_change_request
 def test_resolve_ref_for_build(default_revision, mock_vcs_server):
     mock_vcs_server.replace(
         mock_vcs_server.GET,
-        "http://localhost:8070/stmt/log",
+        "http://localhost:8070/stmt/resolve",
         json={
-            "log": [
-                {
-                    "sha": default_revision.sha,
-                    "message": default_revision.message,
-                    "authors": [
-                        (
-                            default_revision.authors[0].name,
-                            default_revision.authors[0].email,
-                        )
-                    ],
-                }
-            ]
+            "resolve": {
+                "sha": default_revision.sha,
+                "message": default_revision.message,
+                "authors": [
+                    (
+                        default_revision.authors[0].name,
+                        default_revision.authors[0].email,
+                    )
+                ],
+            }
         },
     )
 
@@ -44,20 +42,18 @@ def test_resolve_ref_for_build(default_revision, mock_vcs_server):
 def test_resolve_ref_for_change_request_parent_only(default_revision, mock_vcs_server):
     mock_vcs_server.replace(
         mock_vcs_server.GET,
-        "http://localhost:8070/stmt/log",
+        "http://localhost:8070/stmt/resolve",
         json={
-            "log": [
-                {
-                    "sha": default_revision.sha,
-                    "message": default_revision.message,
-                    "authors": [
-                        (
-                            default_revision.authors[0].name,
-                            default_revision.authors[0].email,
-                        )
-                    ],
-                }
-            ]
+            "resolve": {
+                "sha": default_revision.sha,
+                "message": default_revision.message,
+                "authors": [
+                    (
+                        default_revision.authors[0].name,
+                        default_revision.authors[0].email,
+                    )
+                ],
+            }
         },
     )
 
@@ -82,20 +78,18 @@ def test_resolve_ref_for_change_request_parent_only(default_revision, mock_vcs_s
 def test_resolve_ref_for_change_request_head_only(default_revision, mock_vcs_server):
     mock_vcs_server.replace(
         mock_vcs_server.GET,
-        "http://localhost:8070/stmt/log",
+        "http://localhost:8070/stmt/resolve",
         json={
-            "log": [
-                {
-                    "sha": default_revision.sha,
-                    "message": default_revision.message,
-                    "authors": [
-                        (
-                            default_revision.authors[0].name,
-                            default_revision.authors[0].email,
-                        )
-                    ],
-                }
-            ]
+            "resolve": {
+                "sha": default_revision.sha,
+                "message": default_revision.message,
+                "authors": [
+                    (
+                        default_revision.authors[0].name,
+                        default_revision.authors[0].email,
+                    )
+                ],
+            }
         },
     )
 
@@ -122,20 +116,18 @@ def test_resolve_ref_for_change_request_parent_and_head(
 ):
     mock_vcs_server.replace(
         mock_vcs_server.GET,
-        "http://localhost:8070/stmt/log",
+        "http://localhost:8070/stmt/resolve",
         json={
-            "log": [
-                {
-                    "sha": default_revision.sha,
-                    "message": default_revision.message,
-                    "authors": [
-                        (
-                            default_revision.authors[0].name,
-                            default_revision.authors[0].email,
-                        )
-                    ],
-                }
-            ]
+            "resolve": {
+                "sha": default_revision.sha,
+                "message": default_revision.message,
+                "authors": [
+                    (
+                        default_revision.authors[0].name,
+                        default_revision.authors[0].email,
+                    )
+                ],
+            }
         },
     )
 
@@ -159,7 +151,7 @@ def test_resolve_ref_for_change_request_parent_and_head(
 def test_resolve_ref_unresolvable(default_repo, mock_vcs_server):
     mock_vcs_server.replace(
         mock_vcs_server.GET,
-        "http://localhost:8070/stmt/log",
+        "http://localhost:8070/stmt/resolve",
         status=400,
         json={"error": "invalid_ref", "ref": "abcdef"},
     )

@@ -92,6 +92,51 @@ async def test_log_fetches_on_retry(client, mocker, default_repo_id):
     )
 
 
+# TODO(dcramer): test that it saved
+async def test_resolve_basic(client, default_repo_id):
+    resp = await ApiHelper(client).get(
+        "/stmt/resolve", repo_id=default_repo_id, ref="HEAD"
+    )
+    assert resp.status == 200, resp.content
+    data = await resp.json()
+    assert data["resolve"], data
+
+
+async def test_resolve_fetches_on_retry(client, mocker, default_repo_id):
+    vcs_log = mocker.patch(
+        "zeus.vcs.backends.git.GitVcs.log",
+        AsyncMock(
+            side_effect=[
+                UnknownRevision("master"),
+                [
+                    RevisionResult(
+                        sha="c" * 40,
+                        author="Foo Bar <foo@example.com>",
+                        committer="Biz Baz <baz@example.com>",
+                        author_date=datetime(2013, 9, 19, 22, 15, 22),
+                        committer_date=datetime(2013, 9, 19, 22, 15, 23),
+                        message="Hello world!",
+                    )
+                ],
+            ]
+        ),
+    )
+
+    resp = await ApiHelper(client).get(
+        "/stmt/resolve", repo_id=default_repo_id, ref="master"
+    )
+    assert resp.status == 200, resp.content
+    data = await resp.json()
+    assert data["resolve"]["sha"] == "c" * 40
+
+    vcs_log.assert_has_calls(
+        [
+            mocker.call(parent="master", limit=1),
+            mocker.call(parent="master", limit=1, update_if_exists=True),
+        ]
+    )
+
+
 async def test_branches_basic(client, default_repo_id):
     resp = await ApiHelper(client).get("/stmt/branches", repo_id=default_repo_id)
     assert resp.status == 200, resp.content

@@ -187,6 +187,12 @@ def mock_vcs_server():
         rsps.add(rsps.GET, "http://localhost:8070/stmt/log", json={"log": []})
         rsps.add(
             rsps.GET,
+            "http://localhost:8070/stmt/resolve",
+            status=400,
+            json={"error": "invalid_ref", "ref": "TEST_FIXTURE"},
+        )
+        rsps.add(
+            rsps.GET,
             "http://localhost:8070/stmt/branches",
             json={"branches": ["master"]},
         )
