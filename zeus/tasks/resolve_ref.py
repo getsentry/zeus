@@ -4,7 +4,7 @@ from uuid import UUID
 
 from zeus import auth
 from zeus.api.schemas import BuildSchema
-from zeus.config import celery, db, redis
+from zeus.config import celery, db
 from zeus.constants import Result, Status
 from zeus.exceptions import InvalidPublicKey, UnknownRevision
 from zeus.models import Build, ChangeRequest, FailureReason, Revision
@@ -17,9 +17,10 @@ build_schema = BuildSchema()
 
 @celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
 def resolve_ref_for_build(build_id: UUID):
-    lock_key = f"resolve-build-ref:{build_id}"
-    with redis.lock(lock_key):
-        build = Build.query.unrestricted_unsafe().get(build_id)
+    with db.session.begin_nested():
+        build = (
+            Build.query.unrestricted_unsafe().with_for_update(nowait=True).get(build_id)
+        )
         if not build:
             raise ValueError("Unable to find build with id = {}".format(build_id))
 
@@ -62,7 +63,6 @@ def resolve_ref_for_build(build_id: UUID):
             if not build.label:
                 build.label = revision.message.split("\n")[0]
         db.session.add(build)
-        db.session.commit()
 
     data = build_schema.dump(build)
     publish("builds", "build.update", data)
@@ -70,9 +70,12 @@ def resolve_ref_for_build(build_id: UUID):
 
 @celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
 def resolve_ref_for_change_request(change_request_id: UUID):
-    lock_key = f"resolve-cr-ref:{change_request_id}"
-    with redis.lock(lock_key):
-        cr = ChangeRequest.query.unrestricted_unsafe().get(change_request_id)
+    with db.session.begin_nested():
+        cr = (
+            ChangeRequest.query.unrestricted_unsafe()
+            .with_for_update(nowait=True)
+            .get(change_request_id)
+        )
         if not cr:
             raise ValueError(
                 "Unable to find change request with id = {}".format(change_request_id)
@@ -89,7 +92,6 @@ def resolve_ref_for_change_request(change_request_id: UUID):
                 raise
             cr.parent_revision_sha = revision.sha
             db.session.add(cr)
-            db.session.commit()
 
         if not cr.head_revision_sha and cr.head_ref:
             revision = revisions.identify_revision(
@@ -99,4 +101,3 @@ def resolve_ref_for_change_request(change_request_id: UUID):
             if not cr.authors and revision.authors:
                 cr.authors = revision.authors
             db.session.add(cr)
-            db.session.commit()
