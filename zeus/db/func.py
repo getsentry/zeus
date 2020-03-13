@@ -18,7 +18,7 @@ class ArrayOfRecord(TypeDecorator):
         super().__init__()
 
     def process_result_value(self, value, dialect):
-        # XXX(dcramer): if the trailing value(s?) fo t he returning array are NULL, postgres seems to
+        # XXX(dcramer): if the trailing value(s?) of the returning array are NULL, postgres seems to
         # not return them, and thus our output array does not match the same length as our column
         # selection array
         #
@@ -29,8 +29,11 @@ class ArrayOfRecord(TypeDecorator):
         #   ({col1_value},)
         elems = self._array_regexp.match(value).group(1)
         elems = [e for e in self._chunk_regexp.split(elems) if e]
-        padding = tuple((len(self.cols) - len(elems)) * (None,))
-        return [tuple(self._param_regexp.findall(e)) + padding for e in elems]
+        num_cols = len(self.cols)
+        padding = (None,) * num_cols
+        return [
+            (tuple(self._param_regexp.findall(e)) + padding)[:num_cols] for e in elems
+        ]
 
 
 def array_agg_row(*arg):
