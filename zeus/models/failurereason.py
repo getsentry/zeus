@@ -9,14 +9,6 @@ from zeus.db.utils import model_repr
 
 
 class FailureReason(RepositoryBoundMixin, StandardAttributes, db.Model):
-    __tablename__ = "failurereason"
-    __table_args__ = (
-        db.UniqueConstraint(
-            "build_id", "job_id", "reason", name="unq_failurereason_key"
-        ),
-    )
-    __repr__ = model_repr("reason")
-
     class Reason(enum.Enum):
         failing_tests = "failing_tests"
         missing_tests = "missing_tests"
@@ -31,3 +23,18 @@ class FailureReason(RepositoryBoundMixin, StandardAttributes, db.Model):
 
     build = db.relationship("Build")
     job = db.relationship("Job")
+
+    __tablename__ = "failurereason"
+    __table_args__ = (
+        db.UniqueConstraint(
+            "build_id", "job_id", "reason", name="unq_failurereason_key"
+        ),
+        db.Index(
+            "unq_failurereason_buildonly",
+            build_id,
+            reason,
+            unique=True,
+            postgresql_where=job_id.is_(None),
+        ),
+    )
+    __repr__ = model_repr("reason")
