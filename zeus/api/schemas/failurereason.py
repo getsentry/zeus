@@ -29,7 +29,7 @@ class AggregateFailureReasonSchema(Schema):
             "runs": [
                 {"id": UUID(e[0]), "job_id": UUID(e[1]) if e[1] else None}
                 for e in sorted(
-                    data.runs, key=lambda e: UUID(e[1]) if e[1] else None, reverse=True
+                    data.runs, key=lambda e: UUID(e[1]) if e[1] else 0, reverse=True
                 )
             ],
         }
