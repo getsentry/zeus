@@ -13,3 +13,7 @@ steps:
 images:
 - 'gcr.io/$PROJECT_ID/zeus:$COMMIT_SHA'
 - 'gcr.io/$PROJECT_ID/zeus:latest'
+timeout: 3600s
+options:
+  # Run on bigger machines because npm and stuff is slow
+  machineType: 'N1_HIGHCPU_8'
