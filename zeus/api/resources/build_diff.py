@@ -8,4 +8,6 @@ class BuildDiffResource(BaseBuildResource):
         """
         Return a diff for the given build.
         """
+        if not build.revision:
+            self.respond({"diff": None})
         return self.respond({"diff": build.revision.generate_diff()})
