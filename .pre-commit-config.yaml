@@ -4,7 +4,7 @@ repos:
     rev: 18.6b4
     hooks:
     - id: black
-      language_version: python3.7
+      language_version: python3.8
 -   repo: git://github.com/pre-commit/pre-commit-hooks
     rev: v2.0.0
     hooks:
@@ -19,10 +19,10 @@ repos:
     - id: no-commit-to-branch
     - id: trailing-whitespace
     - id: debug-statements
-      language_version: python3.7
+      language_version: python3.8
     - id: flake8
       log_file: '.artifacts/flake8.log'
-      language_version: python3.7
+      language_version: python3.8
     - id: requirements-txt-fixer
       args: ['requirements-base.txt', 'requirements-dev.txt', 'requirements-test.txt']
 # -   repo: https://github.com/pre-commit/mirrors-mypy

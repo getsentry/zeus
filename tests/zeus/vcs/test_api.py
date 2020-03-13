@@ -1,11 +1,12 @@
 import pytest
 
 from datetime import datetime
+from unittest.mock import AsyncMock
 from uuid import UUID
 
 from zeus import auth
 from zeus.exceptions import UnknownRevision
-from zeus.vcs.backends.git import LazyGitRevisionResult
+from zeus.vcs.backends.git import RevisionResult
 
 
 class ApiHelper(object):
@@ -56,23 +57,24 @@ async def test_log_basic(client, default_repo_id):
 
 
 async def test_log_fetches_on_retry(client, mocker, default_repo_id):
-    vcs_log = mocker.patch("zeus.vcs.backends.git.GitVcs.log")
-    vcs_log.side_effect = [
-        UnknownRevision("master"),
-        iter(
-            [
-                LazyGitRevisionResult(
-                    vcs=mocker.Mock(),
-                    sha="c" * 40,
-                    author="Foo Bar <foo@example.com>",
-                    committer="Biz Baz <baz@example.com>",
-                    author_date=datetime(2013, 9, 19, 22, 15, 22),
-                    committer_date=datetime(2013, 9, 19, 22, 15, 23),
-                    message="Hello world!",
-                )
+    vcs_log = mocker.patch(
+        "zeus.vcs.backends.git.GitVcs.log",
+        AsyncMock(
+            side_effect=[
+                UnknownRevision("master"),
+                [
+                    RevisionResult(
+                        sha="c" * 40,
+                        author="Foo Bar <foo@example.com>",
+                        committer="Biz Baz <baz@example.com>",
+                        author_date=datetime(2013, 9, 19, 22, 15, 22),
+                        committer_date=datetime(2013, 9, 19, 22, 15, 23),
+                        message="Hello world!",
+                    )
+                ],
             ]
         ),
-    ]
+    )
 
     resp = await ApiHelper(client).get("/stmt/log", repo_id=default_repo_id)
     assert resp.status == 200, resp.content

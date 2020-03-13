@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.7-slim-stretch
+FROM python:3.8.2-slim-buster
 
 # add our user and group first to make sure their IDs get assigned consistently
 RUN groupadd -r zeus && useradd -r -m -g zeus zeus
@@ -29,6 +29,7 @@ RUN set -ex \
   libpq-dev \
   libxml2-dev \
   libxslt-dev \
+  libz-dev \
   openssl \
   ssh \
   wget \

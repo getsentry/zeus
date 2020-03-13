@@ -1,8 +1,8 @@
+import asyncio
 import os
 import os.path
 import re
 
-from subprocess import Popen, PIPE
 from typing import Iterator, List, Optional, Tuple
 from uuid import UUID
 
@@ -17,7 +17,6 @@ _co_authored_by_re = re.compile(
 
 class RevisionResult(object):
     parents = None
-    branches = None
     repository_id = None
 
     def __init__(
@@ -29,7 +28,6 @@ class RevisionResult(object):
         committer: str = None,
         committer_date=None,
         parents: Optional[List[str]] = None,
-        branches: Optional[List[str]] = None,
         repository_id: UUID = None,
         _author_cache: dict = None,
     ):
@@ -41,8 +39,6 @@ class RevisionResult(object):
         self.committer_date = committer_date or author_date
         if parents is not None:
             self.parents = parents
-        if branches is not None:
-            self.branches = branches
         if repository_id is not None:
             self.repository_id = repository_id
 
@@ -126,7 +122,7 @@ class Vcs(object):
     def get_default_env(self) -> dict:
         return {}
 
-    def run(self, cmd, timeout=None, **kwargs) -> str:
+    async def run(self, cmd, timeout=None, **kwargs) -> str:
         if self.exists():
             kwargs.setdefault("cwd", self.path)
 
@@ -141,32 +137,32 @@ class Vcs(object):
             env[key] = value
 
         kwargs["env"] = env
-        kwargs["stdout"] = PIPE
-        kwargs["stderr"] = PIPE
+        kwargs["stdout"] = asyncio.subprocess.PIPE
+        kwargs["stderr"] = asyncio.subprocess.PIPE
 
-        proc = Popen(cmd, **kwargs)
-        (stdout, stderr) = proc.communicate(timeout=timeout)
+        proc = await asyncio.create_subprocess_exec(*cmd, **kwargs)
+        (stdout, stderr) = await asyncio.wait_for(proc.communicate(), timeout)
         if proc.returncode != 0:
             raise CommandError(cmd[0], proc.returncode, stdout, stderr)
 
-        return stdout.decode("utf-8")
+        return stdout.decode()
 
     def exists(self) -> bool:
         return os.path.exists(self.path)
 
-    def clone(self):
+    async def clone(self):
         raise NotImplementedError
 
-    def update(self, allow_cleanup=False):
+    async def update(self, allow_cleanup=False):
         raise NotImplementedError
 
-    def ensure(self, update_if_exists=True):
+    async def ensure(self, update_if_exists=True):
         if not self.exists():
-            self.clone()
+            await self.clone()
         elif update_if_exists:
-            self.update()
+            await self.update()
 
-    def log(
+    async def log(
         self,
         parent: str = None,
         branch: str = None,
@@ -184,10 +180,6 @@ class Vcs(object):
         If branch is set, all revisions in the branch AND any ancestor commits
             are returned.
 
-        For any revisions returned, the list of associated branches returned is
-        tool specific and may or may not include ancestor branch names. See tool
-        implementations for exact behavior of this function.
-
         :param parent: Parent at which revision search begins.
         :param branch: Branch name the revision must be associated with.
         :param author: The author name or email to filter results.
@@ -197,15 +189,21 @@ class Vcs(object):
         """
         raise NotImplementedError
 
-    def export(self, sha: str) -> str:
+    async def export(self, sha: str) -> str:
         """
         Show the changes (as a diff) in ``sha``.
         """
         raise NotImplementedError
 
-    def show(self, sha: str, filename: str) -> str:
+    async def show(self, sha: str, filename: str) -> str:
         """
         Show the contents of the ``filename`` at ``sha``.
+        """
+        raise NotImplementedError
+
+    async def get_known_branches(self) -> List[str]:
+        """ This is limited to parallel trees with names.
+        :return: A list of unique names for the branches.
         """
         raise NotImplementedError
 
@@ -213,13 +211,4 @@ class Vcs(object):
         return self.get_default_revision()
 
     def get_default_revision(self) -> str:
-        raise NotImplementedError
-
-    def is_child_parent(self, child_in_question: str, parent_in_question: str) -> bool:
-        raise NotImplementedError
-
-    def get_known_branches(self) -> List[str]:
-        """ This is limited to parallel trees with names.
-        :return: A list of unique names for the branches.
-        """
         raise NotImplementedError

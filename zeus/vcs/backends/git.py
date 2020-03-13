@@ -1,4 +1,4 @@
-from typing import Iterator, List, Optional
+from typing import List, Optional
 from urllib.parse import urlparse
 
 from zeus.exceptions import CommandError, InvalidPublicKey, UnknownRevision
@@ -10,16 +10,6 @@ from .base import Vcs, RevisionResult, BufferParser
 LOG_FORMAT = "%H\x01%an <%ae>\x01%at\x01%cn <%ce>\x01%ct\x01%P\x01%B\x02"
 
 ORIGIN_PREFIX = "remotes/origin/"
-
-
-class LazyGitRevisionResult(RevisionResult):
-    def __init__(self, vcs: Vcs, *args, **kwargs):
-        self.vcs = vcs
-        super(LazyGitRevisionResult, self).__init__(*args, **kwargs)
-
-    @memoize
-    def branches(self):
-        return self.vcs.branches_for_commit(self.sha)
 
 
 class GitVcs(Vcs):
@@ -53,10 +43,7 @@ class GitVcs(Vcs):
             url = self.url
         return url
 
-    def branches_for_commit(self, _id) -> list:
-        return self.get_known_branches(commit_id=_id)
-
-    def get_known_branches(self, commit_id=None) -> list:
+    async def get_known_branches(self, commit_id=None) -> list:
         """ List all branches or those related to the commit for this repo.
 
         Either gets all the branches (if the commit_id is not specified) or then
@@ -70,7 +57,7 @@ class GitVcs(Vcs):
         command_parameters = ["branch", "-a"]
         if commit_id:
             command_parameters.extend(["--contains", commit_id])
-        output = self.run(command_parameters)
+        output = await self.run(command_parameters)
 
         for result in output.splitlines():
             # HACK(dcramer): is there a better way around removing the prefix?
@@ -83,14 +70,14 @@ class GitVcs(Vcs):
             results.append(result)
         return list(set(results))
 
-    def run(self, cmd, **kwargs) -> str:
+    async def run(self, cmd, **kwargs) -> str:
         with sentry.Span("vcs.run-command", description=self.remote_url) as span:
             span.set_data("command", " ".join(cmd))
             span.set_data("backend", "git")
 
             cmd = [self.binary_path] + cmd
             try:
-                output = super(GitVcs, self).run(cmd, **kwargs)
+                output = await super().run(cmd, **kwargs)
                 span.set_data("output_bytes", len(output))
                 return output
 
@@ -124,22 +111,22 @@ class GitVcs(Vcs):
 
                 raise
 
-    def clone(self):
+    async def clone(self):
         with sentry.Span("vcs.clone", description=self.remote_url) as par_span:
             par_span.set_tag("backend", "git")
-            self.run(["clone", "--mirror", self.remote_url, self.path])
+            await self.run(["clone", "--mirror", self.remote_url, self.path])
 
-    def update(self, allow_cleanup=False):
+    async def update(self, allow_cleanup=False):
         with sentry.Span("vcs.update", description=self.remote_url) as par_span:
             par_span.set_tag("backend", "git")
             par_span.set_tag("allow_cleanup", allow_cleanup)
 
             if allow_cleanup:
-                self.run(["fetch", "--all", "--force", "-p"])
+                await self.run(["fetch", "--all", "--force", "-p"])
             else:
-                self.run(["fetch", "--all", "--force"])
+                await self.run(["fetch", "--all", "--force"])
 
-    def log(
+    async def log(
         self,
         parent=None,
         branch=None,
@@ -148,7 +135,7 @@ class GitVcs(Vcs):
         limit=100,
         timeout=None,
         update_if_exists=False,
-    ) -> Iterator[LazyGitRevisionResult]:
+    ) -> List[RevisionResult]:
         """ Gets the commit log for the repository.
 
         Each revision returned includes all the branches with which this commit
@@ -187,8 +174,8 @@ class GitVcs(Vcs):
             par_span.set_tag("backend", "git")
             for n in range(2):
                 try:
-                    self.ensure(update_if_exists=update_if_exists)
-                    result = self.run(cmd, timeout=timeout)
+                    await self.ensure(update_if_exists=update_if_exists)
+                    result = await self.run(cmd, timeout=timeout)
                     break
                 except CommandError as cmd_error:
                     err_msg = cmd_error.stderr
@@ -199,10 +186,10 @@ class GitVcs(Vcs):
                                 branch
                             )
                         )
-                        if not self.run(["remote"]):
+                        if not await self.run(["remote"]):
                             # assume we're in a broken state, and try to repair
                             # XXX: theory is this might happen when OOMKiller axes clone?
-                            result = self.run(
+                            result = await self.run(
                                 [
                                     "symbolic-ref",
                                     "refs/remotes/origin/HEAD",
@@ -221,6 +208,9 @@ class GitVcs(Vcs):
                         raise default_error from cmd_error
                     raise
 
+        # we use a list instead of a generator as we were always
+        # needing to coerce to a list anyways
+        results = []
         for chunk in BufferParser(result, "\x02"):
             (
                 sha,
@@ -240,42 +230,34 @@ class GitVcs(Vcs):
             author_date = timezone.fromtimestamp(float(author_date))
             committer_date = timezone.fromtimestamp(float(committer_date))
 
-            yield LazyGitRevisionResult(
-                vcs=self,
-                sha=sha,
-                author=author,
-                committer=committer,
-                author_date=author_date,
-                committer_date=committer_date,
-                parents=parents,
-                message=message,
+            results.append(
+                RevisionResult(
+                    sha=sha,
+                    author=author,
+                    committer=committer,
+                    author_date=author_date,
+                    committer_date=committer_date,
+                    parents=parents,
+                    message=message,
+                )
             )
+        return results
 
-    def export(self, sha, update_if_exists=False) -> str:
+    async def export(self, sha, update_if_exists=False) -> str:
         cmd = ["diff", "%s^..%s" % (sha, sha)]
         with sentry.Span("vcs.export", self.remote_url) as par_span:
             par_span.set_tag("sha", sha)
             par_span.set_tag("backend", "git")
-            self.ensure(update_if_exists=update_if_exists)
-            result = self.run(cmd)
+            await self.ensure(update_if_exists=update_if_exists)
+            result = await self.run(cmd)
         return result
 
-    def show(self, sha, filename, update_if_exists=False) -> str:
+    async def show(self, sha, filename, update_if_exists=False) -> str:
         cmd = ["show", "{}:{}".format(sha, filename)]
         with sentry.Span("vcs.show", self.remote_url) as par_span:
             par_span.set_tag("sha", sha)
             par_span.set_tag("filename", filename)
             par_span.set_tag("backend", "git")
-            self.ensure(update_if_exists=update_if_exists)
-            result = self.run(cmd)
+            await self.ensure(update_if_exists=update_if_exists)
+            result = await self.run(cmd)
         return result
-
-    def is_child_parent(self, child_in_question, parent_in_question) -> bool:
-        cmd = ["merge-base", "--is-ancestor", parent_in_question, child_in_question]
-        self.ensure()
-        try:
-            self.run(cmd)
-            return True
-
-        except CommandError:
-            return False
