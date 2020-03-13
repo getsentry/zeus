@@ -18,7 +18,7 @@ build_schema = BuildSchema()
 @celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
 def resolve_ref_for_build(build_id: UUID):
     lock_key = f"resolve-build-ref:{build_id}"
-    with redis.lock(lock_key):
+    with redis.lock(lock_key, timeout=60.0, nowait=True):
         build = Build.query.unrestricted_unsafe().get(build_id)
         if not build:
             raise ValueError("Unable to find build with id = {}".format(build_id))
@@ -71,7 +71,7 @@ def resolve_ref_for_build(build_id: UUID):
 @celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
 def resolve_ref_for_change_request(change_request_id: UUID):
     lock_key = f"resolve-cr-ref:{change_request_id}"
-    with redis.lock(lock_key):
+    with redis.lock(lock_key, timeout=60.0, nowait=True):
         cr = ChangeRequest.query.unrestricted_unsafe().get(change_request_id)
         if not cr:
             raise ValueError(
