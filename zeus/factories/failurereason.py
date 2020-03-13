@@ -32,3 +32,6 @@ class FailureReasonFactory(ModelFactory):
         no_jobs = factory.Trait(
             reason=models.FailureReason.Reason.no_jobs, job=None, job_id=None
         )
+        unresolvable_ref = factory.Trait(
+            reason=models.FailureReason.Reason.unresolvable_ref, job=None, job_id=None
+        )
