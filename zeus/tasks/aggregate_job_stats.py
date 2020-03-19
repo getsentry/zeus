@@ -326,13 +326,18 @@ def aggregate_build_stats(build_id: UUID):
         elif is_finished:
             if not job_list:
                 build.result = Result.errored
-                db.session.add(
-                    FailureReason(
-                        repository_id=build.repository_id,
-                        build_id=build.id,
-                        reason=FailureReason.Reason.no_jobs,
-                    )
-                )
+                try:
+                    with db.session.begin_nested():
+                        db.session.add(
+                            FailureReason(
+                                repository_id=build.repository_id,
+                                build_id=build.id,
+                                reason=FailureReason.Reason.no_jobs,
+                            )
+                        )
+                except IntegrityError as exc:
+                    if "duplicate" not in str(exc):
+                        raise
             elif not any(j for j in job_list if not j.allow_failure):
                 build.result = Result.passed
             else:

@@ -148,7 +148,7 @@ def test_resolve_ref_for_change_request_parent_and_head(
     assert cr.authors == default_revision.authors
 
 
-def test_resolve_ref_unresolvable(default_repo, mock_vcs_server):
+def test_resolve_ref_unresolvable(db_session, default_repo, mock_vcs_server):
     mock_vcs_server.replace(
         mock_vcs_server.GET,
         "http://localhost:8070/stmt/resolve",
@@ -174,3 +174,12 @@ def test_resolve_ref_unresolvable(default_repo, mock_vcs_server):
     assert len(reasons) == 1
     assert reasons[0].reason == FailureReason.Reason.unresolvable_ref
     assert reasons[0].job_id is None
+
+    # test that we dont fail on recording two FailureReason's
+    build.revision_sha = None
+    db_session.add(build)
+
+    resolve_ref_for_build(build.id)
+
+    reasons = list(FailureReason.query.filter(FailureReason.build_id == build.id))
+    assert len(reasons) == 1
