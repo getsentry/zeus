@@ -10,7 +10,7 @@ from zeus.utils.sentry import span
 from .api import register_api_routes
 from .utils import save_revision
 
-_revision_cache = LRU(1000)
+_revision_cache = LRU(100000)
 
 
 @span("worker")
