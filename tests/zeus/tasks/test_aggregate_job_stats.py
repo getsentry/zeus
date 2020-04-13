@@ -28,16 +28,16 @@ def test_finished_job(mocker, db_session, default_revision, default_tenant):
     job = factories.JobFactory(build=build, failed=True)
     db_session.add(job)
 
-    mock_send_build_notifications = mocker.patch(
-        "zeus.tasks.send_build_notifications.delay"
-    )
+    mock_delay = mocker.patch("zeus.config.celery.delay")
 
     aggregate_build_stats(build.id)
 
     assert build.status == Status.finished
     assert build.result == Result.failed
 
-    mock_send_build_notifications.assert_called_once_with(build_id=build.id)
+    mock_delay.assert_called_once_with(
+        "zeus.send_build_notifications", build_id=build.id
+    )
 
 
 def test_no_jobs(mocker, db_session, default_revision, default_tenant):

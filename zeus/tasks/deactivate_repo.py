@@ -1,20 +1,21 @@
-from enum import Enum
 from flask import current_app, render_template
 from flask_mail import Message, sanitize_address
 from uuid import UUID
 
 from zeus.config import celery, db, mail
-from zeus.constants import Permission
+from zeus.constants import DeactivationReason, Permission
 from zeus.models import ItemOption, Repository, RepositoryAccess, RepositoryStatus, User
 from zeus.utils.email import inline_css
 from zeus.utils.http import absolute_url
 
 
-class DeactivationReason(Enum):
-    invalid_pubkey = "invalid_pubkey"
-
-
-@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
+@celery.task(
+    name="zeus.deactivate_repo",
+    max_retries=5,
+    autoretry_for=(Exception,),
+    acks_late=True,
+    time_limit=60,
+)
 def deactivate_repo(repository_id: UUID, reason: DeactivationReason):
     repository = Repository.query.unrestricted_unsafe().get(repository_id)
 

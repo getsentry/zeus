@@ -11,9 +11,7 @@ from zeus.utils import timezone
 
 
 @celery.task(
-    name="zeus.tasks.send_build_notifications",
-    max_retries=None,
-    autoretry_for=(Exception,),
+    name="zeus.send_build_notifications", max_retries=None, autoretry_for=(Exception,)
 )
 def send_build_notifications(build_id: UUID, time_limit=30):
     build = Build.query.unrestricted_unsafe().get(build_id)

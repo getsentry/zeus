@@ -1,5 +1,6 @@
+from zeus.constants import DeactivationReason
 from zeus.models import ItemOption, RepositoryStatus
-from zeus.tasks import deactivate_repo, DeactivationReason
+from zeus.tasks import deactivate_repo
 
 
 def test_deactivate_repo(

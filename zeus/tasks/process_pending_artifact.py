@@ -7,10 +7,14 @@ from zeus.constants import Result, Status
 from zeus.exceptions import UnknownBuild, UnknownJob
 from zeus.models import Artifact, Build, Job, PendingArtifact
 
-from .process_artifact import process_artifact
 
-
-@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
+@celery.task(
+    name="zeus.process_pending_artifact",
+    max_retries=5,
+    autoretry_for=(Exception,),
+    acks_late=True,
+    time_limit=60,
+)
 def process_pending_artifact(pending_artifact_id, **kwargs):
     pending_artifact = PendingArtifact.query.unrestricted_unsafe().get(
         pending_artifact_id
@@ -80,4 +84,4 @@ def process_pending_artifact(pending_artifact_id, **kwargs):
 
     db.session.commit()
 
-    process_artifact.delay(artifact_id=artifact.id)
+    celery.delay("zeus.process_artifact", artifact_id=artifact.id)

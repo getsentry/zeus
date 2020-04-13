@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
-from zeus.config import db
+from zeus.config import celery, db
 from zeus.models import Author, Build, Email, Repository, User
 from zeus.pubsub.utils import publish
 
@@ -70,9 +70,7 @@ class RepositoryBuildsResource(BaseRepositoryResource):
             raise
 
         if not build.revision_sha:
-            from zeus.tasks import resolve_ref_for_build
-
-            resolve_ref_for_build.delay(build_id=build.id)
+            celery.delay("zeus.resolve_ref_for_build", build_id=build.id)
 
         build_schema.validate(build)
         data = build_schema.dump(build)

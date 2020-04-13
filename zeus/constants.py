@@ -1,6 +1,6 @@
 import zeus
 
-from enum import IntEnum, IntFlag
+from enum import Enum, IntEnum, IntFlag
 
 
 class Status(IntEnum):
@@ -46,6 +46,10 @@ class Permission(IntFlag):
 
     def __str__(self):
         return self.name
+
+
+class DeactivationReason(Enum):
+    invalid_pubkey = "invalid_pubkey"
 
 
 STATUS_PRIORITY = (

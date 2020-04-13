@@ -3,8 +3,9 @@ from flask.views import MethodView
 from requests_oauthlib import OAuth2Session
 from sqlalchemy.exc import IntegrityError
 from oauthlib.oauth2.rfc6749.errors import OAuth2Error
+
 from zeus import auth
-from zeus.config import db
+from zeus.config import celery, db
 from zeus.constants import GITHUB_AUTH_URI, GITHUB_DEFAULT_SCOPES, GITHUB_TOKEN_URI
 from zeus.models import Email, Identity, User
 from zeus.tasks import sync_github_access
@@ -163,7 +164,7 @@ class GitHubCompleteView(MethodView):
             # update synchronously so the new user has a better experience
             sync_github_access(user_id=user.id)
         else:
-            sync_github_access.delay(user_id=user.id)
+            celery.delay("zeus.sync_github_access", user_id=user.id)
 
         next_uri = auth.get_redirect_target(clear=True) or "/"
         if "/login" in next_uri or "/auth/github" in next_uri:

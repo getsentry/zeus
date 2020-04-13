@@ -7,6 +7,8 @@ from typing import List, Optional, Union
 from uuid import UUID
 
 from zeus import auth
+from zeus.config import celery
+from zeus.constants import DeactivationReason
 from zeus.exceptions import ApiError, UnknownRevision
 
 
@@ -63,10 +65,10 @@ class VcsServerClient(object):
             # XXX(dcramer): this feels a bit hacky, and ideally would be handled
             # in the vcs implementation
             if data.get("error") == "invalid_pubkey" and params:
-                from zeus.tasks import deactivate_repo, DeactivationReason
-
-                deactivate_repo.delay(
-                    params["repo_id"], DeactivationReason.invalid_pubkey
+                celery.delay(
+                    "deactivate_repo",
+                    params["repo_id"],
+                    DeactivationReason.invalid_pubkey,
                 )
 
             if data.get("error") == "invalid_ref":

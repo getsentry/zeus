@@ -33,8 +33,22 @@ class Celery(object):
         task_postrun.connect(self._task_postrun)
         task_prerun.connect(self._task_prerun)
 
-    def task(self, *args, **kwargs):
-        return self.celery.task(*args, **kwargs)
+    def task(self, name=None, *args, **kwargs):
+        if not name:
+            raise ValueError(
+                "Tasks must have a name specified. Recommend: zeus.[task-name]"
+            )
+        return self.celery.task(name=name, *args, **kwargs)
+
+    @property
+    def tasks(self):
+        return self.celery.tasks
+
+    def call(self, task_name, *args, **kwargs):
+        return self.celery.tasks[task_name](*args, **kwargs)
+
+    def delay(self, task_name, *args, **kwargs):
+        return self.celery.tasks[task_name].delay(*args, **kwargs)
 
     def get_celery_app(self):
         return self.celery
