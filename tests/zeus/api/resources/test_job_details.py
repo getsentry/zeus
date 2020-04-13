@@ -23,7 +23,7 @@ def test_update_job_to_finished(
 ):
     job = factories.JobFactory(build=default_build, in_progress=True)
 
-    mock_delay = mocker.patch("zeus.tasks.aggregate_build_stats_for_job.delay")
+    mock_delay = mocker.patch("zeus.config.celery.delay")
 
     resp = client.put(
         "/api/repos/{}/builds/{}/jobs/{}".format(
@@ -45,7 +45,9 @@ def test_update_job_to_finished(
     assert job.date_started == datetime(2017, 1, 1, 1, 2, 30, tzinfo=timezone.utc)
     assert job.date_finished == datetime(2017, 1, 1, 1, 22, 30, tzinfo=timezone.utc)
 
-    mock_delay.assert_called_once_with(job_id=job.id)
+    mock_delay.assert_called_once_with(
+        "zeus.aggregate_build_stats_for_job", job_id=job.id
+    )
 
 
 def test_update_job_to_in_progress(
@@ -53,7 +55,7 @@ def test_update_job_to_in_progress(
 ):
     job = factories.JobFactory(build=default_build, queued=True)
 
-    mock_delay = mocker.patch("zeus.tasks.aggregate_build_stats_for_job.delay")
+    mock_delay = mocker.patch("zeus.config.celery.delay")
 
     resp = client.put(
         "/api/repos/{}/builds/{}/jobs/{}".format(
@@ -69,7 +71,9 @@ def test_update_job_to_in_progress(
     assert job.date_started
     assert not job.date_finished
 
-    mock_delay.assert_called_once_with(job_id=job.id)
+    mock_delay.assert_called_once_with(
+        "zeus.aggregate_build_stats_for_job", job_id=job.id
+    )
 
 
 def test_update_job_to_finished_with_pending_artifacts(
@@ -85,7 +89,7 @@ def test_update_job_to_finished_with_pending_artifacts(
 
     assert default_job.result != Result.failed
 
-    mock_delay = mocker.patch("zeus.tasks.aggregate_build_stats_for_job.delay")
+    mock_delay = mocker.patch("zeus.config.celery.delay")
 
     resp = client.put(
         "/api/repos/{}/builds/{}/jobs/{}".format(
@@ -101,7 +105,9 @@ def test_update_job_to_finished_with_pending_artifacts(
     assert default_job.status == Status.collecting_results
     assert default_job.result == Result.failed
 
-    mock_delay.assert_called_once_with(job_id=default_job.id)
+    mock_delay.assert_called_once_with(
+        "zeus.aggregate_build_stats_for_job", job_id=default_job.id
+    )
 
 
 def test_update_job_restart(
@@ -109,7 +115,7 @@ def test_update_job_restart(
 ):
     job = factories.JobFactory(build=default_build, finished=True, passed=True)
 
-    mock_delay = mocker.patch("zeus.tasks.aggregate_build_stats_for_job.delay")
+    mock_delay = mocker.patch("zeus.config.celery.delay")
 
     resp = client.put(
         "/api/repos/{}/builds/{}/jobs/{}".format(
@@ -126,4 +132,6 @@ def test_update_job_restart(
     assert job.date_started
     assert not job.date_finished
 
-    mock_delay.assert_called_once_with(job_id=job.id)
+    mock_delay.assert_called_once_with(
+        "zeus.aggregate_build_stats_for_job", job_id=job.id
+    )

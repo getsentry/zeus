@@ -1,4 +1,4 @@
-from zeus.config import db
+from zeus.config import celery, db
 from zeus.models import ChangeRequest
 
 from .base_change_request import BaseChangeRequestResource
@@ -23,8 +23,6 @@ class ChangeRequestDetailsResource(BaseChangeRequestResource):
             db.session.commit()
 
         if not cr.parent_revision_sha or (not cr.head_revision_sha and cr.head_ref):
-            from zeus.tasks import resolve_ref_for_change_request
-
-            resolve_ref_for_change_request.delay(change_request_id=cr.id)
+            celery.delay("zeus.resolve_ref_for_change_request", change_request_id=cr.id)
 
         return self.respond_with_schema(schema, cr)

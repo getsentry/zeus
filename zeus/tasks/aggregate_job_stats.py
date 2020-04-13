@@ -22,9 +22,6 @@ from zeus.utils.aggregation import aggregate_result, aggregate_status, safe_agg
 from zeus.utils.artifacts import has_unprocessed_artifacts
 from zeus.utils.sentry import span
 
-from .send_build_notifications import send_build_notifications
-from .process_pending_artifact import process_pending_artifact
-
 AGGREGATED_BUILD_STATS = (
     "tests.count",
     "tests.duration",
@@ -39,7 +36,13 @@ AGGREGATED_BUILD_STATS = (
 # TODO(dcramer): put a lock around this
 
 
-@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
+@celery.task(
+    name="zeus.aggregate_build_stats_for_job",
+    max_retries=5,
+    autoretry_for=(Exception,),
+    acks_late=True,
+    time_limit=60,
+)
 def aggregate_build_stats_for_job(job_id: UUID):
     """
     Given a job, aggregate its data upwards into the Build.abs
@@ -77,7 +80,9 @@ def aggregate_build_stats_for_job(job_id: UUID):
                     PendingArtifact.external_job_id == job.external_id,
                 )
                 for pa_id in pending_artifact_ids:
-                    process_pending_artifact.delay(pending_artifact_id=pa_id)
+                    celery.delay(
+                        "zeus.process_pending_artifact", pending_artifact_id=pa_id
+                    )
 
         # record any job-specific stats that might not have been taken care elsewhere
         if job.status == Status.finished:
@@ -92,7 +97,7 @@ def aggregate_build_stats_for_job(job_id: UUID):
 
     lock_key = "aggstatsbuild:{build_id}".format(build_id=job.build_id.hex)
     with redis.lock(lock_key):
-        aggregate_build_stats.delay(build_id=job.build_id)
+        celery.delay("zeus.aggregate_build_stats", build_id=job.build_id)
 
 
 def aggregate_stat_for_build(build: Build, name: str, func_=func.sum):
@@ -320,7 +325,7 @@ def aggregate_build_stats(build_id: UUID):
         if pending_artifact_ids and is_finished:
             is_finished = False
             for pa_id in pending_artifact_ids:
-                process_pending_artifact(pending_artifact_id=pa_id)
+                celery.call("zeus.process_pending_artifact", pending_artifact_id=pa_id)
 
         # if theres any failure, the build failed
         if any(j.result is Result.failed for j in job_list if not j.allow_failure):
@@ -369,4 +374,4 @@ def aggregate_build_stats(build_id: UUID):
             for stat in AGGREGATED_BUILD_STATS:
                 aggregate_stat_for_build(build, stat)
             db.session.commit()
-            send_build_notifications.delay(build_id=build.id)
+            celery.delay("zeus.send_build_notifications", build_id=build.id)

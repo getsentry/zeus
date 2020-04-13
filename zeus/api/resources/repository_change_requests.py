@@ -1,6 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 
-from zeus.config import db
+from zeus.config import celery, db
 from zeus.models import Repository
 
 from .base_repository import BaseRepositoryResource
@@ -29,9 +29,7 @@ class RepositoryChangeRequestsResource(BaseRepositoryResource):
             raise
 
         if not cr.parent_revision_sha or (not cr.head_revision_sha and cr.head_ref):
-            from zeus.tasks import resolve_ref_for_change_request
-
-            resolve_ref_for_change_request.delay(change_request_id=cr.id)
+            celery.delay("zeus.resolve_ref_for_change_request", change_request_id=cr.id)
 
         schema = ChangeRequestSchema()
         return self.respond_with_schema(schema, cr, status=201)

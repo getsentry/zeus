@@ -8,10 +8,14 @@ from zeus.models import Artifact, Build, Job, Status
 from zeus.utils import timezone
 
 
-@celery.task(max_retries=5, autoretry_for=(Exception,), acks_late=True, time_limit=60)
+@celery.task(
+    name="zeus.process_artifact",
+    max_retries=5,
+    autoretry_for=(Exception,),
+    acks_late=True,
+    time_limit=60,
+)
 def process_artifact(artifact_id, manager=None, force=False, countdown=None, **kwargs):
-    from zeus.tasks.aggregate_job_stats import aggregate_build_stats_for_job
-
     artifact = Artifact.query.unrestricted_unsafe().get(artifact_id)
     if artifact is None:
         current_app.logger.error("Artifact %s not found", artifact_id)
@@ -55,7 +59,9 @@ def process_artifact(artifact_id, manager=None, force=False, countdown=None, **k
     if not build.revision_sha:
         if manager:
             raise Exception("Cannot process artifact until revision is resolved")
-        return process_artifact.delay(artifact_id, force=force, countdown=5, **kwargs)
+        return celery.delay(
+            "process_artifact", artifact_id, force=force, countdown=5, **kwargs
+        )
 
     if artifact.file:
         if manager is None:
@@ -81,4 +87,4 @@ def process_artifact(artifact_id, manager=None, force=False, countdown=None, **k
     db.session.commit()
 
     # we always aggregate results to avoid locking here
-    aggregate_build_stats_for_job.delay(job_id=job.id)
+    celery.delay("zeus.aggregate_build_stats_for_job", job_id=job.id)

@@ -1,8 +1,7 @@
 from zeus import auth
-from zeus.config import db
+from zeus.config import celery, db
 from zeus.constants import Permission
 from zeus.models import Repository, RepositoryStatus
-from zeus.tasks import delete_repo
 
 from .base_repository import BaseRepositoryResource
 from ..schemas import RepositorySchema
@@ -48,6 +47,6 @@ class RepositoryDetailsResource(BaseRepositoryResource):
             db.session.add(repo)
             db.session.flush()
 
-            delete_repo.delay(repo_id=repo.id)
+            celery.delay("zeus.delete_repo", repo_id=repo.id)
 
         return self.respond(status=202)

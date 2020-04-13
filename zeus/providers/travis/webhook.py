@@ -9,10 +9,9 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from flask import current_app, request, Response
 from time import time
 
-from zeus.config import redis
+from zeus.config import celery, redis
 from zeus.constants import USER_AGENT
 from zeus.web.hooks.base import BaseHook
-from zeus.tasks import process_travis_webhook
 
 
 def get_travis_public_key(domain) -> str:
@@ -74,13 +73,19 @@ class TravisWebhookView(BaseHook):
             return Response(status=400)
 
         try:
-            process_travis_webhook(
-                hook_id=hook.id, payload=payload, timestamp_ms=int(time() * 1000)
+            celery.call(
+                "zeus.process_travis_webhook",
+                hook_id=hook.id,
+                payload=payload,
+                timestamp_ms=int(time() * 1000),
             )
         except Exception:
             current_app.logger.error("travis.process-webhook-failed", exc_info=True)
-            process_travis_webhook.delay(
-                hook_id=hook.id, payload=payload, timestamp_ms=int(time() * 1000)
+            celery.delay(
+                "zeus.process_travis_webhook",
+                hook_id=hook.id,
+                payload=payload,
+                timestamp_ms=int(time() * 1000),
             )
 
         return Response(status=202)

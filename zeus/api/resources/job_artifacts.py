@@ -7,10 +7,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from werkzeug.datastructures import FileStorage
 
-from zeus.config import db
+from zeus.config import celery, db
 from zeus.constants import Result, Status
 from zeus.models import Artifact, Job
-from zeus.tasks import process_artifact
 
 from .base_job import BaseJobResource
 from ..schemas import ArtifactSchema
@@ -105,6 +104,6 @@ class JobArtifactsResource(BaseJobResource):
         db.session.add(artifact)
         db.session.commit()
 
-        process_artifact.delay(artifact_id=artifact.id)
+        celery.delay("zeus.process_artifact", artifact_id=artifact.id)
 
         return self.respond_with_schema(artifact_schema, artifact, 201)

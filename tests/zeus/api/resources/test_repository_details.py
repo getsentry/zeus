@@ -50,12 +50,12 @@ def test_cannot_update_without_admin(
 def test_delete_repository(
     client, mocker, default_login, default_repo, default_repo_access
 ):
-    mock_delete_repo = mocker.patch("zeus.tasks.delete_repo.delay")
+    mock_delay = mocker.patch("zeus.config.celery.delay")
 
     resp = client.delete("/api/repos/{}".format(default_repo.get_full_name()))
 
     assert resp.status_code == 202
-    mock_delete_repo.assert_called_once_with(repo_id=default_repo.id)
+    mock_delay.assert_called_once_with("zeus.delete_repo", repo_id=default_repo.id)
 
     default_repo = Repository.query.get(default_repo.id)
     assert default_repo.status == RepositoryStatus.inactive
@@ -74,9 +74,9 @@ def test_delete_inactive_repository(
     db_session.add(default_repo)
     db_session.flush()
 
-    mock_delete_repo = mocker.patch("zeus.tasks.delete_repo.delay")
+    mock_delay = mocker.patch("zeus.config.celery.delay")
 
     resp = client.delete("/api/repos/{}".format(default_repo.get_full_name()))
 
     assert resp.status_code == 202
-    assert not mock_delete_repo.mock_calls
+    assert not mock_delay.mock_calls

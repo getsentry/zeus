@@ -7,8 +7,6 @@ from zeus.exceptions import UnknownJob
 from zeus.models import Build, PendingArtifact
 from zeus.utils import timezone
 
-from .process_pending_artifact import process_pending_artifact
-
 
 @celery.task(name="zeus.cleanup_pending_artifacts", time_limit=300)
 def cleanup_pending_artifacts(task_limit=100):
@@ -45,7 +43,7 @@ def cleanup_pending_artifacts(task_limit=100):
             "cleanup: process_pending_artifact %s [build_finished]", result.id
         )
         try:
-            process_pending_artifact(pending_artifact_id=result.id)
+            celery.delay("zeus.process_pending_artifact", pending_artifact_id=result.id)
         except UnknownJob:
             # do we just axe it?
             pass

@@ -1,7 +1,6 @@
-from zeus.config import db
+from zeus.config import celery, db
 from zeus.constants import Result, Status
 from zeus.models import Job
-from zeus.tasks import aggregate_build_stats_for_job
 from zeus.utils import timezone
 from zeus.utils.artifacts import has_unprocessed_artifacts
 
@@ -65,6 +64,6 @@ class JobDetailsResource(BaseJobResource):
             db.session.add(job)
             db.session.commit()
 
-        aggregate_build_stats_for_job.delay(job_id=job.id)
+        celery.delay("zeus.aggregate_build_stats_for_job", job_id=job.id)
 
         return self.respond_with_schema(job_schema, job)

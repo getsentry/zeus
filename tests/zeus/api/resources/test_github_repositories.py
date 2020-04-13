@@ -76,7 +76,7 @@ def test_new_repository_github(
 def test_deactivate_repository_github(
     client, mocker, default_login, default_repo, default_repo_access
 ):
-    mock_delete_repo = mocker.patch("zeus.tasks.delete_repo.delay")
+    mock_delay = mocker.patch("zeus.config.celery.delay")
 
     resp = client.delete(
         "/api/github/repos",
@@ -84,7 +84,7 @@ def test_deactivate_repository_github(
     )
 
     assert resp.status_code == 202
-    mock_delete_repo.assert_called_once_with(repo_id=default_repo.id)
+    mock_delay.assert_called_once_with("zeus.delete_repo", repo_id=default_repo.id)
 
 
 def test_deactivate_non_existing_repository_github(client, default_login):

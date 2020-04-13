@@ -1,10 +1,9 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import subqueryload_all
 
-from zeus.config import db
+from zeus.config import celery, db
 from zeus.constants import Status
 from zeus.models import Build, Job
-from zeus.tasks import aggregate_build_stats_for_job
 from zeus.utils import timezone
 
 from .base_build import BaseBuildResource
@@ -43,6 +42,6 @@ class BuildJobsResource(BaseBuildResource):
             db.session.rollback()
             return self.respond(status=422)
 
-        aggregate_build_stats_for_job.delay(job_id=job.id)
+        celery.delay("zeus.aggregate_build_stats_for_job", job_id=job.id)
 
         return self.respond_with_schema(job_schema, job)
