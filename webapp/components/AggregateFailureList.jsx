@@ -11,6 +11,10 @@ const failureReasonToDescription = function(reason) {
       return 'No jobs were found.';
     case 'unresolvable_ref':
       return 'Unable to resolve commit ref';
+    case 'timeout':
+      return 'No updates received within timeout';
+    case 'internal_error':
+      return 'Zeus encountered an unhandled error';
     default:
       return `Unrecognized reason: '${reason}'.`;
   }
