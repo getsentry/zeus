@@ -37,6 +37,7 @@ class JobDetailsResource(BaseJobResource):
                 setattr(job, key, value)
 
         if db.session.is_modified(job):
+            job.date_updated = timezone.now()
             if job.status == Status.queued:
                 job.date_started = None
                 job.result = Result.unknown
