@@ -18,6 +18,31 @@ def test_job_details(
     assert data["id"] == str(default_job.id)
 
 
+def test_update_job_sets_updated(
+    client,
+    mocker,
+    db_session,
+    default_login,
+    default_repo,
+    default_build,
+    default_repo_access,
+):
+    job = factories.JobFactory(build=default_build, queued=True)
+
+    resp = client.put(
+        "/api/repos/{}/builds/{}/jobs/{}".format(
+            default_repo.get_full_name(), default_build.number, job.number
+        ),
+        json={"status": "in_progress"},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["id"] == str(job.id)
+    assert data["updated_at"]
+
+    assert job.date_updated
+
+
 def test_update_job_to_finished(
     client, mocker, default_login, default_repo, default_build, default_repo_access
 ):
