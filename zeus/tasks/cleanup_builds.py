@@ -1,6 +1,6 @@
 from datetime import timedelta
 from flask import current_app
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from sqlalchemy.exc import IntegrityError
 
 from zeus.config import celery, db
@@ -29,7 +29,7 @@ def cleanup_jobs(task_limit=100):
         Job.status != Status.finished,
         or_(
             Job.date_updated < timezone.now() - timedelta(hours=1),
-            Job.date_updated == None,  # NOQA
+            and_(Job.date_updated == None, Job.status != Status.queued),  # NOQA
         ),
     )
     results = 0
@@ -113,7 +113,7 @@ def cleanup_build_stats(task_limit=100):
 
     results = (
         Build.query.unrestricted_unsafe()
-        .filter(Build.status != Status.finished, Build.result != Result.errored)
+        .filter(Build.status != Status.finished, Build.result == Result.errored)
         .update({"status": Status.finished})
     )
     if results:
