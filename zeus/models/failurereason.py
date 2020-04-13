@@ -14,6 +14,8 @@ class FailureReason(RepositoryBoundMixin, StandardAttributes, db.Model):
         missing_tests = "missing_tests"
         no_jobs = "no_jobs"
         unresolvable_ref = "unresolvable_ref"
+        timeout = "timeout"
+        internal_error = "internal_error"
 
     build_id = db.Column(
         GUID, db.ForeignKey("build.id", ondelete="CASCADE"), nullable=True

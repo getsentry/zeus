@@ -81,6 +81,9 @@ def aggregate_build_stats_for_job(job_id: UUID):
 
         # record any job-specific stats that might not have been taken care elsewhere
         if job.status == Status.finished:
+            if not job.date_finished:
+                job.date_finished = timezone.now()
+                db.session.add(job)
             record_test_stats(job.id)
             record_style_violation_stats(job.id)
             record_bundle_stats(job.id)
@@ -301,9 +304,9 @@ def aggregate_build_stats(build_id: UUID):
         )
 
         if is_finished:
-            build.date_finished = safe_agg(
-                max, (j.date_finished for j in job_list if j.date_finished)
-            )
+            build.date_finished = (
+                safe_agg(max, (j.date_finished for j in job_list if j.date_finished))
+            ) or timezone.now()
         else:
             build.date_finished = None
 
@@ -350,11 +353,13 @@ def aggregate_build_stats(build_id: UUID):
 
         if is_finished:
             build.status = Status.finished
+            assert build.date_finished
         else:
             # ensure we dont set the status to finished unless it actually is
             new_status = aggregate_status((j.status for j in job_list))
             if build.status != new_status:
                 build.status = new_status
+            assert build.status != Status.finished
 
         db.session.add(build)
         db.session.commit()
