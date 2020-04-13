@@ -1,3 +1,4 @@
+from flask import current_app
 from sqlalchemy.exc import IntegrityError
 from typing import Optional
 from uuid import UUID
@@ -42,6 +43,9 @@ def resolve_ref_for_build(build_id: UUID):
                 build.repository, build.ref, with_vcs=True
             )
         except UnknownRevision:
+            current_app.logger.warning(
+                "build.unresolvable-ref", extra={"build_id": build.id, "ref": build.ref}
+            )
             build.result = Result.errored
             build.status = Status.finished
             try:
