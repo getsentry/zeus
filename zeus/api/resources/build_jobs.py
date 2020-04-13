@@ -34,6 +34,7 @@ class BuildJobsResource(BaseBuildResource):
         if job.status != Status.queued and not job.date_started:
             job.date_started = timezone.now()
 
+        job.date_updated = timezone.now()
         db.session.add(job)
 
         try:
