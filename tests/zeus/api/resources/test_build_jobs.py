@@ -48,6 +48,9 @@ def test_build_job_create(
     assert job.result == Result.unknown
     assert job.build_id == default_build.id
     assert job.repository_id == default_repo.id
+    assert job.date_updated
+    assert not job.date_started
+    assert not job.date_finished
 
 
 def test_build_job_create_existing_entity(
