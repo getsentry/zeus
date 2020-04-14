@@ -81,3 +81,22 @@ def test_cleanup_builds(mocker, db_session, default_build, default_revision):
     assert build.date_finished == job.date_finished
     assert build.status == job.status
     assert build.result == job.result
+
+
+def test_cleanup_builds_does_not_operate_on_in_progress(
+    mocker, db_session, default_revision
+):
+    build = factories.BuildFactory(revision=default_revision, in_progress=True)
+    job = factories.JobFactory.create(build=build, in_progress=True)
+
+    cleanup_builds()
+
+    assert not job.date_finished
+    assert job.status != Status.finished
+    assert job.result != Result.errored
+
+    build = Build.query.unrestricted_unsafe().get(job.build_id)
+
+    assert not build.date_finished
+    assert build.status == job.status
+    assert build.result == job.result
