@@ -35,3 +35,4 @@ class FailureReasonFactory(ModelFactory):
         unresolvable_ref = factory.Trait(
             reason=models.FailureReason.Reason.unresolvable_ref, job=None, job_id=None
         )
+        timeout = factory.Trait(reason=models.FailureReason.Reason.timeout)
