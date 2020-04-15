@@ -1,9 +1,0 @@
-dependencies:
-- name: rabbitmq
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.4.5
-- name: prometheus
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 4.6.15
-digest: sha256:90d4b6814a51adc054957a3c91f275375f0d155400b2874918612436a931a05e
-generated: 2017-12-31T11:35:35.808948+09:00

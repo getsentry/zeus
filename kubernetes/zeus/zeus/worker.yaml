@@ -92,11 +92,17 @@ spec:
               value: 'http://vcs-server'
             - name: ROLE
               value: worker
-            - name: CELERY_BROKER_URL
+            - name: RABBITMQ_HOST
+              value: 'rabbitmq-1-rabbitmq-discovery.default.svc.cluster.local'
+            - name: RABBITMQ_PORT
+              value: '5672'
+            - name: RABBITMQ_USER
+              value: rabbit
+            - name: RABBITMQ_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: queue
-                  key: broker_url
+                  name: rabbitmq-1-rabbitmq-secret
+                  key: rabbitmq-pass
           readinessProbe:
             exec:
               command:
