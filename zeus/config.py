@@ -81,6 +81,15 @@ def create_app(_read_config=True, **config):
 
         if "CELERY_BROKER_URL" in os.environ:
             app.config["CELERY_BROKER_URL"] = os.environ["CELERY_BROKER_URL"]
+        elif "RABBITMQ_HOST" in os.environ:
+            app.config[
+                "CELERY_BROKER_URL"
+            ] = "amqp://user:{password}@{host}:{port}/".format(
+                user=os.environ["RABBITMQ_USER"],
+                password=os.environ["RABBITMQ_PASSWORD"],
+                host=os.environ["RABBITMQ_HOST"],
+                port=os.environ["RABBITMQ_PORT"],
+            )
 
         if "GCS_BUCKET" in os.environ:
             app.config["FILE_STORAGE"] = {
