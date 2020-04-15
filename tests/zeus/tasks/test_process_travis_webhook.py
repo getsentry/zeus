@@ -1,24 +1,8 @@
-import json
-import os
-import pytest
-
 from time import time
 
 from zeus.constants import Result, Status
 from zeus.models import Build, ChangeRequest, Job
 from zeus.tasks import process_travis_webhook
-
-
-@pytest.fixture(scope="session")
-def sample_travis_build_commit(fixture_path):
-    with open(os.path.join(fixture_path, "travis-build-commit.json"), "rb") as fp:
-        return json.load(fp)
-
-
-@pytest.fixture(scope="session")
-def sample_travis_build_pr(fixture_path):
-    with open(os.path.join(fixture_path, "travis-build-pull-request.json"), "rb") as fp:
-        return json.load(fp)
 
 
 def test_commit(
