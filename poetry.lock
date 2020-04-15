@@ -163,7 +163,7 @@ description = "Python multiprocessing fork with improvements and bugfixes"
 name = "billiard"
 optional = false
 python-versions = "*"
-version = "3.5.0.5"
+version = "3.6.3.0"
 
 [[package]]
 category = "dev"
@@ -216,39 +216,48 @@ category = "main"
 description = "Distributed Task Queue."
 name = "celery"
 optional = false
-python-versions = "*"
-version = "4.1.1"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*,"
+version = "4.4.2"
 
 [package.dependencies]
-billiard = ">=3.5.0.2,<3.6.0"
-kombu = ">=4.2.0,<5.0"
+billiard = ">=3.6.3.0,<4.0"
+kombu = ">=4.6.8,<4.7"
 pytz = ">0.0-dev"
+vine = "1.3.0"
 
 [package.extras]
-auth = ["pyopenssl"]
+arangodb = ["pyArango (>=1.3.2)"]
+auth = ["cryptography"]
+azureblockblob = ["azure-storage (0.36.0)", "azure-common (1.1.5)", "azure-storage-common (1.1.0)"]
+brotli = ["brotli (>=1.0.0)", "brotlipy (>=0.7.0)"]
 cassandra = ["cassandra-driver"]
 consul = ["python-consul"]
-couchbase = ["couchbase"]
+cosmosdbsql = ["pydocumentdb (2.3.2)"]
+couchbase = ["couchbase", "couchbase-cffi"]
 couchdb = ["pycouchdb"]
-django = ["Django (>=1.8)"]
-dynamodb = ["boto3 (1.4.3)"]
+django = ["Django (>=1.11)"]
+dynamodb = ["boto3 (>=1.9.178)"]
 elasticsearch = ["elasticsearch"]
-eventlet = ["eventlet"]
+eventlet = ["eventlet (>=0.24.1)"]
 gevent = ["gevent"]
 librabbitmq = ["librabbitmq (>=1.5.0)"]
+lzma = ["backports.lzma"]
 memcache = ["pylibmc"]
-msgpack = ["msgpack-python (>=0.3.0)"]
+mongodb = ["pymongo (>=3.3.0)"]
+msgpack = ["msgpack"]
 pymemcache = ["python-memcached"]
 pyro = ["pyro4"]
-redis = ["redis (>=2.10.5)"]
+redis = ["redis (>=3.2.0)"]
 riak = ["riak (>=2.0)"]
+s3 = ["boto3 (>=1.9.125)"]
 slmq = ["softlayer-messaging (>=1.0.3)"]
 solar = ["ephem"]
 sqlalchemy = ["sqlalchemy"]
-sqs = ["boto (>=2.13.3)", "pycurl"]
-tblib = ["tblib (>=1.3.0)"]
+sqs = ["boto3 (>=1.9.125)", "pycurl (7.43.0.2)"]
+tblib = ["tblib (>=1.3.0)", "tblib (>=1.5.0)"]
 yaml = ["PyYAML (>=3.10)"]
 zookeeper = ["kazoo (>=1.3.1)"]
+zstd = ["zstandard"]
 
 [[package]]
 category = "main"
@@ -976,7 +985,6 @@ version = "2.3.1"
 [[package]]
 category = "main"
 description = "C parser in Python"
-marker = "platform_python_implementation != \"PyPy\""
 name = "pycparser"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
@@ -1455,7 +1463,7 @@ multidict = ">=4.0"
 test = ["pytest", "pytest-aiohttp", "pytest-cov", "pytest-mock", "pytest-responses", "pytest-xdist", "responses"]
 
 [metadata]
-content-hash = "9ca85f2439fc34fce6af8819d3bfa0438cea0952ca8cfaf3c0d4ba976d4c570a"
+content-hash = "5039fc0a159ca9e8340d0cf8a2a650be76e8498607a4c18081410ca825bd529e"
 python-versions = "~3.8"
 
 [metadata.files]
@@ -1548,7 +1556,8 @@ backcall = [
     {file = "backcall-0.1.0.zip", hash = "sha256:bbbf4b1e5cd2bdb08f915895b51081c041bac22394fdfcfdfbe9f14b77c08bf2"},
 ]
 billiard = [
-    {file = "billiard-3.5.0.5.tar.gz", hash = "sha256:42d9a227401ac4fba892918bba0a0c409def5435c4b483267ebfe821afaaba0e"},
+    {file = "billiard-3.6.3.0-py3-none-any.whl", hash = "sha256:bff575450859a6e0fbc2f9877d9b715b0bbc07c3565bb7ed2280526a0cdf5ede"},
+    {file = "billiard-3.6.3.0.tar.gz", hash = "sha256:d91725ce6425f33a97dfa72fb6bfef0e47d4652acd98a032bd1a7fbf06d5fa6a"},
 ]
 black = [
     {file = "black-18.6b4-py36-none-any.whl", hash = "sha256:4b475bbd528acce094c503a3d2dbc2d05a4075f6d0ef7d9e7514518e14cc5191"},
@@ -1591,8 +1600,8 @@ cchardet = [
     {file = "cchardet-2.1.5.tar.gz", hash = "sha256:240efe3f255f916769458343840b9c6403cf3192720bc5129792cbcb88bf72fb"},
 ]
 celery = [
-    {file = "celery-4.1.1-py2.py3-none-any.whl", hash = "sha256:6fc4678d1692af97e137b2a9f1c04efd8e7e2fb7134c5c5ad60738cdd927762f"},
-    {file = "celery-4.1.1.tar.gz", hash = "sha256:d1f2a3359bdbdfb344edce98b8e891f5fe64f8a11c5a45538ec20ac237c971f5"},
+    {file = "celery-4.4.2-py2.py3-none-any.whl", hash = "sha256:5b4b37e276033fe47575107a2775469f0b721646a08c96ec2c61531e4fe45f2a"},
+    {file = "celery-4.4.2.tar.gz", hash = "sha256:108a0bf9018a871620936c33a3ee9f6336a89f8ef0a0f567a9001f4aa361415f"},
 ]
 celery-redbeat = [
     {file = "celery-redbeat-0.13.0.tar.gz", hash = "sha256:8ba060f5fffa96fc6dbb0e37a10506cada03333f34ba502b134cbbdb08891266"},
