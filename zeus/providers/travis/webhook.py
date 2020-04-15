@@ -72,6 +72,15 @@ class TravisWebhookView(BaseHook):
             current_app.logger.error("travis.webhook-invalid-payload", exc_info=True)
             return Response(status=400)
 
+        current_app.logger.info(
+            "travis.webhook-validated",
+            extra={
+                "build_id": payload["id"],
+                "build_url": payload["build_url"],
+                "commit_sha": payload["commit"],
+            },
+        )
+
         try:
             celery.call(
                 "zeus.process_travis_webhook",

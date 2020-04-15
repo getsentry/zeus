@@ -1,3 +1,5 @@
+import json
+
 from base64 import b64encode
 
 
@@ -74,6 +76,7 @@ def test_queued_build(
     public_key_bytes,
     mocker,
     responses,
+    sample_travis_build_commit,
 ):
     responses.add(
         responses.GET,
@@ -81,11 +84,13 @@ def test_queued_build(
         get_config_response(public_key_bytes),
     )
 
+    payload = json.dumps(sample_travis_build_commit).encode("utf-8")
+
     resp = post_request(
         client,
         default_hook,
-        b"{}",
+        payload,
         public_key_bytes,
-        make_signature(b"{}", private_key),
+        make_signature(payload, private_key),
     )
     assert resp.status_code == 202, repr(resp.data)
