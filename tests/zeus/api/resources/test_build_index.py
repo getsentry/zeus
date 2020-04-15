@@ -120,3 +120,52 @@ def test_build_list_repository(
         assert len(data) == 2
         assert data[0]["id"] == str(build2.id)
         assert data[1]["id"] == str(build1.id)
+
+
+def test_build_list_status_filter(
+    client, sqla_assertions, default_repo, default_repo_access, default_login
+):
+    factories.BuildFactory(repository=default_repo, finished=True)
+
+    resp = client.get("/api/builds?status=in_progress")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 0
+
+    resp = client.get("/api/builds?status=finished")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 1
+
+
+def test_build_list_result_filter(
+    client, sqla_assertions, default_repo, default_repo_access, default_login
+):
+    factories.BuildFactory(repository=default_repo, passed=True)
+
+    resp = client.get("/api/builds?result=errored")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 0
+
+    resp = client.get("/api/builds?result=passed")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 1
+
+
+def test_build_list_failure_reason_filter(
+    client, sqla_assertions, default_repo, default_repo_access, default_login
+):
+    build = factories.BuildFactory(repository=default_repo, errored=True)
+    factories.FailureReasonFactory(build=build, timeout=True)
+
+    resp = client.get("/api/builds?result=errored&failure_reason=unresolvable_ref")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 0
+
+    resp = client.get("/api/builds?result=errored&failure_reason=timeout")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 1

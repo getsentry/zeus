@@ -3,7 +3,8 @@ from sqlalchemy.orm import joinedload, subqueryload_all
 
 from zeus import auth
 from zeus.config import db
-from zeus.models import Author, Build, Email, Repository, User
+from zeus.constants import Result, Status
+from zeus.models import Author, Build, Email, FailureReason, Repository, User
 
 from .base import Resource
 from ..schemas import BuildSchema
@@ -53,6 +54,20 @@ class BuildIndexResource(Resource):
                         )
                     )
                 )
+            )
+        result = request.args.get("result")
+        if result:
+            query = query.filter(Build.result == Result[result])
+
+        status = request.args.get("status")
+        if status:
+            query = query.filter(Build.status == Status[status])
+
+        failure_reason = request.args.get("failure_reason")
+        if failure_reason:
+            query = query.filter(
+                FailureReason.build_id == Build.id,
+                FailureReason.reason == FailureReason.Reason[failure_reason],
             )
 
         repository = request.args.get("repository")
