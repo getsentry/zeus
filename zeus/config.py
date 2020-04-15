@@ -84,7 +84,7 @@ def create_app(_read_config=True, **config):
         elif "RABBITMQ_HOST" in os.environ:
             app.config[
                 "CELERY_BROKER_URL"
-            ] = "amqp://user:{password}@{host}:{port}/".format(
+            ] = "amqp://{user}:{password}@{host}:{port}/".format(
                 user=os.environ["RABBITMQ_USER"],
                 password=os.environ["RABBITMQ_PASSWORD"],
                 host=os.environ["RABBITMQ_HOST"],
