@@ -60,7 +60,7 @@ def process_artifact(artifact_id, manager=None, force=False, countdown=None, **k
         if manager:
             raise Exception("Cannot process artifact until revision is resolved")
         return celery.delay(
-            "process_artifact", artifact_id, force=force, countdown=5, **kwargs
+            "zeus.process_artifact", artifact_id, force=force, countdown=5, **kwargs
         )
 
     if artifact.file:
