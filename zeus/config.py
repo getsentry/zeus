@@ -285,8 +285,7 @@ def create_app(_read_config=True, **config):
 
     app.test_client_class = ZeusTestClient
 
-    if app.config.get("LOG_LEVEL"):
-        app.logger.setLevel(getattr(logging, app.config["LOG_LEVEL"].upper()))
+    configure_logging(app)
 
     # oauthlib compat
     app.config["GITHUB_CONSUMER_KEY"] = app.config["GITHUB_CLIENT_ID"]
@@ -460,3 +459,19 @@ def configure_sentry(app):
 
     with sentry_sdk.configure_scope() as scope:
         scope.set_tag("role", os.environ.get("ROLE", "unknown"))
+
+
+def configure_logging(app):
+    from pythonjsonlogger import jsonlogger
+
+    if not app.config["DEBUG"]:
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setFormatter(
+            jsonlogger.JsonFormatter("%(message)%(levelname)%(name)%(asctime)")
+        )
+        while app.logger.handlers:
+            app.logger.removeHandler(app.logger.handlers[0])
+        app.logger.addHandler(handler)
+
+    if app.config.get("LOG_LEVEL"):
+        app.logger.setLevel(getattr(logging, app.config["LOG_LEVEL"].upper()))
