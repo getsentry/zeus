@@ -66,7 +66,7 @@ class VcsServerClient(object):
             # in the vcs implementation
             if data.get("error") == "invalid_pubkey" and params:
                 celery.delay(
-                    "deactivate_repo",
+                    "zeus.deactivate_repo",
                     params["repo_id"],
                     DeactivationReason.invalid_pubkey,
                 )
