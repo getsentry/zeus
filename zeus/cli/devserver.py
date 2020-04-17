@@ -5,6 +5,7 @@ import sys
 
 from subprocess import list2cmdline
 from honcho.manager import Manager
+from honcho.printer import Printer
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
 
@@ -25,6 +26,8 @@ DEFAULT_HOST_NAME = socket.gethostname().split(".", 1)[0].lower()
 @click.option("--pubsub/--no-pubsub", default=True)
 @click.option("--pubsub-port", default=8090)
 @click.option("--watchdog/--no-watchdog", default=True)
+@click.option("--color/--no-color", default=False)
+@click.option("--prefix/--no-prefix", default=False)
 def devserver(
     environment,
     workers,
@@ -37,6 +40,8 @@ def devserver(
     pubsub,
     pubsub_port,
     watchdog,
+    color,
+    prefix,
 ):
     os.environ.setdefault("FLASK_DEBUG", "1")
     os.environ["NODE_ENV"] = environment
@@ -113,7 +118,7 @@ def devserver(
         os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
     )
 
-    manager = Manager()
+    manager = Manager(Printer(sys.stdout, colour=color, prefix=prefix))
     for name, cmd in daemons:
         manager.add_process(name, list2cmdline(cmd), quiet=False, cwd=cwd)
 
