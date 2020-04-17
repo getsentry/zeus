@@ -1168,6 +1168,14 @@ version = "1.0.4"
 
 [[package]]
 category = "main"
+description = "A python library adding a json log formatter"
+name = "python-json-logger"
+optional = false
+python-versions = ">=2.7"
+version = "0.1.11"
+
+[[package]]
+category = "main"
 description = "World timezone definitions, modern and historical"
 name = "pytz"
 optional = false
@@ -1463,7 +1471,7 @@ multidict = ">=4.0"
 test = ["pytest", "pytest-aiohttp", "pytest-cov", "pytest-mock", "pytest-responses", "pytest-xdist", "responses"]
 
 [metadata]
-content-hash = "5039fc0a159ca9e8340d0cf8a2a650be76e8498607a4c18081410ca825bd529e"
+content-hash = "6e15f9d3f8eb082c766475c38d39a09e2e63140c609c5a4e5cc62a8db2d611bc"
 python-versions = "~3.8"
 
 [metadata.files]
@@ -2178,6 +2186,9 @@ python-editor = [
     {file = "python_editor-1.0.4-py2.7.egg", hash = "sha256:ea87e17f6ec459e780e4221f295411462e0d0810858e055fc514684350a2f522"},
     {file = "python_editor-1.0.4-py3-none-any.whl", hash = "sha256:1bf6e860a8ad52a14c3ee1252d5dc25b2030618ed80c022598f00176adc8367d"},
     {file = "python_editor-1.0.4-py3.5.egg", hash = "sha256:c3da2053dbab6b29c94e43c486ff67206eafbe7eb52dbec7390b5e2fb05aac77"},
+]
+python-json-logger = [
+    {file = "python-json-logger-0.1.11.tar.gz", hash = "sha256:b7a31162f2a01965a5efb94453ce69230ed208468b0bbc7fdfc56e6d8df2e281"},
 ]
 pytz = [
     {file = "pytz-2019.3-py2.py3-none-any.whl", hash = "sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d"},
