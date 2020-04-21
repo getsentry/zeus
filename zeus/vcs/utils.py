@@ -2,14 +2,19 @@ import os.path
 
 from flask import current_app
 
+from time import time
 from uuid import UUID, uuid4
 
 from zeus.exceptions import UnknownRepositoryBackend
 from zeus.models import RepositoryBackend
 from zeus.vcs.backends.base import Vcs, RevisionResult
 from zeus.vcs.backends.git import GitVcs
+from zeus.utils.sentry import span
+
+CLEANUP_OPTION_NAME = "cleanup.last-run"
 
 
+@span("get_author_id")
 async def get_author_id(conn, repo_id: UUID, name: str, email: str) -> UUID:
     rv = await conn.fetch(
         """
@@ -36,6 +41,7 @@ async def get_author_id(conn, repo_id: UUID, name: str, email: str) -> UUID:
     )[0]["id"]
 
 
+@span("save_revision")
 async def save_revision(conn, repo_id: UUID, revision: RevisionResult):
     authors = revision.get_authors()
 
@@ -67,6 +73,7 @@ async def save_revision(conn, repo_id: UUID, revision: RevisionResult):
             )
 
 
+@span("get_vcs")
 async def get_vcs(conn, repo_id: UUID) -> Vcs:
     repo = (
         await conn.fetch(
@@ -96,3 +103,27 @@ async def get_vcs(conn, repo_id: UUID) -> Vcs:
         return GitVcs(**kwargs)
 
     raise UnknownRepositoryBackend("Invalid backend: {}".format(repo["backend"]))
+
+
+@span("cleanup")
+async def cleanup(conn, repo_id: UUID):
+    vcs = await get_vcs(conn, repo_id)
+    await vcs.cleanup()
+    rv = await conn.fetch(
+        """INSERT INTO itemoption (id, item_id, name, value)
+    VALUES ($1::uuid, $2, $3, $4)
+    ON CONFLICT DO NOTHING
+    RETURNING id;""",
+        str(uuid4()),
+        repo_id,
+        CLEANUP_OPTION_NAME,
+        str(time()),
+    )
+    if rv:
+        return
+    await conn.fetch(
+        "UPDATE itemoption SET value = $1 WHERE item_id = $2 AND name = $3 RETURNING id",
+        str(time()),
+        repo_id,
+        CLEANUP_OPTION_NAME,
+    )

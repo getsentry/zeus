@@ -80,5 +80,6 @@ GITHUB_AUTH_URI = "https://github.com/login/oauth/authorize"
 GITHUB_TOKEN_URI = "https://github.com/login/oauth/access_token"
 GITHUB_DEFAULT_SCOPES = ("user:email", "repo", "read:org")
 
-
 USER_AGENT = "zeus/{0}".format(zeus.VERSION)
+
+VCS_CLEANUP_INTERVAL = 3600 * 24  # 24 ours
