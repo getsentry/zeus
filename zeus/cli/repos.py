@@ -103,6 +103,18 @@ def config_get(repository, option):
         click.echo("{} = {}".format(key, result[0] if result else "(not set)"))
 
 
+@repos.command()
+@click.argument("repository", type=RepositoryType, required=True)
+def get(repository):
+    print("Repository %s" % str(repository.id))
+    print("Name")
+    print("  %s " % str(repository.get_full_name()))
+    print("URL")
+    print("  %s " % str(repository.url))
+    print("Status")
+    print("  %s " % str(repository.status))
+
+
 @config.command("set")
 @click.argument("repository", type=RepositoryType, required=True)
 @click.argument("option", required=True, nargs=-1)
