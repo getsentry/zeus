@@ -464,13 +464,18 @@ def configure_sentry(app):
 def configure_logging(app):
     from pythonjsonlogger import jsonlogger
 
-    if not app.config["DEBUG"]:
-        handler = logging.StreamHandler(sys.stdout)
+    if os.environ.get("SUPPRESS_LOGGING"):
+        while app.logger.handlers:
+            app.logger.removeHandler(app.logger.handlers[0])
+        handler = logging.NullHandler()
+        app.logger.addHandler(handler)
+    elif not app.config["DEBUG"]:
+        while app.logger.handlers:
+            app.logger.removeHandler(app.logger.handlers[0])
+        handler = logging.StreamHandler()
         handler.setFormatter(
             jsonlogger.JsonFormatter("%(message)%(levelname)%(name)%(asctime)")
         )
-        while app.logger.handlers:
-            app.logger.removeHandler(app.logger.handlers[0])
         app.logger.addHandler(handler)
 
     if app.config.get("LOG_LEVEL"):
