@@ -59,8 +59,11 @@ def process_artifact(artifact_id, manager=None, force=False, countdown=None, **k
     if not build.revision_sha:
         if manager:
             raise Exception("Cannot process artifact until revision is resolved")
+        current_app.logger.info(
+            "Deferring artifact processing (%s) - revision not resolved", artifact_id
+        )
         return celery.delay(
-            "zeus.process_artifact", artifact_id, force=force, countdown=5, **kwargs
+            "zeus.process_artifact", artifact_id, force=force, countdown=15, **kwargs
         )
 
     if artifact.file:
