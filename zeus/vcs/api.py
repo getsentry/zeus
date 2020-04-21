@@ -158,6 +158,10 @@ async def stmt_resolve(request, vcs, repo_id):
     try:
         log_results = await vcs.log(parent=ref, limit=1)
     except UnknownRevision:
+        current_app.logger.info(
+            "stmt.resolve.unknown-revision-retry",
+            extra={"repository_id": repo_id, "ref": ref},
+        )
         # we're running a lazy update here if it didnt already exist
         log_results = await vcs.log(parent=ref, limit=1, update_if_exists=True)
 
