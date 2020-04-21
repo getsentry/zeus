@@ -24,7 +24,7 @@ def identify_revision(
     if not with_vcs:
         raise UnknownRevision
 
-    result = vcs_client.resolve(repository.id, ref=ref)
+    result = vcs_client.resolve(repository.id, ref=ref, timeout=10.0)
 
     revision = (
         Revision.query.unrestricted_unsafe()

@@ -28,6 +28,7 @@ class VcsServerClient(object):
         params: Optional[dict] = None,
         tenant: Optional[Union[bool, auth.Tenant]] = True,
         raise_errors: Optional[bool] = True,
+        timeout: Optional[float] = None,
     ):
         if tenant is True:
             tenant = auth.get_current_tenant()
@@ -53,6 +54,7 @@ class VcsServerClient(object):
                         auth.generate_token(tenant).decode("utf-8")
                     )
                 },
+                timeout=timeout,
             )
         if raise_errors and not (200 <= response.status_code < 300):
             text = response.text
