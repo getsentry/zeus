@@ -14,11 +14,11 @@ from .resolve_ref import resolve_ref_for_build
 
 @celery.task(name="zeus.cleanup_builds", time_limit=300)
 def cleanup_builds(task_limit=100):
-    current_app.logger.info("cleanup: running cleanup_jobs")
+    current_app.logger.info("cleanup-jobs.running")
     cleanup_jobs(task_limit=task_limit)
-    current_app.logger.info("cleanup: running cleanup_build_refs")
+    current_app.logger.info("cleanup-build-refs.running")
     cleanup_build_refs(task_limit=task_limit)
-    current_app.logger.info("cleanup: running cleanup_build_stats")
+    current_app.logger.info("cleanup-build-stats.running")
     cleanup_build_stats(task_limit=task_limit)
 
 
@@ -37,10 +37,23 @@ def cleanup_jobs(task_limit=100):
         results += 1
 
         if job.date_updated:
+            current_app.logger.info(
+                "cleanup-jobs.timeout",
+                extra={
+                    "repository_id": job.repository_id,
+                    "job_id": job.id,
+                    "build_id": job.build_id,
+                },
+            )
             reason = FailureReason.Reason.timeout
         else:
             current_app.logger.error(
-                "cleanup: Job (id=%s) with no date_updated", job.id
+                "cleanup-jobs.missing-date-updated",
+                extra={
+                    "repository_id": job.repository_id,
+                    "job_id": job.id,
+                    "build_id": job.build_id,
+                },
             )
             reason = FailureReason.Reason.internal_error
 
@@ -66,7 +79,9 @@ def cleanup_jobs(task_limit=100):
         db.session.commit()
 
     if results:
-        current_app.logger.warning("cleanup: cleanup_jobs affected rows %s", results)
+        current_app.logger.warning(
+            "cleanup-jobs.finished", extra={"affected_rows": results}
+        )
 
 
 @celery.task(name="zeus.cleanup_build_refs", time_limit=300)
@@ -83,11 +98,25 @@ def cleanup_build_refs(task_limit=100):
         .limit(task_limit)
     )
     for build in queryset:
-        current_app.logger.warning("cleanup: resolve_ref_for_build %s", build.id)
+        current_app.logger.warning(
+            "cleanup-build-refs.resolve-ref",
+            extra={
+                "repository_id": build.repository_id,
+                "build_id": build.id,
+                "ref": build.ref,
+            },
+        )
         try:
             resolve_ref_for_build(build_id=build.id)
         except Exception:
-            current_app.logger.exception("cleanup: resolve_ref_for_build %s", build.id)
+            current_app.logger.exception(
+                "cleanup-build-refs.resolve-ref-error",
+                extra={
+                    "repository_id": build.repository_id,
+                    "build_id": build.id,
+                    "ref": build.ref,
+                },
+            )
 
 
 @celery.task(name="zeus.cleanup_build_stats", time_limit=300)
@@ -105,11 +134,17 @@ def cleanup_build_stats(task_limit=100):
         .limit(task_limit)
     )
     for build in queryset:
-        current_app.logger.warning("cleanup: aggregate_build_stats %s", build.id)
+        current_app.logger.warning(
+            "cleanup-build-stats.aggregate-build-stats",
+            extra={"repository_id": build.repository_id, "build_id": build.id},
+        )
         try:
             aggregate_build_stats(build_id=build.id)
         except Exception:
-            current_app.logger.exception("cleanup: aggregate_build_stats %s", build.id)
+            current_app.logger.exception(
+                "cleanup-build-stats.aggregate-build-stats-failed",
+                extra={"repository_id": build.repository_id, "build_id": build.id},
+            )
 
     results = (
         Build.query.unrestricted_unsafe()
@@ -118,7 +153,6 @@ def cleanup_build_stats(task_limit=100):
     )
     if results:
         current_app.logger.warning(
-            "cleanup: cleanup_build_stats [unfinished; errored] affected rows %s",
-            results,
+            "cleanup-build-stats.finished", extra={"affected_rows": results}
         )
     db.session.commit()
