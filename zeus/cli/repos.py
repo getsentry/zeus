@@ -141,7 +141,7 @@ async def log(repository, parent, local, limit):
         async with db_pool.acquire() as conn:
             vcs = await get_vcs(conn, repository.id)
 
-        results = vcs.log(parent=parent, limit=limit)
+        results = await vcs.log(parent=parent, limit=limit)
 
         for entry in results:
             click.echo(f"{entry.sha}\n  {entry.author}")
