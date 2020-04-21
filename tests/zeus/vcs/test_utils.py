@@ -1,8 +1,9 @@
 from datetime import datetime, timezone
+from unittest.mock import AsyncMock
 from uuid import UUID
 
 from zeus.vcs.backends.base import RevisionResult
-from zeus.vcs.utils import get_vcs, save_revision
+from zeus.vcs.utils import cleanup, get_vcs, save_revision
 
 
 async def test_get_vcs(vcs_db, default_repo_id: UUID):
@@ -161,3 +162,30 @@ async def test_revision_multiple_authors(vcs_db, default_repo_id: UUID):
     # TODO(dcramer): the way we patch sqla for pytest doesnt allow for this to work
     # save it again for good measure
     await save_revision(vcs_db, default_repo_id, result)
+
+
+async def test_cleanup(mocker, vcs_db, default_repo_id: UUID):
+    vcs_cleanup = mocker.patch("zeus.vcs.backends.git.GitVcs.cleanup", AsyncMock())
+
+    await cleanup(vcs_db, default_repo_id)
+
+    vcs_cleanup.assert_called_once_with()
+
+    result = await vcs_db.fetch(
+        """
+            SELECT value FROM itemoption WHERE name = 'cleanup.last-run' AND item_id = $1
+        """,
+        default_repo_id,
+    )
+    assert result
+
+    # run it again and ensure its updated (also tests UPDATE vs INSERT path)
+    await cleanup(vcs_db, default_repo_id)
+
+    result2 = await vcs_db.fetch(
+        """
+            SELECT value FROM itemoption WHERE name = 'cleanup.last-run' AND item_id = $1
+        """,
+        default_repo_id,
+    )
+    assert result2 > result

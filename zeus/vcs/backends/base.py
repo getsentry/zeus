@@ -150,6 +150,9 @@ class Vcs(object):
     def exists(self) -> bool:
         return os.path.exists(self.path)
 
+    async def cleanup(self):
+        return
+
     async def clone(self):
         raise NotImplementedError
 

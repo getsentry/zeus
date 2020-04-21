@@ -126,6 +126,10 @@ class GitVcs(Vcs):
             else:
                 await self.run(["fetch", "--all", "--force"])
 
+    async def cleanup(self):
+        await self.run(["remote", "prune", "origin"])
+        await self.run(["gc"])
+
     async def log(
         self,
         parent=None,
