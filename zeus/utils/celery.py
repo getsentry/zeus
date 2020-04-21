@@ -50,6 +50,9 @@ class Celery(object):
     def delay(self, task_name, *args, **kwargs):
         return self.celery.tasks[task_name].delay(*args, **kwargs)
 
+    def apply_async(self, task_name, *args, **kwargs):
+        return self.celery.tasks[task_name].apply_async(*args, **kwargs)
+
     def get_celery_app(self):
         return self.celery
 
