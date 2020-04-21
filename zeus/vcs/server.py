@@ -85,7 +85,7 @@ async def build_app(loop=None) -> Application:
 async def build_server(loop, host: str, port: int):
     app = await build_app(loop=loop)
 
-    asyncio.ensure_future(worker(app["db_pool"], app["queue"]))
-    asyncio.ensure_future(cleanup_scheduler(app["db_pool"], app["queue"]))
+    asyncio.create_task(worker(app["db_pool"], app["queue"]))
+    asyncio.create_task(cleanup_scheduler(app["db_pool"], app["queue"]))
 
     return await loop.create_server(app.make_handler(), host, port)
