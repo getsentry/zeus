@@ -101,3 +101,7 @@ class UnknownRevision(CommandError):
 
 class InvalidPublicKey(CommandError):
     pass
+
+
+class HostError(CommandError):
+    pass

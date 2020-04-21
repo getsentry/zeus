@@ -1,7 +1,7 @@
 from typing import List, Optional
 from urllib.parse import urlparse
 
-from zeus.exceptions import CommandError, InvalidPublicKey, UnknownRevision
+from zeus.exceptions import CommandError, HostError, InvalidPublicKey, UnknownRevision
 from zeus.utils.functional import memoize
 from zeus.utils import sentry, timezone
 
@@ -94,7 +94,7 @@ class GitVcs(Vcs):
                         stdout=e.stdout,
                         stderr=e.stderr,
                     ) from e
-                elif "fatal: bad object" in stderr:
+                if "fatal: bad object" in stderr:
                     # bad object 5d953e751835a52472ca2e1906023435a71cb5e4\n
                     raise UnknownRevision(
                         ref=stderr.split("\n")[0].split("bad object ", 1)[-1],
@@ -109,6 +109,10 @@ class GitVcs(Vcs):
                         cmd=e.cmd, retcode=e.retcode, stdout=e.stdout, stderr=e.stderr
                     ) from e
 
+                if "fatal: protocol error: bad line length character" in stderr:
+                    raise HostError(
+                        cmd=e.cmd, retcode=e.retcode, stdout=e.stdout, stderr=e.stderr
+                    ) from e
                 raise
 
     async def clone(self):
