@@ -33,6 +33,7 @@ class RepositoryTestsResource(BaseRepositoryResource):
             )
             .join(Job, TestCase.job_id == Job.id)
             .filter(
+                Job.repository_id == repo.id,
                 Job.date_finished >= timezone.now() - timedelta(days=14),
                 Job.status == Status.finished,
                 TestCase.repository_id == repo.id,

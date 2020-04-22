@@ -63,6 +63,7 @@ class Job(RepositoryBoundMixin, StandardAttributes, db.Model):
         db.UniqueConstraint(
             "build_id", "provider", "external_id", name="unq_job_provider"
         ),
+        db.Index("idx_job_finished", "repository_id", "status", "date_finished"),
     )
     __repr__ = model_repr("build_id", "number", "status", "result")
 
