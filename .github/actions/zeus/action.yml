@@ -1,0 +1,13 @@
+name: 'Zeus'
+description: 'Report status to Zeus'
+inputs:
+  job-id:
+    description: 'Optional job identifier'
+    required: true
+    default: 'default'
+# outputs:
+#   time: # id of output
+#     description: 'The time we greeted you'
+runs:
+  using: 'node12'
+  main: 'index.js'

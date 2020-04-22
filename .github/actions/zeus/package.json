@@ -1,0 +1,17 @@
+{
+  "name": "zeus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "David Cramer <dcramer@gmail.com> (https://github.com/dcramer)",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.2.3",
+    "@actions/github": "^2.1.1",
+    "@actions/http-client": "^1.0.7"
+  }
+}

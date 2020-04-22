@@ -1,0 +1,93 @@
+name: Zeus
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    services:
+      postgresql:
+        image: postgres:10.1-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:5.0-alpine
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v1
+      - name: idk install stuff
+        run: |
+          cd .github/actions/zeus && npm install
+      - uses: ./.github/actions/zeus
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        with:
+          job-id: ${{ github.job }}
+          job-status: ${{ job.status }}
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        env:
+          NODE_ENV:
+          PIP_DISABLE_PIP_VERSION_CHECK: on
+        run: |
+          sudo apt-get install \
+            libffi-dev \
+            libpq-dev \
+            libxml2-dev \
+            libxslt-dev \
+            libz-dev
+          git --version
+          python -m pip install --upgrade pip
+          pip install pre-commit==1.13
+          curl -sSL https://raw.githubusercontent.com/sdispater/poetry/1.0.0/get-poetry.py | python
+          curl -sSLf https://get.volta.sh | bash
+          PATH=$HOME/.poetry/bin:$PATH NODE_ENV= make
+      - name: Lint with pre-commit
+        run: |
+          PATH=$HOME/.poetry/bin:$PATH PATH=node_modules/.bin:$PATH pre-commit run -a -v
+      - name: Test backend
+        env:
+          NODE_ENV: production
+          SENTRY_ENVIRONMENT: test
+          REDIS_URL: redis://localhost:6379/0
+          SQLALCHEMY_DATABASE_URI: postgres://postgres:postgres@localhost:5432/postgres
+        run: |
+          git --version
+          PATH=node_modules/.bin:$HOME/.poetry/bin:$PATH pre-commit run -a -v
+          PATH=$HOME/.poetry/bin:$PATH poetry run py.test tests -v --cov . --cov-report="xml:.artifacts/coverage.xml" --junit-xml=".artifacts/pytest.junit.xml"
+      - name: Test frontend
+        env:
+          SENTRY_ENVIRONMENT: test
+          JEST_JUNIT_OUTPUT_DIR: .artifacts
+          JEST_JUNIT_OUTPUT_NAME: jest.junit.xml
+          JEST_JUNIT_INCLUDE_CONSOLE_OUTPUT: true
+          JEST_JUNIT_ADD_FILE_ATTRIBUTE: true
+        run: |
+          node_modules/.bin/webpack --json > .artifacts/webpack-stats.json
+          yarn test --ci --reporters=default --reporters=jest-junit
+      - name: Publish results to Zeus
+        uses: ./.github/actions/zeus
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        if: always()
+        with:
+          job-id: ${{ github.job }}
+          job-status: ${{ job.status }}
+          # job-result: ${{ steps.}}
+        # with:
+        #   artifacts:
+        #     - "application/x-junit+xml" .artifacts/*.junit.xml
+        #     - "application/x-cobertura+xml" .artifacts/coverage.xml
+        #     - "application/x-cobertura+xml" .artifacts/coverage/cobertura-coverage.xml
+        #     - "application/x-checkstyle+xml" .artifacts/*.checkstyle.xml
+        #     - "text/x-pycodestyle" .artifacts/flake8.log
+        #     - "application/webpack-stats+json" .artifacts/webpack-stats.json
