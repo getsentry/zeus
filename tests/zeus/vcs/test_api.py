@@ -144,7 +144,7 @@ async def test_branches_basic(client, default_repo_id):
     assert data["branches"], data
 
 
-async def test_branches_show(client, default_repo_id):
+async def test_show_basic(client, default_repo_id):
     resp = await ApiHelper(client).get(
         "/stmt/show", repo_id=default_repo_id, sha="HEAD", filename="README.md"
     )
@@ -153,7 +153,7 @@ async def test_branches_show(client, default_repo_id):
     assert data["show"], data
 
 
-async def test_branches_export(client, default_repo_id):
+async def test_export_basic(client, default_repo_id):
     resp = await ApiHelper(client).get(
         "/stmt/export", repo_id=default_repo_id, sha="HEAD", filename="README.md"
     )
