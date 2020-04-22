@@ -23,11 +23,11 @@ build_schema = BuildSchema()
 repo_names = ("sentry", "zeus")
 
 
-def find_files_in_repo(vcs: Vcs) -> List[str]:
+async def find_files_in_repo(vcs: Vcs) -> List[str]:
     vcs.ensure()
     result = [
         b
-        for b in vcs.run(["ls-tree", "-r", "--name-only", "master"]).split("\n")
+        for b in (await vcs.run(["ls-tree", "-r", "--name-only", "master"])).split("\n")
         if b.endswith((".py", ".js", "jsx"))
     ]
     assert result
@@ -99,7 +99,7 @@ async def load_revisions(
     first_revision = None
     while has_more and num < num_passes:
         has_more = False
-        for commit in vcs.log(parent=parent):
+        for commit in await vcs.log(parent=parent):
             async with db_pool.acquire() as conn:
                 await save_revision(conn, repo.id, commit)
 
@@ -166,7 +166,7 @@ async def mock_build(
 
     # we need to find some filenames for the repo
     if file_list is None:
-        file_list = find_files_in_repo(repo)
+        file_list = await find_files_in_repo(repo)
 
     for n in range(randint(0, 50)):
         try:
@@ -242,7 +242,7 @@ async def load_all(repos=3, commits_per_repo=10):
             vcs = await get_vcs(conn, repo.id)
 
         auth.set_current_tenant(auth.RepositoryTenant(repository_id=repo.id))
-        file_list = find_files_in_repo(vcs)
+        file_list = await find_files_in_repo(vcs)
         await load_revisions(vcs, repo)
         revision_iter = iter(
             list(
