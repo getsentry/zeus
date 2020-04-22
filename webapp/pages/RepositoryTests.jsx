@@ -13,15 +13,15 @@ export default class RepositoryTests extends AsyncPage {
 
   renderBody() {
     let {repo} = this.context;
-    let basePath = `/${repo.full_name}`;
+    let basePath = `/${repo.full_name}/reports/tests`;
     return (
       <div>
         <TabbedNav>
-          <TabbedNavItem to={`${basePath}/tests`} onlyActiveOnIndex={true}>
+          <TabbedNavItem to={`${basePath}`} onlyActiveOnIndex={true}>
             Tree View
           </TabbedNavItem>
-          <TabbedNavItem to={`${basePath}/tests/all`}>All Tests</TabbedNavItem>
-          <TabbedNavItem to={`${basePath}/tests/time`}>Over Time</TabbedNavItem>
+          <TabbedNavItem to={`${basePath}/all`}>All Tests</TabbedNavItem>
+          <TabbedNavItem to={`${basePath}/time`}>Over Time</TabbedNavItem>
         </TabbedNav>
         {this.props.children}
       </div>

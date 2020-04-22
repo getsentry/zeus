@@ -22,9 +22,7 @@ export default class RepositoryHeader extends Component {
           <NavItem to={`${basePath}/revisions`}>Commits</NavItem>
           <NavItem to={`${basePath}/change-requests`}>Change Requests</NavItem>
           <NavItem to={`${basePath}/builds`}>Builds</NavItem>
-          <NavItem to={`${basePath}/coverage`}>Coverage</NavItem>
-          <NavItem to={`${basePath}/tests`}>Tests</NavItem>
-          <NavItem to={`${basePath}/stats`}>Stats</NavItem>
+          <NavItem to={`${basePath}/reports`}>Reports</NavItem>
           {!!repo.permissions.admin && (
             <NavItem to={`${basePath}/settings`}>Settings</NavItem>
           )}

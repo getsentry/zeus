@@ -41,7 +41,7 @@ export default class TestChart extends Component {
           return (
             <React.Fragment key={hash}>
               <TestName name={name}>
-                <Link to={`/${repo.full_name}/tests/${hash}`}>{name}</Link>
+                <Link to={`/${repo.full_name}/reports/tests/${hash}`}>{name}</Link>
               </TestName>
               {results.map((result, i) => (
                 <ResultBox key={i} result={result} />

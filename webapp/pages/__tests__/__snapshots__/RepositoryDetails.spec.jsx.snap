@@ -2523,64 +2523,22 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                       </NavItem>
                       <NavItem
                         activeClassName="active"
-                        to="/gh/getsentry/zeus/coverage"
+                        to="/gh/getsentry/zeus/reports"
                       >
                         <Link
                           activeClassName="active"
                           className="css-1b5hnwr-NavItem eplann01"
                           onlyActiveOnIndex={false}
                           style={Object {}}
-                          to="/gh/getsentry/zeus/coverage"
+                          to="/gh/getsentry/zeus/reports"
                         >
                           <a
                             className="css-1b5hnwr-NavItem eplann01"
-                            href="/gh/getsentry/zeus/coverage"
+                            href="/gh/getsentry/zeus/reports"
                             onClick={[Function]}
                             style={Object {}}
                           >
-                            Coverage
-                          </a>
-                        </Link>
-                      </NavItem>
-                      <NavItem
-                        activeClassName="active"
-                        to="/gh/getsentry/zeus/tests"
-                      >
-                        <Link
-                          activeClassName="active"
-                          className="css-1b5hnwr-NavItem eplann01"
-                          onlyActiveOnIndex={false}
-                          style={Object {}}
-                          to="/gh/getsentry/zeus/tests"
-                        >
-                          <a
-                            className="css-1b5hnwr-NavItem eplann01"
-                            href="/gh/getsentry/zeus/tests"
-                            onClick={[Function]}
-                            style={Object {}}
-                          >
-                            Tests
-                          </a>
-                        </Link>
-                      </NavItem>
-                      <NavItem
-                        activeClassName="active"
-                        to="/gh/getsentry/zeus/stats"
-                      >
-                        <Link
-                          activeClassName="active"
-                          className="css-1b5hnwr-NavItem eplann01"
-                          onlyActiveOnIndex={false}
-                          style={Object {}}
-                          to="/gh/getsentry/zeus/stats"
-                        >
-                          <a
-                            className="css-1b5hnwr-NavItem eplann01"
-                            href="/gh/getsentry/zeus/stats"
-                            onClick={[Function]}
-                            style={Object {}}
-                          >
-                            Stats
+                            Reports
                           </a>
                         </Link>
                       </NavItem>
