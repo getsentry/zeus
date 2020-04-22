@@ -95,8 +95,8 @@ export default (
         <IndexRoute component={RepositoryStats} />
         <Route path="coverage" component={RepositoryFileCoverage} />
         <Route path="tests" component={RepositoryTests}>
-          <IndexRoute component={RepositoryTestTree} />
-          <Route path="all" component={RepositoryTestList} />
+          <IndexRoute component={RepositoryTestList} />
+          <Route path="tree" component={RepositoryTestTree} />
           <Route path="time" component={RepositoryTestChart} />
           <Route path=":testHash" component={TestDetails} />
         </Route>
