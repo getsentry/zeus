@@ -1,5 +1,5 @@
 import React from 'react';
-import {IndexRoute, Route, IndexRedirect} from 'react-router';
+import {IndexRoute, Route, Redirect, IndexRedirect} from 'react-router';
 import Loadable from 'react-loadable';
 
 import App from './pages/App';
@@ -21,6 +21,7 @@ import RepositoryHooks from './pages/RepositoryHooks';
 import RepositoryHookCreate from './pages/RepositoryHookCreate';
 import RepositoryHookDetails from './pages/RepositoryHookDetails';
 import RepositoryOverview from './pages/RepositoryOverview';
+import RepositoryReportsLayout from './pages/RepositoryReportsLayout';
 import RepositoryRevisionList from './pages/RepositoryRevisionList';
 import RepositorySettingsLayout from './pages/RepositorySettingsLayout';
 import RepositorySettings from './pages/RepositorySettings';
@@ -87,18 +88,24 @@ export default (
       <IndexRoute component={RepositoryOverview} />
       <Route path="builds" component={RepositoryBuildList} />
       <Route path="change-requests" component={RepositoryChangeRequestList} />
-      <Route path="coverage" component={RepositoryFileCoverage} />
-      <Route path="stats" component={RepositoryStats} />
+      <Redirect path="coverage" to="reports/coverage" />
+      <Redirect path="stats" to="reports" />
+      <Redirect path="tests" to="reports/tests" />
+      <Route path="reports" component={RepositoryReportsLayout}>
+        <IndexRoute component={RepositoryStats} />
+        <Route path="coverage" component={RepositoryFileCoverage} />
+        <Route path="tests" component={RepositoryTests}>
+          <IndexRoute component={RepositoryTestTree} />
+          <Route path="all" component={RepositoryTestList} />
+          <Route path="time" component={RepositoryTestChart} />
+          <Route path=":testHash" component={TestDetails} />
+        </Route>
+      </Route>
       <Route path="settings" component={RepositorySettingsLayout}>
         <IndexRoute component={RepositorySettings} />
         <Route path="hooks" component={RepositoryHooks} />
         <Route path="hooks/create" component={RepositoryHookCreate} />
         <Route path="hooks/:hookId" component={RepositoryHookDetails} />
-      </Route>
-      <Route path="tests" component={RepositoryTests}>
-        <IndexRoute component={RepositoryTestTree} />
-        <Route path="all" component={RepositoryTestList} />
-        <Route path="time" component={RepositoryTestChart} />
       </Route>
       <Route path="builds/:buildNumber" component={BuildDetails}>
         <IndexRoute component={BuildOverview} />
@@ -117,7 +124,6 @@ export default (
         <Route path="tests" component={RevisionTestList} />
         <Route path="artifacts" component={RevisionArtifacts} />
       </Route>
-      <Route path="tests/:testHash" component={TestDetails} />
     </Route>
     <Route path="/install" component={AsyncInstall} />
     <Route path="*" component={NotFoundError} />

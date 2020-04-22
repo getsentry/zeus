@@ -66,7 +66,7 @@ class TestListItem extends Component {
             <AggregateDuration data={test.runs} />
           </Box>
           <Box width={40} style={{textAlign: 'right'}}>
-            <Link to={`/${repo.full_name}/tests/${test.hash}`}>
+            <Link to={`/${repo.full_name}/reports/tests/${test.hash}`}>
               <Icon>
                 <MdHistory size={20} />
               </Icon>
