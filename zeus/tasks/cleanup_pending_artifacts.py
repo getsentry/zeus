@@ -19,7 +19,12 @@ def cleanup_pending_artifacts(task_limit=100):
     for result in queryset:
         with db.session.begin_nested():
             current_app.logger.warning(
-                "cleanup: process_pending_artifact %s [expired]", result.id
+                "cleanup-pending-artifacts.expired",
+                extra={
+                    "pending_artifact_id": result.id,
+                    "external_build_id": result.external_build_id,
+                    "external_job_id": result.external_job_id,
+                },
             )
             if result.file:
                 result.file.delete()
@@ -40,10 +45,23 @@ def cleanup_pending_artifacts(task_limit=100):
 
     for result in queryset:
         current_app.logger.warning(
-            "cleanup: process_pending_artifact %s [build_finished]", result.id
+            "cleanup-pending-artifacts.finished-build",
+            extra={
+                "pending_artifact_id": result.id,
+                "external_build_id": result.external_build_id,
+                "external_job_id": result.external_job_id,
+            },
         )
         try:
             celery.delay("zeus.process_pending_artifact", pending_artifact_id=result.id)
         except UnknownJob:
+            current_app.logger.warning(
+                "cleanup-pending-artifacts.unknown-job",
+                extra={
+                    "pending_artifact_id": result.id,
+                    "external_build_id": result.external_build_id,
+                    "external_job_id": result.external_job_id,
+                },
+            )
             # do we just axe it?
             pass
