@@ -39,7 +39,7 @@ class RepositoryTestsResource(BaseRepositoryResource):
                         Job.date_finished >= timezone.now() - timedelta(days=14),
                         Job.status == Status.finished,
                     )
-                    .limit(1000)
+                    .limit(10000)
                     .subquery()
                 )
             )
