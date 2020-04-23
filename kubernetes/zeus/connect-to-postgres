@@ -1,0 +1,12 @@
+#!/bin/bash -eu
+
+SECRET_NAME=cloudsql-db-credentials
+
+INSTANCE=$(gcloud sql instances list --format "get(name)")
+
+USERNAME=$(kubectl get secret $SECRET_NAME -o jsonpath="{.data.username}" | base64 --decode)
+PASSWORD=$(kubectl get secret $SECRET_NAME -o jsonpath="{.data.password}" | base64 --decode)
+
+
+echo "When prompted, use this password: ${PASSWORD}"
+gcloud sql connect $INSTANCE --user=$USERNAME
