@@ -1,3 +1,4 @@
+from datetime import timedelta
 from flask import current_app
 
 from zeus import auth
@@ -18,13 +19,27 @@ from zeus.utils import timezone
 def process_artifact(artifact_id, manager=None, force=False, countdown=None, **kwargs):
     artifact = Artifact.query.unrestricted_unsafe().get(artifact_id)
     if artifact is None:
-        current_app.logger.error("Artifact %s not found", artifact_id)
+        current_app.logger.error(
+            "process-artifact.already-not-found",
+            extra={"artifact_id": artifact_id, "job_id": artifact.job_id},
+        )
         return
 
     if artifact.status == Status.finished and not force:
         current_app.logger.info(
-            "Skipping artifact processing (%s) - already marked as finished",
-            artifact_id,
+            "process-artifact.already-finished",
+            extra={"artifact_id": artifact_id, "job_id": artifact.job_id},
+        )
+        return
+
+    if (
+        artifact.status == Status.in_progress
+        and not force
+        and artifact.date_started > timezone.now() - timedelta(minutes=15)
+    ):
+        current_app.logger.warning(
+            "process-artifact.already-in-progress",
+            extra={"artifact_id": artifact_id, "job_id": artifact.job_id},
         )
         return
 
@@ -39,7 +54,8 @@ def process_artifact(artifact_id, manager=None, force=False, countdown=None, **k
 
     if job.result == Result.aborted:
         current_app.logger.info(
-            "Skipping artifact processing (%s) - Job aborted", artifact_id
+            "process-artifact.job-aborted",
+            extra={"artifact_id": artifact_id, "job_id": artifact.job_id},
         )
         artifact.status = Status.finished
         db.session.add(artifact)
@@ -49,7 +65,8 @@ def process_artifact(artifact_id, manager=None, force=False, countdown=None, **k
     build = Build.query.get(job.build_id)
     if build.result == Result.errored:
         current_app.logger.info(
-            "Skipping artifact processing (%s) - Build errored", artifact_id
+            "process-artifact.build-errored",
+            extra={"artifact_id": artifact_id, "job_id": artifact.job_id},
         )
         artifact.status = Status.finished
         db.session.add(artifact)
@@ -60,7 +77,8 @@ def process_artifact(artifact_id, manager=None, force=False, countdown=None, **k
         if manager:
             raise Exception("Cannot process artifact until revision is resolved")
         current_app.logger.info(
-            "Deferring artifact processing (%s) - revision not resolved", artifact_id
+            "process-artifact.unresolved-revision",
+            extra={"artifact_id": artifact_id, "job_id": artifact.job_id},
         )
         return celery.apply_async(
             "zeus.process_artifact",
@@ -78,13 +96,14 @@ def process_artifact(artifact_id, manager=None, force=False, countdown=None, **k
                 manager.process(artifact)
         except Exception:
             current_app.logger.exception(
-                "Unrecoverable exception processing artifact %s: %s",
-                artifact.job_id,
-                artifact,
+                "process-artifact.unrecoverable-error",
+                extra={"artifact_id": artifact_id, "job_id": artifact.job_id},
             )
+
     else:
-        current_app.logger.info(
-            "Skipping artifact processing (%s) due to missing file", artifact_id
+        current_app.logger.warning(
+            "process-artifact.missing-file",
+            extra={"artifact_id": artifact_id, "job_id": artifact.job_id},
         )
 
     artifact.status = Status.finished
