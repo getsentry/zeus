@@ -1,6 +1,7 @@
 import re
 
 from flask import current_app
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 
 from zeus.config import db
@@ -79,29 +80,43 @@ class TestResultManager(object):
 
         # create all test cases
         for test in test_list:
-            testcase = TestCase(
-                job=job,
-                repository_id=repository_id,
-                hash=test.hash,
-                name=test.name,
-                duration=test.duration,
-                message=test.message,
-                result=test.result,
-            )
-            db.session.add(testcase)
-
-            if test.artifacts:
-                for ta in test.artifacts:
-                    testartifact = Artifact(
+            try:
+                # TODO(dcramer): we could do create_or_update here to ensure correctness
+                with db.session.begin_nested():
+                    testcase = TestCase(
+                        job=job,
                         repository_id=repository_id,
-                        testcase_id=testcase.id,
-                        job_id=job.id,
-                        name=ta["name"],
-                        # TODO(dcramer): mimetype detection?
-                        # type=getattr(Artifactta['type'],
+                        hash=test.hash,
+                        name=test.name,
+                        duration=test.duration,
+                        message=test.message,
+                        result=test.result,
                     )
-                    testartifact.save_base64_content(ta["base64"])
-                    db.session.add(testartifact)
+                    db.session.add(testcase)
+                    db.session.flush()
+            except IntegrityError as exc:
+                if "duplicate" in str(exc):
+                    continue
+                raise
+
+            for ta in test.artifacts:
+                try:
+                    with db.session.begin_nested():
+                        # TODO(dcramer): we could do create_or_update here to ensure correctness
+                        testartifact = Artifact(
+                            repository_id=repository_id,
+                            testcase_id=testcase.id,
+                            job_id=job.id,
+                            name=ta["name"],
+                            # TODO(dcramer): mimetype detection?
+                            # type=getattr(Artifactta['type'],
+                        )
+                        testartifact.save_base64_content(ta["base64"])
+                        db.session.add(testartifact)
+                        db.session.flush()
+                except IntegrityError as exc:
+                    if "duplicate" not in str(exc):
+                        raise
 
         db.session.flush()
 
