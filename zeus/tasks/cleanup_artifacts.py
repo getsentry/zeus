@@ -4,7 +4,7 @@ from sqlalchemy import or_
 
 from zeus.config import celery, db
 from zeus.constants import Status
-from zeus.models import Artifact
+from zeus.models import Artifact, Job
 from zeus.utils import timezone
 from zeus.utils.sentry import Span
 
@@ -12,7 +12,7 @@ from .process_artifact import process_artifact
 
 
 @celery.task(name="zeus.cleanup_artifacts", time_limit=300)
-def cleanup_artifacts(task_limit=100):
+def cleanup_artifacts(task_limit=100, _process_artifact=process_artifact):
     with Span("cleanup.expired_artifacts"):
         # remove expired artifacts
         queryset = (
@@ -39,8 +39,10 @@ def cleanup_artifacts(task_limit=100):
     with Span("cleanup.stuck_artifacts"):
         queryset = (
             Artifact.query.unrestricted_unsafe()
+            .join(Job, Job.id == Artifact.job_id)
             .filter(
                 Artifact.status != Status.finished,
+                Job.status == Status.finished,
                 or_(
                     Artifact.date_updated < timezone.now() - timedelta(minutes=15),
                     Artifact.date_updated == None,  # NOQA
@@ -52,9 +54,9 @@ def cleanup_artifacts(task_limit=100):
             with Span("cleanup.process_artifact"):
                 Artifact.query.unrestricted_unsafe().filter(
                     Artifact.status != Status.finished, Artifact.id == result.id
-                ).update({"date_updated": timezone.now()})
+                ).update({"date_updated": timezone.now(), "status": Status.queued})
                 db.session.flush()
                 current_app.logger.warning(
                     "cleanup: process_artifact %s [processed]", result.id
                 )
-                process_artifact(artifact_id=result.id)
+                _process_artifact(artifact_id=result.id)

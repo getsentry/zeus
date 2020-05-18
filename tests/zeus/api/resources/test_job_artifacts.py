@@ -61,6 +61,7 @@ def test_create_job_artifact(
     artifact = Artifact.query.get(data["id"])
     assert artifact.file.filename.endswith("junit.xml")
     assert artifact.type == "xunit"
+    assert artifact.date_updated
 
 
 def test_create_job_artifact_as_base64(
