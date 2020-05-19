@@ -5,6 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from zeus.config import db, redis
 from zeus.models import FileCoverage
+from zeus.utils import sentry
 from zeus.utils.diff_parser import DiffParser
 
 from .base import ArtifactHandler
@@ -20,21 +21,26 @@ class CoverageHandler(ArtifactHandler):
     )
 
     def process(self, fp):
-        results = self.get_coverage(fp)
+        with sentry.Span("coverage.get-covrage") as span:
+            results = self.get_coverage(fp)
+            span.set_data("num_results", len(results))
 
         for result in results:
-            try:
-                with db.session.begin_nested():
-                    db.session.add(result)
-            except IntegrityError:
-                lock_key = "coverage:{build_id}:{file_hash}".format(
-                    build_id=result.build_id.hex,
-                    file_hash=sha1(result.filename.encode("utf-8")).hexdigest(),
-                )
-                with redis.lock(lock_key):
-                    result = self.merge_coverage(result)
-                    db.session.add(result)
-            db.session.flush()
+            with sentry.Span("coverage.process-result") as span:
+                try:
+                    with db.session.begin_nested():
+                        db.session.add(result)
+                    span.set_data("merged", "0")
+                except IntegrityError:
+                    lock_key = "coverage:{build_id}:{file_hash}".format(
+                        build_id=result.build_id.hex,
+                        file_hash=sha1(result.filename.encode("utf-8")).hexdigest(),
+                    )
+                    with redis.lock(lock_key):
+                        result = self.merge_coverage(result)
+                        db.session.add(result)
+                    span.set_data("merged", "1")
+                db.session.flush()
 
         return results
 
