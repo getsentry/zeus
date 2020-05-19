@@ -454,7 +454,7 @@ def configure_sentry(app):
         environment=environment,
         traces_sample_rate=1.0,
         traceparent_v2=True,
-        _experiments={"fast_serialize": True},
+        _experiments={"fast_serialize": True, "auto_session_tracking": True},
     )
 
     with sentry_sdk.configure_scope() as scope:
