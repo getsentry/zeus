@@ -1,3 +1,5 @@
+import sentry_sdk
+
 from datetime import timedelta
 from flask import current_app
 
@@ -17,13 +19,20 @@ from zeus.utils import timezone
     time_limit=60,
 )
 def process_artifact(artifact_id, manager=None, force=False, countdown=None, **kwargs):
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("artifact_id", str(artifact_id))
+
     artifact = Artifact.query.unrestricted_unsafe().get(artifact_id)
     if artifact is None:
         current_app.logger.error(
-            "process-artifact.already-not-found",
+            "process-artifact.not-found",
             extra={"artifact_id": artifact_id, "job_id": artifact.job_id},
         )
         return
+
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("job_id", str(artifact.job_id))
+        scope.set_tag("repository_id", str(artifact.repository_id))
 
     if artifact.status == Status.finished and not force:
         current_app.logger.info(

@@ -55,7 +55,9 @@ def test_delete_repository(
     resp = client.delete("/api/repos/{}".format(default_repo.get_full_name()))
 
     assert resp.status_code == 202
-    mock_delay.assert_called_once_with("zeus.delete_repo", repo_id=default_repo.id)
+    mock_delay.assert_called_once_with(
+        "zeus.delete_repo", repository_id=default_repo.id
+    )
 
     default_repo = Repository.query.get(default_repo.id)
     assert default_repo.status == RepositoryStatus.inactive

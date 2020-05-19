@@ -1,3 +1,5 @@
+import sentry_sdk
+
 from flask import current_app, render_template
 from flask_mail import Message, sanitize_address
 from uuid import UUID
@@ -17,6 +19,9 @@ from zeus.utils.http import absolute_url
     time_limit=60,
 )
 def deactivate_repo(repository_id: UUID, reason: DeactivationReason):
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("repository_id", str(repository_id))
+
     repository = Repository.query.unrestricted_unsafe().get(repository_id)
 
     repository.status = RepositoryStatus.inactive

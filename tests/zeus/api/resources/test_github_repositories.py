@@ -84,7 +84,9 @@ def test_deactivate_repository_github(
     )
 
     assert resp.status_code == 202
-    mock_delay.assert_called_once_with("zeus.delete_repo", repo_id=default_repo.id)
+    mock_delay.assert_called_once_with(
+        "zeus.delete_repo", repository_id=default_repo.id
+    )
 
 
 def test_deactivate_non_existing_repository_github(client, default_login):
