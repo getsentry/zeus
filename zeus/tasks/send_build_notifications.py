@@ -1,3 +1,5 @@
+import sentry_sdk
+
 from datetime import timedelta
 from flask import current_app
 from uuid import UUID
@@ -14,9 +16,15 @@ from zeus.utils import timezone
     name="zeus.send_build_notifications", max_retries=None, autoretry_for=(Exception,)
 )
 def send_build_notifications(build_id: UUID, time_limit=30):
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("build_id", str(build_id))
+
     build = Build.query.unrestricted_unsafe().get(build_id)
     if not build:
         raise ValueError("Unable to find build with id = {}".format(build_id))
+
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("repository_id", str(build.repository_id))
 
     if not build.date_started:
         current_app.logger.warn(

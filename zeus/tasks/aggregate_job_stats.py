@@ -1,3 +1,6 @@
+
+import sentry_sdk
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 from uuid import UUID
@@ -50,6 +53,9 @@ def aggregate_build_stats_for_job(job_id: UUID):
     This should generally be fired upon a job's completion, or
     alternatively it can be used to repair aggregate data.
     """
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("job_id", str(job_id))
+
     lock_key = "job:{job_id}".format(job_id=job_id)
     with redis.lock(lock_key):
         job = (
@@ -60,6 +66,10 @@ def aggregate_build_stats_for_job(job_id: UUID):
         )
         if not job:
             raise ValueError
+
+        with sentry_sdk.configure_scope() as scope:
+            scope.set_tag("build_id", str(job.build_id))
+            scope.set_tag("repository_id", str(job.repository_id))
 
         auth.set_current_tenant(auth.RepositoryTenant(repository_id=job.repository_id))
 
@@ -283,6 +293,9 @@ def aggregate_build_stats(build_id: UUID):
     jobs. These attributes include start and completion dates, as well as
     the status and result.
     """
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("build_id", str(build_id))
+
     # now we pull in the entirety of the build's data to aggregate state upward
     lock_key = "build:{build_id}".format(build_id=build_id)
     with redis.lock(lock_key, expire=60, nowait=True):
@@ -291,6 +304,9 @@ def aggregate_build_stats(build_id: UUID):
         )
         if not build:
             raise ValueError("Unable to find build with id = {}".format(build_id))
+
+        with sentry_sdk.configure_scope() as scope:
+            scope.set_tag("repository_id", str(build.repository_id))
 
         auth.set_current_tenant(
             auth.RepositoryTenant(repository_id=build.repository_id)

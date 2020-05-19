@@ -1,3 +1,5 @@
+import sentry_sdk
+
 from uuid import UUID
 
 from flask import current_app
@@ -9,16 +11,19 @@ from zeus.models import Build, Job, Repository, RepositoryStatus, ItemOption, It
 
 
 @celery.task(name="zeus.delete_repo", max_retries=None, autoretry_for=(Exception,))
-def delete_repo(repo_id: UUID):
-    auth.set_current_tenant(auth.RepositoryTenant(repo_id, Permission.admin))
+def delete_repo(repository_id: UUID):
+    with sentry_sdk.configure_scope() as scope:
+        scope.set_tag("repository_id", str(repository_id))
 
-    repo = Repository.query.unrestricted_unsafe().get(repo_id)
+    auth.set_current_tenant(auth.RepositoryTenant(repository_id, Permission.admin))
+
+    repo = Repository.query.unrestricted_unsafe().get(repository_id)
     if not repo:
-        current_app.logger.error("Repository %s not found", repo_id)
+        current_app.logger.error("Repository %s not found", repository_id)
         return
 
     if repo.status != RepositoryStatus.inactive:
-        current_app.logger.error("Repository %s not marked as inactive", repo_id)
+        current_app.logger.error("Repository %s not marked as inactive", repository_id)
         return
 
     # delete repo abstract entities

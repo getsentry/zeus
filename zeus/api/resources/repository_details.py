@@ -47,6 +47,6 @@ class RepositoryDetailsResource(BaseRepositoryResource):
             db.session.add(repo)
             db.session.flush()
 
-            celery.delay("zeus.delete_repo", repo_id=repo.id)
+            celery.delay("zeus.delete_repo", repository_id=repo.id)
 
         return self.respond(status=202)
