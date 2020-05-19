@@ -25,9 +25,7 @@ def cleanup_artifacts(task_limit=100, _process_artifact=process_artifact):
             .limit(task_limit)
         )
         for result in queryset:
-            current_app.logger.warning(
-                "cleanup: process_artifact %s [expired]", result.id
-            )
+            current_app.logger.info("cleanup: process_artifact %s [expired]", result.id)
             Artifact.query.unrestricted_unsafe().filter(
                 Artifact.status != Status.expired, Artifact.id == result.id
             ).update({"status": Status.expired})
