@@ -82,6 +82,9 @@ def process_pending_artifact(pending_artifact_id, **kwargs):
         job.status = Status.collecting_results
         db.session.add(job)
 
+    # unset file so it doesnt get deleted from storage
+    pending_artifact.file = None
+    db.session.delete(pending_artifact)
     db.session.commit()
 
     celery.delay("zeus.process_artifact", artifact_id=artifact.id)
