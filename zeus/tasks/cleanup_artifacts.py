@@ -40,6 +40,7 @@ def cleanup_artifacts(task_limit=100, _process_artifact=process_artifact):
             .join(Job, Job.id == Artifact.job_id)
             .filter(
                 Artifact.status != Status.finished,
+                Artifact.status != Status.expired,
                 Job.status == Status.finished,
                 or_(
                     Artifact.date_updated < timezone.now() - timedelta(minutes=15),
