@@ -10,13 +10,30 @@ def test_cleanup_artifacts_already_finished(mocker, db_session):
     mock_process_artifact = mocker.Mock()
 
     artifact = factories.ArtifactFactory.create(
-        job=factories.JobFactory(finished=True), status=Status.finished
+        job=factories.JobFactory(finished=True),
+        status=Status.finished,
+        date_updated=timezone.now() - timedelta(minutes=16),
     )
 
     cleanup_artifacts(_process_artifact=mock_process_artifact)
 
     assert not mock_process_artifact.mock_calls
     assert artifact.status == Status.finished
+
+
+def test_cleanup_artifacts_already_expired(mocker, db_session):
+    mock_process_artifact = mocker.Mock()
+
+    artifact = factories.ArtifactFactory.create(
+        job=factories.JobFactory(finished=True),
+        status=Status.expired,
+        date_updated=timezone.now() - timedelta(minutes=16),
+    )
+
+    cleanup_artifacts(_process_artifact=mock_process_artifact)
+
+    assert not mock_process_artifact.mock_calls
+    assert artifact.status == Status.expired
 
 
 def test_cleanup_artifacts_stuck(mocker, db_session):
