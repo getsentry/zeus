@@ -33,6 +33,11 @@ def process_artifact(artifact_id, manager=None, force=False, countdown=None, **k
     with sentry_sdk.configure_scope() as scope:
         scope.set_tag("job_id", str(artifact.job_id))
         scope.set_tag("repository_id", str(artifact.repository_id))
+        scope.set_tag("artifact_type", artifact.type)
+        scope.set_tag(
+            "artifact_extension",
+            artifact.name.rsplit(".", 1)[-1] if "." in artifact.name else "",
+        )
 
     if artifact.status == Status.finished and not force:
         current_app.logger.info(
