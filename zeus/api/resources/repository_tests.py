@@ -31,17 +31,11 @@ class RepositoryTestsResource(BaseRepositoryResource):
                 runs_failed,
                 func.avg(TestCase.duration).label("avg_duration"),
             )
+            .join(Job, Job.id == TestCase.job_id)
             .filter(
-                TestCase.job_id.in_(
-                    db.session.query(Job.id)
-                    .filter(
-                        Job.repository_id == repo.id,
-                        Job.date_finished >= timezone.now() - timedelta(days=14),
-                        Job.status == Status.finished,
-                    )
-                    .limit(10000)
-                    .subquery()
-                )
+                Job.repository_id == repo.id,
+                Job.date_finished >= timezone.now() - timedelta(days=14),
+                Job.status == Status.finished,
             )
             .group_by(TestCase.hash, TestCase.name)
             .order_by(runs_failed.desc())
