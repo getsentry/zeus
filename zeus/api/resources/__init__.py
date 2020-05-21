@@ -34,7 +34,6 @@ from .repository_revisions import *  # NOQA
 from .repository_stats import *  # NOQA
 from .repository_test_details import *  # NOQA
 from .repository_test_history import *  # NOQA
-from .repository_tests_history_by_build import *  # NOQA
 from .repository_tests import *  # NOQA
 from .repository_testtree import *  # NOQA
 from .revision_artifacts import *  # NOQA
