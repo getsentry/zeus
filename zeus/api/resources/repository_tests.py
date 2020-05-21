@@ -35,7 +35,7 @@ class RepositoryTestsResource(BaseRepositoryResource):
                 # our index here and doing a full sequence scan on testcase.. but only when the repository_id
                 # is a fixed value
                 TestCaseRollup.repository_id == repo.id,
-                TestCaseRollup.date >= timezone.now() - timedelta(days=14),
+                TestCaseRollup.date >= timezone.now() - timedelta(days=30),
             )
             .group_by(TestCaseRollup.hash, TestCaseRollup.name)
             .order_by(runs_failed.desc())
