@@ -29,10 +29,10 @@ class TestListItem extends Component {
               {test.runs_failed.toLocaleString()}
             </Box>
             <Box width={120} style={{textAlign: 'right'}}>
-              {parseInt((1 - test.runs_failed / test.runs_total) * 100, 10)}%
+              {parseInt((1 - test.runs_failed / test.total_runs) * 100, 10)}%
             </Box>
             <Box width={120} style={{textAlign: 'right'}}>
-              {test.runs_total.toLocaleString()}
+              {test.total_runs.toLocaleString()}
             </Box>
             <Box width={120} style={{textAlign: 'right'}}>
               <Duration ms={test.avg_duration} short={true} />

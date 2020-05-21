@@ -15,5 +15,6 @@ from .revision import *  # NOQA
 from .stats import *  # NOQA
 from .styleviolation import *  # NOQA
 from .testcase import *  # NOQA
+from .testcase_rollup import *  # NOQA
 from .token import *  # NOQA
 from .user import *  # NOQA

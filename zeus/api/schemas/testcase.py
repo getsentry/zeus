@@ -1,9 +1,4 @@
-__all__ = (
-    "AggregateTestCaseSummarySchema",
-    "TestCaseSummarySchema",
-    "TestCaseStatisticsSchema",
-    "TestCaseSchema",
-)
+__all__ = ("AggregateTestCaseSummarySchema", "TestCaseSummarySchema", "TestCaseSchema")
 
 from collections import defaultdict
 from marshmallow import Schema, fields, pre_dump
@@ -249,13 +244,3 @@ class TestCaseSummarySchema(Schema):
 
 class TestCaseSchema(TestCaseSummarySchema):
     message = fields.Str(required=False)
-
-
-class TestCaseStatisticsSchema(Schema):
-    id = fields.UUID(dump_only=True)
-    name = fields.Str(required=True)
-    hash = fields.Str(dump_only=True)
-
-    runs_failed = fields.Integer(dump_only=True)
-    runs_total = fields.Integer(dump_only=True)
-    avg_duration = fields.Integer(dump_only=True)

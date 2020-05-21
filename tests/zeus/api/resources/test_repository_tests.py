@@ -1,53 +1,53 @@
+from datetime import timedelta
 from zeus import factories
 
 
 def test_repository_tests(
-    client,
-    default_login,
-    default_build,
-    default_job,
-    default_testcase,
-    default_repo,
-    default_repo_access,
-    default_revision,
+    client, default_login, default_build, default_job, default_repo, default_repo_access
 ):
-    build2 = factories.BuildFactory(revision=default_revision, failed=True)
-    job2 = factories.JobFactory(build=build2, failed=True)
-    testcase1 = factories.TestCaseFactory(
-        job=job2, name=default_testcase.name, failed=True
+    factories.TestCaseRollupFactory(
+        repository=default_repo,
+        name="a.test",
+        date=default_job.date_finished.date(),
+        hash="a" * 32,
+        runs_failed=3,
+        runs_passed=5,
+        total_duration=80,
     )
-
-    build3 = factories.BuildFactory(revision=default_revision, finished=True)
-    job3 = factories.JobFactory(build=build3, passed=True)
-    testcase2 = factories.TestCaseFactory(
-        job=job3, passed=True, name=default_testcase.name + "2"
+    factories.TestCaseRollupFactory(
+        repository=default_repo,
+        name="a.test",
+        hash="a" * 32,
+        date=default_job.date_finished.date() - timedelta(days=1),
+        runs_failed=0,
+        runs_passed=2,
+        total_duration=40,
     )
-
-    build4 = factories.BuildFactory(revision=default_revision, finished=True)
-    job4 = factories.JobFactory(build=build4, passed=True)
-    testcase3 = factories.TestCaseFactory(
-        job=job4, name=default_testcase.name, passed=True
+    factories.TestCaseRollupFactory(
+        repository=default_repo,
+        name="another.test",
+        hash="b" * 32,
+        date=default_job.date_finished.date(),
+        runs_failed=8,
+        runs_passed=0,
+        total_duration=240,
     )
-
-    assert testcase2.hash != testcase1.hash
 
     resp = client.get("/api/repos/{}/tests".format(default_repo.get_full_name()))
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 2
     assert data[0] == {
-        "name": default_testcase.name,
-        "hash": default_testcase.hash,
-        "runs_failed": 1,
-        "runs_total": 3,
-        "avg_duration": int(
-            (default_testcase.duration + testcase1.duration + testcase3.duration) / 3
-        ),
+        "name": "another.test",
+        "hash": "b" * 32,
+        "runs_failed": 8,
+        "total_runs": 8,
+        "avg_duration": 30,
     }
     assert data[1] == {
-        "name": testcase2.name,
-        "hash": testcase2.hash,
-        "runs_failed": 0,
-        "runs_total": 1,
-        "avg_duration": testcase2.duration,
+        "name": "a.test",
+        "hash": "a" * 32,
+        "runs_failed": 3,
+        "total_runs": 10,
+        "avg_duration": 12,
     }
