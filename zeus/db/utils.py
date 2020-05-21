@@ -55,7 +55,9 @@ def get_or_create(model, where: dict, defaults: dict = None) -> Tuple[Any, bool]
     return instance, created
 
 
-def create_or_update(model, where: dict, values: dict = None) -> Tuple[Any, bool]:
+def create_or_update(
+    model, where: dict, values: dict = None, create_values: dict = None
+) -> Tuple[Any, bool]:
     if values is None:
         values = {}
 
@@ -63,7 +65,7 @@ def create_or_update(model, where: dict, values: dict = None) -> Tuple[Any, bool
 
     instance = model.query.filter_by(**where).first()
     if instance is None:
-        instance = try_create(model, where, values)
+        instance = try_create(model, where, create_values or values)
         if instance is None:
             instance = model.query.filter_by(**where).first()
             if instance is None:

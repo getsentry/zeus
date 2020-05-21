@@ -103,6 +103,7 @@ def aggregate_build_stats_for_job(job_id: UUID):
             record_style_violation_stats(job.id)
             record_bundle_stats(job.id)
             record_failure_reasons(job)
+            celery.delay("zeus.rollup_testcases_for_job", job_id=job.id)
             db.session.commit()
 
     lock_key = "aggstatsbuild:{build_id}".format(build_id=job.build_id.hex)

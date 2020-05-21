@@ -240,3 +240,21 @@ def test_record_bundle_stats(mocker, db_session, default_revision, default_tenan
         i.name: i.value for i in ItemStat.query.filter(ItemStat.item_id == job.id)
     }
     assert job_stats["bundle.total_asset_size"] == 2500
+
+
+def test_aggregate_build_stats_for_job_triggers_testcase_rollup(
+    mocker, db_session, default_revision, default_tenant
+):
+    mock_delay = mocker.patch("zeus.config.celery.delay")
+
+    build = factories.BuildFactory(revision=default_revision, passed=True)
+    db_session.add(build)
+
+    job = factories.JobFactory(build=build, passed=True)
+    db_session.add(job)
+
+    factories.TestCaseFactory(job=job, passed=True)
+
+    aggregate_build_stats_for_job(job.id)
+
+    mock_delay.assert_any_call("zeus.rollup_testcases_for_job", job_id=job.id)

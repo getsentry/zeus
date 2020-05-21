@@ -10,3 +10,4 @@ from .process_travis_webhook import *  # NOQA
 from .resolve_ref import *  # NOQA
 from .send_build_notifications import *  # NOQA
 from .sync_github_access import *  # NOQA
+from .testcase_rollups import *  # NOQA
