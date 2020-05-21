@@ -24,7 +24,7 @@ repo_names = ("sentry", "zeus")
 
 
 async def find_files_in_repo(vcs: Vcs) -> List[str]:
-    vcs.ensure()
+    await vcs.ensure()
     result = [
         b
         for b in (await vcs.run(["ls-tree", "-r", "--name-only", "master"])).split("\n")
@@ -92,7 +92,7 @@ async def load_revisions(
     if db_pool is None:
         db_pool = await create_db_pool()
 
-    vcs.ensure()
+    await vcs.ensure()
     num = 0
     has_more = True
     parent = None
