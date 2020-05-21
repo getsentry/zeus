@@ -72,7 +72,7 @@ class UnstyledHeader extends Component {
           className="Repo-Selector"
           clearable={false}
           options={this.getRepositoryList()}
-          noOptionsMessage="(no repos configured)"
+          noOptionsMessage={() => '(no repos configured)'}
           onChange={this.onSelectRepo}
           value={this.getActiveRepo()}
           styles={{
