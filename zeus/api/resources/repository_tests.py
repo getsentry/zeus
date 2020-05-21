@@ -23,6 +23,10 @@ class RepositoryTestsResource(BaseRepositoryResource):
             .label("runs_failed")
         )
 
+        repo_subquery = (
+            db.session.query(Repository.id).filter(Repository.id == repo.id).subquery()
+        )
+
         query = (
             db.session.query(
                 TestCase.hash,
@@ -33,7 +37,10 @@ class RepositoryTestsResource(BaseRepositoryResource):
             )
             .join(Job, Job.id == TestCase.job_id)
             .filter(
-                Job.repository_id == repo.id,
+                # HACK(dcramer): we're working around the postgres 9.6 query planner refusing to use
+                # our index here and doing a full sequence scan on testcase.. but only when the repository_id
+                # is a fixed value
+                Job.repository_id == repo_subquery,
                 Job.date_finished >= timezone.now() - timedelta(days=14),
                 Job.status == Status.finished,
             )
