@@ -125,7 +125,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                           defaultInputValue=""
                           defaultMenuIsOpen={false}
                           defaultValue={null}
-                          noOptionsMessage="(no repos configured)"
+                          noOptionsMessage={[Function]}
                           onChange={[Function]}
                           options={
                             Array [
@@ -173,7 +173,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                             menuShouldBlockScroll={false}
                             menuShouldScrollIntoView={true}
                             minMenuHeight={140}
-                            noOptionsMessage="(no repos configured)"
+                            noOptionsMessage={[Function]}
                             onChange={[Function]}
                             onInputChange={[Function]}
                             onMenuClose={[Function]}
@@ -257,7 +257,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                   "menuShouldBlockScroll": false,
                                   "menuShouldScrollIntoView": true,
                                   "minMenuHeight": 140,
-                                  "noOptionsMessage": "(no repos configured)",
+                                  "noOptionsMessage": [Function],
                                   "onChange": [Function],
                                   "onInputChange": [Function],
                                   "onMenuClose": [Function],
@@ -389,7 +389,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                         "menuShouldBlockScroll": false,
                                         "menuShouldScrollIntoView": true,
                                         "minMenuHeight": 140,
-                                        "noOptionsMessage": "(no repos configured)",
+                                        "noOptionsMessage": [Function],
                                         "onChange": [Function],
                                         "onInputChange": [Function],
                                         "onMenuClose": [Function],
@@ -529,7 +529,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                               "menuShouldBlockScroll": false,
                                               "menuShouldScrollIntoView": true,
                                               "minMenuHeight": 140,
-                                              "noOptionsMessage": "(no repos configured)",
+                                              "noOptionsMessage": [Function],
                                               "onChange": [Function],
                                               "onInputChange": [Function],
                                               "onMenuClose": [Function],
@@ -655,7 +655,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                                     "menuShouldBlockScroll": false,
                                                     "menuShouldScrollIntoView": true,
                                                     "minMenuHeight": 140,
-                                                    "noOptionsMessage": "(no repos configured)",
+                                                    "noOptionsMessage": [Function],
                                                     "onChange": [Function],
                                                     "onInputChange": [Function],
                                                     "onMenuClose": [Function],
@@ -779,7 +779,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                                     "menuShouldBlockScroll": false,
                                                     "menuShouldScrollIntoView": true,
                                                     "minMenuHeight": 140,
-                                                    "noOptionsMessage": "(no repos configured)",
+                                                    "noOptionsMessage": [Function],
                                                     "onChange": [Function],
                                                     "onInputChange": [Function],
                                                     "onMenuClose": [Function],
@@ -992,7 +992,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                               "menuShouldBlockScroll": false,
                                               "menuShouldScrollIntoView": true,
                                               "minMenuHeight": 140,
-                                              "noOptionsMessage": "(no repos configured)",
+                                              "noOptionsMessage": [Function],
                                               "onChange": [Function],
                                               "onInputChange": [Function],
                                               "onMenuClose": [Function],
@@ -1114,7 +1114,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                                     "menuShouldBlockScroll": false,
                                                     "menuShouldScrollIntoView": true,
                                                     "minMenuHeight": 140,
-                                                    "noOptionsMessage": "(no repos configured)",
+                                                    "noOptionsMessage": [Function],
                                                     "onChange": [Function],
                                                     "onInputChange": [Function],
                                                     "onMenuClose": [Function],
@@ -1247,7 +1247,7 @@ exports[`Dashboard renders with repos and builds loaded 1`] = `
                                                     "menuShouldBlockScroll": false,
                                                     "menuShouldScrollIntoView": true,
                                                     "minMenuHeight": 140,
-                                                    "noOptionsMessage": "(no repos configured)",
+                                                    "noOptionsMessage": [Function],
                                                     "onChange": [Function],
                                                     "onInputChange": [Function],
                                                     "onMenuClose": [Function],
@@ -3776,7 +3776,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                           defaultInputValue=""
                           defaultMenuIsOpen={false}
                           defaultValue={null}
-                          noOptionsMessage="(no repos configured)"
+                          noOptionsMessage={[Function]}
                           onChange={[Function]}
                           options={
                             Array [
@@ -3824,7 +3824,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                             menuShouldBlockScroll={false}
                             menuShouldScrollIntoView={true}
                             minMenuHeight={140}
-                            noOptionsMessage="(no repos configured)"
+                            noOptionsMessage={[Function]}
                             onChange={[Function]}
                             onInputChange={[Function]}
                             onMenuClose={[Function]}
@@ -3908,7 +3908,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                   "menuShouldBlockScroll": false,
                                   "menuShouldScrollIntoView": true,
                                   "minMenuHeight": 140,
-                                  "noOptionsMessage": "(no repos configured)",
+                                  "noOptionsMessage": [Function],
                                   "onChange": [Function],
                                   "onInputChange": [Function],
                                   "onMenuClose": [Function],
@@ -4040,7 +4040,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                         "menuShouldBlockScroll": false,
                                         "menuShouldScrollIntoView": true,
                                         "minMenuHeight": 140,
-                                        "noOptionsMessage": "(no repos configured)",
+                                        "noOptionsMessage": [Function],
                                         "onChange": [Function],
                                         "onInputChange": [Function],
                                         "onMenuClose": [Function],
@@ -4180,7 +4180,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                               "menuShouldBlockScroll": false,
                                               "menuShouldScrollIntoView": true,
                                               "minMenuHeight": 140,
-                                              "noOptionsMessage": "(no repos configured)",
+                                              "noOptionsMessage": [Function],
                                               "onChange": [Function],
                                               "onInputChange": [Function],
                                               "onMenuClose": [Function],
@@ -4306,7 +4306,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                                     "menuShouldBlockScroll": false,
                                                     "menuShouldScrollIntoView": true,
                                                     "minMenuHeight": 140,
-                                                    "noOptionsMessage": "(no repos configured)",
+                                                    "noOptionsMessage": [Function],
                                                     "onChange": [Function],
                                                     "onInputChange": [Function],
                                                     "onMenuClose": [Function],
@@ -4430,7 +4430,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                                     "menuShouldBlockScroll": false,
                                                     "menuShouldScrollIntoView": true,
                                                     "minMenuHeight": 140,
-                                                    "noOptionsMessage": "(no repos configured)",
+                                                    "noOptionsMessage": [Function],
                                                     "onChange": [Function],
                                                     "onInputChange": [Function],
                                                     "onMenuClose": [Function],
@@ -4643,7 +4643,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                               "menuShouldBlockScroll": false,
                                               "menuShouldScrollIntoView": true,
                                               "minMenuHeight": 140,
-                                              "noOptionsMessage": "(no repos configured)",
+                                              "noOptionsMessage": [Function],
                                               "onChange": [Function],
                                               "onInputChange": [Function],
                                               "onMenuClose": [Function],
@@ -4765,7 +4765,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                                     "menuShouldBlockScroll": false,
                                                     "menuShouldScrollIntoView": true,
                                                     "minMenuHeight": 140,
-                                                    "noOptionsMessage": "(no repos configured)",
+                                                    "noOptionsMessage": [Function],
                                                     "onChange": [Function],
                                                     "onInputChange": [Function],
                                                     "onMenuClose": [Function],
@@ -4898,7 +4898,7 @@ exports[`Dashboard renders with repos loaded 1`] = `
                                                     "menuShouldBlockScroll": false,
                                                     "menuShouldScrollIntoView": true,
                                                     "minMenuHeight": 140,
-                                                    "noOptionsMessage": "(no repos configured)",
+                                                    "noOptionsMessage": [Function],
                                                     "onChange": [Function],
                                                     "onInputChange": [Function],
                                                     "onMenuClose": [Function],

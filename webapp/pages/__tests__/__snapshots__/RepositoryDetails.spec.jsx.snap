@@ -1137,7 +1137,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                     defaultInputValue=""
                     defaultMenuIsOpen={false}
                     defaultValue={null}
-                    noOptionsMessage="(no repos configured)"
+                    noOptionsMessage={[Function]}
                     onChange={[Function]}
                     options={
                       Array [
@@ -1190,7 +1190,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                       menuShouldBlockScroll={false}
                       menuShouldScrollIntoView={true}
                       minMenuHeight={140}
-                      noOptionsMessage="(no repos configured)"
+                      noOptionsMessage={[Function]}
                       onChange={[Function]}
                       onInputChange={[Function]}
                       onMenuClose={[Function]}
@@ -1279,7 +1279,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                             "menuShouldBlockScroll": false,
                             "menuShouldScrollIntoView": true,
                             "minMenuHeight": 140,
-                            "noOptionsMessage": "(no repos configured)",
+                            "noOptionsMessage": [Function],
                             "onChange": [Function],
                             "onInputChange": [Function],
                             "onMenuClose": [Function],
@@ -1414,7 +1414,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                                   "menuShouldBlockScroll": false,
                                   "menuShouldScrollIntoView": true,
                                   "minMenuHeight": 140,
-                                  "noOptionsMessage": "(no repos configured)",
+                                  "noOptionsMessage": [Function],
                                   "onChange": [Function],
                                   "onInputChange": [Function],
                                   "onMenuClose": [Function],
@@ -1557,7 +1557,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                                         "menuShouldBlockScroll": false,
                                         "menuShouldScrollIntoView": true,
                                         "minMenuHeight": 140,
-                                        "noOptionsMessage": "(no repos configured)",
+                                        "noOptionsMessage": [Function],
                                         "onChange": [Function],
                                         "onInputChange": [Function],
                                         "onMenuClose": [Function],
@@ -1690,7 +1690,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                                               "menuShouldBlockScroll": false,
                                               "menuShouldScrollIntoView": true,
                                               "minMenuHeight": 140,
-                                              "noOptionsMessage": "(no repos configured)",
+                                              "noOptionsMessage": [Function],
                                               "onChange": [Function],
                                               "onInputChange": [Function],
                                               "onMenuClose": [Function],
@@ -1821,7 +1821,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                                               "menuShouldBlockScroll": false,
                                               "menuShouldScrollIntoView": true,
                                               "minMenuHeight": 140,
-                                              "noOptionsMessage": "(no repos configured)",
+                                              "noOptionsMessage": [Function],
                                               "onChange": [Function],
                                               "onInputChange": [Function],
                                               "onMenuClose": [Function],
@@ -2037,7 +2037,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                                         "menuShouldBlockScroll": false,
                                         "menuShouldScrollIntoView": true,
                                         "minMenuHeight": 140,
-                                        "noOptionsMessage": "(no repos configured)",
+                                        "noOptionsMessage": [Function],
                                         "onChange": [Function],
                                         "onInputChange": [Function],
                                         "onMenuClose": [Function],
@@ -2162,7 +2162,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                                               "menuShouldBlockScroll": false,
                                               "menuShouldScrollIntoView": true,
                                               "minMenuHeight": 140,
-                                              "noOptionsMessage": "(no repos configured)",
+                                              "noOptionsMessage": [Function],
                                               "onChange": [Function],
                                               "onInputChange": [Function],
                                               "onMenuClose": [Function],
@@ -2298,7 +2298,7 @@ exports[`RepositoryDetails renders with repo in context 1`] = `
                                               "menuShouldBlockScroll": false,
                                               "menuShouldScrollIntoView": true,
                                               "minMenuHeight": 140,
-                                              "noOptionsMessage": "(no repos configured)",
+                                              "noOptionsMessage": [Function],
                                               "onChange": [Function],
                                               "onInputChange": [Function],
                                               "onMenuClose": [Function],
