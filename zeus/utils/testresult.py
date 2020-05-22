@@ -87,6 +87,7 @@ class TestResultManager(object):
                 duration=test.duration,
                 message=test.message,
                 result=test.result,
+                date_created=job.date_created,
             )
             db.session.add(testcase)
 

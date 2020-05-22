@@ -21,6 +21,7 @@ from .repository import *  # NOQA
 from .revision import *  # NOQA
 from .styleviolation import *  # NOQA
 from .testcase import *  # NOQA
+from .testcase_meta import *  # NOQA
 from .testcase_rollup import *  # NOQA
 from .user_api_token import *  # NOQA
 from .user import *  # NOQA

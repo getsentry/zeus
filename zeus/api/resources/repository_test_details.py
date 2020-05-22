@@ -1,12 +1,12 @@
 from marshmallow import Schema, fields, pre_dump
 
-from zeus.models import Build, Job, Repository, TestCase
+from zeus.models import Build, Job, Repository, TestCase, TestCaseMeta
 from zeus.api.schemas import BuildSchema
 
 from .base_repository import BaseRepositoryResource
 
 
-class TestCaseSummarySchema(Schema):
+class TestCaseMetaSchema(Schema):
     name = fields.Str(required=True)
     hash = fields.Str(dump_only=True)
 
@@ -19,25 +19,20 @@ class TestCaseSummarySchema(Schema):
 
     @pre_dump(pass_many=False)
     def process_testcase(self, data, many, **kwargs):
-        first_build = (
-            Build.query.join(Job, Job.build_id == Build.id)
-            .join(TestCase, TestCase.job_id == Job.id)
-            .filter(TestCase.hash == data.hash)
-            .order_by(Job.date_created.asc())
-            .first()
-        )
-
         last_build = (
             Build.query.join(Job, Job.build_id == Build.id)
-            .filter(Job.id == data.job_id)
-            .order_by(Job.date_created.desc())
+            .join(TestCase, TestCase.job_id == Job.id)
+            .filter(
+                TestCase.repository_id == data.repository_id, TestCase.hash == data.hash
+            )
+            .order_by(TestCase.date_created.desc())
             .first()
         )
 
         return {
             "hash": data.hash,
             "name": data.name,
-            "first_build": first_build,
+            "first_build": data.first_build,
             "last_build": last_build,
         }
 
@@ -47,14 +42,11 @@ class RepositoryTestDetailsResource(BaseRepositoryResource):
         return False
 
     def get(self, repo: Repository, test_hash: str):
-        testcase = (
-            TestCase.query.filter(
-                TestCase.repository_id == repo.id, TestCase.hash == test_hash
-            )
-            .join(TestCase.job)
-            .order_by(Job.date_created.desc())
-            .first()
-        )
+        testcase_meta = TestCaseMeta.query.filter(
+            TestCase.repository_id == repo.id, TestCase.hash == test_hash
+        ).first()
+        if not testcase_meta:
+            return self.respond({"message": "resource not found"}, 404)
 
-        schema = TestCaseSummarySchema()
-        return self.respond_with_schema(schema, testcase)
+        schema = TestCaseMetaSchema()
+        return self.respond_with_schema(schema, testcase_meta)

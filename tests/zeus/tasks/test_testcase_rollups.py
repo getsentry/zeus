@@ -1,5 +1,5 @@
 from zeus import factories
-from zeus.models import TestCaseRollup
+from zeus.models import TestCaseMeta, TestCaseRollup
 from zeus.tasks import rollup_testcase, rollup_testcases_for_job
 
 
@@ -63,3 +63,11 @@ def test_rollup_testcase(mocker, db_session, default_revision, default_tenant):
     assert rollup.runs_failed == 1
     assert rollup.total_runs == 2
     assert rollup.total_duration == testcase.duration + testcase2.duration
+
+    meta = TestCaseMeta.query.filter(
+        TestCaseMeta.repository_id == testcase.repository_id,
+        TestCaseMeta.hash == testcase.hash,
+    ).first()
+    assert meta
+    assert meta.first_build_id == build.id
+    assert meta.name == testcase.name

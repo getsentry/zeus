@@ -5,17 +5,16 @@ from sqlalchemy import event
 
 from zeus.config import db
 from zeus.constants import Result
-from zeus.db.mixins import RepositoryBoundMixin
+from zeus.db.mixins import RepositoryBoundMixin, StandardAttributes
 from zeus.db.types import Enum, GUID
 from zeus.db.utils import model_repr
 
 
-class TestCase(RepositoryBoundMixin, db.Model):
+class TestCase(StandardAttributes, RepositoryBoundMixin, db.Model):
     """
     A single run of a single test.
     """
 
-    id = db.Column(GUID, nullable=False, primary_key=True, default=GUID.default_value)
     job_id = db.Column(
         GUID, db.ForeignKey("job.id", ondelete="CASCADE"), nullable=False
     )
@@ -31,7 +30,7 @@ class TestCase(RepositoryBoundMixin, db.Model):
     __tablename__ = "testcase"
     __table_args__ = (
         db.UniqueConstraint("job_id", "hash", name="unq_testcase_hash"),
-        db.Index("idx_testcase_repo_hash", "repository_id", "hash", "result"),
+        db.Index("idx_testcase_repo_created", "repository_id", "hash", "date_created"),
     )
     __repr__ = model_repr("repository_id", "job_id", "name", "result")
 

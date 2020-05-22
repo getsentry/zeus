@@ -5,8 +5,8 @@ from uuid import UUID
 
 from zeus.config import celery, db
 from zeus.constants import Result
-from zeus.db.utils import create_or_update
-from zeus.models import TestCase, TestCaseRollup
+from zeus.db.utils import create_or_update, try_create
+from zeus.models import TestCase, TestCaseMeta, TestCaseRollup
 
 
 @celery.task(
@@ -24,7 +24,7 @@ def rollup_testcase(testcase_id: UUID):
         scope.set_tag("repository_id", str(testcase.repository_id))
         scope.set_tag("job_id", str(testcase.job_id))
 
-    create_or_update(
+    _, created = create_or_update(
         model=TestCaseRollup,
         where={
             "repository_id": testcase.repository_id,
@@ -48,6 +48,12 @@ def rollup_testcase(testcase_id: UUID):
             "total_duration": testcase.duration,
         },
     )
+    if created:
+        try_create(
+            TestCaseMeta,
+            where={"repository_id": testcase.repository_id, "hash": testcase.hash},
+            defaults={"first_build_id": testcase.job.build_id, "name": testcase.name},
+        )
 
 
 @celery.task(
