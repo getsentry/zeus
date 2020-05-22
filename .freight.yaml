@@ -1,6 +1,6 @@
 sentry:
   organization: sentry
-  project: zeus
+  project: zeus-web
   repository: getsentry/zeus
 
 kubernetes:
