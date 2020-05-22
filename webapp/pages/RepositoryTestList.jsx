@@ -12,6 +12,12 @@ import Duration from '../components/Duration';
 import ResultGridRow from '../components/ResultGridRow';
 import {ResultGrid, Column, Header} from '../components/ResultGrid';
 
+const TestName = styled.div`
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+`;
+
 class TestListItem extends Component {
   static propTypes = {
     repo: PropTypes.object.isRequired,
@@ -24,7 +30,9 @@ class TestListItem extends Component {
       <TestListItemLink to={`/${repo.full_name}/reports/tests/${test.hash}`}>
         <ResultGridRow>
           <Flex align="center">
-            <Box flex="1">{test.name}</Box>
+            <Box flex="1">
+              <TestName>{test.name}</TestName>
+            </Box>
             <Box width={120} style={{textAlign: 'right'}}>
               {test.runs_failed.toLocaleString()}
             </Box>
