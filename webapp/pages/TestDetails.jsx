@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import {Flex, Box} from '@rebass/grid/emotion';
 
 import AsyncPage from '../components/AsyncPage';
+import DefinitionList from '../components/DefinitionList';
 import Section from '../components/Section';
 import SectionHeading from '../components/SectionHeading';
 import Collapsable from '../components/Collapsable';
@@ -49,6 +51,15 @@ class TestListItem extends Component {
   }
 }
 
+const BuildLink = ({repo, build}) => {
+  let link = `/${repo.full_name}/builds/${build.number}`;
+  return (
+    <Link to={link}>
+      #{build.number} &mdash; {build.label || ''}
+    </Link>
+  );
+};
+
 export default class TestDetails extends AsyncPage {
   static contextTypes = {
     ...AsyncPage.contextTypes,
@@ -70,9 +81,20 @@ export default class TestDetails extends AsyncPage {
     return (
       <Section>
         <SectionHeading>{testDetails.name}</SectionHeading>
+        <DefinitionList>
+          <dt>First Seen</dt>
+          <dd>
+            <BuildLink build={testDetails.first_build} repo={this.context.repo} />
+          </dd>
+
+          <dt>Last Seen</dt>
+          <dd>
+            <BuildLink build={testDetails.last_build} repo={this.context.repo} />{' '}
+          </dd>
+        </DefinitionList>
         <ResultGrid>
           <Header>
-            <Column>Build</Column>
+            <Column>Run</Column>
             <Column width={90} textAlign="right">
               Duration
             </Column>
