@@ -85,12 +85,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: sentry
-                  key: dsn
-            - name: SENTRY_DSN_FRONTEND
-              valueFrom:
-                secretKeyRef:
-                  name: sentry
-                  key: dsn-frontend
+                  key: dsn-pubsub
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:

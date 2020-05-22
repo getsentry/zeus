@@ -65,7 +65,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: sentry
-                  key: dsn
+                  key: dsn-vcs-server
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
