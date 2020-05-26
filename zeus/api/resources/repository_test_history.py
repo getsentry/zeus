@@ -25,14 +25,13 @@ class RepositoryTestHistoryResource(BaseRepositoryResource):
                     TestCase.id, TestCase.job_id, TestCase.duration, TestCase.result
                 ).label("runs"),
             )
-            # .join(Job, Job.id == TestCase.job_id)
-            # .join(Build, Build.id == Job.build_id)
             .filter(
                 TestCase.hash == test_hash,
                 TestCase.repository_id == repo.id,
                 Build.id == Job.build_id,
                 Job.id == TestCase.job_id,
-            ).group_by(Build.id, Build.number, TestCase.hash, TestCase.name)
+            )
+            .group_by(Build.id, Build.number, TestCase.hash, TestCase.name)
         )
 
         result = request.args.get("result")

@@ -5,12 +5,24 @@ def test_repository_test_history(
     default_testcase,
     default_repo,
     default_repo_access,
+    sqla_assertions,
 ):
-    resp = client.get(
-        "/api/repos/{}/tests/{}/history".format(
-            default_repo.get_full_name(), default_testcase.hash
+    # Queries:
+    # - Savepoint
+    # - RepositoryAccess
+    # - Repository
+    # - RepositoryAccess?
+    # - Aggregate test rows
+    # - Build
+    # - Build.authors
+    # - Aggregate test rows count (paginator)
+    with sqla_assertions.assert_statement_count(8):
+        resp = client.get(
+            "/api/repos/{}/tests/{}/history".format(
+                default_repo.get_full_name(), default_testcase.hash
+            )
         )
-    )
+
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 1
