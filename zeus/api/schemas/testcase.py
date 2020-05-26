@@ -3,6 +3,7 @@ __all__ = ("AggregateTestCaseSummarySchema", "TestCaseSummarySchema", "TestCaseS
 from collections import defaultdict
 from marshmallow import Schema, fields, pre_dump
 from sqlalchemy import and_
+from sqlalchemy.orm import subqueryload_all
 from typing import Dict, List, Optional
 from uuid import UUID
 
@@ -196,7 +197,9 @@ class AggregateTestCaseSummarySchema(Schema):
         else:
             builds = {
                 b.id: b
-                for b in Build.query.filter(Build.id.in_(i.build_id for i in items))
+                for b in Build.query.filter(
+                    Build.id.in_(i.build_id for i in items)
+                ).options(subqueryload_all(Build.authors))
             }
 
         if failure_origins:
@@ -204,7 +207,7 @@ class AggregateTestCaseSummarySchema(Schema):
                 b.id: b
                 for b in Build.query.filter(
                     Build.id.in_(frozenset(failure_origins.values()))
-                )
+                ).options(subqueryload_all(Build.authors))
             }
         else:
             origin_builds = {}

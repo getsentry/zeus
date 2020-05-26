@@ -25,9 +25,10 @@ def test_build_failures_list(
     # Queries:
     # - Tenant
     # - Build
+    # - Build.authors
     # - Failures
     # - Failure Count (paginator)
-    with sqla_assertions.assert_statement_count(5):
+    with sqla_assertions.assert_statement_count(6):
         resp = client.get(
             "/api/repos/{}/builds/{}/failures".format(
                 default_repo.get_full_name(), default_build.number

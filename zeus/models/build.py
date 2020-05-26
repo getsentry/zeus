@@ -62,7 +62,9 @@ class Build(RepositoryBoundMixin, StandardAttributes, db.Model):
         nullable=True,
     )
 
-    authors = db.relationship("Author", secondary=build_author_table, backref="builds")
+    authors = db.relationship(
+        "Author", secondary=build_author_table, backref="builds", lazy="subquery"
+    )
     revision = db.relationship(
         "Revision",
         foreign_keys="[Build.repository_id, Build.revision_sha]",
