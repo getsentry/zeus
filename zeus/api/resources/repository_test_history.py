@@ -1,5 +1,4 @@
 from flask import request
-from sqlalchemy.dialects.postgresql import array_agg
 
 from zeus.config import db
 from zeus.constants import Result
@@ -41,13 +40,7 @@ class RepositoryTestHistoryResource(BaseRepositoryResource):
             except AttributeError:
                 raise NotImplementedError
 
-        query = query.order_by(
-            Build.number.desc(),
-            (
-                array_agg(TestCase.result).label("results").contains([Result.failed])
-            ).desc(),
-            TestCase.name.asc(),
-        )
+        query = query.order_by(Build.number.desc())
 
         schema = AggregateTestCaseSummarySchema(many=True, context={"repo": repo})
         return self.paginate_with_schema(schema, query)
