@@ -43,7 +43,7 @@ class RepositoryTestDetailsResource(BaseRepositoryResource):
 
     def get(self, repo: Repository, test_hash: str):
         testcase_meta = TestCaseMeta.query.filter(
-            TestCase.repository_id == repo.id, TestCase.hash == test_hash
+            TestCaseMeta.repository_id == repo.id, TestCaseMeta.hash == test_hash
         ).first()
         if not testcase_meta:
             return self.respond({"message": "resource not found"}, 404)
