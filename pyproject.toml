@@ -77,5 +77,5 @@ test = [
 zeus = 'zeus.cli:main'
 
 [build-system]
-requires = ["poetry>=1.0.0", "pip==19.3.1"]
+requires = ["poetry>=1.1.2", "pip==20.2.3"]
 build-backend = "poetry.masonry.api"
