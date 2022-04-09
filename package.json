@@ -56,7 +56,7 @@
     "marked": "^0.7.0",
     "mini-css-extract-plugin": "^0.8.0",
     "mockdate": "^2.0.5",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "object-assign": "4.1.1",
     "percentile": "^1.2.2",
     "prettier": "^1.19.1",
