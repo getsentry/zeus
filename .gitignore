@@ -45,3 +45,6 @@ yarn-error.log*
 /.artifacts
 /.env
 /.venv
+/.yarn
+
+*.pnp*

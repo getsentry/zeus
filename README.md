@@ -76,19 +76,15 @@ They should be submitted with the `application/x-webpack-stats+json` type.
 
 ### Requirements
 
-- Python 3.8
+- Python 3.9+
 - Node (and [Volta](https://volta.sh/))
 - Postgres 9.4+
-
-Note: If you're using pyenv for Python and macOS Mojave and having issues installing 3.7.1, take a look here:
-
-https://github.com/pyenv/pyenv/issues/1219
 
 ### Setup
 
 ```shell
 # install poetry
-curl -sSL https://raw.githubusercontent.com/sdispater/poetry/0.12.10/get-poetry.py | python
+curl -sSL https://install.python-poetry.org | python3 -
 
 # load dependencies
 make

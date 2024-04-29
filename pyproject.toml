@@ -8,7 +8,7 @@ authors = ["David Cramer <dcramer@gmail.com>"]
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]
-python = "~3.8"
+python = "~3.9"
 aiodns = "~1.1.1"
 aiohttp = "~3.6.2"
 aioredis = "~1.1.0"
@@ -30,9 +30,9 @@ google-cloud-storage = "^1.23"
 honcho = "~1.0.1"
 ipython = "^7"
 itsdangerous = "~0.24"
-jsonschema = "~3.2.0"
+jsonschema = "~4.21.1"
 lru-dict = "^1.1.6"
-lxml = "~4.2.3"
+lxml = "~5.2.1"
 marshmallow = "~3"
 nplusone = "~0.8.1"
 psycopg2-binary = "~2.8.4"
@@ -45,7 +45,7 @@ unidecode = "~0.04.21"
 uwsgi = "~2.0.15"
 werkzeug = "~0.14.1"
 yarl = "~1.2.6"
-requests = { version = "^2.22", extras = [ "security" ] }
+requests = { version = "^2.22", extras = ["security"] }
 requests-oauthlib = "~0.8.0"
 pytest = { version = "~5.3.5", optional = true }
 pytest-aiohttp = { version = "~0.3.0", optional = true }
@@ -56,6 +56,8 @@ pytest-xdist = { version = "~1.31.0", optional = true }
 responses = { version = "~0.10.9", optional = true }
 watchdog = "^0.9.0"
 python-json-logger = "^0.1.11"
+jinja2 = "<3"
+markupsafe = "<2"
 
 [tool.poetry.dev-dependencies]
 black = "=18.6b4"
