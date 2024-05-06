@@ -43,7 +43,7 @@ SQLAlchemy = "~1.2.0"
 toronado = "~0.0.11"
 unidecode = "~0.04.21"
 uwsgi = "~2.0.15"
-werkzeug = "~0.14.1"
+werkzeug = "~3.0.3"
 yarl = "~1.2.6"
 requests = { version = "^2.22", extras = [ "security" ] }
 requests-oauthlib = "~0.8.0"
